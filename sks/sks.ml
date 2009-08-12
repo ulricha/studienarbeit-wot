@@ -96,6 +96,14 @@ let rec commands = [
 	      M.run ()
 	   )
   };
+  { name = "dump_graph";
+    usage = "#keys dumpdir";
+    desc = "Create a raw dump of the keys in the database";
+    func = (fun () -> 
+	      let module M = Dump_graph.F(struct end) in
+	      M.run ()
+	   )
+  };
   { name = "merge";
     usage = "";
     desc = "Adds key from key files to existing database";
