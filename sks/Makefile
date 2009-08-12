@@ -87,7 +87,8 @@ OBJS.bc=packet.cmo parsePGP.cmo sStream.cmo bdbwrap.cmo \
 	sendmail.cmo recvmail.cmo mailsync.cmo \
 	clean_keydb.cmo build.cmo fastbuild.cmo pbuild.cmo merge_keyfiles.cmo \
 	sksdump.cmo incdump.cmo dbserver.cmo reconComm.cmo recoverList.cmo \
-	catchup.cmo reconserver.cmo update_subkeys.cmo sks_do.cmo unit_tests.cmo
+	catchup.cmo reconserver.cmo update_subkeys.cmo sks_do.cmo unit_tests.cmo \
+	dump.cmo
 
 OBJS=$(OBJS.bc:.cmo=.cmx)
 
@@ -161,6 +162,9 @@ spider.bc: $(LIBS.bc) $(ALLOBJS.bc) spider.cmo
 
 sks: $(LIBS) $(ALLOBJS) sks.cmx
 	$(OCAMLOPT) -o sks $(OCAMLOPTFLAGS) $(ALLOBJS) sks.cmx
+
+dump: $(LIBS) $(ALLOBJS) dump.cmx
+	$(OCAMLOPT) -o dump $(OCAMLOPTFLAGS) $(ALLOBJS)
 
 sks.bc: $(LIBS.bc) $(ALLOBJS.bc) sks.cmo
 	$(OCAMLC) -o sks.bc $(OCAMLFLAGS) $(ALLOBJS.bc) sks.cmo
