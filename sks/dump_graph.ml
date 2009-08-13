@@ -25,6 +25,8 @@ struct
   open Common
   open Packet
   open KeyMerge
+  open Key
+  open Fingerprint
 
   let settings = {
     Keydb.withtxn = !Settings.transactions;
@@ -36,14 +38,66 @@ struct
 
   module Keydb = Keydb.Unsafe
 
-  let itertest ~hash ~key =
-    if parseable key = true then
-      ()
-    else
-      print_endline "not parseable"
+  let get_keys_by_keyid keyid =
+    let keyid_length = String.length keyid in
+    let short_keyid = String.sub ~pos:(keyid_length - 4) ~len:4 keyid in
+    let keys = Keydb.get_by_short_subkeyid short_keyid in
+    match keyid_length with
+      | 4 -> (* 32-bit keyid.  No further filtering required. *)
+	  keys
+
+      | 8 -> (* 64-bit keyid *) 
+	  List.filter keys
+	  ~f:(fun key -> (Fingerprint.from_key key).Fingerprint.keyid = keyid )
+
+      | 20 -> (* 160-bit v. 4 fingerprint *)
+	  List.filter keys
+	  ~f:(fun key -> keyid = (Fingerprint.from_key key).Fingerprint.fp )
+
+      | 16 -> (* 128-bit v3 fingerprint.  Not supported *)
+	  failwith "128-bit v3 fingerprints not implemented"
+
+      | _ -> failwith "unknown keyid type"
+
+  let itertest2 ~hash ~key =
+    let rec print_uid key = 
+      match key with
+	| [] -> ()
+	| packet :: tl -> 
+	    if packet.packet_type = User_ID_Packet then
+	      begin
+		print_endline packet.packet_body;
+		print_uid tl
+	      end
+	    else
+	      print_uid tl
+    in print_uid key
+
+  let rec print_key_structure key = 
+    match key with
+      | packet :: tl -> 
+	  print_endline (ptype_to_string packet.packet_type)
+      | [] -> ()
   ;;
+
+  let rec print_multiple_key_structure keyid =
+    let rec print_single_key_structure key = 
+      match key with
+	| packet :: tl ->
+	    print_endline (Packet.ptype_to_string packet.packet_type);
+	    print_single_key_structure tl
+	| [] ->
+	    ()
+    in
+    let keys = get_keys_by_keyid keyid in
+      print_endline (string_of_int (List.length keys));
+      match keys with
+	| key :: tl -> print_single_key_structure key
+	| [] -> ()
 
   let run () = 
     Keydb.open_dbs settings;
-    Keydb.iter itertest
+    print_endline "foo";
+    print_multiple_key_structure (keyid_of_string "0x9D6B4CE4")
+    (* Keydb.iter itertest2 *)
 end
