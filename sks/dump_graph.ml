@@ -220,38 +220,36 @@ struct
       end
 *)
 
-  let is_v3_expired valid_days = function
+  let is_v3_expired pubkey_info =
+      match pubkey_info.pk_expiration with
       | Some d -> 
 	  let today = Stats.round_up_to_day (Unix.gettimeofday ()) in
-	  let ctime = Int64.to_float info.pk_ctime in
+	  let ctime = Int64.to_float pubkey_info.pk_ctime in
 	  let valid = (float_of_int d) *. 24. *. 3600. in
 	    ctime +. valid < today
       | None -> 
 	  false
 
+(*
+	    List.map 
+	    (fun (uid, sig_list) ->
+	       let siginfo_list = List.map ~f:sig_to_siginfo sig_list in
+	       let selfsigs = List.filter (fun siginfo -> is_selfsig ~keyid:keyid siginfo) siginfo_list in
+*)
+
+  let is_v4_expired keyid pkey info =
+    false
+
   let is_expired pkey =
     let info = parse_pubkey_info pkey.key in
-    let keyid = shorten ~short (from_packet pkey.key).keyid in
       match info.pk_version with
 	| 3 -> 
-	    begin
-	      match info.pk_expiration with
-		| Some d -> 
-		    let today = Stats.round_up_to_day (Unix.gettimeofday ()) in
-		    let ctime = Int64.to_float info.pk_ctime in
-		    let valid = (float_of_int d) *. 24. *. 3600. in
-		      ctime +. valid < today
-		| None -> 
-		    false
-	    end
-	| 4 ->
-	    List.map 
-	      (fun (uid, sig_list) ->
-		 let siginfo_list = List.map ~f:sig_to_siginfo sig_list in
-		 let selfsigs = List.filter (fun siginfo -> is_selfsig ~keyid:keyid siginfo) siginfo_list in
-		   
-
-	| x -> failwith ("unexpected pk_version field " ^ (string_of_int x))
+	    is_v3_expired info
+	| 4 -> 
+	    let keyid = (from_packet pkey.key).keyid in
+	      is_v4_expired keyid pkey info
+	| x -> 
+	    failwith ("unexpected pk_version field " ^ (string_of_int x))
 
   let sig_is_revok siginfo =
     match siginfo.sigtype with
