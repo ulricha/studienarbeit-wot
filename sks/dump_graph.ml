@@ -237,8 +237,49 @@ struct
 	       let selfsigs = List.filter (fun siginfo -> is_selfsig ~keyid:keyid siginfo) siginfo_list in
 *)
 
-  let is_v4_expired keyid pkey info =
-    false
+  let is_uid_expired keyid sigpair =
+        let (uid, sig_list) = sigpair in
+	(* get list of selfsigs *)
+	let siginfo_list = List.map ~f:sig_to_siginfo sig_list in
+	let selfsigs = List.filter (fun siginfo -> is_selfsig ~keyid:keyid siginfo) siginfo_list in
+	let compare_ctime_reverse sig1 sig2 =
+	  try
+	    let ctime1 = option_get sig1.sig_creation_time in
+	    let ctime2 = option_get sig2.sig_creation_time in
+	      match Int64.to_int (Int64.sub ctime1 ctime2) with
+		| 0 -> 0
+		| d when d > 0 -> -1
+		| d -> 1
+
+	  with No_value -> failwith "is_v4_expired: signature does not contain creation time"
+	in
+	let selfsigs_sorted_reverse = List.sort compare_ctime_reverse selfsigs in
+	  discard selfsigs_sorted_reverse
+
+  let is_v4_expired keyid pkey pubkeyinfo =
+    let expired_list = List.map
+      (fun (uid, sig_list) ->
+	(* get list of selfsigs *)
+	let siginfo_list = List.map ~f:sig_to_siginfo sig_list in
+	let selfsigs = List.filter (fun siginfo -> is_selfsig ~keyid:keyid siginfo) siginfo_list in
+	let compare_ctime_reverse sig1 sig2 =
+	  try
+	    let ctime1 = option_get sig1.sig_creation_time in
+	    let ctime2 = option_get sig2.sig_creation_time in
+	      match Int64.to_int (Int64.sub ctime1 ctime2) with
+		| 0 -> 0
+		| d when d > 0 -> -1
+		| d -> 1
+
+	  with No_value -> failwith "is_v4_expired: signature does not contain creation time"
+	in
+	let selfsigs_sorted = List.sort compare_ctime_reverse selfsigs in
+	  discard selfsigs_sorted;
+	  true
+      )
+      pkey.uids
+    in
+      List.exists (fun a -> a = false) expired_list
 
   let is_expired pkey =
     let info = parse_pubkey_info pkey.key in
@@ -246,7 +287,7 @@ struct
 	| 3 -> 
 	    is_v3_expired info
 	| 4 -> 
-	    let keyid = (from_packet pkey.key).keyid in
+	    let keyid = keyid_from_packet pkey.key in
 	      is_v4_expired keyid pkey info
 	| x -> 
 	    failwith ("unexpected pk_version field " ^ (string_of_int x))

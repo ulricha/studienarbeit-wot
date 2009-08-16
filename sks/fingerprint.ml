@@ -99,6 +99,10 @@ let rec from_key key = match key with
   | [] -> 
       raise Not_found
 
+let keyid_from_packet packet =
+  let res = from_packet packet in
+    res.keyid
+
 let fp_to_string fp = 
   let bs = if (String.length fp) = 20 then 4 else 2 in
   (* standard practice is to bunch long fingerprints by 4 and short ones by
