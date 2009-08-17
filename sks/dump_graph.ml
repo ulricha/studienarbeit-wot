@@ -302,9 +302,7 @@ struct
       end
     in
       begin
-	print_endline ("time " ^ (string_of_float (Unix.time ())));
 	Keydb.iter ~f:count_revoked;
-	print_endline ("time " ^ (string_of_float (Unix.time ())));
 	print_endline ("revoked " ^ (string_of_int !revoked_cnt));
 	print_endline ("expired " ^ (string_of_int !expired_cnt))
       end
@@ -327,6 +325,11 @@ struct
 
   let run () =
     Keydb.open_dbs settings;
-    test_expired ();
-    count_expired_revoked ()
+    let t1 = Unix.time () in
+      begin
+	test_expired ();
+	count_expired_revoked ();
+	let t2 = Unix.time () in
+	  print_endline ("time " ^ (string_of_float (t2 -. t1)))
+      end
 end
