@@ -19,8 +19,8 @@
 
 module F(M:sig end) = 
 struct
-  open StdLabels
-  open MoreLabels
+  open ExtList
+  open Option
   open Printf
   open Common
   open Packet
@@ -42,34 +42,6 @@ struct
 
   exception No_value
 
-  let option_may f = function
-    | None -> ()
-    | Some v -> f v
-
-  let option_map f = function
-    | None -> None
-    | Some v -> Some (f v)
-
-  let option_default v = function
-    | None -> v
-    | Some v -> v
-
-  let option_is_some = function
-    | None -> false
-    | _ -> true
-
-  let option_is_none = function
-    | None -> true
-    | _ -> false
-
-  let option_get = function
-    | None -> raise No_value
-    | Some v -> v
-
-  let option_map_default f v = function
-    | None -> v
-    | Some v2 -> f v2
-
   type cert_level = Generic | Persona | Casual | Positive
 
   type signature = { sig_puid_signed : bool;
@@ -84,19 +56,17 @@ struct
     
   let get_keys_by_keyid keyid =
     let keyid_length = String.length keyid in
-    let short_keyid = String.sub ~pos:(keyid_length - 4) ~len:4 keyid in
+    let short_keyid = String.sub keyid (keyid_length - 4) 4 in
     let keys = Keydb.get_by_short_subkeyid short_keyid in
       match keyid_length with
 	| 4 -> (* 32-bit keyid.  No further filtering required. *)
 	    keys
 
 	| 8 -> (* 64-bit keyid *) 
-	    List.filter keys
-	      ~f:(fun key -> (Fingerprint.from_key key).Fingerprint.keyid = keyid )
+	    List.filter (fun key -> (Fingerprint.from_key key).Fingerprint.keyid = keyid ) keys
 
 	| 20 -> (* 160-bit v. 4 fingerprint *)
-	    List.filter keys
-	      ~f:(fun key -> keyid = (Fingerprint.from_key key).Fingerprint.fp )
+	    List.filter (fun key -> keyid = (Fingerprint.from_key key).Fingerprint.fp ) keys
 
 	| 16 -> (* 128-bit v3 fingerprint.  Not supported *)
 	    failwith "128-bit v3 fingerprints not implemented"
@@ -133,13 +103,13 @@ struct
 
   let string_of_siginfo s = 
     let out = ref "" in
-      if option_is_some s.keyid then
-	out := !out ^ "keyid " ^ (keyid_to_string (option_get s.keyid))
+      if is_some s.keyid then
+	out := !out ^ "keyid " ^ (keyid_to_string (Option.get s.keyid))
       else
 	out := !out ^ "no keyid (wtf?)"
       ;
-(*      if option_is_some s.keyid then
-	out := !out ^ " keyid " ^ (keyid_to_string (option_get s.keyid))
+(*      if is_some s.keyid then
+	out := !out ^ " keyid " ^ (keyid_to_string (get s.keyid))
       else
 	() *)
       !out
@@ -221,22 +191,25 @@ struct
 	    end
 	| None -> false
 
-  let is_uid_expired keyid sigpair =
-    let (uid, sig_list) = sigpair in
-      (* get list of selfsigs *)
-    let siginfo_list = List.map ~f:sig_to_siginfo sig_list in
-    let selfsigs = List.filter (fun siginfo -> is_selfsig ~keyid:keyid siginfo) siginfo_list in
+  let sort_reverse_siginfo_list siglist =
     let compare_ctime_reverse sig1 sig2 =
       try
-	let ctime1 = option_get sig1.sig_creation_time in
-	let ctime2 = option_get sig2.sig_creation_time in
+	let ctime1 = Option.get sig1.sig_creation_time in
+	let ctime2 = Option.get sig2.sig_creation_time in
 	  match Int64.to_int (Int64.sub ctime1 ctime2) with
 	    | 0 -> 0
 	    | d when d > 0 -> -1
 	    | d -> 1
-      with No_value -> failwith "is_v4_expired: signature does not contain creation time"
+      with No_value -> failwith "sort_reverse_siginfo_list: signature does not contain creation time"
     in
-    let selfsigs_sorted_reverse = List.sort compare_ctime_reverse selfsigs in
+      List.sort ~cmp:compare_ctime_reverse siglist
+    
+  let is_uid_expired keyid sigpair =
+    let (uid, sig_list) = sigpair in
+      (* get list of selfsigs *)
+    let siginfo_list = List.map sig_to_siginfo sig_list in
+    let selfsigs = List.filter (fun siginfo -> is_selfsig ~keyid:keyid siginfo) siginfo_list in
+    let selfsigs_sorted_reverse = sort_reverse_siginfo_list selfsigs in
     let rec iter_selfsigs l =
       match l with
 	| selfsig :: tl ->
@@ -256,7 +229,7 @@ struct
       iter_selfsigs selfsigs_sorted_reverse
 
   let is_v4_expired keyid pkey pubkeyinfo =
-    let expired_list = List.map ~f:(fun sigpair -> is_uid_expired keyid sigpair) pkey.uids in
+    let expired_list = List.map (fun sigpair -> is_uid_expired keyid sigpair) pkey.uids in
       List.exists (fun a -> a = true) expired_list
 
   let is_expired pkey =
@@ -294,7 +267,7 @@ struct
 
   let is_revoked pkey = 
     let selfsigs = pkey.KeyMerge.selfsigs in
-      List.exists ~f:(fun sign -> 
+      List.exists (fun sign -> 
 			sig_is_revok (sig_to_siginfo sign)
                      )
 	selfsigs
