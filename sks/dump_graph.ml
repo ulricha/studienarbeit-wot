@@ -237,6 +237,38 @@ struct
 	       let selfsigs = List.filter (fun siginfo -> is_selfsig ~keyid:keyid siginfo) siginfo_list in
 *)
 
+  let is_signature_expired siginfo =
+    let today = Stats.round_up_to_day (Unix.gettimeofday ()) in
+    match siginfo.sig_creation_time with
+      | Some ctime ->
+	  begin
+	    match siginfo.sig_expiration_time with
+	      | Some exptime ->
+		  if compare (Int64.add ctime exptime) (Int64.of_float today) <= 0 then
+		    true
+		  else
+		    false
+	      | None ->
+		  false
+	  end
+      | None -> false
+
+  let is_v4_key_expired siginfo =
+    let today = Stats.round_up_to_day (Unix.gettimeofday ()) in
+    match siginfo.sig_creation_time with
+      | Some ctime ->
+	  begin
+	    match siginfo.key_expiration_time with
+	      | Some exptime ->
+		  if compare (Int64.add ctime exptime) (Int64.of_float today) <= 0 then
+		    true
+		  else
+		    false
+	      | None ->
+		  false
+	  end
+      | None -> false
+
   let is_uid_expired keyid sigpair =
         let (uid, sig_list) = sigpair in
 	(* get list of selfsigs *)
@@ -254,31 +286,34 @@ struct
 	  with No_value -> failwith "is_v4_expired: signature does not contain creation time"
 	in
 	let selfsigs_sorted_reverse = List.sort compare_ctime_reverse selfsigs in
-	  discard selfsigs_sorted_reverse
+	let rec iter_selfsigs l =
+	  match l with
+	    | selfsig :: tl ->
+		begin
+		  match selfsig.sigtype with
+		    | 0x10 | 0x11 | 0x12 | 0x13 -> 
+			if is_signature_expired selfsig then
+			  true
+			else
+			  is_v4_key_expired selfsig
+		    | 0x30 -> true
+		    | _ -> iter_selfsigs tl
+		end	
+	    | [] -> false
+	in
+	  iter_selfsigs selfsigs_sorted_reverse
+
+(*
+	  let sig = List.hd l in
+	  match sig.sigtype with
+
+		()
+	    | _ -> iter_selfsigs List.tl
+*)
+
 
   let is_v4_expired keyid pkey pubkeyinfo =
-    let expired_list = List.map
-      (fun (uid, sig_list) ->
-	(* get list of selfsigs *)
-	let siginfo_list = List.map ~f:sig_to_siginfo sig_list in
-	let selfsigs = List.filter (fun siginfo -> is_selfsig ~keyid:keyid siginfo) siginfo_list in
-	let compare_ctime_reverse sig1 sig2 =
-	  try
-	    let ctime1 = option_get sig1.sig_creation_time in
-	    let ctime2 = option_get sig2.sig_creation_time in
-	      match Int64.to_int (Int64.sub ctime1 ctime2) with
-		| 0 -> 0
-		| d when d > 0 -> -1
-		| d -> 1
-
-	  with No_value -> failwith "is_v4_expired: signature does not contain creation time"
-	in
-	let selfsigs_sorted = List.sort compare_ctime_reverse selfsigs in
-	  discard selfsigs_sorted;
-	  true
-      )
-      pkey.uids
-    in
+    let expired_list = List.map ~f:(fun sigpair -> is_uid_expired keyid sigpair) pkey.uids in
       List.exists (fun a -> a = false) expired_list
 
   let is_expired pkey =
