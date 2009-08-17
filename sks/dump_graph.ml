@@ -81,19 +81,6 @@ struct
 	       key_puid : string;
 	       key_signatures : signature list
 	       }
-
-(*  
-  let is_self_sig keyid sinfo =
-    match sinfo.keyid with
-      | Some id -> true
-      | None -> false
-
-
-
-  let is_puid siginfo =
-    siginfo.is_primary_uid
-
-*)
     
   let get_keys_by_keyid keyid =
     let keyid_length = String.length keyid in
@@ -189,36 +176,8 @@ struct
     try Some (parse_keystr stream) with
       | Unparseable_packet_sequence -> None
 
-  let run () = 
-    Keydb.open_dbs settings;
-    let keyid = keyid_of_string "0x9D6B4CE4" in
-    let keys = get_keys_by_keyid keyid in
-    let pkeys = List.map key_to_pkey keys in
-      List.iter
-	(function
-	   | Some p -> print_pkey p
-	   | None -> print_endline "unparseable packet sequence"
-	)
-	pkeys
-      (* Keydb.iter itertest2 *)
-
   let discard a =
     ()
-
-(*
-  let run () =
-    Keydb.open_dbs settings;
-    let keylist = ref [] in
-    let add_key ~hash ~key =
-      keylist := key :: !keylist
-    in
-      begin
-	print_endline (string_of_float (Unix.time ()));
-	Keydb.iter ~f:add_key;
-	print_endline (string_of_float (Unix.time ()));
-	discard (read_line ())
-      end
-*)
 
   let is_v3_expired pubkey_info =
       match pubkey_info.pk_expiration with
@@ -229,13 +188,6 @@ struct
 	    ctime +. valid < today
       | None -> 
 	  false
-
-(*
-	    List.map 
-	    (fun (uid, sig_list) ->
-	       let siginfo_list = List.map ~f:sig_to_siginfo sig_list in
-	       let selfsigs = List.filter (fun siginfo -> is_selfsig ~keyid:keyid siginfo) siginfo_list in
-*)
 
   let is_signature_expired siginfo =
     let today = Stats.round_up_to_day (Unix.gettimeofday ()) in
@@ -255,77 +207,85 @@ struct
 
   let is_v4_key_expired siginfo =
     let today = Stats.round_up_to_day (Unix.gettimeofday ()) in
-    match siginfo.sig_creation_time with
-      | Some ctime ->
-	  begin
-	    match siginfo.key_expiration_time with
-	      | Some exptime ->
-		  if compare (Int64.add ctime exptime) (Int64.of_float today) <= 0 then
-		    true
-		  else
+      match siginfo.sig_creation_time with
+	| Some ctime ->
+	    begin
+	      match siginfo.key_expiration_time with
+		| Some exptime ->
+		    if compare (Int64.add ctime exptime) (Int64.of_float today) <= 0 then
+		      true
+		    else
+		      false
+		| None ->
 		    false
-	      | None ->
-		  false
-	  end
-      | None -> false
+	    end
+	| None -> false
 
   let is_uid_expired keyid sigpair =
-        let (uid, sig_list) = sigpair in
-	(* get list of selfsigs *)
-	let siginfo_list = List.map ~f:sig_to_siginfo sig_list in
-	let selfsigs = List.filter (fun siginfo -> is_selfsig ~keyid:keyid siginfo) siginfo_list in
-	let compare_ctime_reverse sig1 sig2 =
-	  try
-	    let ctime1 = option_get sig1.sig_creation_time in
-	    let ctime2 = option_get sig2.sig_creation_time in
-	      match Int64.to_int (Int64.sub ctime1 ctime2) with
-		| 0 -> 0
-		| d when d > 0 -> -1
-		| d -> 1
-
-	  with No_value -> failwith "is_v4_expired: signature does not contain creation time"
-	in
-	let selfsigs_sorted_reverse = List.sort compare_ctime_reverse selfsigs in
-	let rec iter_selfsigs l =
-	  match l with
-	    | selfsig :: tl ->
-		begin
-		  match selfsig.sigtype with
-		    | 0x10 | 0x11 | 0x12 | 0x13 -> 
-			if is_signature_expired selfsig then
-			  true
-			else
-			  is_v4_key_expired selfsig
-		    | 0x30 -> true
-		    | _ -> iter_selfsigs tl
-		end	
-	    | [] -> false
-	in
-	  iter_selfsigs selfsigs_sorted_reverse
-
-(*
-	  let sig = List.hd l in
-	  match sig.sigtype with
-
-		()
-	    | _ -> iter_selfsigs List.tl
-*)
-
+    let (uid, sig_list) = sigpair in
+      (* get list of selfsigs *)
+    let siginfo_list = List.map ~f:sig_to_siginfo sig_list in
+    let selfsigs = List.filter (fun siginfo -> is_selfsig ~keyid:keyid siginfo) siginfo_list in
+    let compare_ctime_reverse sig1 sig2 =
+      try
+	let ctime1 = option_get sig1.sig_creation_time in
+	let ctime2 = option_get sig2.sig_creation_time in
+	  match Int64.to_int (Int64.sub ctime1 ctime2) with
+	    | 0 -> 0
+	    | d when d > 0 -> -1
+	    | d -> 1
+      with No_value -> failwith "is_v4_expired: signature does not contain creation time"
+    in
+    let selfsigs_sorted_reverse = List.sort compare_ctime_reverse selfsigs in
+    let rec iter_selfsigs l =
+      match l with
+	| selfsig :: tl ->
+	    begin
+	      match selfsig.sigtype with
+		| 0x10 | 0x11 | 0x12 | 0x13 -> 
+		    if is_signature_expired selfsig then
+		      true
+		    else
+		      let res = is_v4_key_expired selfsig in
+			res
+		| 0x30 -> true
+		| _ -> iter_selfsigs tl
+	    end	
+	| [] -> false
+    in
+      iter_selfsigs selfsigs_sorted_reverse
 
   let is_v4_expired keyid pkey pubkeyinfo =
     let expired_list = List.map ~f:(fun sigpair -> is_uid_expired keyid sigpair) pkey.uids in
-      List.exists (fun a -> a = false) expired_list
+      List.exists (fun a -> a = true) expired_list
 
   let is_expired pkey =
+    try 
     let info = parse_pubkey_info pkey.key in
       match info.pk_version with
-	| 3 -> 
+	| 2 | 3 -> 
 	    is_v3_expired info
 	| 4 -> 
 	    let keyid = keyid_from_packet pkey.key in
 	      is_v4_expired keyid pkey info
 	| x -> 
 	    failwith ("unexpected pk_version field " ^ (string_of_int x))
+    with 
+      | Overlong_mpi -> 
+	  begin
+	    print_endline "overlong mpi";
+	    false
+	  end
+      | Failure s ->
+	  begin
+	    print_endline ("Failure "^ s);
+	    false
+	  end
+      | _ -> 
+	  begin
+	    print_endline "unexpected exception";
+	    false
+	  end
 
   let sig_is_revok siginfo =
     match siginfo.sigtype with
@@ -339,10 +299,19 @@ struct
                      )
 	selfsigs
 
-  let run () =
-    Keydb.open_dbs settings;
+  let count_iterations cnt =
+    if !cnt mod 10000 = 0 then
+      begin
+	incr cnt;
+	print_endline (string_of_int !cnt)
+      end
+    else
+      incr cnt
+
+  let count_expired_revoked () =
     let key_cnt = ref 0 in
     let revoked_cnt = ref 0 in
+    let expired_cnt = ref 0 in
     let count_revoked ~hash ~key =
       let pkey = parse_keystr (key_to_stream key) in
       begin
@@ -351,22 +320,40 @@ struct
 	else
 	  ()
 	;
-	if !key_cnt mod 10000 = 0 then
-	  begin
-	    incr key_cnt;
-	    print_endline (string_of_int !key_cnt)
-	  end
+	if is_expired pkey then
+	  incr expired_cnt
 	else
-	  incr key_cnt
+	  ()
+	;
+	count_iterations key_cnt
       end
     in
       begin
 	print_endline ("time " ^ (string_of_float (Unix.time ())));
 	Keydb.iter ~f:count_revoked;
 	print_endline ("time " ^ (string_of_float (Unix.time ())));
-	print_endline ("revoked " ^ (string_of_int !revoked_cnt))
+	print_endline ("revoked " ^ (string_of_int !revoked_cnt));
+	print_endline ("expired " ^ (string_of_int !expired_cnt))
       end
 
-    
-	  
+  let test_expired () =
+    let keyid = keyid_of_string "0x3EF281DA" in
+    let keys = get_keys_by_keyid keyid in
+    let pkeys = List.map key_to_pkey keys in
+      print_endline ("nr keys " ^ (string_of_int (List.length keys)));
+      List.iter
+	(function
+	   | Some p ->
+	       if is_expired p then
+		 print_endline "is expired"
+	       else
+		 print_endline "not expired"
+	   | None -> print_endline "unparseable packet sequence"
+	)
+	pkeys
+
+  let run () =
+    Keydb.open_dbs settings;
+    test_expired ();
+    count_expired_revoked ()
 end
