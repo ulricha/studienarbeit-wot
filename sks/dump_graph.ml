@@ -31,13 +31,16 @@ struct
   }
 
   module Keydb = Keydb.Unsafe
+
+  module Keyid_set = Set.Make(String)
+
   exception Unparseable_key
 
   type cert_level = Generic | Persona | Casual | Positive
 
-  type signature = { sig_puid_signed : bool;
+  type signature = { mutable sig_puid_signed : bool;
 		     sig_level : cert_level;
-		     sig_keyid : string
+		     sig_issuer : string
 		   }
 
   type key = { key_keyid : string;
@@ -284,11 +287,84 @@ struct
   exception Skip_key
   exception Skip_uid
 
-(*
-  let iter_sigs keyid =
-    let sigs_so_far = ref (Set.empty ()) in
-    discard sigs_so_far
-*)
+  let siginfo_to_signature_struct issuer siginfo =
+    let cert_level = match siginfo.Index.sigtype with
+      | 0x10 -> Generic
+      | 0x11 -> Persona
+      | 0x12 -> Casual
+      | 0x13 -> Positive
+      | _ -> failwith ("siginfo_to_signature_struct: unexpected signature type" ^ 
+			 (string_of_int siginfo.Index.sigtype))
+    in
+      { sig_puid_signed = false; sig_level = cert_level; sig_issuer = issuer }
+
+  let iter_sigs keyid uid_packet siglist sig_accumulator puid =
+    let sigs_so_far = ref Keyid_set.empty in
+    let siglist_descending = sort_reverse_siginfo_list siglist in
+    let rec iter l =
+      match l with
+	| signature :: tl ->
+	    begin
+	      let issuer_keyid = get signature.Index.keyid in
+		if Keyid_set.mem issuer_keyid !sigs_so_far then
+		  (* issuer was not handled so far *)
+		  begin
+		    if Index.is_selfsig keyid signature then
+		      (* handle self-signature *)
+		      match signature.Index.sigtype with
+			| 0x20 ->
+			    (* key is revoked - can this appear in a uid list? *)
+			    raise Skip_key
+			| 0x30 ->
+			    (* uid is revoked *)
+			    raise Skip_uid
+			| 0x10 | 0x11 | 0x12 | 0x13 ->
+			    if is_signature_expired signature then
+			      raise Skip_key
+			    else
+			      if signature.Index.is_primary_uid then
+				begin
+				  (* user attributes should be skipped, so this must be a User ID *)
+				  puid := Some uid_packet.Packet.packet_body;
+				  sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
+				  iter tl
+				end
+			| _ ->
+			    (* skip unexpected/irrelevant sig type *)
+			    iter tl
+		    else
+		      (* handle signature by another key *)
+		      match signature.Index.sigtype with
+			| 0x30 ->
+			    (* sig is revoked -> don't consider this issuer for further sigs *)
+			    sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
+			    iter tl
+			| 0x10 | 0x11 | 0x12 | 0x13 ->
+			    if is_signature_expired signature then
+			      begin
+				(* sig is expired -> don't consider this issuer for further sigs *)
+				sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
+				iter tl
+			      end
+			    else
+			      begin
+				sig_accumulator := (siginfo_to_signature_struct issuer_keyid signature) :: !sig_accumulator;
+				sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
+				iter tl
+			      end
+			| _ ->
+			    (* skip unexpected/irrelevant sig type *)
+			    iter tl
+		  end
+		else
+		  (* issuer was already handled -> skip *)
+		  iter tl
+	    end
+	| [] ->
+	    (* TODO: what? *)
+	    ()
+    in
+      iter siglist_descending
 
   let count_iterations cnt =
     if !cnt mod 10000 = 0 then
