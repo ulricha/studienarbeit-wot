@@ -21,13 +21,6 @@ module F(M:sig end) =
 struct
   open ExtList
   open Option
-  open Common
-  open Packet
-  open KeyMerge
-  open Key
-  open Fingerprint
-  open Index
-  open ParsePGP
 
   let settings = {
     Keydb.withtxn = !Settings.transactions;
@@ -38,7 +31,6 @@ struct
   }
 
   module Keydb = Keydb.Unsafe
-
   exception Unparseable_key
 
   type cert_level = Generic | Persona | Casual | Positive
@@ -53,23 +45,23 @@ struct
 	       key_signatures : signature list
 	     }
 
-  type sigpair_siginfo = packet * siginfo list
+  type sigpair_siginfo = Packet.packet * Index.siginfo list
 
-  type pkey_siginfo = { info_key : packet;
-			info_selfsigs: siginfo list; (* revocations only in v3 keys *)
+  type pkey_siginfo = { info_key : Packet.packet;
+			info_selfsigs: Index.siginfo list; (* revocations only in v3 keys *)
 			info_uids: sigpair_siginfo list
 		      }
 
   let pkey_to_pkey_siginfo k = 
     try
-      let s = List.map sig_to_siginfo k.selfsigs in
+      let s = List.map Index.sig_to_siginfo k.KeyMerge.selfsigs in
       let uids = 
 	List.map 
 	  (fun pair -> 
-	     (fst pair, List.map sig_to_siginfo (snd pair)))
-	  k.uids
+	     (fst pair, List.map Index.sig_to_siginfo (snd pair)))
+	  k.KeyMerge.uids
       in
-	{ info_key = k.key; info_selfsigs = s; info_uids = uids }
+	{ info_key = k.KeyMerge.key; info_selfsigs = s; info_uids = uids }
     with
       | _ -> raise Unparseable_key
 
@@ -95,21 +87,21 @@ struct
   let rec print_multiple_key_structure keyid =
     let rec print_single_key_structure key = 
       match key with
-	| packet :: tl when packet.packet_type = Signature_Packet -> 
-	    let s = sig_to_siginfo packet in
-	      if s.is_primary_uid then
+	| packet :: tl when packet.Packet.packet_type = Packet.Signature_Packet -> 
+	    let s = Index.sig_to_siginfo packet in
+	      if s.Index.is_primary_uid then
 		begin
-		  print_packet packet;
+		  Packet.print_packet packet;
 		  print_endline "is primary uid";
 		  print_single_key_structure tl;
 		end
 	      else
 		begin
-		  print_packet packet;
+		  Packet.print_packet packet;
 		  print_single_key_structure tl;
 		end
 	| packet :: tl ->
-	    print_packet packet;
+	    Packet.print_packet packet;
 	    print_single_key_structure tl
 	| [] ->
 	    ()
@@ -122,8 +114,8 @@ struct
 
   let string_of_siginfo s = 
     let out = ref "" in
-      if is_some s.keyid then
-	out := !out ^ "keyid " ^ (keyid_to_string (Option.get s.keyid))
+      if is_some s.Index.keyid then
+	out := !out ^ "keyid " ^ (Fingerprint.keyid_to_string (Option.get s.Index.keyid))
       else
 	out := !out ^ "no keyid (wtf?)"
       ;
@@ -135,11 +127,11 @@ struct
   
 
   let print_packet_verbose packet =
-    match packet.packet_type with
-      | Signature_Packet -> 
-	  let info = sig_to_siginfo packet in
+    match packet.Packet.packet_type with
+      | Packet.Signature_Packet -> 
+	  let info = Index.sig_to_siginfo packet in
 	    print_endline (string_of_siginfo info)
-      | _ -> print_packet packet
+      | _ -> Packet.print_packet packet
 
   let print_uid_verbose uid =
     let (uid_packet, sigpacket_list) = uid in
@@ -151,26 +143,26 @@ struct
   let print_pkey p =
       begin
 	print_endline "key";
-	print_packet p.key;
-	print_endline ("selfsigs len " ^ (string_of_int (List.length p.selfsigs)));
-	List.iter print_packet_verbose p.selfsigs;
-	print_endline ("uids len " ^ (string_of_int (List.length p.uids)));
-	List.iter print_uid_verbose p.uids 
+	Packet.print_packet p.KeyMerge.key;
+	print_endline ("selfsigs len " ^ (string_of_int (List.length p.KeyMerge.selfsigs)));
+	List.iter print_packet_verbose p.KeyMerge.selfsigs;
+	print_endline ("uids len " ^ (string_of_int (List.length p.KeyMerge.uids)));
+	List.iter print_uid_verbose p.KeyMerge.uids 
       end
 
   let key_to_pkey key =
-    let stream = key_to_stream key in
-    try Some (parse_keystr stream) with
-      | Unparseable_packet_sequence -> None
+    let stream = KeyMerge.key_to_stream key in
+    try Some (KeyMerge.parse_keystr stream) with
+      | KeyMerge.Unparseable_packet_sequence -> None
 
   let discard a =
     ()
 
   let is_v3_expired pubkey_info =
-      match pubkey_info.pk_expiration with
+      match pubkey_info.Packet.pk_expiration with
       | Some d -> 
 	  let today = Stats.round_up_to_day (Unix.gettimeofday ()) in
-	  let ctime = Int64.to_float pubkey_info.pk_ctime in
+	  let ctime = Int64.to_float pubkey_info.Packet.pk_ctime in
 	  let valid = (float_of_int d) *. 24. *. 3600. in
 	    ctime +. valid < today
       | None -> 
@@ -178,10 +170,10 @@ struct
 
   let is_signature_expired siginfo =
     let today = Stats.round_up_to_day (Unix.gettimeofday ()) in
-    match siginfo.sig_creation_time with
+    match siginfo.Index.sig_creation_time with
       | Some ctime ->
 	  begin
-	    match siginfo.sig_expiration_time with
+	    match siginfo.Index.sig_expiration_time with
 	      | Some exptime ->
 		  if compare (Int64.add ctime exptime) (Int64.of_float today) <= 0 then
 		    true
@@ -194,10 +186,10 @@ struct
 
   let is_v4_key_expired siginfo =
     let today = Stats.round_up_to_day (Unix.gettimeofday ()) in
-      match siginfo.sig_creation_time with
+      match siginfo.Index.sig_creation_time with
 	| Some ctime ->
 	    begin
-	      match siginfo.key_expiration_time with
+	      match siginfo.Index.key_expiration_time with
 		| Some exptime ->
 		    if compare (Int64.add ctime exptime) (Int64.of_float today) <= 0 then
 		      true
@@ -211,8 +203,8 @@ struct
   let sort_reverse_siginfo_list siglist =
     let compare_ctime_reverse sig1 sig2 =
       try
-	let ctime1 = Option.get sig1.sig_creation_time in
-	let ctime2 = Option.get sig2.sig_creation_time in
+	let ctime1 = Option.get sig1.Index.sig_creation_time in
+	let ctime2 = Option.get sig2.Index.sig_creation_time in
 	  match Int64.to_int (Int64.sub ctime1 ctime2) with
 	    | 0 -> 0
 	    | d when d > 0 -> -1
@@ -224,14 +216,14 @@ struct
   let is_uid_expired keyid sigpair =
     let (uid, sig_list) = sigpair in
       (* get list of selfsigs *)
-    let siginfo_list = List.map sig_to_siginfo sig_list in
-    let selfsigs = List.filter (fun siginfo -> is_selfsig ~keyid:keyid siginfo) siginfo_list in
+    let siginfo_list = List.map Index.sig_to_siginfo sig_list in
+    let selfsigs = List.filter (fun siginfo -> Index.is_selfsig ~keyid:keyid siginfo) siginfo_list in
     let selfsigs_sorted_reverse = sort_reverse_siginfo_list selfsigs in
     let rec iter_selfsigs l =
       match l with
 	| selfsig :: tl ->
 	    begin
-	      match selfsig.sigtype with
+	      match selfsig.Index.sigtype with
 		| 0x10 | 0x11 | 0x12 | 0x13 -> 
 		    if is_signature_expired selfsig then
 		      true
@@ -246,22 +238,22 @@ struct
       iter_selfsigs selfsigs_sorted_reverse
 
   let is_v4_expired keyid pkey pubkeyinfo =
-    let expired_list = List.map (fun sigpair -> is_uid_expired keyid sigpair) pkey.uids in
+    let expired_list = List.map (fun sigpair -> is_uid_expired keyid sigpair) pkey.KeyMerge.uids in
       List.exists (fun a -> a = true) expired_list
 
   let is_expired pkey =
     try 
-    let info = parse_pubkey_info pkey.key in
-      match info.pk_version with
+    let info = ParsePGP.parse_pubkey_info pkey.KeyMerge.key in
+      match info.Packet.pk_version with
 	| 2 | 3 -> 
 	    is_v3_expired info
 	| 4 -> 
-	    let keyid = keyid_from_packet pkey.key in
+	    let keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
 	      is_v4_expired keyid pkey info
 	| x -> 
 	    failwith ("unexpected pk_version field " ^ (string_of_int x))
     with 
-      | Overlong_mpi -> 
+      | ParsePGP.Overlong_mpi -> 
 	  begin
 	    print_endline "overlong mpi";
 	    false
@@ -278,19 +270,25 @@ struct
 	  end
 
   let sig_is_revok siginfo =
-    match siginfo.sigtype with
+    match siginfo.Index.sigtype with
       | 0x20 | 0x28 | 0x30 -> true
       | _ -> false
 
   let is_revoked pkey = 
     let selfsigs = pkey.KeyMerge.selfsigs in
       List.exists (fun sign -> 
-			sig_is_revok (sig_to_siginfo sign)
+			sig_is_revok (Index.sig_to_siginfo sign)
                      )
 	selfsigs
 
   exception Skip_key
   exception Skip_uid
+
+(*
+  let iter_sigs keyid =
+    let sigs_so_far = ref (Set.empty ()) in
+    discard sigs_so_far
+*)
 
   let count_iterations cnt =
     if !cnt mod 10000 = 0 then
@@ -306,7 +304,7 @@ struct
     let revoked_cnt = ref 0 in
     let expired_cnt = ref 0 in
     let count_revoked ~hash ~key =
-      let pkey = parse_keystr (key_to_stream key) in
+      let pkey = KeyMerge.parse_keystr (KeyMerge.key_to_stream key) in
       begin
 	if is_revoked pkey then
 	  incr revoked_cnt
@@ -328,7 +326,7 @@ struct
       end
 
   let test_expired () =
-    let keyid = keyid_of_string "0x3EF281DA" in
+    let keyid = Fingerprint.keyid_of_string "0x3EF281DA" in
     let keys = get_keys_by_keyid keyid in
     let pkeys = List.map key_to_pkey keys in
       print_endline ("nr keys " ^ (string_of_int (List.length keys)));
