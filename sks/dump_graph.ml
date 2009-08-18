@@ -21,7 +21,6 @@ module F(M:sig end) =
 struct
   open ExtList
   open Option
-  open Printf
   open Common
   open Packet
   open KeyMerge
@@ -40,20 +39,40 @@ struct
 
   module Keydb = Keydb.Unsafe
 
-  exception No_value
+  exception Unparseable_key
 
   type cert_level = Generic | Persona | Casual | Positive
 
   type signature = { sig_puid_signed : bool;
-	       sig_level : cert_level;
-	       sig_keyid : string
-	     }
+		     sig_level : cert_level;
+		     sig_keyid : string
+		   }
 
   type key = { key_keyid : string;
 	       key_puid : string;
 	       key_signatures : signature list
-	       }
-    
+	     }
+
+  type sigpair_siginfo = packet * siginfo list
+
+  type pkey_siginfo = { info_key : packet;
+			info_selfsigs: siginfo list; (* revocations only in v3 keys *)
+			info_uids: sigpair_siginfo list
+		      }
+
+  let pkey_to_pkey_siginfo k = 
+    try
+      let s = List.map sig_to_siginfo k.selfsigs in
+      let uids = 
+	List.map 
+	  (fun pair -> 
+	     (fst pair, List.map sig_to_siginfo (snd pair)))
+	  k.uids
+      in
+	{ info_key = k.key; info_selfsigs = s; info_uids = uids }
+    with
+      | _ -> raise Unparseable_key
+
   let get_keys_by_keyid keyid =
     let keyid_length = String.length keyid in
     let short_keyid = String.sub keyid (keyid_length - 4) 4 in
@@ -121,8 +140,6 @@ struct
 	  let info = sig_to_siginfo packet in
 	    print_endline (string_of_siginfo info)
       | _ -> print_packet packet
-
-
 
   let print_uid_verbose uid =
     let (uid_packet, sigpacket_list) = uid in
@@ -271,6 +288,9 @@ struct
 			sig_is_revok (sig_to_siginfo sign)
                      )
 	selfsigs
+
+  exception Skip_key
+  exception Skip_uid
 
   let count_iterations cnt =
     if !cnt mod 10000 = 0 then
