@@ -98,83 +98,13 @@ struct
       match keyid_length with
 	| 4 -> (* 32-bit keyid.  No further filtering required. *)
 	    keys
-
 	| 8 -> (* 64-bit keyid *) 
 	    List.filter (fun key -> (Fingerprint.from_key key).Fingerprint.keyid = keyid ) keys
-
 	| 20 -> (* 160-bit v. 4 fingerprint *)
 	    List.filter (fun key -> keyid = (Fingerprint.from_key key).Fingerprint.fp ) keys
-
 	| 16 -> (* 128-bit v3 fingerprint.  Not supported *)
 	    failwith "128-bit v3 fingerprints not implemented"
-
 	| _ -> failwith "unknown keyid type"
-
-  let rec print_multiple_key_structure keyid =
-    let rec print_single_key_structure key = 
-      match key with
-	| packet :: tl when packet.Packet.packet_type = Packet.Signature_Packet -> 
-	    let s = Index.sig_to_siginfo packet in
-	      if s.Index.is_primary_uid then
-		begin
-		  Packet.print_packet packet;
-		  print_endline "is primary uid";
-		  print_single_key_structure tl;
-		end
-	      else
-		begin
-		  Packet.print_packet packet;
-		  print_single_key_structure tl;
-		end
-	| packet :: tl ->
-	    Packet.print_packet packet;
-	    print_single_key_structure tl
-	| [] ->
-	    ()
-    in
-    let keys = get_keys_by_keyid keyid in
-      print_endline (string_of_int (List.length keys));
-      match keys with
-	| key :: tl -> print_single_key_structure key
-	| [] -> ()
-
-  let string_of_siginfo s = 
-    let out = ref "" in
-      if is_some s.Index.keyid then
-	out := !out ^ "keyid " ^ (Fingerprint.keyid_to_string (Option.get s.Index.keyid))
-      else
-	out := !out ^ "no keyid (wtf?)"
-      ;
-(*      if is_some s.keyid then
-	out := !out ^ " keyid " ^ (keyid_to_string (get s.keyid))
-      else
-	() *)
-      !out
-  
-
-  let print_packet_verbose packet =
-    match packet.Packet.packet_type with
-      | Packet.Signature_Packet -> 
-	  let info = Index.sig_to_siginfo packet in
-	    print_endline (string_of_siginfo info)
-      | _ -> Packet.print_packet packet
-
-  let print_uid_verbose uid =
-    let (uid_packet, sigpacket_list) = uid in
-      print_endline "uid";
-      print_packet_verbose uid_packet;
-      print_endline "signatures";
-      List.iter print_packet_verbose sigpacket_list
-
-  let print_pkey p =
-      begin
-	print_endline "key";
-	Packet.print_packet p.KeyMerge.key;
-	print_endline ("selfsigs len " ^ (string_of_int (List.length p.KeyMerge.selfsigs)));
-	List.iter print_packet_verbose p.KeyMerge.selfsigs;
-	print_endline ("uids len " ^ (string_of_int (List.length p.KeyMerge.uids)));
-	List.iter print_uid_verbose p.KeyMerge.uids 
-      end
 
   let key_to_pkey key =
     let stream = KeyMerge.key_to_stream key in
@@ -474,7 +404,7 @@ struct
 		  end
 	      | Some s -> 
 		  let siglist = Signature_set.elements !sig_accu in 
-		  Some { key_keyid = keyid; key_puid = s; key_signatures = siglist }
+		    Some { key_keyid = keyid; key_puid = s; key_signatures = siglist }
 	  end
     with
       | Skip_key s -> 
