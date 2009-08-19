@@ -201,6 +201,17 @@ struct
 	  end
       | None -> false
 
+  let is_key_expired ctime siginfo =
+    let today = Stats.round_up_to_day (Unix.gettimeofday ()) in
+      match siginfo.Index.key_expiration_time with
+	| Some exptime ->
+	    if compare (Int64.add ctime exptime) (Int64.of_float today) <= 0 then
+	      true
+	    else
+	      false
+	| None ->
+	    false
+
   let is_v4_key_expired siginfo =
     let today = Stats.round_up_to_day (Unix.gettimeofday ()) in
       match siginfo.Index.sig_creation_time with
@@ -301,8 +312,8 @@ struct
   let is_revoked_pkey_siginfo k =
     List.exists sig_is_revok k.info_selfsigs
 
-  exception Skip_key
-  exception Skip_uid
+  exception Skip_key of string
+  exception Skip_uid of string
 
   let siginfo_to_signature_struct issuer siginfo =
     let cert_level = match siginfo.Index.sigtype with
@@ -315,7 +326,17 @@ struct
     in
       { sig_puid_signed = false; sig_level = cert_level; sig_issuer = issuer }
 
-  let iter_sigs keyid uid_packet siglist sig_accumulator puid =
+  let check_expired ctime signature =
+    if is_signature_expired signature then
+      raise (Skip_uid "most recent self-signature expired")
+    else
+      if is_key_expired ctime signature then
+	raise (Skip_key "key expired")
+      else
+	()
+
+  let iter_sigs keyid uid_packet siglist sig_accumulator puid pubkey_info =
+    print_endline "iter_sigs";
     let sigs_so_far = ref Keyid_set.empty in
     let siglist_descending = sort_reverse_siginfo_list siglist in
     let rec iter l =
@@ -323,7 +344,7 @@ struct
 	| signature :: tl ->
 	    begin
 	      let issuer_keyid = get signature.Index.keyid in
-		if Keyid_set.mem issuer_keyid !sigs_so_far then
+		if not (Keyid_set.mem issuer_keyid !sigs_so_far) then
 		  (* issuer was not handled so far *)
 		  begin
 		    if Index.is_selfsig keyid signature then
@@ -331,17 +352,22 @@ struct
 		      match signature.Index.sigtype with
 			| 0x20 ->
 			    (* key is revoked - can this appear in a uid list? *)
-			    raise Skip_key
+			    raise (Skip_key "key revoked (0x20)")
 			| 0x30 ->
 			    (* uid is revoked *)
-			    raise Skip_uid
+			    raise (Skip_uid "uid is revoked (0x30)")
 			| 0x10 | 0x11 | 0x12 | 0x13 ->
-			    if is_signature_expired signature then
-			      raise Skip_key
+			    check_expired pubkey_info.Packet.pk_ctime signature;
+			    if is_none !puid then
+			      begin
+				print_endline "puid not set so far -> set now";
+				puid := Some uid_packet.Packet.packet_body
+			      end
 			    else
 			      if signature.Index.is_primary_uid then
 				begin
 				  (* user attributes should be skipped, so this must be a User ID *)
+				  print_endline "encountered primary uid flag -> force puid";
 				  puid := Some uid_packet.Packet.packet_body;
 				  sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
 				  iter tl
@@ -351,6 +377,7 @@ struct
 			    iter tl
 		    else
 		      (* handle signature by another key *)
+		      print_endline "handle forein signature";
 		      match signature.Index.sigtype with
 			| 0x30 ->
 			    (* sig is revoked -> don't consider this issuer for further sigs *)
@@ -360,6 +387,7 @@ struct
 			    if is_signature_expired signature then
 			      begin
 				(* sig is expired -> don't consider this issuer for further sigs *)
+				print_endline "foreign signature has expired";
 				sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
 				iter tl
 			      end
@@ -369,8 +397,9 @@ struct
 				sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
 				iter tl
 			      end
-			| _ ->
+			| t ->
 			    (* skip unexpected/irrelevant sig type *)
+			    Printf.printf "skip signature of type %d\n" t;
 			    iter tl
 		  end
 		else
@@ -389,19 +418,23 @@ struct
       let pubkey_info = ParsePGP.parse_pubkey_info pkey.KeyMerge.key in
       let sig_pkey = pkey_to_pkey_siginfo pkey in
 	if is_v3_expired pubkey_info || is_revoked_pkey_siginfo sig_pkey then	
-	  raise Skip_key
+	  raise (Skip_key "key is expired (v3) or revoked")
 	else
+	  begin
+	  print_endline ("key version " ^ (string_of_int pubkey_info.Packet.pk_version));
 	  let keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
 	  let sig_accu = ref [] in
 	  let puid = ref None in
 	    List.iter (fun (uid_packet, siglist) ->
+			 print_endline uid_packet.Packet.packet_body;
 			 match uid_packet.Packet.packet_type with
 			   | Packet.User_ID_Packet ->
 			       begin
 				 try 
-				   iter_sigs keyid uid_packet siglist sig_accu puid
+				   iter_sigs keyid uid_packet siglist sig_accu puid pubkey_info
 				 with
-				   | Skip_uid -> ()
+				   | Skip_uid s-> 
+				       print_endline ("uid " ^ uid_packet.Packet.packet_body ^ " skipped: " ^ s)
 			       end
 			   | Packet.User_Attribute_Packet ->
 			       (* attribute packet can only contain a photo id at the moment -> skip*)
@@ -411,12 +444,17 @@ struct
 		      )
 	      sig_pkey.info_uids;
 	    match !puid with
-	      | None -> failwith "key_to_key_struct: did not find a primary user id"
+	      | None -> 
+		  begin
+		    print_endline "key_to_key_struct: did not find a primary user id";
+		    None
+		  end
 	      | Some s -> 
 		  Some { key_keyid = keyid; key_puid = s; key_signatures = !sig_accu }
+	  end
     with
-      | Skip_key -> 
-	  print_endline "skip key";
+      | Skip_key s -> 
+	  print_endline ("skip key: " ^ s);
 	  None
 
   let count_iterations cnt =
@@ -427,6 +465,17 @@ struct
       end
     else
       incr cnt
+
+  let extract_key_struct key =
+    match key_to_key_struct key with
+      | None ->
+	  begin
+	    print_endline "no key returned (why?)"
+	  end
+      | Some key_struct ->
+	  begin
+	    print_endline (string_of_key_struct key_struct)
+	  end
 
   let test_key_extraction () =
     let key_cnt = ref 0 in
@@ -477,29 +526,19 @@ struct
 	print_endline ("expired " ^ (string_of_int !expired_cnt))
       end
 
-  let test_expired () =
+  let foo () =
     let keyid = Fingerprint.keyid_of_string "0x3EF281DA" in
     let keys = get_keys_by_keyid keyid in
-    let pkeys = List.map key_to_pkey keys in
       print_endline ("nr keys " ^ (string_of_int (List.length keys)));
-      List.iter
-	(function
-	   | Some p ->
-	       if is_expired p then
-		 print_endline "is expired"
-	       else
-		 print_endline "not expired"
-	   | None -> print_endline "unparseable packet sequence"
-	)
-	pkeys
+      List.iter	extract_key_struct keys
 
   let run () =
     Keydb.open_dbs settings;
     let t1 = Unix.time () in
       begin
-	test_expired ();
 	(* count_expired_revoked (); *)
-	
+	(* test_key_extraction (); *)
+	foo ();
 	let t2 = Unix.time () in
 	  print_endline ("time " ^ (string_of_float (t2 -. t1)))
       end
