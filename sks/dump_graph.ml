@@ -55,6 +55,20 @@ struct
 			info_uids: sigpair_siginfo list
 		      }
 
+  let string_of_key_struct ks =
+    let out = Buffer.create 70 in
+    let keyid_string = Fingerprint.keyid_to_string ks.key_keyid in
+      Buffer.add_string out keyid_string;
+      Buffer.add_char out ' ';
+      Buffer.add_string out ks.key_puid;
+      Buffer.add_char out ' ';
+      Buffer.add_string out "signed by ";
+      List.iter (fun signature ->
+		   Buffer.add_string out (Fingerprint.keyid_to_string signature.sig_issuer);
+		   Buffer.add_char out ' ')
+	ks.key_signatures;
+      Buffer.contents out
+
   let pkey_to_pkey_siginfo k = 
     try
       let s = List.map Index.sig_to_siginfo k.KeyMerge.selfsigs in
@@ -365,6 +379,18 @@ struct
 	    ()
     in
       iter siglist_descending
+	
+  let key_to_key_struct key =
+    try 
+      let pkey =  KeyMerge.parse_keystr (KeyMerge.key_to_stream key) in
+	
+      let sig_pkey = pkey_to_pkey_siginfo pkey in
+      let pubkey_info = ParsePGP.parse_pubkey_info pkey.KeyMerge.key in
+      let keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
+      ()
+    with
+      | _ -> print_endline "skip key"
+      
 
   let count_iterations cnt =
     if !cnt mod 10000 = 0 then
