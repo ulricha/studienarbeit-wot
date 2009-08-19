@@ -428,6 +428,29 @@ struct
     else
       incr cnt
 
+  let test_key_extraction () =
+    let key_cnt = ref 0 in
+    let skipped_cnt = ref 0 in
+    let extract_key ~hash ~key =
+      match key_to_key_struct key with
+	| None ->
+	    begin
+	      incr skipped_cnt;
+	      count_iterations key_cnt;
+	      print_endline "no key returned (why?)"
+	    end
+	| Some key_struct ->
+	    begin
+	      count_iterations key_cnt;
+	      print_endline (string_of_key_struct key_struct)
+	    end
+    in
+      begin
+	Keydb.iter ~f:extract_key;
+	print_endline ("skipped " ^ (string_of_int !skipped_cnt));
+      end
+	
+
   let count_expired_revoked () =
     let key_cnt = ref 0 in
     let revoked_cnt = ref 0 in
@@ -475,7 +498,8 @@ struct
     let t1 = Unix.time () in
       begin
 	test_expired ();
-	count_expired_revoked ();
+	(* count_expired_revoked (); *)
+	
 	let t2 = Unix.time () in
 	  print_endline ("time " ^ (string_of_float (t2 -. t1)))
       end
