@@ -298,6 +298,9 @@ struct
                      )
 	selfsigs
 
+  let is_revoked_pkey_siginfo k =
+    List.exists sig_is_revok k.info_selfsigs
+
   exception Skip_key
   exception Skip_uid
 
@@ -382,15 +385,39 @@ struct
 	
   let key_to_key_struct key =
     try 
-      let pkey =  KeyMerge.parse_keystr (KeyMerge.key_to_stream key) in
-	
-      let sig_pkey = pkey_to_pkey_siginfo pkey in
+      let pkey = KeyMerge.parse_keystr (KeyMerge.key_to_stream key) in
       let pubkey_info = ParsePGP.parse_pubkey_info pkey.KeyMerge.key in
-      let keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
-      ()
+      let sig_pkey = pkey_to_pkey_siginfo pkey in
+	if is_v3_expired pubkey_info || is_revoked_pkey_siginfo sig_pkey then	
+	  raise Skip_key
+	else
+	  let keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
+	  let sig_accu = ref [] in
+	  let puid = ref None in
+	    List.iter (fun (uid_packet, siglist) ->
+			 match uid_packet.Packet.packet_type with
+			   | Packet.User_ID_Packet ->
+			       begin
+				 try 
+				   iter_sigs keyid uid_packet siglist sig_accu puid
+				 with
+				   | Skip_uid -> ()
+			       end
+			   | Packet.User_Attribute_Packet ->
+			       (* attribute packet can only contain a photo id at the moment -> skip*)
+			       ()
+			   | _ -> 
+			       failwith "key_to_key_struct: unexpected packet type in uid list"
+		      )
+	      sig_pkey.info_uids;
+	    match !puid with
+	      | None -> failwith "key_to_key_struct: did not find a primary user id"
+	      | Some s -> 
+		  Some { key_keyid = keyid; key_puid = s; key_signatures = !sig_accu }
     with
-      | _ -> print_endline "skip key"
-      
+      | Skip_key -> 
+	  print_endline "skip key";
+	  None
 
   let count_iterations cnt =
     if !cnt mod 10000 = 0 then
