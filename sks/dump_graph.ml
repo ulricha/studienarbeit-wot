@@ -48,6 +48,15 @@ struct
 	       key_signatures : signature list
 	     }
 
+  let compare_signature s1 s2 = compare s1.sig_issuer s2.sig_issuer
+
+  module Signature_set = Set.Make(struct
+				    type t = signature
+				    let compare = 
+				      (fun s1 s2 -> 
+					 Pervasives.compare s1.sig_issuer s2.sig_issuer)
+				  end)
+
   type sigpair_siginfo = Packet.packet * Index.siginfo list
 
   type pkey_siginfo = { info_key : Packet.packet;
@@ -393,7 +402,8 @@ struct
 			      end
 			    else
 			      begin
-				sig_accumulator := (siginfo_to_signature_struct issuer_keyid signature) :: !sig_accumulator;
+				(* sig_accumulator := (siginfo_to_signature_struct issuer_keyid signature) :: !sig_accumulator; *)
+				sig_accumulator := Signature_set.add (siginfo_to_signature_struct issuer_keyid signature) !sig_accumulator;
 				sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
 				iter tl
 			      end
@@ -423,7 +433,7 @@ struct
 	  begin
 	  print_endline ("key version " ^ (string_of_int pubkey_info.Packet.pk_version));
 	  let keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
-	  let sig_accu = ref [] in
+	  let sig_accu = ref Signature_set.empty in
 	  let puid = ref None in
 	    List.iter (fun (uid_packet, siglist) ->
 			 print_endline uid_packet.Packet.packet_body;
@@ -450,7 +460,8 @@ struct
 		    None
 		  end
 	      | Some s -> 
-		  Some { key_keyid = keyid; key_puid = s; key_signatures = !sig_accu }
+		  let siglist = Signature_set.elements !sig_accu in 
+		  Some { key_keyid = keyid; key_puid = s; key_signatures = siglist }
 	  end
     with
       | Skip_key s -> 
@@ -527,7 +538,7 @@ struct
       end
 
   let foo () =
-    let keyid = Fingerprint.keyid_of_string "0x3EF281DA" in
+    let keyid = Fingerprint.keyid_of_string "0x9D6B4CE4" in
     let keys = get_keys_by_keyid keyid in
       print_endline ("nr keys " ^ (string_of_int (List.length keys)));
       List.iter	extract_key_struct keys
