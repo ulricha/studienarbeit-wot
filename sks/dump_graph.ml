@@ -356,65 +356,78 @@ struct
 		if not (Keyid_set.mem issuer_keyid !sigs_so_far) then
 		  (* issuer was not handled so far *)
 		  begin
-		    if Index.is_selfsig keyid signature then
-		      (* handle self-signature *)
-		      match signature.Index.sigtype with
-			| 0x20 ->
-			    (* key is revoked - can this appear in a uid list? *)
-			    raise (Skip_key "key revoked (0x20)")
-			| 0x30 ->
-			    (* uid is revoked *)
-			    raise (Skip_uid "uid is revoked (0x30)")
-			| 0x10 | 0x11 | 0x12 | 0x13 ->
-			    check_expired pubkey_info.Packet.pk_ctime signature;
-			    if is_none !puid then
+		    if keyid = issuer_keyid then
+		      begin
+			(* handle self-signature *)
+			print_endline ("handle self signature " ^ (Fingerprint.keyid_to_string issuer_keyid));
+			match signature.Index.sigtype with
+			  | 0x20 ->
+			      (* key is revoked - can this appear in a uid list? *)
+			      raise (Skip_key "key revoked (0x20)")
+			  | 0x30 ->
+			      (* uid is revoked *)
+			      raise (Skip_uid "uid is revoked (0x30)")
+			  | 0x10 | 0x11 | 0x12 | 0x13 ->
 			      begin
-				print_endline "puid not set so far -> set now";
-				puid := Some uid_packet.Packet.packet_body
+				check_expired pubkey_info.Packet.pk_ctime signature;
+				if is_none !puid then
+				  begin
+				    print_endline "puid not set so far -> set now";
+				    puid := Some uid_packet.Packet.packet_body;
+				  end
+				else
+				  if signature.Index.is_primary_uid then
+				    begin
+				      (* user attributes should be skipped, so this must be a User ID *)
+				      print_endline "encountered primary uid flag -> force puid";
+				      puid := Some uid_packet.Packet.packet_body;
+				    end
+				  else
+				    ()
+				;
+				sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
+				iter tl
 			      end
-			    else
-			      if signature.Index.is_primary_uid then
+			  | _ ->
+			      (* skip unexpected/irrelevant sig type *)
+			      iter tl
+		      end
+		    else
+		      (* handle signature by another key *)
+		      begin
+			print_endline ("handle foreign signature " ^ (Fingerprint.keyid_to_string issuer_keyid));
+			match signature.Index.sigtype with
+			  | 0x30 ->
+			      (* sig is revoked -> don't consider this issuer for further sigs *)
+			      sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
+			      iter tl
+			  | 0x10 | 0x11 | 0x12 | 0x13 ->
+			      if is_signature_expired signature then
 				begin
-				  (* user attributes should be skipped, so this must be a User ID *)
-				  print_endline "encountered primary uid flag -> force puid";
-				  puid := Some uid_packet.Packet.packet_body;
+				  (* sig is expired -> don't consider this issuer for further sigs *)
+				  print_endline "foreign signature has expired";
 				  sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
 				  iter tl
 				end
-			| _ ->
-			    (* skip unexpected/irrelevant sig type *)
-			    iter tl
-		    else
-		      (* handle signature by another key *)
-		      print_endline "handle forein signature";
-		      match signature.Index.sigtype with
-			| 0x30 ->
-			    (* sig is revoked -> don't consider this issuer for further sigs *)
-			    sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
-			    iter tl
-			| 0x10 | 0x11 | 0x12 | 0x13 ->
-			    if is_signature_expired signature then
-			      begin
-				(* sig is expired -> don't consider this issuer for further sigs *)
-				print_endline "foreign signature has expired";
-				sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
-				iter tl
-			      end
-			    else
-			      begin
-				(* sig_accumulator := (siginfo_to_signature_struct issuer_keyid signature) :: !sig_accumulator; *)
-				sig_accumulator := Signature_set.add (siginfo_to_signature_struct issuer_keyid signature) !sig_accumulator;
-				sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
-				iter tl
-			      end
-			| t ->
-			    (* skip unexpected/irrelevant sig type *)
-			    Printf.printf "skip signature of type %d\n" t;
-			    iter tl
+			      else
+				begin
+				  (* sig_accumulator := (siginfo_to_signature_struct issuer_keyid signature) :: !sig_accumulator; *)
+				  sig_accumulator := Signature_set.add (siginfo_to_signature_struct issuer_keyid signature) !sig_accumulator;
+				  sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
+				  iter tl
+				end
+			  | t ->
+			      (* skip unexpected/irrelevant sig type *)
+			      Printf.printf "skip signature of type %d\n" t;
+			      iter tl
+		      end
 		  end
 		else
-		  (* issuer was already handled -> skip *)
-		  iter tl
+		  begin
+		    (* issuer was already handled -> skip *)
+		    print_endline ("issuer was already encountered " ^ (Fingerprint.keyid_to_string issuer_keyid)); 
+		    iter tl
+		  end
 	    end
 	| [] ->
 	    (* TODO: what? *)
