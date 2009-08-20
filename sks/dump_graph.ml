@@ -40,11 +40,13 @@ struct
 
   type signature = { mutable sig_puid_signed : bool;
 		     sig_level : cert_level;
-		     sig_issuer : string
+		     sig_issuer : string;
 		   }
 
   type key = { key_keyid : string;
 	       key_puid : string;
+	       key_alg : int;
+	       key_len : int;
 	       key_signatures : signature list
 	     }
 
@@ -70,6 +72,8 @@ struct
       Buffer.add_string out keyid_string;
       Buffer.add_char out ' ';
       Buffer.add_string out ks.key_puid;
+      Buffer.add_char out ' ';
+      Buffer.add_string out (Printf.sprintf "(%s - %d bit)" (Packet.pubkey_algorithm_string ks.key_alg) ks.key_len);
       Buffer.add_char out ' ';
       Buffer.add_string out "signed by ";
       List.iter (fun signature ->
@@ -404,7 +408,9 @@ struct
 		  end
 	      | Some s -> 
 		  let siglist = Signature_set.elements !sig_accu in 
-		    Some { key_keyid = keyid; key_puid = s; key_signatures = siglist }
+		  let algo = pubkey_info.Packet.pk_alg in
+		  let keylen = pubkey_info.Packet.pk_keylen in
+		    Some { key_keyid = keyid; key_puid = s; key_signatures = siglist; key_alg = algo; key_len = keylen }
 	  end
     with
       | Skip_key s -> 
@@ -481,7 +487,7 @@ struct
       end
 
   let foo () =
-    let keyid = Fingerprint.keyid_of_string "0x9D6B4CE4" in
+    let keyid = Fingerprint.keyid_of_string "0x94660424" in
     let keys = get_keys_by_keyid keyid in
       print_endline ("nr keys " ^ (string_of_int (List.length keys)));
       List.iter	extract_key_struct keys
