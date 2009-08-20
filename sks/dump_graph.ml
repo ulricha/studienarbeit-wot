@@ -64,6 +64,13 @@ struct
 					 Pervasives.compare s1.sig_issuer s2.sig_issuer)
 				  end)
 
+  module Key_set = Set.Make(struct
+			      type t = key
+			      let compare =
+				(fun k1 k2 ->
+				   Pervasives.compare k1.key_keyid k2.key_keyid)
+			    end)
+
   type sigpair_siginfo = Packet.packet * Index.siginfo list
 
   type pkey_siginfo = { info_key : Packet.packet;
@@ -434,21 +441,26 @@ struct
     else
       incr cnt
 
-  let extract_key_struct key =
-    match key_to_key_struct key with
-      | None ->
-	  begin
-	    print_endline "no key returned (why?)"
-	  end
-      | Some key_struct ->
-	  begin
-	    print_endline (string_of_key_struct key_struct)
-	  end
+  let fetch_missing_keys keyids_so_far keys_so_far =
+    let missing_keyids= ref [] in
+    let add_if_missing signature =
+	if Keyid_set.mem signature.sig_issuer keyids_so_far then
+	  ()
+	else
+	  missing_keyids := signature.sig_issuer :: !missing_keyids
+    in  
+      List.iter 
+	(fun ks ->
+	   List.iter add_if_missing ks.key_signatures)
+	keys_so_far
+      ;
+      Printf.printf "missing_keys %d\n" (List.length !missing_keyids)
 
   let test_key_extraction () =
     let key_cnt = ref 0 in
     let skipped_cnt = ref 0 in
     let unsigned_cnt = ref 0 in
+    let relevant_keyids = ref Keyid_set.empty in
     let relevant_keys = ref [] in
     let extract_key ~hash ~key =
       match key_to_key_struct key with
@@ -462,29 +474,46 @@ struct
 	      count_iterations key_cnt;
 	      (* print_endline (string_of_key_struct key_struct) *)
 	      match key_struct.key_signatures with
-		| [] -> incr unsigned_cnt
-		| _ -> relevant_keys := key_struct :: !relevant_keys
+		| [] -> 
+		    incr unsigned_cnt
+		| _ -> 
+		    begin
+		      relevant_keys := key_struct :: !relevant_keys;
+		      relevant_keyids := Keyid_set.add key_struct.key_keyid !relevant_keyids
+		    end
 	    end
     in
       begin
 	Keydb.iter ~f:extract_key;
 	Printf.printf "skipped %d\n" !skipped_cnt;
 	Printf.printf "unsigned %d\n" !unsigned_cnt;
-	Printf.printf "relevant keys in list %d\n" (List.length !relevant_keys)
+	Printf.printf "relevant keys in list %d\n" (List.length !relevant_keys);
+	fetch_missing_keys !relevant_keyids !relevant_keys
       end
 
-  let foo () =
+  let test_key_struct () =
     let keyid = Fingerprint.keyid_of_string "0x94660424" in
     let keys = get_keys_by_keyid keyid in
       print_endline ("nr keys " ^ (string_of_int (List.length keys)));
-      List.iter	extract_key_struct keys
+      List.iter	(fun key -> 
+		   match key_to_key_struct key with
+		     | None ->
+			 begin
+			   print_endline "no key returned (why?)"
+			 end
+		     | Some key_struct ->
+			 begin
+			   print_endline (string_of_key_struct key_struct)
+			 end
+		)
+	keys
 
   let run () =
     Keydb.open_dbs settings;
     let t1 = Unix.time () in
       begin
 	test_key_extraction ();
-	foo ();
+	test_key_struct ();
 	let t2 = Unix.time () in
 	  print_endline ("time " ^ (string_of_float (t2 -. t1)))
       end
