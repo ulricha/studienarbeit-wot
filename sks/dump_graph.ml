@@ -38,16 +38,18 @@ struct
 
   type cert_level = Generic | Persona | Casual | Positive
 
-  type signature = { mutable sig_puid_signed : bool;
-		     sig_level : cert_level;
-		     sig_issuer : string;
+  type signature = { mutable sig_puid_signed: bool;
+		     sig_level: int;
+		     sig_issuer: string;
+		     sig_hash_alg: int;
+		     sig_pk_alg: int;
 		   }
 
-  type key = { key_keyid : string;
-	       key_puid : string;
-	       key_alg : int;
-	       key_len : int;
-	       key_signatures : signature list
+  type key = { key_keyid: string;
+	       key_puid: string;
+	       key_alg: int;
+	       key_len: int;
+	       key_signatures: signature list
 	     }
 
   let compare_signature s1 s2 = compare s1.sig_issuer s2.sig_issuer
@@ -78,7 +80,12 @@ struct
       Buffer.add_string out "signed by ";
       List.iter (fun signature ->
 		   Buffer.add_string out (Fingerprint.keyid_to_string signature.sig_issuer);
-		   Buffer.add_char out ' ')
+		   let s =  (Printf.sprintf " (pk %s %d bit h %s) " 
+			       (Packet.pubkey_algorithm_string signature.sig_pk_alg) 
+			       ks.key_len
+			       (Packet.hash_algorithm_string signature.sig_hash_alg)) in
+		     Buffer.add_string out s;
+		)
 	ks.key_signatures;
       Buffer.contents out
 
@@ -258,16 +265,28 @@ struct
   exception Skip_key of string
   exception Skip_uid of string
 
-  let siginfo_to_signature_struct issuer siginfo =
-    let cert_level = match siginfo.Index.sigtype with
+  let cert_level_of_int d =
+    match d with
       | 0x10 -> Generic
       | 0x11 -> Persona
       | 0x12 -> Casual
       | 0x13 -> Positive
-      | _ -> failwith ("siginfo_to_signature_struct: unexpected signature type" ^ 
-			 (string_of_int siginfo.Index.sigtype))
-    in
-      { sig_puid_signed = false; sig_level = cert_level; sig_issuer = issuer }
+      | _ -> failwith (Printf.sprintf "cert_level_of_int: unexpected vale %d" d)
+
+  let string_of_cert_level l =
+      match l with
+	| Generic -> "Generic"
+	| Persona -> "Persona"
+	| Casual -> "Casual"
+	| Positive -> "Positive"
+
+  let siginfo_to_signature_struct issuer siginfo =
+    { sig_puid_signed = false; 
+      sig_level = siginfo.Index.sigtype; 
+      sig_issuer = issuer;
+      sig_hash_alg = siginfo.Index.siginfo_hash_alg;
+      sig_pk_alg = siginfo.Index.siginfo_pk_alg;
+    }
 
   let check_expired ctime signature =
     if is_signature_expired signature then

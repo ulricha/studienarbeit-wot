@@ -157,6 +157,17 @@ let pubkey_algorithm_string i =  match i with
   | x when x >= 100 && x <= 110 -> "Private/Experimental algorithm."
   | _ -> "Unknown Public Key Algorithm"
 
+let hash_algorithm_string i = match i with
+  | 1 -> "MD5"
+  | 2 -> "SHA-1"
+  | 3 -> "RIPE-MD/160"
+  | 4 | 5 | 6 | 7 -> "Reserved"
+  | 8 -> "SHA-256"
+  | 9 -> "SHA-384"
+  | 10 -> "SHA-512"
+  | 11 -> "SHA-224"
+  | x when x >= 100 && x <= 110 -> "Private/Experimental algorithm."
+  | _ -> "Unknown Hash Algorithm"
 
 type pubkeyinfo = 
     { pk_version: int;
@@ -196,6 +207,7 @@ type v3sig =
 type v4sig =
     { v4s_sigtype: int;
       v4s_pk_alg: int;
+      v4s_hash_alg: int;
       v4s_hashed_subpackets: sigsubpacket list;
       v4s_unhashed_subpackets: sigsubpacket list;
       v4s_hash_value: string;

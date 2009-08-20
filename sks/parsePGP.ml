@@ -247,6 +247,7 @@ let parse_signature packet =
 	let mpis = read_mpis cin in
 	V4sig { v4s_sigtype = sigtype;
 		v4s_pk_alg = pk_alg;
+		v4s_hash_alg = _hash_alg;
 		v4s_hashed_subpackets = hashed_subpackets;
 		v4s_unhashed_subpackets = unhashed_subpackets;
 		v4s_hash_value = hash_value;

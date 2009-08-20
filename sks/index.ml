@@ -39,6 +39,8 @@ type siginfo = { mutable userid: string option;
 		 mutable sig_creation_time: int64 option;
 		 mutable sig_expiration_time: int64 option;
 		 mutable key_expiration_time: int64 option;
+		 mutable siginfo_hash_alg: int;
+		 mutable siginfo_pk_alg: int;
 	       }
 
 (********************************************************************)
@@ -54,6 +56,8 @@ let empty_siginfo () =
     sig_creation_time = None;
     sig_expiration_time = None;
     key_expiration_time = None;
+    siginfo_hash_alg = 0;
+    siginfo_pk_alg = 0;
   }
   
 (********************************************************************)
@@ -73,72 +77,78 @@ let sig_to_siginfo sign =
       | V3sig s ->
 	  siginfo.sigtype <- s.v3s_sigtype;
 	  siginfo.keyid <- Some s.v3s_keyid;
-	  siginfo.sig_creation_time <- Some s.v3s_ctime
+	  siginfo.sig_creation_time <- Some s.v3s_ctime;
+	  siginfo.siginfo_hash_alg <- s.v3s_hash_alg;
+	  siginfo.siginfo_pk_alg <- s.v3s_pk_alg;
       | V4sig s ->
-	  let update_siginfo ssp = 
-	    match ssp.ssp_type with
+	  begin
+	    siginfo.siginfo_hash_alg <- s.v4s_hash_alg;
+	    siginfo.siginfo_pk_alg <- s.v4s_hash_alg;
+	    let update_siginfo ssp = 
+	      match ssp.ssp_type with
 
-	      | 2 -> (* sign. expiration time *)
-		  if ssp.ssp_length = 4 then
-		    siginfo.sig_creation_time <-
-		    Some (ParsePGP.int64_of_string ssp.ssp_body)
+		| 2 -> (* sign. expiration time *)
+		    if ssp.ssp_length = 4 then
+		      siginfo.sig_creation_time <-
+			Some (ParsePGP.int64_of_string ssp.ssp_body)
 
-	      | 3 -> (* sign. expiration time *)
-		  if ssp.ssp_length = 4 then
-		    siginfo.sig_expiration_time <-
-		    let exp = ParsePGP.int64_of_string ssp.ssp_body in
-		    if Int64.compare exp Int64.zero = 0 
-		    then None else Some exp
+		| 3 -> (* sign. expiration time *)
+		    if ssp.ssp_length = 4 then
+		      siginfo.sig_expiration_time <-
+			let exp = ParsePGP.int64_of_string ssp.ssp_body in
+			  if Int64.compare exp Int64.zero = 0 
+			  then None else Some exp
 
-	      | 9 -> (* key expiration time *)
-		  if ssp.ssp_length = 4 then
-		    siginfo.key_expiration_time <-
-		    let exp = ParsePGP.int64_of_string ssp.ssp_body in
-		    if Int64.compare exp Int64.zero = 0 
-		    then None else Some exp
+		| 9 -> (* key expiration time *)
+		    if ssp.ssp_length = 4 then
+		      siginfo.key_expiration_time <-
+			let exp = ParsePGP.int64_of_string ssp.ssp_body in
+			  if Int64.compare exp Int64.zero = 0 
+			  then None else Some exp
 
-	      | 12 -> (* revocation key *)
-		  let cin = new Channel.string_in_channel ssp.ssp_body 0 in
-		  let _revclass = cin#read_int_size 1 in
-		  let _algid = cin#read_int_size 1 in
-		  let fingerprint = cin#read_string 20 in
-		  siginfo.revocation_key <- Some fingerprint
+		| 12 -> (* revocation key *)
+		    let cin = new Channel.string_in_channel ssp.ssp_body 0 in
+		    let _revclass = cin#read_int_size 1 in
+		    let _algid = cin#read_int_size 1 in
+		    let fingerprint = cin#read_string 20 in
+		      siginfo.revocation_key <- Some fingerprint
 
-	      | 16 -> (* issuer keyid *)
-		  if ssp.ssp_length = 8 then
-		    siginfo.keyid <- Some ssp.ssp_body 
-		  else
-		    printf "Argh!  that makes no sense: %d\n" ssp.ssp_length 
+		| 16 -> (* issuer keyid *)
+		    if ssp.ssp_length = 8 then
+		      siginfo.keyid <- Some ssp.ssp_body 
+		    else
+		      printf "Argh!  that makes no sense: %d\n" ssp.ssp_length 
 
-	      | 20 -> (* notation data *)
-		  let cin = new Channel.string_in_channel ssp.ssp_body 0 in
-		  let flags = cin#read_string 4 in
-		  let name_len = cin#read_int_size 2 in
-		  let value_len = cin#read_int_size 2 in
-		  let name_data = cin#read_string name_len in
-		  let value_data = cin#read_string value_len in
+		| 20 -> (* notation data *)
+		    let cin = new Channel.string_in_channel ssp.ssp_body 0 in
+		    let flags = cin#read_string 4 in
+		    let name_len = cin#read_int_size 2 in
+		    let value_len = cin#read_int_size 2 in
+		    let name_data = cin#read_string name_len in
+		    let value_data = cin#read_string value_len in
 
-		  if Char.code flags.[0] = 0x80 then 
-		    (* human-readable notation data *)
-		    siginfo.notation_data <- Some (name_data,value_data)
+		      if Char.code flags.[0] = 0x80 then 
+			(* human-readable notation data *)
+			siginfo.notation_data <- Some (name_data,value_data)
 
-	      | 25 -> (* primary userid (bool) *)
-		  if ssp.ssp_length = 1 then
-		    let v = int_of_char ssp.ssp_body.[0] in
-		    siginfo.is_primary_uid <- v <> 0
+		| 25 -> (* primary userid (bool) *)
+		    if ssp.ssp_length = 1 then
+		      let v = int_of_char ssp.ssp_body.[0] in
+			siginfo.is_primary_uid <- v <> 0
 
-	      | 26 -> (* policy URL *)
-		  siginfo.policy_url <- Some ssp.ssp_body
+		| 26 -> (* policy URL *)
+		    siginfo.policy_url <- Some ssp.ssp_body
 
-	      | 28 -> (* signer's userid *)
-		  siginfo.userid <- Some ssp.ssp_body
+		| 28 -> (* signer's userid *)
+		    siginfo.userid <- Some ssp.ssp_body
 
-	      | _ -> (* miscellaneous other packet *)
-		  ()
-	  in
-	  siginfo.sigtype <- s.v4s_sigtype;
-	  List.iter (s.v4s_hashed_subpackets @ s.v4s_unhashed_subpackets)
-	    ~f:(fun ssp -> try update_siginfo ssp with End_of_file -> ())
+		| _ -> (* miscellaneous other packet *)
+		    ()
+	    in
+	      siginfo.sigtype <- s.v4s_sigtype;
+	      List.iter (s.v4s_hashed_subpackets @ s.v4s_unhashed_subpackets)
+		~f:(fun ssp -> try update_siginfo ssp with End_of_file -> ())
+	  end
   end;
   siginfo
 
