@@ -308,7 +308,6 @@ struct
       | None -> false
 
   let iter_sigs keyid uid_packet siglist sig_accumulator puid pubkey_info =
-    print_endline "iter_sigs";
     let sigs_so_far = ref Keyid_set.empty in
     let siglist_descending = sort_reverse_siginfo_list siglist in
     let rec iter l =
@@ -324,7 +323,6 @@ struct
 		    if keyid = issuer_keyid then
 		      begin
 			(* handle self-signature *)
-			print_endline ("handle self signature " ^ (Fingerprint.keyid_to_string issuer_keyid));
 			match signature.Index.sigtype with
 			  | 0x20 ->
 			      (* key is revoked - can this appear in a uid list? *)
@@ -336,17 +334,11 @@ struct
 			      begin
 				check_expired pubkey_info.Packet.pk_ctime signature;
 				if is_none !puid then
-				  begin
-				    print_endline "puid not set so far -> set now";
-				    puid := Some uid_packet.Packet.packet_body;
-				  end
+				  puid := Some uid_packet.Packet.packet_body
 				else
 				  if signature.Index.is_primary_uid then
-				    begin
-				      (* user attributes should be skipped, so this must be a User ID *)
-				      print_endline "encountered primary uid flag -> force puid";
-				      puid := Some uid_packet.Packet.packet_body;
-				    end
+				    (* user attributes should be skipped, so this must be a User ID *)
+				    puid := Some uid_packet.Packet.packet_body
 				  else
 				    ()
 				;
@@ -360,7 +352,6 @@ struct
 		    else
 		      (* handle signature by another key *)
 		      begin
-			print_endline ("handle foreign signature " ^ (Fingerprint.keyid_to_string issuer_keyid));
 			match signature.Index.sigtype with
 			  | 0x30 ->
 			      (* sig is revoked -> don't consider this issuer for further sigs *)
@@ -370,7 +361,6 @@ struct
 			      if is_signature_expired signature then
 				begin
 				  (* sig is expired -> don't consider this issuer for further sigs *)
-				  print_endline "foreign signature has expired";
 				  sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
 				  iter tl
 				end
@@ -383,19 +373,16 @@ struct
 				end
 			  | t ->
 			      (* skip unexpected/irrelevant sig type *)
-			      Printf.printf "skip signature of type %d\n" t;
 			      iter tl
 		      end
 		  end
 		else
 		  begin
 		    (* issuer was already handled -> skip *)
-		    print_endline ("issuer was already encountered " ^ (Fingerprint.keyid_to_string issuer_keyid)); 
 		    iter tl
 		  end
 	    end
 	| [] ->
-	    (* TODO: what? *)
 	    ()
     in
       iter siglist_descending
@@ -408,8 +395,6 @@ struct
 	if is_v3_expired pubkey_info || is_revoked_pkey_siginfo sig_pkey then	
 	  raise (Skip_key "key is expired (v3) or revoked")
 	else
-	  begin
-	  print_endline ("key version " ^ (string_of_int pubkey_info.Packet.pk_version));
 	  let keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
 	  let sig_accu = ref Signature_set.empty in
 	  let puid = ref None in
@@ -417,11 +402,15 @@ struct
 			 match uid_packet.Packet.packet_type with
 			   | Packet.User_ID_Packet ->
 			       begin
-				 try 
-				   iter_sigs keyid uid_packet siglist sig_accu puid pubkey_info
-				 with
-				   | Skip_uid s-> 
-				       print_endline ("uid " ^ uid_packet.Packet.packet_body ^ " skipped: " ^ s)
+				 let this_uid_sigs = ref Signature_set.empty in
+				   try
+				     begin
+				       iter_sigs keyid uid_packet siglist this_uid_sigs puid pubkey_info;
+				       sig_accu := Signature_set.union !this_uid_sigs !sig_accu
+				     end
+				   with
+				     | Skip_uid s-> 
+					 print_endline ("uid " ^ uid_packet.Packet.packet_body ^ " skipped: " ^ s)
 			       end
 			   | Packet.User_Attribute_Packet ->
 			       (* attribute packet can only contain a photo id at the moment -> skip*)
@@ -448,7 +437,6 @@ struct
 			   key_len = keylen;
 			   key_ctime = ctime ;
 			 }
-	  end
     with
       | Skip_key s -> 
 	  print_endline ("skip key: " ^ s);
@@ -489,7 +477,6 @@ struct
 	    begin
 	      incr skipped_cnt;
 	      count_iterations key_cnt;
-	      print_endline "no key returned (why?)"
 	    end
 	| Some key_struct ->
 	    begin
