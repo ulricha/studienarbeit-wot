@@ -410,7 +410,8 @@ struct
 				     end
 				   with
 				     | Skip_uid s-> 
-					 print_endline ("uid " ^ uid_packet.Packet.packet_body ^ " skipped: " ^ s)
+					 (* print_endline ("uid " ^ uid_packet.Packet.packet_body ^ " skipped: " ^ s) *)
+					 ()
 			       end
 			   | Packet.User_Attribute_Packet ->
 			       (* attribute packet can only contain a photo id at the moment -> skip*)
@@ -422,7 +423,7 @@ struct
 	    match !puid with
 	      | None -> 
 		  begin
-		    print_endline "key_to_key_struct: did not find a primary user id";
+		    (* print_endline "key_to_key_struct: did not find a primary user id"; *)
 		    None
 		  end
 	      | Some s -> 
@@ -439,13 +440,13 @@ struct
 			 }
     with
       | Skip_key s -> 
-	  print_endline ("skip key: " ^ s);
+	  (* print_endline ("skip key: " ^ s); *)
 	  None
       | ParsePGP.Overlong_mpi ->
-	  print_endline "skip key: overlong mpi";
+	  (* print_endline "skip key: overlong mpi"; *)
 	  None
       | Unparseable_signature_packet ->
-	  print_endline "skip key: unparseable signature packet";
+	  (* print_endline "skip key: unparseable signature packet"; *)
 	  None
 
   let count_iterations cnt =
@@ -481,7 +482,7 @@ struct
 	| Some key_struct ->
 	    begin
 	      count_iterations key_cnt;
-	      print_endline (string_of_key_struct key_struct)
+	      (* print_endline (string_of_key_struct key_struct) *)
 	    end
     in
       begin
