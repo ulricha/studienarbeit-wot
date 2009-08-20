@@ -476,6 +476,7 @@ struct
   let test_key_extraction () =
     let key_cnt = ref 0 in
     let skipped_cnt = ref 0 in
+    let unsigned_cnt = ref 0 in
     let extract_key ~hash ~key =
       match key_to_key_struct key with
 	| None ->
@@ -487,6 +488,9 @@ struct
 	    begin
 	      count_iterations key_cnt;
 	      (* print_endline (string_of_key_struct key_struct) *)
+	      match key_struct.key_signatures with
+		| [] -> incr unsigned_cnt
+		| _ -> ()
 	    end
     in
       begin
