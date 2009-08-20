@@ -34,7 +34,7 @@ struct
 
   module Keyid_set = Set.Make(String)
 
-  exception Unparseable_key
+  exception Unparseable_signature_packet
 
   type cert_level = Generic | Persona | Casual | Positive
 
@@ -102,7 +102,7 @@ struct
       in
 	{ info_key = k.KeyMerge.key; info_selfsigs = s; info_uids = uids }
     with
-      | _ -> raise Unparseable_key
+      | _ -> raise Unparseable_signature_packet
 
   let get_keys_by_keyid keyid =
     let keyid_length = String.length keyid in
@@ -302,12 +302,19 @@ struct
       else
 	()
 
+  let is_signature_valid siginfo =
+    match siginfo.Index.keyid with
+      | Some time -> true
+      | None -> false
+
   let iter_sigs keyid uid_packet siglist sig_accumulator puid pubkey_info =
     print_endline "iter_sigs";
     let sigs_so_far = ref Keyid_set.empty in
     let siglist_descending = sort_reverse_siginfo_list siglist in
     let rec iter l =
       match l with
+	| signature :: tl when not (is_signature_valid signature) ->
+	    iter tl
 	| signature :: tl ->
 	    begin
 	      let issuer_keyid = get signature.Index.keyid in
@@ -407,7 +414,6 @@ struct
 	  let sig_accu = ref Signature_set.empty in
 	  let puid = ref None in
 	    List.iter (fun (uid_packet, siglist) ->
-			 print_endline uid_packet.Packet.packet_body;
 			 match uid_packet.Packet.packet_type with
 			   | Packet.User_ID_Packet ->
 			       begin
@@ -446,6 +452,12 @@ struct
     with
       | Skip_key s -> 
 	  print_endline ("skip key: " ^ s);
+	  None
+      | ParsePGP.Overlong_mpi ->
+	  print_endline "skip key: overlong mpi";
+	  None
+      | Unparseable_signature_packet ->
+	  print_endline "skip key: unparseable signature packet";
 	  None
 
   let count_iterations cnt =
