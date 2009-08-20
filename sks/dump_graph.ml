@@ -41,12 +41,14 @@ struct
   type signature = { mutable sig_puid_signed: bool;
 		     sig_level: int;
 		     sig_issuer: string;
+		     sig_ctime: float;
 		     sig_hash_alg: int;
 		     sig_pk_alg: int;
 		   }
 
   type key = { key_keyid: string;
 	       key_puid: string;
+	       key_ctime: float;
 	       key_alg: int;
 	       key_len: int;
 	       key_signatures: signature list
@@ -286,6 +288,9 @@ struct
       sig_issuer = issuer;
       sig_hash_alg = siginfo.Index.siginfo_hash_alg;
       sig_pk_alg = siginfo.Index.siginfo_pk_alg;
+      sig_ctime = match siginfo.Index.sig_creation_time with 
+	| Some time -> Int64.to_float time
+	| None -> Int64.to_float 0L;
     }
 
   let check_expired ctime signature =
@@ -429,7 +434,14 @@ struct
 		  let siglist = Signature_set.elements !sig_accu in 
 		  let algo = pubkey_info.Packet.pk_alg in
 		  let keylen = pubkey_info.Packet.pk_keylen in
-		    Some { key_keyid = keyid; key_puid = s; key_signatures = siglist; key_alg = algo; key_len = keylen }
+		  let ctime = Int64.to_float pubkey_info.Packet.pk_ctime in
+		    Some { key_keyid = keyid; 
+			   key_puid = s; 
+			   key_signatures = siglist; 
+			   key_alg = algo; 
+			   key_len = keylen;
+			   key_ctime = ctime ;
+			 }
 	  end
     with
       | Skip_key s -> 
@@ -516,7 +528,7 @@ struct
     let t1 = Unix.time () in
       begin
 	(* count_expired_revoked (); *)
-	(* test_key_extraction (); *)
+	test_key_extraction ();
 	foo ();
 	let t2 = Unix.time () in
 	  print_endline ("time " ^ (string_of_float (t2 -. t1)))
