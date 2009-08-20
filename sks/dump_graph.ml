@@ -35,6 +35,7 @@ struct
   module Keyid_set = Set.Make(String)
 
   exception Unparseable_signature_packet
+  exception Signature_without_creation_time
 
   type cert_level = Generic | Persona | Casual | Positive
 
@@ -189,7 +190,7 @@ struct
 	    | 0 -> 0
 	    | d when d > 0 -> -1
 	    | d -> 1
-      with No_value -> failwith "sort_reverse_siginfo_list: signature does not contain creation time"
+      with No_value -> raise Signature_without_creation_time
     in
       List.sort ~cmp:compare_ctime_reverse siglist
     
@@ -448,12 +449,15 @@ struct
       | Unparseable_signature_packet ->
 	  (* print_endline "skip key: unparseable signature packet"; *)
 	  None
+      | Signature_without_creation_time ->
+	  (* print_endline "skip key: signature without creation time"; *)
+	  None
 
   let count_iterations cnt =
     if !cnt mod 10000 = 0 then
       begin
-	incr cnt;
-	print_endline (string_of_int !cnt)
+	print_endline (string_of_int !cnt);
+	incr cnt
       end
     else
       incr cnt
