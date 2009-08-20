@@ -222,34 +222,6 @@ struct
     let expired_list = List.map (fun sigpair -> is_uid_expired keyid sigpair) pkey.KeyMerge.uids in
       List.exists (fun a -> a = true) expired_list
 
-  let is_expired pkey =
-    try 
-    let info = ParsePGP.parse_pubkey_info pkey.KeyMerge.key in
-      match info.Packet.pk_version with
-	| 2 | 3 -> 
-	    is_v3_expired info
-	| 4 -> 
-	    let keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
-	      is_v4_expired keyid pkey info
-	| x -> 
-	    failwith ("unexpected pk_version field " ^ (string_of_int x))
-    with 
-      | ParsePGP.Overlong_mpi -> 
-	  begin
-	    print_endline "overlong mpi";
-	    false
-	  end
-      | Failure s ->
-	  begin
-	    print_endline ("Failure "^ s);
-	    false
-	  end
-      | _ -> 
-	  begin
-	    print_endline "unexpected exception";
-	    false
-	  end
-
   let sig_is_revok siginfo =
     match siginfo.Index.sigtype with
       | 0x20 | 0x28 | 0x30 -> true
@@ -477,6 +449,7 @@ struct
     let key_cnt = ref 0 in
     let skipped_cnt = ref 0 in
     let unsigned_cnt = ref 0 in
+    let relevant_keys = ref [] in
     let extract_key ~hash ~key =
       match key_to_key_struct key with
 	| None ->
@@ -490,39 +463,14 @@ struct
 	      (* print_endline (string_of_key_struct key_struct) *)
 	      match key_struct.key_signatures with
 		| [] -> incr unsigned_cnt
-		| _ -> ()
+		| _ -> relevant_keys := key_struct :: !relevant_keys
 	    end
     in
       begin
 	Keydb.iter ~f:extract_key;
 	Printf.printf "skipped %d\n" !skipped_cnt;
 	Printf.printf "unsigned %d\n" !unsigned_cnt;
-      end
-
-  let count_expired_revoked () =
-    let key_cnt = ref 0 in
-    let revoked_cnt = ref 0 in
-    let expired_cnt = ref 0 in
-    let count_revoked ~hash ~key =
-      let pkey = KeyMerge.parse_keystr (KeyMerge.key_to_stream key) in
-      begin
-	if is_revoked pkey then
-	  incr revoked_cnt
-	else
-	  ()
-	;
-	if is_expired pkey then
-	  incr expired_cnt
-	else
-	  ()
-	;
-	count_iterations key_cnt
-      end
-    in
-      begin
-	Keydb.iter ~f:count_revoked;
-	print_endline ("revoked " ^ (string_of_int !revoked_cnt));
-	print_endline ("expired " ^ (string_of_int !expired_cnt))
+	Printf.printf "relevant keys in list %d\n" (List.length !relevant_keys)
       end
 
   let foo () =
@@ -535,7 +483,6 @@ struct
     Keydb.open_dbs settings;
     let t1 = Unix.time () in
       begin
-	(* count_expired_revoked (); *)
 	test_key_extraction ();
 	foo ();
 	let t2 = Unix.time () in
