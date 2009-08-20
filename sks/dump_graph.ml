@@ -495,9 +495,9 @@ struct
     in
       begin
 	Keydb.iter ~f:extract_key;
-	print_endline ("skipped " ^ (string_of_int !skipped_cnt));
+	Printf.printf "skipped %d\n" !skipped_cnt;
+	Printf.printf "unsigned %d\n" !unsigned_cnt;
       end
-	
 
   let count_expired_revoked () =
     let key_cnt = ref 0 in
