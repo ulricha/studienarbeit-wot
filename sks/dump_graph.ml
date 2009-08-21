@@ -53,7 +53,7 @@ struct
 	       key_ctime: float;
 	       key_alg: int;
 	       key_len: int;
-	       key_signatures: signature list
+	       mutable key_signatures: signature list
 	     }
 
   let compare_signature s1 s2 = compare s1.sig_issuer s2.sig_issuer
@@ -454,6 +454,24 @@ struct
 	keys_so_far
       ;
       Keyid_set.elements !missing_keyids
+
+  let filter_signatures_to_missing_keys keys keyids =
+    let filter_list siglist =
+      List.filter (fun s -> Keyid_set.mem s.sig_issuer keyids) siglist
+    in
+    let rec iter l =
+      match l with
+	| key :: tl ->
+	    begin
+	      printf "before %d" (List.length key.key_signatures);
+	      key.key_signatures <- filter_list key.key_signatures;
+	      printf " after %d\n" (List.length key.key_signatures); 
+	      iter tl
+	    end
+	| [] -> 
+	    ()
+    in
+      iter !keys
 
   let fetch_keys () =
     let key_cnt = ref 0 in
