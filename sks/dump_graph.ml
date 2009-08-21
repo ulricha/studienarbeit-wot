@@ -454,7 +454,7 @@ struct
       ;
       Keyid_set.elements !missing_keyids
 
-  let test_key_extraction () =
+  let fetch_keys () =
     let key_cnt = ref 0 in
     let skipped_cnt = ref 0 in
     let unsigned_cnt = ref 0 in
@@ -507,7 +507,10 @@ struct
 	    in
 	      iter missing_list 0
 	  end
+	  ;
+	  (relevant_keys, missing_list)
       end
+      
 (*
   let test_key_struct () =
     let keyid = Fingerprint.keyid_of_string "0x94660424" in
@@ -527,12 +530,28 @@ struct
 	keys
 *)
 
+  let fetch_single_key keyid =
+    let keys = get_keys_by_keyid keyid in
+      try
+	Some (key_to_key_struct (List.hd keys))
+      with Skipped_key keyid -> None
+	
   let run () =
     Keydb.open_dbs settings;
     let t1 = Unix.time () in
       begin
-	test_key_extraction ();
-	let t2 = Unix.time () in
-	  print_endline ("time " ^ (string_of_float (t2 -. t1)))
+	let (keys, missing_keyids) = fetch_keys () in
+	  List.iter 
+	    (fun keyid ->
+	       match fetch_single_key keyid with
+		 | Some key_struct ->
+		     keys := key_struct :: !keys
+		 | None ->
+		     ()
+	    )
+	    missing_keyids
+	  ;
+	  let t2 = Unix.time () in
+	    print_endline ("time " ^ (string_of_float (t2 -. t1)))
       end
 end
