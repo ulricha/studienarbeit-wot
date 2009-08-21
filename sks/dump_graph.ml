@@ -37,8 +37,26 @@ struct
 
   exception Unparseable_signature_packet
   exception Signature_without_creation_time
+  exception Skip_key of string
+  exception Skip_uid of string
+  exception Skipped_key of string
 
   type cert_level = Generic | Persona | Casual | Positive
+
+  let cert_level_of_int d =
+    match d with
+      | 0x10 -> Generic
+      | 0x11 -> Persona
+      | 0x12 -> Casual
+      | 0x13 -> Positive
+      | _ -> failwith (sprintf "cert_level_of_int: unexpected vale %d" d)
+
+  let string_of_cert_level l =
+      match l with
+	| Generic -> "Generic"
+	| Persona -> "Persona"
+	| Casual -> "Casual"
+	| Positive -> "Positive"
 
   type signature = { mutable sig_puid_signed: bool;
 		     sig_level: int;
@@ -55,8 +73,6 @@ struct
 	       key_len: int;
 	       mutable key_signatures: signature list
 	     }
-
-  let compare_signature s1 s2 = compare s1.sig_issuer s2.sig_issuer
 
   module Signature_set = Set.Make(struct
 				    type t = signature
@@ -131,10 +147,7 @@ struct
   let key_to_pkey key =
     let stream = KeyMerge.key_to_stream key in
     try Some (KeyMerge.parse_keystr stream) with
-      | KeyMerge.Unparseable_packet_sequence -> None
-
-  let discard a =
-    ()
+	KeyMerge.Unparseable_packet_sequence -> None
 
   let is_v3_expired pubkey_info =
       match pubkey_info.Packet.pk_expiration with
@@ -173,22 +186,6 @@ struct
 	| None ->
 	    false
 
-  let is_v4_key_expired siginfo =
-    let today = Stats.round_up_to_day (Unix.gettimeofday ()) in
-      match siginfo.Index.sig_creation_time with
-	| Some ctime ->
-	    begin
-	      match siginfo.Index.key_expiration_time with
-		| Some exptime ->
-		    if compare (Int64.add ctime exptime) (Int64.of_float today) <= 0 then
-		      true
-		    else
-		      false
-		| None ->
-		    false
-	    end
-	| None -> false
-
   let sort_reverse_siginfo_list siglist =
     let compare_ctime_reverse sig1 sig2 =
       try
@@ -202,34 +199,6 @@ struct
     in
       List.sort ~cmp:compare_ctime_reverse siglist
     
-  let is_uid_expired keyid sigpair =
-    let (uid, sig_list) = sigpair in
-      (* get list of selfsigs *)
-    let siginfo_list = List.map Index.sig_to_siginfo sig_list in
-    let selfsigs = List.filter (fun siginfo -> Index.is_selfsig ~keyid:keyid siginfo) siginfo_list in
-    let selfsigs_sorted_reverse = sort_reverse_siginfo_list selfsigs in
-    let rec iter_selfsigs l =
-      match l with
-	| selfsig :: tl ->
-	    begin
-	      match selfsig.Index.sigtype with
-		| 0x10 | 0x11 | 0x12 | 0x13 -> 
-		    if is_signature_expired selfsig then
-		      true
-		    else
-		      let res = is_v4_key_expired selfsig in
-			res
-		| 0x30 -> true
-		| _ -> iter_selfsigs tl
-	    end	
-	| [] -> false
-    in
-      iter_selfsigs selfsigs_sorted_reverse
-
-  let is_v4_expired keyid pkey pubkeyinfo =
-    let expired_list = List.map (fun sigpair -> is_uid_expired keyid sigpair) pkey.KeyMerge.uids in
-      List.exists (fun a -> a = true) expired_list
-
   let sig_is_revok siginfo =
     match siginfo.Index.sigtype with
       | 0x20 | 0x28 | 0x30 -> true
@@ -244,25 +213,6 @@ struct
 
   let is_revoked_pkey_siginfo k =
     List.exists sig_is_revok k.info_selfsigs
-
-  exception Skip_key of string
-  exception Skip_uid of string
-  exception Skipped_key of string
-
-  let cert_level_of_int d =
-    match d with
-      | 0x10 -> Generic
-      | 0x11 -> Persona
-      | 0x12 -> Casual
-      | 0x13 -> Positive
-      | _ -> failwith (sprintf "cert_level_of_int: unexpected vale %d" d)
-
-  let string_of_cert_level l =
-      match l with
-	| Generic -> "Generic"
-	| Persona -> "Persona"
-	| Casual -> "Casual"
-	| Positive -> "Positive"
 
   let siginfo_to_signature_struct issuer siginfo =
     { sig_puid_signed = false; 
