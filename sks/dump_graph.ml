@@ -442,19 +442,19 @@ struct
       incr cnt
 
   let fetch_missing_keys keyids_so_far keys_so_far =
-    let missing_keyids= ref [] in
+    let missing_keyids = ref Keyid_set.empty in
     let add_if_missing signature =
 	if Keyid_set.mem signature.sig_issuer keyids_so_far then
 	  ()
 	else
-	  missing_keyids := signature.sig_issuer :: !missing_keyids
+	  missing_keyids := Keyid_set.add signature.sig_issuer !missing_keyids
     in  
       List.iter 
 	(fun ks ->
 	   List.iter add_if_missing ks.key_signatures)
 	keys_so_far
       ;
-      Printf.printf "missing_keys %d\n" (List.length !missing_keyids)
+      Printf.printf "missing_keys %d\n" (List.length (Keyid_set.elements !missing_keyids))
 
   let test_key_extraction () =
     let key_cnt = ref 0 in
