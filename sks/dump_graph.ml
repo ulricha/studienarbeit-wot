@@ -454,7 +454,7 @@ struct
 	   List.iter add_if_missing ks.key_signatures)
 	keys_so_far
       ;
-      Printf.printf "missing_keys %d\n" (List.length (Keyid_set.elements !missing_keyids))
+      Keyid_set.elements !missing_keyids
 
   let test_key_extraction () =
     let key_cnt = ref 0 in
@@ -488,7 +488,21 @@ struct
 	Printf.printf "skipped %d\n" !skipped_cnt;
 	Printf.printf "unsigned %d\n" !unsigned_cnt;
 	Printf.printf "relevant keys in list %d\n" (List.length !relevant_keys);
-	fetch_missing_keys !relevant_keyids !relevant_keys
+	let missing_list = fetch_missing_keys !relevant_keyids !relevant_keys in
+	let rec iter l i =
+	  if i > 20 then
+	    ()
+	  else
+	    match l with
+	      | keyid :: tl -> 
+		  begin
+		    print_endline (Fingerprint.keyid_to_string keyid);
+		    iter tl (i+1)
+		  end
+	      | [] ->
+		  ()
+	in
+	  iter missing_list 0
       end
 
   let test_key_struct () =
@@ -513,7 +527,6 @@ struct
     let t1 = Unix.time () in
       begin
 	test_key_extraction ();
-	test_key_struct ();
 	let t2 = Unix.time () in
 	  print_endline ("time " ^ (string_of_float (t2 -. t1)))
       end
