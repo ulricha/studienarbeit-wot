@@ -246,6 +246,7 @@ struct
 
   exception Skip_key of string
   exception Skip_uid of string
+  exception Skipped_key of string
 
   let cert_level_of_int d =
     match d with
@@ -402,35 +403,29 @@ struct
 	      sig_pkey.info_uids;
 	    match !puid with
 	      | None -> 
-		  begin
-		    (* print_endline "key_to_key_struct: did not find a primary user id"; *)
-		    None
-		  end
+		  let keyid = Fingerprint.keyid_from_packet (List.hd key) in
+		    raise (Skipped_key keyid)
 	      | Some s -> 
 		  let siglist = Signature_set.elements !sig_accu in 
 		  let algo = pubkey_info.Packet.pk_alg in
 		  let keylen = pubkey_info.Packet.pk_keylen in
 		  let ctime = Int64.to_float pubkey_info.Packet.pk_ctime in
-		    Some { key_keyid = keyid; 
-			   key_puid = s; 
-			   key_signatures = siglist; 
-			   key_alg = algo; 
-			   key_len = keylen;
-			   key_ctime = ctime ;
-			 }
+		    { key_keyid = keyid; 
+		      key_puid = s; 
+		      key_signatures = siglist; 
+		      key_alg = algo; 
+		      key_len = keylen;
+		      key_ctime = ctime ;
+		    }
     with
       | Skip_key s -> 
 	  (* print_endline ("skip key: " ^ s); *)
-	  None
-      | ParsePGP.Overlong_mpi ->
-	  (* print_endline "skip key: overlong mpi"; *)
-	  None
-      | Unparseable_signature_packet ->
-	  (* print_endline "skip key: unparseable signature packet"; *)
-	  None
-      | Signature_without_creation_time ->
-	  (* print_endline "skip key: signature without creation time"; *)
-	  None
+	  let keyid = Fingerprint.keyid_from_packet (List.hd key) in
+	    raise (Skipped_key keyid)
+      | ParsePGP.Overlong_mpi | Unparseable_signature_packet | Signature_without_creation_time ->
+	  let keyid = Fingerprint.keyid_from_packet (List.hd key) in
+	    raise (Skipped_key keyid)
+
 
   let count_iterations cnt =
     if !cnt mod 10000 = 0 then
@@ -441,13 +436,16 @@ struct
     else
       incr cnt
 
-  let fetch_missing_keys keyids_so_far keys_so_far =
+  let fetch_missing_keys skipped_keyids keyids_so_far keys_so_far =
     let missing_keyids = ref Keyid_set.empty in
     let add_if_missing signature =
 	if Keyid_set.mem signature.sig_issuer keyids_so_far then
 	  ()
 	else
-	  missing_keyids := Keyid_set.add signature.sig_issuer !missing_keyids
+	  if not (Keyid_set.mem signature.sig_issuer skipped_keyids) then
+	    missing_keyids := Keyid_set.add signature.sig_issuer !missing_keyids
+	  else
+	    ()
     in  
       List.iter 
 	(fun ks ->
@@ -461,26 +459,29 @@ struct
     let skipped_cnt = ref 0 in
     let unsigned_cnt = ref 0 in
     let relevant_keyids = ref Keyid_set.empty in
+    let skipped_keyids = ref Keyid_set.empty in
     let relevant_keys = ref [] in
     let extract_key ~hash ~key =
-      match key_to_key_struct key with
-	| None ->
+      try 
+	let key_struct = key_to_key_struct key in
+	  begin
+	    count_iterations key_cnt;
+	    (* print_endline (string_of_key_struct key_struct) *)
+	    match key_struct.key_signatures with
+	      | [] -> 
+		  incr unsigned_cnt
+	      | _ -> 
+		  begin
+		    relevant_keys := key_struct :: !relevant_keys;
+		    relevant_keyids := Keyid_set.add key_struct.key_keyid !relevant_keyids
+		  end
+	  end
+      with
+	| Skipped_key keyid ->
 	    begin
 	      incr skipped_cnt;
 	      count_iterations key_cnt;
-	    end
-	| Some key_struct ->
-	    begin
-	      count_iterations key_cnt;
-	      (* print_endline (string_of_key_struct key_struct) *)
-	      match key_struct.key_signatures with
-		| [] -> 
-		    incr unsigned_cnt
-		| _ -> 
-		    begin
-		      relevant_keys := key_struct :: !relevant_keys;
-		      relevant_keyids := Keyid_set.add key_struct.key_keyid !relevant_keyids
-		    end
+	      skipped_keyids := Keyid_set.add keyid !skipped_keyids
 	    end
     in
       begin
@@ -488,23 +489,26 @@ struct
 	Printf.printf "skipped %d\n" !skipped_cnt;
 	Printf.printf "unsigned %d\n" !unsigned_cnt;
 	Printf.printf "relevant keys in list %d\n" (List.length !relevant_keys);
-	let missing_list = fetch_missing_keys !relevant_keyids !relevant_keys in
-	let rec iter l i =
-	  if i > 20 then
-	    ()
-	  else
-	    match l with
-	      | keyid :: tl -> 
-		  begin
-		    print_endline (Fingerprint.keyid_to_string keyid);
-		    iter tl (i+1)
-		  end
-	      | [] ->
-		  ()
-	in
-	  iter missing_list 0
+	let missing_list = fetch_missing_keys !skipped_keyids !relevant_keyids !relevant_keys in
+	  begin
+	    Printf.printf "missing keys %d\n" (List.length missing_list);
+	    let rec iter l i =
+	      if i > 20 then
+		()
+	      else
+		match l with
+		  | keyid :: tl -> 
+		      begin
+			print_endline (Fingerprint.keyid_to_string keyid);
+			iter tl (i+1)
+		      end
+		  | [] ->
+		      ()
+	    in
+	      iter missing_list 0
+	  end
       end
-
+(*
   let test_key_struct () =
     let keyid = Fingerprint.keyid_of_string "0x94660424" in
     let keys = get_keys_by_keyid keyid in
@@ -521,6 +525,7 @@ struct
 			 end
 		)
 	keys
+*)
 
   let run () =
     Keydb.open_dbs settings;
