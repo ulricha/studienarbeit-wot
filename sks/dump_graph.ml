@@ -532,10 +532,14 @@ struct
 *)
 
   let fetch_single_key keyid =
-    let keys = get_keys_by_keyid keyid in
-      try
-	Some (key_to_key_struct (List.hd keys))
-      with Skipped_key keyid -> None
+    match get_keys_by_keyid keyid with
+      | key :: tl ->
+	  begin
+	    try
+	      Some (key_to_key_struct key)
+	    with Skipped_key keyid -> None
+	  end
+      | [] -> None
 	
   let run () =
     Keydb.open_dbs settings;
