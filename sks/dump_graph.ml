@@ -490,47 +490,10 @@ struct
 	printf "skipped %d\n" !skipped_cnt;
 	printf "unsigned %d\n" !unsigned_cnt;
 	printf "relevant keys in list %d\n" (List.length !relevant_keys);
-	let missing_list = fetch_missing_keys !skipped_keyids !relevant_keyids !relevant_keys in
-	  begin
-	    printf "missing keys %d\n" (List.length missing_list);
-	    let rec iter l i =
-	      if i > 20 then
-		()
-	      else
-		match l with
-		  | keyid :: tl -> 
-		      begin
-			print_endline (Fingerprint.keyid_to_string keyid);
-			iter tl (i+1)
-		      end
-		  | [] ->
-		      ()
-	    in
-	      iter missing_list 0
-	  end
-	  ;
-	  (relevant_keys, missing_list)
       end
-      
-(*
-  let test_key_struct () =
-    let keyid = Fingerprint.keyid_of_string "0x94660424" in
-    let keys = get_keys_by_keyid keyid in
-      print_endline ("nr keys " ^ (string_of_int (List.length keys)));
-      List.iter	(fun key -> 
-		   match key_to_key_struct key with
-		     | None ->
-			 begin
-			   print_endline "no key returned (why?)"
-			 end
-		     | Some key_struct ->
-			 begin
-			   print_endline (string_of_key_struct key_struct)
-			 end
-		)
-	keys
-*)
-
+      ;
+      relevant_keys
+	
   let fetch_single_key keyid =
     match get_keys_by_keyid keyid with
       | key :: tl ->
@@ -545,22 +508,10 @@ struct
     Keydb.open_dbs settings;
     let t1 = Unix.time () in
       begin
-	let (keys, missing_keyids) = fetch_keys () in
-	  begin
-	    List.iter 
-	      (fun keyid ->
-		 match fetch_single_key keyid with
-		   | Some key_struct ->
-		       keys := key_struct :: !keys
-		   | None ->
-		       ()
-	      )
-	      missing_keyids
-	    ;
-	    printf "number of keys altogether %d\n" (List.length !keys)
-	  end
+	let keys = fetch_keys () in
+	  printf "number of keys altogether %d\n" (List.length !keys)
+	  ;
+	  let t2 = Unix.time () in
+	    print_endline ("time " ^ (string_of_float (t2 -. t1)))
       end
-      ;
-      let t2 = Unix.time () in
-	print_endline ("time " ^ (string_of_float (t2 -. t1)))
 end
