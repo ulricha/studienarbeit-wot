@@ -21,6 +21,7 @@ module F(M:sig end) =
 struct
   open ExtList
   open Option
+  open Printf
 
   let settings = {
     Keydb.withtxn = !Settings.transactions;
@@ -85,12 +86,12 @@ struct
       Buffer.add_char out ' ';
       Buffer.add_string out ks.key_puid;
       Buffer.add_char out ' ';
-      Buffer.add_string out (Printf.sprintf "(%s - %d bit)" (Packet.pubkey_algorithm_string ks.key_alg) ks.key_len);
+      Buffer.add_string out (sprintf "(%s - %d bit)" (Packet.pubkey_algorithm_string ks.key_alg) ks.key_len);
       Buffer.add_char out ' ';
       Buffer.add_string out "signed by ";
       List.iter (fun signature ->
 		   Buffer.add_string out (Fingerprint.keyid_to_string signature.sig_issuer);
-		   let s =  (Printf.sprintf " (pk %s %d bit h %s) " 
+		   let s =  (sprintf " (pk %s %d bit h %s) " 
 			       (Packet.pubkey_algorithm_string signature.sig_pk_alg) 
 			       ks.key_len
 			       (Packet.hash_algorithm_string signature.sig_hash_alg)) in
@@ -254,7 +255,7 @@ struct
       | 0x11 -> Persona
       | 0x12 -> Casual
       | 0x13 -> Positive
-      | _ -> failwith (Printf.sprintf "cert_level_of_int: unexpected vale %d" d)
+      | _ -> failwith (sprintf "cert_level_of_int: unexpected vale %d" d)
 
   let string_of_cert_level l =
       match l with
@@ -486,12 +487,12 @@ struct
     in
       begin
 	Keydb.iter ~f:extract_key;
-	Printf.printf "skipped %d\n" !skipped_cnt;
-	Printf.printf "unsigned %d\n" !unsigned_cnt;
-	Printf.printf "relevant keys in list %d\n" (List.length !relevant_keys);
+	printf "skipped %d\n" !skipped_cnt;
+	printf "unsigned %d\n" !unsigned_cnt;
+	printf "relevant keys in list %d\n" (List.length !relevant_keys);
 	let missing_list = fetch_missing_keys !skipped_keyids !relevant_keyids !relevant_keys in
 	  begin
-	    Printf.printf "missing keys %d\n" (List.length missing_list);
+	    printf "missing keys %d\n" (List.length missing_list);
 	    let rec iter l i =
 	      if i > 20 then
 		()
@@ -541,17 +542,21 @@ struct
     let t1 = Unix.time () in
       begin
 	let (keys, missing_keyids) = fetch_keys () in
-	  List.iter 
-	    (fun keyid ->
-	       match fetch_single_key keyid with
-		 | Some key_struct ->
-		     keys := key_struct :: !keys
-		 | None ->
-		     ()
-	    )
-	    missing_keyids
-	  ;
-	  let t2 = Unix.time () in
-	    print_endline ("time " ^ (string_of_float (t2 -. t1)))
+	  begin
+	    List.iter 
+	      (fun keyid ->
+		 match fetch_single_key keyid with
+		   | Some key_struct ->
+		       keys := key_struct :: !keys
+		   | None ->
+		       ()
+	      )
+	      missing_keyids
+	    ;
+	    printf "number of keys altogether %d\n" (List.length !keys)
+	  end
       end
+      ;
+      let t2 = Unix.time () in
+	print_endline ("time " ^ (string_of_float (t2 -. t1)))
 end
