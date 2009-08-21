@@ -508,6 +508,7 @@ struct
 	printf "skipped %d\n" !skipped_cnt;
 	printf "unsigned %d\n" !unsigned_cnt;
 	printf "relevant keys in list %d\n" (List.length !relevant_keys);
+	filter_signatures_to_missing_keys relevant_keys !relevant_keyids;
       end
       ;
       relevant_keys
