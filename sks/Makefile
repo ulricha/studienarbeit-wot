@@ -46,10 +46,10 @@ else
 endif
 
 CAMLP4=-pp $(CAMLP4O)
-CAMLINCLUDE= -I lib -I bdb -I `ocamlfind query extlib`
+CAMLINCLUDE= -I lib -I bdb -I `ocamlfind query extlib` -I `ocamlfind query sexplib` -I `ocamlfind query type-conv`
 COMMONCAMLFLAGS=$(CAMLINCLUDE) $(OCAMLLIB) -ccopt -Lbdb -dtypes -ccopt -pthread -warn-error A
 OCAMLDEP=ocamldep $(CAMLP4) 
-CAMLLIBS=unix.cma str.cma bdb.cma nums.cma bigarray.cma cryptokit.cma extLib.cma
+CAMLLIBS=unix.cma str.cma bdb.cma nums.cma bigarray.cma cryptokit.cma extLib.cma sexplib.cma
 OCAMLFLAGS=$(COMMONCAMLFLAGS) -g $(CAMLLIBS)
 OCAMLOPTFLAGS=$(COMMONCAMLFLAGS) -inline 40 $(CAMLLIBS:.cma=.cmxa) 
 
@@ -122,6 +122,12 @@ keyMerge.cmo: keyMerge.ml
 
 keyMerge.cmx: keyMerge.ml
 	$(OCAMLOPT) $(OCAMLOPTFLAGS) $(CAMLP4) -c $<
+
+dump_graph.cmx: dump_graph.ml
+	ocamlfind ocamlopt -linkpkg -package sexplib.syntax,extlib,sexplib -syntax camlp4o -c $<
+
+dump_graph.cmo: dump_graph.ml
+	#ocamlfind ocamlc -linkpkg -package sexplib.syntax,extlib,sexplib -syntax camlp4o -c $<
 
 # Special targets 
 
