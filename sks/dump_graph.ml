@@ -17,11 +17,18 @@
 
 (** takes content of SKS keyserver and creates a wotsap dump file from that *)
 
+TYPE_CONV_PATH "Dump_graph"
+
 module F(M:sig end) = 
 struct
   open ExtList
   open Option
   open Printf
+
+  open Format
+  open Sexplib
+  open Sexp
+  open Conv
 
   let settings = {
     Keydb.withtxn = !Settings.transactions;
@@ -64,7 +71,7 @@ struct
 		     sig_ctime: float;
 		     sig_hash_alg: int;
 		     sig_pk_alg: int;
-		   }
+		   } with sexp
 
   type key = { key_keyid: string;
 	       key_puid: string;
@@ -72,7 +79,7 @@ struct
 	       key_alg: int;
 	       key_len: int;
 	       mutable key_signatures: signature list
-	     }
+	     } with sexp
 
   module Signature_set = Set.Make(struct
 				    type t = signature
@@ -478,9 +485,13 @@ struct
     let t1 = Unix.time () in
       begin
 	let keys = fetch_keys () in
-	  printf "number of keys altogether %d\n" (List.length !keys)
-	  ;
-	  let t2 = Unix.time () in
-	    print_endline ("time " ^ (string_of_float (t2 -. t1)))
+	let t2 = Unix.time () in
+	  begin
+	    print_endline ("time " ^ (string_of_float (t2 -. t1)));
+	    Gc.print_stat stdout;
+	    Gc.full_major ();
+	    Gc.print_stat stdout;
+	    let _ = read_line () in ()
+	  end
       end
 end
