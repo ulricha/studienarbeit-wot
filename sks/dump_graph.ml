@@ -420,9 +420,7 @@ struct
       match l with
 	| key :: tl ->
 	    begin
-	      printf "before %d" (List.length key.key_signatures);
 	      key.key_signatures <- filter_list key.key_signatures;
-	      printf " after %d\n" (List.length key.key_signatures); 
 	      iter tl
 	    end
 	| [] -> 
@@ -468,7 +466,7 @@ struct
 	filter_signatures_to_missing_keys relevant_keys !relevant_keyids;
       end
       ;
-      relevant_keys
+      !relevant_keys
 	
   let fetch_single_key keyid =
     match get_keys_by_keyid keyid with
@@ -479,7 +477,7 @@ struct
 	    with Skipped_key keyid -> None
 	  end
       | [] -> None
-	
+	  
   let run () =
     Keydb.open_dbs settings;
     let t1 = Unix.time () in
@@ -488,10 +486,9 @@ struct
 	let t2 = Unix.time () in
 	  begin
 	    print_endline ("time " ^ (string_of_float (t2 -. t1)));
-	    Gc.print_stat stdout;
 	    Gc.full_major ();
-	    Gc.print_stat stdout;
-	    let _ = read_line () in ()
+	    let keys_sexp = sexp_of_list (fun k -> sexp_of_key k) keys in
+	      save_mach "sks_dump.sexp" keys_sexp
 	  end
       end
 end
