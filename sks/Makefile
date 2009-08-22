@@ -124,10 +124,11 @@ keyMerge.cmx: keyMerge.ml
 	$(OCAMLOPT) $(OCAMLOPTFLAGS) $(CAMLP4) -c $<
 
 dump_graph.cmx: dump_graph.ml
-	ocamlfind ocamlopt -linkpkg -package sexplib.syntax,extlib,sexplib -syntax camlp4o -c $<
+	ocamlfind ocamlopt -linkpkg -package sexplib.syntax,extlib,sexplib -syntax camlp4o -warn-error A -inline 40 -c $<
 
 dump_graph.cmo: dump_graph.ml
-	#ocamlfind ocamlc -linkpkg -package sexplib.syntax,extlib,sexplib -syntax camlp4o -c $<
+	ocamlfind ocamlc -linkpkg -package sexplib.syntax,extlib,sexplib -syntax camlp4o -warn-error A -c $<
+
 
 # Special targets 
 
