@@ -151,8 +151,16 @@ struct
       | [] -> None
 
   let dump_sexp_file file ekey_list =
-    let sexp_list = List.map sexp_of_ekey ekey_list in
-      save_sexps file sexp_list
+    let chan = open_out file in
+      List.iter 
+	(fun ekey ->
+	   let s = sexp_of_ekey ekey in
+	     output_mach chan s;
+	     output_char chan '\n'
+	)
+	ekey_list
+      ;
+      close_out chan
 	  
   let run () =
     Keydb.open_dbs settings;
