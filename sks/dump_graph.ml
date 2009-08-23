@@ -149,6 +149,10 @@ struct
 	    with Skipped_key keyid -> None
 	  end
       | [] -> None
+
+  let dump_sexp_file file ekey_list =
+    let sexp_list = List.map sexp_of_ekey ekey_list in
+      save_sexps file sexp_list
 	  
   let run () =
     Keydb.open_dbs settings;
@@ -159,9 +163,8 @@ struct
 	  begin
 	    print_endline ("time " ^ (string_of_float (t2 -. t1)));
 	    Gc.full_major ();
-	    let keys_sexp = sexp_of_list (fun k -> sexp_of_ekey k) keys in
-	      save_mach "sks_dump.sexp" keys_sexp;
-	      print_endline (string_of_ekey (List.hd (List.rev keys)))
+	    let filename = "sks_dump.sexp" in
+	      dump_sexp_file filename keys
 	  end
       end
 end
