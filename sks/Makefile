@@ -88,7 +88,7 @@ OBJS.bc=packet.cmo parsePGP.cmo sStream.cmo bdbwrap.cmo \
 	clean_keydb.cmo build.cmo fastbuild.cmo pbuild.cmo merge_keyfiles.cmo \
 	sksdump.cmo incdump.cmo dbserver.cmo reconComm.cmo recoverList.cmo \
 	catchup.cmo reconserver.cmo update_subkeys.cmo sks_do.cmo unit_tests.cmo \
-	dump_graph.cmo
+	ekey.cmo dump_graph.cmo
 
 OBJS=$(OBJS.bc:.cmo=.cmx)
 
@@ -123,10 +123,10 @@ keyMerge.cmo: keyMerge.ml
 keyMerge.cmx: keyMerge.ml
 	$(OCAMLOPT) $(OCAMLOPTFLAGS) $(CAMLP4) -c $<
 
-dump_graph.cmx: dump_graph.ml
+ekey.cmx: ekey.ml
 	ocamlfind ocamlopt -linkpkg -package sexplib.syntax,extlib,sexplib -syntax camlp4o -warn-error A -inline 40 -c $<
 
-dump_graph.cmo: dump_graph.ml
+ekey.cmo: ekey.ml
 	ocamlfind ocamlc -linkpkg -package sexplib.syntax,extlib,sexplib -syntax camlp4o -warn-error A -c $<
 
 
