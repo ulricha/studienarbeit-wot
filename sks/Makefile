@@ -88,7 +88,7 @@ OBJS.bc=packet.cmo parsePGP.cmo sStream.cmo bdbwrap.cmo \
 	clean_keydb.cmo build.cmo fastbuild.cmo pbuild.cmo merge_keyfiles.cmo \
 	sksdump.cmo incdump.cmo dbserver.cmo reconComm.cmo recoverList.cmo \
 	catchup.cmo reconserver.cmo update_subkeys.cmo sks_do.cmo unit_tests.cmo \
-	ekey.cmo dump_graph.cmo
+	ekey.cmo ekey_conv.cmo dump_graph.cmo
 
 OBJS=$(OBJS.bc:.cmo=.cmx)
 

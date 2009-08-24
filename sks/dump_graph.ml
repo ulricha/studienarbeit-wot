@@ -29,6 +29,7 @@ struct
   open Conv
 
   open Ekey
+  open Ekey_conv
 
   let settings = {
     Keydb.withtxn = !Settings.transactions;
