@@ -1,21 +1,3 @@
-(************************************************************************)
-(* This file is part of SKS.  SKS is free software; you can
-   redistribute it and/or modify it under the terms of the GNU General
-   Public License as published by the Free Software Foundation; either
-   version 2 of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-   USA *)
-(***********************************************************************)
-
-
 TYPE_CONV_PATH "Ekey"
 
 open Format
@@ -40,13 +22,14 @@ let string_of_cert_level l =
     | Casual -> "Casual"
     | Positive -> "Positive"
 
-type esignature = { mutable sig_puid_signed: bool;
+type esiginfo = { mutable sig_puid_signed: bool;
 		   sig_level: int;
-		   sig_issuer: string;
 		   sig_ctime: float;
 		   sig_hash_alg: int;
 		   sig_pk_alg: int;
 		 } with sexp
+
+type esignature = (string * esiginfo) with sexp
 
 type ekey = { key_keyid: string;
 	      key_puid: string;
@@ -59,8 +42,8 @@ type ekey = { key_keyid: string;
 module Signature_set = Set.Make(struct
 				  type t = esignature
 				  let compare = 
-				    (fun s1 s2 -> 
-				       Pervasives.compare s1.sig_issuer s2.sig_issuer)
+				    (fun (i1, si1) (i2, si2) -> 
+				       Pervasives.compare i1 i2)
 				end)
 
 module Key_set = Set.Make(struct
@@ -69,3 +52,25 @@ module Key_set = Set.Make(struct
 			      (fun k1 k2 ->
 				 Pervasives.compare k1.key_keyid k2.key_keyid)
 			  end)
+
+let string_of_ekey ks =
+  let out = Buffer.create 70 in
+  let keyid_string = Fingerprint.keyid_to_string ks.key_keyid in
+    Buffer.add_string out keyid_string;
+    Buffer.add_char out ' ';
+    Buffer.add_string out ks.key_puid;
+    Buffer.add_char out ' ';
+    Buffer.add_string out (sprintf "(%s - %d bit)" (Packet.pubkey_algorithm_string ks.key_alg) ks.key_len);
+    Buffer.add_char out ' ';
+    Buffer.add_string out "signed by ";
+    List.iter (fun (issuer, esiginfo) ->
+		 Buffer.add_string out (Fingerprint.keyid_to_string issuer);
+		 let s =  (sprintf " (pk %s %d bit h %s) " 
+			     (Packet.pubkey_algorithm_string esiginfo.sig_pk_alg) 
+			     ks.key_len
+			     (Packet.hash_algorithm_string esiginfo.sig_hash_alg)) in
+		   Buffer.add_string out s;
+	      )
+      ks.key_signatures;
+    Buffer.contents out
+

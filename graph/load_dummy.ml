@@ -1,8 +1,11 @@
 open Batteries
 open SExpr
 open Printf
+open Graph
 
 open Ekey
+
+module Keyid_key_map = Map.Make(String)
 
 let () =
   let filename = Sys.argv.(1) in
@@ -14,9 +17,10 @@ let () =
       ignore (read_line ());
     end
     ;
-    let compare_ekey ek1 ek2 =
-      compare ek1.key_keyid ek2.key_keyid
+    let tbl = Keyid_key_map.empty in
+    let tbl = List.fold_left 
+	      (fun tbl ekey -> Keyid_key_map.add ekey.key_keyid ekey tbl)
+	      tbl
+	      ekey_list
     in
-    let a = List.sort ?cmp:(Some compare_ekey) ekey_list in
-      printf "list length %d \n" (List.length a)
-;;
+      ignore tbl

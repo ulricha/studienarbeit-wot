@@ -25,27 +25,6 @@ type pkey_siginfo = { info_key : Packet.packet;
 		      info_uids: sigpair_siginfo list
 		    }
 
-let string_of_ekey ks =
-  let out = Buffer.create 70 in
-  let keyid_string = Fingerprint.keyid_to_string ks.key_keyid in
-    Buffer.add_string out keyid_string;
-    Buffer.add_char out ' ';
-    Buffer.add_string out ks.key_puid;
-    Buffer.add_char out ' ';
-    Buffer.add_string out (sprintf "(%s - %d bit)" (Packet.pubkey_algorithm_string ks.key_alg) ks.key_len);
-    Buffer.add_char out ' ';
-    Buffer.add_string out "signed by ";
-    List.iter (fun signature ->
-		 Buffer.add_string out (Fingerprint.keyid_to_string signature.sig_issuer);
-		 let s =  (sprintf " (pk %s %d bit h %s) " 
-			     (Packet.pubkey_algorithm_string signature.sig_pk_alg) 
-			     ks.key_len
-			     (Packet.hash_algorithm_string signature.sig_hash_alg)) in
-		   Buffer.add_string out s;
-	      )
-      ks.key_signatures;
-    Buffer.contents out
-
 let pkey_to_pkey_siginfo k = 
   try
     let s = List.map Index.sig_to_siginfo k.KeyMerge.selfsigs in
@@ -129,16 +108,18 @@ let is_revoked pkey =
 let is_revoked_pkey_siginfo k =
   List.exists sig_is_revok k.info_selfsigs
 
-let siginfo_to_signature_struct issuer siginfo =
-  { sig_puid_signed = false; 
-    sig_level = siginfo.Index.sigtype; 
-    sig_issuer = issuer;
-    sig_hash_alg = siginfo.Index.siginfo_hash_alg;
-    sig_pk_alg = siginfo.Index.siginfo_pk_alg;
-    sig_ctime = match siginfo.Index.sig_creation_time with 
-      | Some time -> Int64.to_float time
-      | None -> Int64.to_float 0L;
-  }
+let siginfo_to_esignature issuer siginfo =
+  let esiginfo = 
+    { sig_puid_signed = false; 
+      sig_level = siginfo.Index.sigtype; 
+      sig_hash_alg = siginfo.Index.siginfo_hash_alg;
+      sig_pk_alg = siginfo.Index.siginfo_pk_alg;
+      sig_ctime = match siginfo.Index.sig_creation_time with 
+	| Some time -> Int64.to_float time
+	| None -> Int64.to_float 0L;
+    }
+  in
+    (issuer, esiginfo)
 
 let check_expired ctime signature =
   if is_signature_expired signature then
@@ -213,7 +194,7 @@ let iter_sigs keyid uid_packet siglist sig_accumulator puid pubkey_info =
 			      end
 			    else
 			      begin
-				sig_accumulator := Signature_set.add (siginfo_to_signature_struct issuer_keyid signature) !sig_accumulator;
+				sig_accumulator := Signature_set.add (siginfo_to_esignature issuer_keyid signature) !sig_accumulator;
 				sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
 				iter tl
 			      end

@@ -69,12 +69,12 @@ struct
 
   let fetch_missing_keys skipped_keyids keyids_so_far keys_so_far =
     let missing_keyids = ref Keyid_set.empty in
-    let add_if_missing signature =
-	if Keyid_set.mem signature.sig_issuer keyids_so_far then
+    let add_if_missing (issuer, _) =
+	if Keyid_set.mem issuer keyids_so_far then
 	  ()
 	else
-	  if not (Keyid_set.mem signature.sig_issuer skipped_keyids) then
-	    missing_keyids := Keyid_set.add signature.sig_issuer !missing_keyids
+	  if not (Keyid_set.mem issuer skipped_keyids) then
+	    missing_keyids := Keyid_set.add issuer !missing_keyids
 	  else
 	    ()
     in  
@@ -87,7 +87,7 @@ struct
 
   let filter_signatures_to_missing_keys keys keyids =
     let filter_list siglist =
-      List.filter (fun s -> Keyid_set.mem s.sig_issuer keyids) siglist
+      List.filter (fun (issuer, _) -> Keyid_set.mem issuer keyids) siglist
     in
     let rec iter l =
       match l with
