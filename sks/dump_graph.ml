@@ -80,7 +80,7 @@ struct
     in  
       List.iter 
 	(fun ks ->
-	   List.iter add_if_missing ks.key_signatures)
+	   List.iter add_if_missing ks.signatures)
 	keys_so_far
       ;
       Keyid_set.elements !missing_keyids
@@ -93,7 +93,7 @@ struct
       match l with
 	| key :: tl ->
 	    begin
-	      key.key_signatures <- filter_list key.key_signatures;
+	      key.signatures <- filter_list key.signatures;
 	      iter tl
 	    end
 	| [] -> 
@@ -114,13 +114,13 @@ struct
 	  begin
 	    count_iterations key_cnt;
 	    (* print_endline (string_of_key_struct key_struct) *)
-	    match key_struct.key_signatures with
+	    match key_struct.signatures with
 	      | [] -> 
 		  incr unsigned_cnt
 	      | _ -> 
 		  begin
 		    relevant_keys := key_struct :: !relevant_keys;
-		    relevant_keyids := Keyid_set.add key_struct.key_keyid !relevant_keyids
+		    relevant_keyids := Keyid_set.add key_struct.pki.key_keyid !relevant_keyids
 		  end
 	  end
       with

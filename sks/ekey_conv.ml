@@ -257,13 +257,16 @@ let key_to_ekey key =
 		let algo = pubkey_info.Packet.pk_alg in
 		let keylen = pubkey_info.Packet.pk_keylen in
 		let ctime = Int64.to_float pubkey_info.Packet.pk_ctime in
+		let pki = 
 		  { key_keyid = keyid; 
 		    key_puid = s; 
-		    key_signatures = siglist; 
 		    key_alg = algo; 
 		    key_len = keylen;
 		    key_ctime = ctime ;
 		  }
+		in
+		  { pki = pki; signatures = siglist }
+		  
   with
     | Skip_key s -> 
 	(* print_endline ("skip key: " ^ s); *)

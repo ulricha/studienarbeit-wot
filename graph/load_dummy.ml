@@ -19,7 +19,7 @@ let () =
     ;
     let tbl = Keyid_key_map.empty in
     let tbl = List.fold_left 
-	      (fun tbl ekey -> Keyid_key_map.add ekey.key_keyid ekey tbl)
+	      (fun tbl ekey -> Keyid_key_map.add ekey.pki.key_keyid ekey tbl)
 	      tbl
 	      ekey_list
     in

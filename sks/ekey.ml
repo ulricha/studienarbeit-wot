@@ -31,12 +31,15 @@ type esiginfo = { mutable sig_puid_signed: bool;
 
 type esignature = (string * esiginfo) with sexp
 
-type ekey = { key_keyid: string;
-	      key_puid: string;
-	      key_ctime: float;
-	      key_alg: int;
-	      key_len: int;
-	      mutable key_signatures: esignature list
+type epki = { key_keyid: string;
+		     key_puid: string;
+		     key_ctime: float;
+		     key_alg: int;
+		     key_len: int;
+		   } with sexp
+
+type ekey = { pki: epki;
+	      mutable signatures: esignature list;
 	    } with sexp
 
 module Signature_set = Set.Make(struct
@@ -50,27 +53,44 @@ module Key_set = Set.Make(struct
 			    type t = ekey
 			    let compare =
 			      (fun k1 k2 ->
-				 Pervasives.compare k1.key_keyid k2.key_keyid)
+				 Pervasives.compare k1.pki.key_keyid k2.pki.key_keyid)
 			  end)
+
+let hexstring digest = 
+  let result = String.create (String.length digest * 2) in
+  let hex = "0123456789ABCDEF" in
+    for i = 0 to String.length digest - 1 do
+      let c = Char.code digest.[i] in
+	result.[2*i] <- hex.[c lsr 4];
+	result.[2*i+1] <- hex.[c land 0xF]
+    done;
+    result
+
+let keyid_to_string ?(short=true) keyid = 
+  let hex = hexstring keyid in
+  if short
+  then String.sub hex (String.length hex - 8) 8
+  else hex
 
 let string_of_ekey ks =
   let out = Buffer.create 70 in
-  let keyid_string = Fingerprint.keyid_to_string ks.key_keyid in
+  let keyid_string = keyid_to_string ks.pki.key_keyid in
     Buffer.add_string out keyid_string;
     Buffer.add_char out ' ';
-    Buffer.add_string out ks.key_puid;
+    Buffer.add_string out ks.pki.key_puid;
     Buffer.add_char out ' ';
-    Buffer.add_string out (sprintf "(%s - %d bit)" (Packet.pubkey_algorithm_string ks.key_alg) ks.key_len);
+    let algo_string = (Packet.pubkey_algorithm_string ks.pki.key_alg) in
+      Buffer.add_string out (sprintf "(%s - %d bit)" algo_string ks.pki.key_len);
     Buffer.add_char out ' ';
     Buffer.add_string out "signed by ";
     List.iter (fun (issuer, esiginfo) ->
-		 Buffer.add_string out (Fingerprint.keyid_to_string issuer);
+		 Buffer.add_string out (keyid_to_string issuer);
 		 let s =  (sprintf " (pk %s %d bit h %s) " 
 			     (Packet.pubkey_algorithm_string esiginfo.sig_pk_alg) 
-			     ks.key_len
+			     ks.pki.key_len
 			     (Packet.hash_algorithm_string esiginfo.sig_hash_alg)) in
 		   Buffer.add_string out s;
 	      )
-      ks.key_signatures;
+      ks.signatures;
     Buffer.contents out
 
