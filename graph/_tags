@@ -1,1 +1,2 @@
-<*>: use_batteries,use_batteries_r,pkg_sexplib.syntax,pkg_ocamlgraph
+<*>: use_batteries,use_batteries_r,pkg_ocamlgraph
+"ekey.ml": pkg_sexplib.syntax
