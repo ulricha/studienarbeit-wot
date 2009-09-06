@@ -1,3 +1,0 @@
-<*>: use_batteries,use_batteries_r,pkg_ocamlgraph
-"ekey.ml": pkg_sexplib.syntax
-"load_dummy.ml": pkg_sexplib.syntax
