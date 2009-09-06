@@ -5,22 +5,7 @@ open Sexplib
 open Sexp
 open Conv
 
-type cert_level = Generic | Persona | Casual | Positive
-
-let cert_level_of_int d =
-  match d with
-    | 0x10 -> Generic
-    | 0x11 -> Persona
-    | 0x12 -> Casual
-    | 0x13 -> Positive
-    | _ -> failwith (sprintf "cert_level_of_int: unexpected vale %d" d)
-
-let string_of_cert_level l =
-  match l with
-    | Generic -> "Generic"
-    | Persona -> "Persona"
-    | Casual -> "Casual"
-    | Positive -> "Positive"
+open Misc
 
 type esiginfo = { mutable sig_puid_signed: bool;
 		   sig_level: int;
@@ -42,35 +27,12 @@ type ekey = { pki: epki;
 	      mutable signatures: esignature list;
 	    } with sexp
 
-module Signature_set = Set.Make(struct
-				  type t = esignature
-				  let compare = 
-				    (fun (i1, si1) (i2, si2) -> 
-				       Pervasives.compare i1 i2)
-				end)
+let compare_esignature esig1 esig2 =
+  let (i1, _) = esig1 in
+  let (i2, _) = esig2 in
+    Pervasives.compare i1 i2
 
-module Key_set = Set.Make(struct
-			    type t = ekey
-			    let compare =
-			      (fun k1 k2 ->
-				 Pervasives.compare k1.pki.key_keyid k2.pki.key_keyid)
-			  end)
-
-let hexstring digest = 
-  let result = String.create (String.length digest * 2) in
-  let hex = "0123456789ABCDEF" in
-    for i = 0 to String.length digest - 1 do
-      let c = Char.code digest.[i] in
-	result.[2*i] <- hex.[c lsr 4];
-	result.[2*i+1] <- hex.[c land 0xF]
-    done;
-    result
-
-let keyid_to_string ?(short=true) keyid = 
-  let hex = hexstring keyid in
-  if short
-  then String.sub hex (String.length hex - 8) 8
-  else hex
+let compare_ekey k1 k2 = Pervasives.compare k1.pki.key_keyid k2.pki.key_keyid
 
 let string_of_ekey ks =
   let out = Buffer.create 70 in

@@ -11,12 +11,16 @@ open Ekey
 
 module Keyid_set = Set.Make(String)
 
+module Signature_set = Set.Make(struct
+				  type t = esignature
+				  let compare = compare_esignature
+				end)
+
 exception Unparseable_signature_packet
 exception Signature_without_creation_time
 exception Skip_key of string
 exception Skip_uid of string
 exception Skipped_key of string
-
 
 type sigpair_siginfo = Packet.packet * Index.siginfo list
 

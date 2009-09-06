@@ -30,6 +30,7 @@ struct
 
   open Ekey
   open Ekey_conv
+  open Misc
 
   let settings = {
     Keydb.withtxn = !Settings.transactions;
@@ -57,15 +58,6 @@ struct
 	| 16 -> (* 128-bit v3 fingerprint.  Not supported *)
 	    failwith "128-bit v3 fingerprints not implemented"
 	| _ -> failwith "unknown keyid type"
-
-  let count_iterations cnt =
-    if !cnt mod 10000 = 0 then
-      begin
-	print_endline (string_of_int !cnt);
-	incr cnt
-      end
-    else
-      incr cnt
 
   let fetch_missing_keys skipped_keyids keyids_so_far keys_so_far =
     let missing_keyids = ref Keyid_set.empty in
@@ -112,8 +104,7 @@ struct
       try 
 	let key_struct = key_to_ekey key in
 	  begin
-	    count_iterations key_cnt;
-	    (* print_endline (string_of_key_struct key_struct) *)
+	    display_iterations key_cnt "fetch_keys";
 	    match key_struct.signatures with
 	      | [] -> 
 		  incr unsigned_cnt
@@ -127,7 +118,7 @@ struct
 	| Skipped_key keyid ->
 	    begin
 	      incr skipped_cnt;
-	      count_iterations key_cnt;
+	      display_iterations key_cnt "fetch_keys";
 	      skipped_keyids := Keyid_set.add keyid !skipped_keyids
 	    end
     in
@@ -165,14 +156,9 @@ struct
 	  
   let run () =
     Keydb.open_dbs settings;
-    let t1 = Unix.time () in
-      begin
-	let keys = fetch_keys () in
-	let t2 = Unix.time () in
-	  begin
-	    print_endline ("time " ^ (string_of_float (t2 -. t1)));
-	    let filename = "sks_dump.sexp" in
-	      dump_sexp_file filename keys
-	  end
-      end
+    begin
+      let keys = time_evaluation fetch_keys in
+      let filename = "sks_dump.sexp" in
+	dump_sexp_file filename keys
+    end
 end
