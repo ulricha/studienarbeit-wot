@@ -171,7 +171,6 @@ struct
 	let t2 = Unix.time () in
 	  begin
 	    print_endline ("time " ^ (string_of_float (t2 -. t1)));
-	    Gc.full_major ();
 	    let filename = "sks_dump.sexp" in
 	      dump_sexp_file filename keys
 	  end
