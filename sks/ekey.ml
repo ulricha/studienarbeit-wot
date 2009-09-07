@@ -41,6 +41,7 @@ let string_of_ekey ks =
     Buffer.add_char out ' ';
     Buffer.add_string out ks.pki.key_puid;
     Buffer.add_char out ' ';
+    Buffer.add_string out ( sprintf "created %s "(string_of_float ks.pki.key_ctime));
     let algo_string = (Packet.pubkey_algorithm_string ks.pki.key_alg) in
       Buffer.add_string out (sprintf "(%s - %d bit)" algo_string ks.pki.key_len);
     Buffer.add_char out ' ';
