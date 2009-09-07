@@ -109,6 +109,7 @@ struct
     let unsigned_cnt = ref 0 in
     let relevant_keyids = ref Keyid_set.empty in
     let skipped_keyids = ref Keyid_set.empty in
+    let relevant_keys = Hashtbl.create 320000 in
     let relevant_keys = ref [] in
     let extract_key ~hash ~key =
       try 
@@ -145,6 +146,52 @@ struct
       printf "unsigned %d\n" !unsigned_cnt;
       printf "relevant keys in list %d\n" (List.length !relevant_keys);
       filter_signatures_to_missing_keys !relevant_keys !relevant_keyids
+
+  exception No_difference
+
+  let decide_who_stays l = 
+    printf "decide on list with len %d\n" (List.length l);
+    let find_newest keylist =
+      let cmp_ctime = (fun k1 k2 -> compare k1.pki.key_ctime k2.pki.key_ctime) in
+      let sorted = List.sort ~cmp:cmp_ctime keylist
+      in
+      let last = List.last sorted in
+      let first = List.hd sorted in
+	if last.pki.key_ctime = first.pki.key_ctime then
+	  raise No_difference
+	else
+	  last
+    in
+    let find_most_ids keylist =
+      let cmp_sigcnt = 	
+	(fun k1 k2 -> 
+	   compare (List.length k1.signatures) (List.length k2.signatures)) in
+      let sorted = List.sort ~cmp:cmp_sigcnt keylist in
+      let last = List.last sorted in
+      let first = List.hd sorted in
+	if (List.length last.signatures) = (List.length first.signatures) then
+	  raise No_difference
+	else
+	  last
+    in
+      try 
+	[find_newest l] 
+      with No_difference ->
+	try
+	  [find_most_ids l]
+	with No_difference ->
+	  [List.hd l]
+
+  let filter_keys_with_duplicate_keyids keylist =
+    let grplist = Misc.group compare_ekey keylist in
+    let filtered_grplist = List.map 
+      (function 
+	 | key :: [] as l -> l
+	 | l ->  decide_who_stays l
+      )
+      grplist 
+    in
+      List.flatten filtered_grplist
 	
   let fetch_single_key keyid =
     match get_keys_by_keyid keyid with
