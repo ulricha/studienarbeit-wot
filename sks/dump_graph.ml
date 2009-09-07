@@ -78,25 +78,30 @@ struct
       Keyid_set.elements !missing_keyids
 
   let filter_signatures_to_missing_keys keys keyids =
+    let filtered_keys = ref 0 in
     let filtered_sigs = ref 0 in
     let filter_list siglist =
       List.filter (fun (issuer, _) -> Keyid_set.mem issuer keyids) siglist
     in
-    let rec iter l =
-      match l with
+    let rec filter_keys keylist filtered_keys =
+      match keylist with
 	| key :: tl ->
 	    begin
 	      let before = List.length key.signatures in
 		key.signatures <- filter_list key.signatures;
 		let diff = before - (List.length key.signatures) in
 		  filtered_sigs := !filtered_sigs + diff;
-		iter tl
+		  if key.signatures = [] then 
+		    filter_keys tl filtered_keys
+		  else
+		    filter_keys tl (key :: filtered_keys)
 	    end
 	| [] -> 
-	    ()
+	    filtered_keys
     in
-      iter !keys;
-      printf "filtered %d signatures\n" !filtered_sigs
+    let l = filter_keys keys [] in
+      printf "filtered %d signatures %d keys\n" !filtered_sigs !filtered_keys;
+      l
 
   let fetch_keys () =
     let key_cnt = ref 0 in
@@ -135,15 +140,11 @@ struct
 	      skipped_keyids := Keyid_set.add keyid !skipped_keyids
 	    end
     in
-      begin
-	Keydb.iter ~f:extract_key;
-	printf "skipped %d\n" !skipped_cnt;
-	printf "unsigned %d\n" !unsigned_cnt;
-	printf "relevant keys in list %d\n" (List.length !relevant_keys);
-	filter_signatures_to_missing_keys relevant_keys !relevant_keyids;
-      end
-      ;
-      !relevant_keys
+      Keydb.iter ~f:extract_key;
+      printf "skipped %d\n" !skipped_cnt;
+      printf "unsigned %d\n" !unsigned_cnt;
+      printf "relevant keys in list %d\n" (List.length !relevant_keys);
+      filter_signatures_to_missing_keys !relevant_keys !relevant_keyids
 	
   let fetch_single_key keyid =
     match get_keys_by_keyid keyid with
