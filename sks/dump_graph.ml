@@ -110,8 +110,16 @@ struct
 		  incr unsigned_cnt
 	      | _ -> 
 		  begin
-		    relevant_keys := key_struct :: !relevant_keys;
-		    relevant_keyids := Keyid_set.add key_struct.pki.key_keyid !relevant_keyids
+		    if Keyid_set.mem key_struct.pki.key_keyid !relevant_keyids then
+		      let dupe = List.find (fun ekey -> ekey.pki.key_keyid = key_struct.pki.key_keyid) !relevant_keys in
+			print_endline "DUPE!";
+			print_endline (string_of_ekey dupe);
+			print_endline (string_of_ekey key_struct)
+		    else
+		      begin
+			relevant_keys := key_struct :: !relevant_keys;
+			relevant_keyids := Keyid_set.add key_struct.pki.key_keyid !relevant_keyids
+		      end
 		  end
 	  end
       with

@@ -52,7 +52,6 @@ let ekey_list_to_sexp_graph ekey_list =
   let key_cnt = ref 0 in
   let sig_cnt = ref 0 in
   let varray = Array.of_list (List.map (fun ekey -> ekey.pki) ekey_list) in
-    print_endline "array created";
   let lookup_key_index = lookup_key_index_in_array varray in
   let edge_list = Ref_list.empty () in
   let one_key_signatures index ekey =
@@ -123,6 +122,7 @@ let () =
     let ekey_list = List.fast_sort compare_ekey (List.map ekey_of_sexp sexp_list) in
       begin
 	printf "loaded %d ekeys from dump file\n" (List.length ekey_list);
+	printf "%d %d\n"  (List.length (List.sort_unique compare_ekey ekey_list)) (List.length ekey_list);
 	let (vl, el) as g = time_evaluation (fun () -> ekey_list_to_sexp_graph ekey_list) in
 	  time_evaluation (fun () -> dump_sexp_graph_to_file "vertex_list.sexp" "edge_list.sexp" g)
       end
