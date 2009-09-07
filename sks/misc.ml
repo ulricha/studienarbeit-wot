@@ -10,7 +10,7 @@ let hexstring digest =
     done;
     result
 
-let keyid_to_string ?(short=true) keyid = 
+let keyid_to_string ?(short=false) keyid = 
   let hex = hexstring keyid in
   if short
   then String.sub hex (String.length hex - 8) 8
