@@ -78,6 +78,7 @@ struct
       Keyid_set.elements !missing_keyids
 
   let filter_signatures_to_missing_keys keys keyids =
+    let filtered_sigs = ref 0 in
     let filter_list siglist =
       List.filter (fun (issuer, _) -> Keyid_set.mem issuer keyids) siglist
     in
@@ -85,13 +86,17 @@ struct
       match l with
 	| key :: tl ->
 	    begin
-	      key.signatures <- filter_list key.signatures;
-	      iter tl
+	      let before = List.length key.signatures in
+		key.signatures <- filter_list key.signatures;
+		let diff = before - (List.length key.signatures) in
+		  filtered_sigs := !filtered_sigs + diff;
+		iter tl
 	    end
 	| [] -> 
 	    ()
     in
-      iter !keys
+      iter !keys;
+      printf "filtered %d signatures\n" !filtered_sigs
 
   let fetch_keys () =
     let key_cnt = ref 0 in
