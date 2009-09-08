@@ -24,7 +24,7 @@ ifndef OCAMLC
 	OCAMLC=ocamlc
 endif
 ifndef OCAMLOPT
-	OCAMLOPT=ocamlopt
+	OCAMLOPT=ocamlopt.opt
 endif
 ifndef CAMLP4O
 	CAMLP4O=camlp4o
@@ -45,8 +45,8 @@ else
 	OCAMLLIB= -ccopt $(BDBLIB)
 endif
 
-CAMLINCLUDE= -I lib -I bdb -I `ocamlfind query extlib` -I `ocamlfind query sexplib` -I `ocamlfind query type-conv`
-CAMLP4=-pp "$(CAMLP4O) $(CAMLINCLUDE) pa_type_conv.cmo pa_sexp_conv.cmo"
+CAMLINCLUDE= -I lib -I bdb -I `ocamlfind query extlib` -I `ocamlfind query sexplib`
+CAMLP4=-pp "$(CAMLP4O) $(CAMLINCLUDE)   -I `ocamlfind query type-conv` pa_type_conv.cmo pa_sexp_conv.cmo"
 COMMONCAMLFLAGS=$(CAMLINCLUDE) $(OCAMLLIB) -ccopt -Lbdb -dtypes -ccopt -pthread -warn-error A
 OCAMLDEP=ocamldep $(CAMLP4)
 CAMLLIBS=unix.cma str.cma bdb.cma nums.cma bigarray.cma cryptokit.cma extLib.cma sexplib.cma

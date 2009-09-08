@@ -28,6 +28,8 @@ CAMLLIBS=unix.cma str.cma mylibs.cma
 OCAMLFLAGS=$(COMMONCAMLFLAGS) -g 
 OCAMLOPTFLAGS=$(COMMONCAMLFLAGS) -inline 40 
 
+OCAMLOPT=ocamlopt.opt
+
 ifndef LIBDB
 LIBDB=-ldb-4.7
 endif

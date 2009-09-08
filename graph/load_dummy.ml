@@ -43,7 +43,9 @@ let lookup_key_index_in_array array keyid =
 	match cmp keyid (Array.get array mid)  with
 	  | a when a < 0 -> search low (mid-1)
 	  | b when b > 0 -> search (mid+1) high
-	  | _ -> mid
+	  | _ -> 
+	      assert ((cmp keyid (Array.get array mid)) = 0);
+	      mid
   in
     search 0 ((Array.length array) - 1)
 
