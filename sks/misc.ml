@@ -52,21 +52,3 @@ let display_iterations counter operation =
   incr counter;
   if (!counter mod 10000) = 0 then
     printf "%s: %d iterations\n" operation !counter
-
-let group cmp lst = 
-  let sorted = List.sort cmp lst in
-  let fold first rest = List.fold_left
-    (fun (acc, agr, last) elem ->
-       if (cmp last elem) = 0 then (acc, elem::agr, elem)
-        else (agr::acc, [elem], elem)
-    )
-    ([], [first], first)
-    rest
-   in 
-  match sorted with
-   | [] -> []
-   | hd::tl ->
-   begin
-    let groups, lastgr, _ = fold hd tl in
-    List.rev_map List.rev (lastgr::groups)
-   end

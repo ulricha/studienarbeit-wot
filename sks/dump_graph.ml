@@ -20,6 +20,7 @@
 module F(M:sig end) = 
 struct
   open ExtList
+  open ExtHashtbl
   open Option
   open Printf
 
@@ -81,7 +82,7 @@ struct
     let filtered_keys = ref 0 in
     let filtered_sigs = ref 0 in
     let filter_list siglist =
-      List.filter (fun (issuer, _) -> Keyid_set.mem issuer keyids) siglist
+      List.filter (fun (issuer, _) -> Hashtbl.mem keyids issuer) siglist
     in
     let rec filter_keys keylist filtered_keys =
       match keylist with
@@ -103,14 +104,27 @@ struct
       printf "filtered %d signatures %d keys\n" !filtered_sigs !filtered_keys;
       l
 
+  let decide_who_stays ekey1 ekey2 = 
+    let ctime1 = ekey1.pki.key_ctime in
+    let ctime2 = ekey2.pki.key_ctime in
+      if ctime1 > ctime2 then
+	ekey1
+      else if ctime2 > ctime1 then
+	ekey2
+      else
+	let nr_sigs1 = List.length ekey1.signatures in
+	let nr_sigs2 = List.length ekey2.signatures in
+	  if nr_sigs1 >= nr_sigs2 then
+	    ekey1
+	  else
+	    ekey2
+
   let fetch_keys () =
     let key_cnt = ref 0 in
     let skipped_cnt = ref 0 in
     let unsigned_cnt = ref 0 in
-    let relevant_keyids = ref Keyid_set.empty in
     let skipped_keyids = ref Keyid_set.empty in
     let relevant_keys = Hashtbl.create 320000 in
-    let relevant_keys = ref [] in
     let extract_key ~hash ~key =
       try 
 	let key_struct = key_to_ekey key in
@@ -121,16 +135,13 @@ struct
 		  incr unsigned_cnt
 	      | _ -> 
 		  begin
-		    if Keyid_set.mem key_struct.pki.key_keyid !relevant_keyids then
-		      let dupe = List.find (fun ekey -> ekey.pki.key_keyid = key_struct.pki.key_keyid) !relevant_keys in
+		    try
+		      let dupe = Hashtbl.find relevant_keys key_struct.pki.key_keyid in
 			print_endline "DUPE!";
 			print_endline (string_of_ekey dupe);
-			print_endline (string_of_ekey key_struct)
-		    else
-		      begin
-			relevant_keys := key_struct :: !relevant_keys;
-			relevant_keyids := Keyid_set.add key_struct.pki.key_keyid !relevant_keyids
-		      end
+			print_endline (string_of_ekey key_struct);
+			Hashtbl.add relevant_keys key_struct.pki.key_keyid (decide_who_stays key_struct dupe)
+		    with Not_found -> Hashtbl.add relevant_keys key_struct.pki.key_keyid key_struct
 		  end
 	  end
       with
@@ -144,11 +155,13 @@ struct
       Keydb.iter ~f:extract_key;
       printf "skipped %d\n" !skipped_cnt;
       printf "unsigned %d\n" !unsigned_cnt;
-      printf "relevant keys in list %d\n" (List.length !relevant_keys);
-      filter_signatures_to_missing_keys !relevant_keys !relevant_keyids
+      printf "relevant keys in list %d\n" (Hashtbl.length relevant_keys);
+      let keylist = List.of_enum (Hashtbl.values relevant_keys) in
+      filter_signatures_to_missing_keys keylist relevant_keys
 
   exception No_difference
 
+(*
   let decide_who_stays l = 
     printf "decide on list with len %d\n" (List.length l);
     let find_newest keylist =
@@ -181,17 +194,7 @@ struct
 	  [find_most_ids l]
 	with No_difference ->
 	  [List.hd l]
-
-  let filter_keys_with_duplicate_keyids keylist =
-    let grplist = Misc.group compare_ekey keylist in
-    let filtered_grplist = List.map 
-      (function 
-	 | key :: [] as l -> l
-	 | l ->  decide_who_stays l
-      )
-      grplist 
-    in
-      List.flatten filtered_grplist
+*)
 	
   let fetch_single_key keyid =
     match get_keys_by_keyid keyid with
