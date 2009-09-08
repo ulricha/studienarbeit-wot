@@ -41,11 +41,11 @@ let hash_keyid keyid =
   let x = x lor (int_of_char keyid.[0]) in
     x
 
-let time_evaluation f =
+let time_evaluation f operation =
   let t1 = Unix.time () in
   let ret = f () in
   let t2 = Unix.time() in
-    printf "%d sec\n" (int_of_float (t2 -. t1));
+    printf "%s: %d sec\n" operation (int_of_float (t2 -. t1));
     ret
 
 let display_iterations counter operation =

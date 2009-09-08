@@ -249,7 +249,7 @@ struct
   let run () =
     Keydb.open_dbs settings;
     begin
-      let keys = time_evaluation fetch_keys in
+      let keys = time_evaluation fetch_keys "fetch_keys" in
       let filename = "sks_dump.sexp" in
 	dump_sexp_file filename keys
     end
