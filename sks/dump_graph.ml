@@ -63,15 +63,15 @@ struct
 
   let ekey_list_to_sexp_graph ekey_list =
     print_endline "ekey_list_to_sexp_graph";
-    let key_cnt = ref 0 in
-    let sig_cnt = ref 0 in
+(*    let key_cnt = ref 0 in
+    let sig_cnt = ref 0 in*)
     let vlist = List.map (fun ekey -> ekey.pki) ekey_list in
     let edge_list = RefList.empty () in
     let one_key_signatures ekey =
       let signee_id = ekey.pki.key_keyid in
       let signer_list = List.fold_left 
 	(fun l esig ->
-	   display_iterations sig_cnt "sigs";
+	   (*display_iterations sig_cnt "sigs";*)
 	   let (signer_id, siginfo) = esig in
 	     (signer_id, siginfo) :: l)
 	[]
@@ -81,7 +81,7 @@ struct
     in
       List.iter
 	(fun ekey -> 
-	   display_iterations key_cnt "keys";
+	   (*display_iterations key_cnt "keys";*)
 	   RefList.push edge_list (one_key_signatures ekey)
 	)
 	ekey_list

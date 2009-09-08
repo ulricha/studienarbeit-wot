@@ -241,7 +241,7 @@ let key_to_ekey key =
 			   sig_accu := Signature_set.union !this_uid_sigs !sig_accu
 			 end
 		       with
-			 | Skip_uid s-> 
+			 | Skip_uid s -> 
 			     ()
 		   end
 	       | Packet.User_Attribute_Packet ->
