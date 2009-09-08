@@ -65,36 +65,34 @@ struct
     print_endline "ekey_list_to_sexp_graph";
     let key_cnt = ref 0 in
     let sig_cnt = ref 0 in
-    let varray = Array.of_list (List.map (fun ekey -> ekey.pki) ekey_list) in
-    let lookup_key_index = lookup_key_index_in_array varray in
+    let vlist = List.map (fun ekey -> ekey.pki) ekey_list in
     let edge_list = RefList.empty () in
-    let one_key_signatures index ekey =
-      let signee_index = index in
+    let one_key_signatures ekey =
+      let signee_id = ekey.pki.key_keyid in
       let signer_list = List.fold_left 
 	(fun l esig ->
 	   display_iterations sig_cnt "sigs";
-	   let (signer_keyid, siginfo) = esig in
-	   let signer_index = lookup_key_index signer_keyid in
-	     (signer_index, siginfo) :: l)
+	   let (signer_id, siginfo) = esig in
+	     (signer_id, siginfo) :: l)
 	[]
 	ekey.signatures
       in
-	(signee_index, signer_list)
+	(signee_id, signer_list)
     in
-      List.iteri 
-	(fun i ekey -> 
+      List.iter
+	(fun ekey -> 
 	   display_iterations key_cnt "keys";
-	   RefList.push edge_list (one_key_signatures i ekey)
+	   RefList.push edge_list (one_key_signatures ekey)
 	)
 	ekey_list
       ;
-      (varray, (RefList.to_list edge_list))
+      (vlist, (RefList.to_list edge_list))
 
   let dump_sexp_graph_to_file vertex_filename edge_filename g =
     let (vertex_list, edge_list) = g in
     let v_channel = open_out vertex_filename in
     let e_channel = open_out edge_filename in
-      Array.iter
+      List.iter
 	(fun v ->
 	   let s = sexp_of_epki v in
 	     output_mach v_channel s;	
@@ -250,7 +248,8 @@ struct
     Keydb.open_dbs settings;
     begin
       let keys = time_evaluation fetch_keys "fetch_keys" in
-      let filename = "sks_dump.sexp" in
-	dump_sexp_file filename keys
+      let vertexf = Sys.argv.(1) in
+      let edgef = Sys.argv.(2) in
+	dump_sexp_graph_to_file vertexf edgef (ekey_list_to_sexp_graph keys)
     end
 end
