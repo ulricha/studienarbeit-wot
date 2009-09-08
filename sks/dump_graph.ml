@@ -158,6 +158,7 @@ struct
 		  if key.signatures = [] then 
 		    begin
 		      incr filtered_keys;
+		      Hashtbl.remove keyids key.pki.key_keyid;
 		      filter_keys tl accu
 		    end
 		  else
@@ -223,7 +224,14 @@ struct
       printf "unsigned %d\n" !unsigned_cnt;
       printf "relevant keys in list %d\n" (Hashtbl.length relevant_keys);
       let keylist = List.of_enum (Hashtbl.values relevant_keys) in
-	filter_signatures_to_missing_keys keylist relevant_keys
+      let rec loop last = 
+	let filtered = filter_signatures_to_missing_keys last relevant_keys in
+	if (List.length filtered) < (List.length last) then
+	  loop filtered
+	else
+	  last
+      in
+	loop keylist
 
   let fetch_single_key keyid =
     match get_keys_by_keyid keyid with
