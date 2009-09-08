@@ -45,6 +45,32 @@ struct
 
   module Keyid_set = Set.Make(String)
 
+  let get_keys_by_keyid keyid =
+    let keyid_length = String.length keyid in
+    let short_keyid = String.sub keyid (keyid_length - 4) 4 in
+    let keys = Keydb.get_by_short_subkeyid short_keyid in
+      match keyid_length with
+	| 4 -> (* 32-bit keyid.  No further filtering required. *)
+	    keys
+	| 8 -> (* 64-bit keyid *) 
+	    List.filter (fun key -> (Fingerprint.from_key key).Fingerprint.keyid = keyid ) keys
+	| 20 -> (* 160-bit v. 4 fingerprint *)
+	    List.filter (fun key -> keyid = (Fingerprint.from_key key).Fingerprint.fp ) keys
+	| 16 -> (* 128-bit v3 fingerprint.  Not supported *)
+	    failwith "128-bit v3 fingerprints not implemented"
+	| _ -> failwith "unknown keyid type"
+
+  let fetch_single_key keyid =
+    match get_keys_by_keyid keyid with
+      | key :: tl ->
+	  begin
+	    try
+	      Some (key_to_ekey key)
+	    with Skipped_key keyid -> None
+	  end
+      | [] -> None
+
+
   let lookup_key_index_in_array array keyid =
     let cmp keyid epki = compare keyid epki.key_keyid in
     let rec search low high =
@@ -108,25 +134,11 @@ struct
 	)
 	edge_list
 
-  let get_keys_by_keyid keyid =
-    let keyid_length = String.length keyid in
-    let short_keyid = String.sub keyid (keyid_length - 4) 4 in
-    let keys = Keydb.get_by_short_subkeyid short_keyid in
-      match keyid_length with
-	| 4 -> (* 32-bit keyid.  No further filtering required. *)
-	    keys
-	| 8 -> (* 64-bit keyid *) 
-	    List.filter (fun key -> (Fingerprint.from_key key).Fingerprint.keyid = keyid ) keys
-	| 20 -> (* 160-bit v. 4 fingerprint *)
-	    List.filter (fun key -> keyid = (Fingerprint.from_key key).Fingerprint.fp ) keys
-	| 16 -> (* 128-bit v3 fingerprint.  Not supported *)
-	    failwith "128-bit v3 fingerprints not implemented"
-	| _ -> failwith "unknown keyid type"
 
-  let fetch_missing_keys skipped_keyids keyids_so_far keys_so_far =
+  let list_missing_keys skipped_keyids keys_so_far =
     let missing_keyids = ref Keyid_set.empty in
     let add_if_missing (issuer, _) =
-	if Keyid_set.mem issuer keyids_so_far then
+	if Hashtbl.mem keys_so_far issuer  then
 	  ()
 	else
 	  if not (Keyid_set.mem issuer skipped_keyids) then
@@ -134,10 +146,8 @@ struct
 	  else
 	    ()
     in  
-      List.iter 
-	(fun ks ->
-	   List.iter add_if_missing ks.signatures)
-	keys_so_far
+      Enum.iter 
+	(fun ekey -> List.iter add_if_missing ekey.signatures) (Hashtbl.values keys_so_far)
       ;
       Keyid_set.elements !missing_keyids
 
@@ -186,6 +196,15 @@ struct
 	  else
 	    ekey2
 
+  let add_key_without_duplicate keys_so_far newkey =
+    try
+      let dupe = Hashtbl.find keys_so_far newkey.pki.key_keyid in
+	print_endline "DUPE!";
+	print_endline (string_of_ekey dupe);
+	print_endline (string_of_ekey newkey);
+	Hashtbl.add keys_so_far newkey.pki.key_keyid (decide_who_stays newkey dupe)
+    with Not_found -> Hashtbl.add keys_so_far newkey.pki.key_keyid newkey
+
   let fetch_keys () =
     let key_cnt = ref 0 in
     let skipped_cnt = ref 0 in
@@ -198,18 +217,8 @@ struct
 	  begin
 	    display_iterations key_cnt "fetch_keys";
 	    match key_struct.signatures with
-	      | [] -> 
-		  incr unsigned_cnt
-	      | _ -> 
-		  begin
-		    try
-		      let dupe = Hashtbl.find relevant_keys key_struct.pki.key_keyid in
-			print_endline "DUPE!";
-			print_endline (string_of_ekey dupe);
-			print_endline (string_of_ekey key_struct);
-			Hashtbl.add relevant_keys key_struct.pki.key_keyid (decide_who_stays key_struct dupe)
-		    with Not_found -> Hashtbl.add relevant_keys key_struct.pki.key_keyid key_struct
-		  end
+	      | [] -> incr unsigned_cnt
+	      | _ -> add_key_without_duplicate relevant_keys key_struct
 	  end
       with
 	| Skipped_key keyid ->
@@ -223,25 +232,36 @@ struct
       printf "skipped %d\n" !skipped_cnt;
       printf "unsigned %d\n" !unsigned_cnt;
       printf "relevant keys in list %d\n" (Hashtbl.length relevant_keys);
-      let keylist = List.of_enum (Hashtbl.values relevant_keys) in
-      let rec loop last = 
-	let filtered = filter_signatures_to_missing_keys last relevant_keys in
-	if (List.length filtered) < (List.length last) then
-	  loop filtered
-	else
-	  last
-      in
-	loop keylist
+      let fetched_keys = ref 0 in
+      let fetch_misses = ref 0 in
+      let missing_keyids = list_missing_keys !skipped_keyids relevant_keys in
+      let nr_missing_keys = List.length missing_keyids in
+	printf "%d keys to fetch\n" nr_missing_keys;
+	List.iter 
+	  (fun missing_id -> 
+	     match fetch_single_key missing_id with
+	       | Some ekey -> 
+		   incr fetched_keys;
+		   print_endline ("fetched key " ^ (keyid_to_string missing_id));
+		   add_key_without_duplicate relevant_keys ekey
+	       | None -> 
+		   incr fetch_misses;
+		   print_endline ("missed key " ^ (keyid_to_string missing_id));
+		   skipped_keyids := Keyid_set.add missing_id !skipped_keyids
+	  )
+	  missing_keyids
+	;
+	printf "missing keys: %d fetched: %d missed: %d\n" nr_missing_keys !fetched_keys !fetch_misses;
+	let keylist = List.of_enum (Hashtbl.values relevant_keys) in
+	let rec loop last = 
+	  let filtered = filter_signatures_to_missing_keys last relevant_keys in
+	    if (List.length filtered) < (List.length last) then
+	      loop filtered
+	    else
+	      last
+	in
+	  loop keylist
 
-  let fetch_single_key keyid =
-    match get_keys_by_keyid keyid with
-      | key :: tl ->
-	  begin
-	    try
-	      Some (key_to_ekey key)
-	    with Skipped_key keyid -> None
-	  end
-      | [] -> None
 
   let dump_sexp_file file ekey_list =
     let chan = open_out file in
