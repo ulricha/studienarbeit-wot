@@ -248,8 +248,8 @@ struct
     Keydb.open_dbs settings;
     begin
       let keys = time_evaluation fetch_keys "fetch_keys" in
-      let vertexf = Sys.argv.(1) in
-      let edgef = Sys.argv.(2) in
+      let vertexf = "vertex.sexp" in
+      let edgef = "edge.sexp" in
 	dump_sexp_graph_to_file vertexf edgef (ekey_list_to_sexp_graph keys)
     end
 end
