@@ -45,10 +45,10 @@ else
 	OCAMLLIB= -ccopt $(BDBLIB)
 endif
 
-CAMLP4=-pp $(CAMLP4O)
 CAMLINCLUDE= -I lib -I bdb -I `ocamlfind query extlib` -I `ocamlfind query sexplib` -I `ocamlfind query type-conv`
+CAMLP4=-pp "$(CAMLP4O) $(CAMLINCLUDE) pa_type_conv.cmo pa_sexp_conv.cmo"
 COMMONCAMLFLAGS=$(CAMLINCLUDE) $(OCAMLLIB) -ccopt -Lbdb -dtypes -ccopt -pthread -warn-error A
-OCAMLDEP=ocamldep $(CAMLP4) 
+OCAMLDEP=ocamldep $(CAMLP4)
 CAMLLIBS=unix.cma str.cma bdb.cma nums.cma bigarray.cma cryptokit.cma extLib.cma sexplib.cma
 OCAMLFLAGS=$(COMMONCAMLFLAGS) -g $(CAMLLIBS)
 OCAMLOPTFLAGS=$(COMMONCAMLFLAGS) -inline 40 $(CAMLLIBS:.cma=.cmxa) 
@@ -407,7 +407,7 @@ cleanall: clean bdbclean
 
 # Dependencies
 dep: 
-	$(OCAMLDEP) $(INCLUDES) *.ml *.mli > .depend
+	$(OCAMLDEP) $(CAMLINCLUDE) *.ml *.mli > .depend
 
 include .depend
 
