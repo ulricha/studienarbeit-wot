@@ -147,7 +147,7 @@ struct
     let filter_list siglist =
       List.filter (fun (issuer, _) -> Hashtbl.mem keyids issuer) siglist
     in
-    let rec filter_keys keylist filtered_keys =
+    let rec filter_keys keylist accu =
       match keylist with
 	| key :: tl ->
 	    begin
@@ -156,12 +156,15 @@ struct
 		let diff = before - (List.length key.signatures) in
 		  filtered_sigs := !filtered_sigs + diff;
 		  if key.signatures = [] then 
-		    filter_keys tl filtered_keys
+		    begin
+		      incr filtered_keys;
+		      filter_keys tl accu
+		    end
 		  else
-		    filter_keys tl (key :: filtered_keys)
+		    filter_keys tl (key :: accu)
 	    end
 	| [] -> 
-	    filtered_keys
+	    accu
     in
     let l = filter_keys keys [] in
       printf "filtered %d signatures %d keys\n" !filtered_sigs !filtered_keys;
