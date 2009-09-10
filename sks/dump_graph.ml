@@ -154,6 +154,16 @@ struct
   let filter_signatures_to_missing_keys keys keyids =
     let filtered_keys = ref 0 in
     let filtered_sigs = ref 0 in
+    let signing_keys_single siglist = List.fold_left 
+      (fun signing_keys (signer_id, _) -> Keyid_set.add signer_id signing_keys)
+      Keyid_set.empty
+      siglist
+    in
+    let signing_keyids = List.fold_left
+      (fun set key -> Keyid_set.union set (signing_keys_single key.signatures))
+      Keyid_set.empty
+      keys
+    in
     let filter_list siglist =
       List.filter (fun (issuer, _) -> Hashtbl.mem keyids issuer) siglist
     in
@@ -165,7 +175,7 @@ struct
 		key.signatures <- filter_list key.signatures;
 		let diff = before - (List.length key.signatures) in
 		  filtered_sigs := !filtered_sigs + diff;
-		  if key.signatures = [] then 
+		  if key.signatures = [] && (not (Keyid_set.mem key.pki.key_keyid signing_keyids)) then 
 		    begin
 		      incr filtered_keys;
 		      Hashtbl.remove keyids key.pki.key_keyid;
@@ -253,15 +263,7 @@ struct
 	;
 	printf "missing keys: %d fetched: %d missed: %d\n" nr_missing_keys !fetched_keys !fetch_misses;
 	let keylist = List.of_enum (Hashtbl.values relevant_keys) in
-	let rec loop last = 
-	  let filtered = filter_signatures_to_missing_keys last relevant_keys in
-	    if (List.length filtered) < (List.length last) then
-	      loop filtered
-	    else
-	      last
-	in
-	  loop keylist
-
+	  filter_signatures_to_missing_keys keylist relevant_keys
 
   let dump_sexp_file file ekey_list =
     let chan = open_out file in
