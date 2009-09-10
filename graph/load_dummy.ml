@@ -32,10 +32,27 @@ let load_sexp_graph_from_files vertex_filename edge_filename =
   let edges = List.map sig_list_per_signee_of_sexp (load_rev_sexps edge_filename) in
     (vertices, edges)
 
+let add_edges g vertex_tbl edge_list =
+  let siginfos = Hashtbl.create 700000 in
+  let add_edges_from_one_vertex edges =
+    let (signee, siglist) = edges in
+    let signee_vertex = Hashtbl.find vertex_tbl signee in
+      List.iter 
+	(fun s ->
+	   let (signer, siginfo) = s in
+	   let signer_vertex = Hashtbl.find vertex_tbl signer in
+	     Hashtbl.add siginfos (signer, signee) siginfo;
+	     G.add_edge g signer_vertex signee_vertex)
+	siglist
+  in
+    List.iter (fun edges -> add_edges_from_one_vertex edges) edge_list
+
 let create_graph sexp_graph =
+  let vertex_tbl = Hashtbl.create 320000 in
   let (vertices, edges) = sexp_graph in
   let g = G.create ~size:300000 () in
-    List.iter (fun v -> G.add_vertex g v) vertices;
+    List.iter (fun v -> G.add_vertex g v; Hashtbl.add vertex_tbl v.key_keyid v) vertices;
+    add_edges g vertex_tbl edges;
     g
 
 let () =
