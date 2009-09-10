@@ -40,9 +40,11 @@ let add_edges g vertex_tbl edge_list =
       List.iter 
 	(fun s ->
 	   let (signer, siginfo) = s in
-	   let signer_vertex = Hashtbl.find vertex_tbl signer in
-	     Hashtbl.add siginfos (signer, signee) siginfo;
-	     G.add_edge g signer_vertex signee_vertex)
+	     try
+	       let signer_vertex = Hashtbl.find vertex_tbl signer in
+		 Hashtbl.add siginfos (signer, signee) siginfo;
+		 G.add_edge g signer_vertex signee_vertex
+	     with Not_found -> print_endline ("key not in hashtbl: " ^ (keyid_to_string signer)))
 	siglist
   in
     List.iter (fun edges -> add_edges_from_one_vertex edges) edge_list
