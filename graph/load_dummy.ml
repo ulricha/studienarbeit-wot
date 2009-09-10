@@ -36,16 +36,18 @@ let add_edges g vertex_tbl edge_list =
   let siginfos = Hashtbl.create 700000 in
   let add_edges_from_one_vertex edges =
     let (signee, siglist) = edges in
-    let signee_vertex = Hashtbl.find vertex_tbl signee in
-      List.iter 
-	(fun s ->
-	   let (signer, siginfo) = s in
-	     try
-	       let signer_vertex = Hashtbl.find vertex_tbl signer in
-		 Hashtbl.add siginfos (signer, signee) siginfo;
-		 G.add_edge g signer_vertex signee_vertex
-	     with Not_found -> print_endline ("key not in hashtbl: " ^ (keyid_to_string signer)))
-	siglist
+      try
+	let signee_vertex = Hashtbl.find vertex_tbl signee in
+	  List.iter 
+	    (fun s ->
+	       let (signer, siginfo) = s in
+		 try
+		   let signer_vertex = Hashtbl.find vertex_tbl signer in
+		     Hashtbl.add siginfos (signer, signee) siginfo;
+		     G.add_edge g signer_vertex signee_vertex
+		 with Not_found -> print_endline ("key not in hashtbl: " ^ (keyid_to_string signer)))
+	    siglist
+      with Not_found -> ()
   in
     List.iter (fun edges -> add_edges_from_one_vertex edges) edge_list
 
