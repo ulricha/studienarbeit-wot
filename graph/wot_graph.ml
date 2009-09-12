@@ -20,6 +20,8 @@ end
 
 module G = Imperative.Digraph.ConcreteBidirectional(V)
 
+module Key_map = Map.Make(V)
+
 let load_storeable_graph_from_files vertex_filename edge_filename =
   let v_inc = File.open_in vertex_filename in
   let e_inc = File.open_in edge_filename in
@@ -39,14 +41,34 @@ let load_storeable_graph_from_files vertex_filename edge_filename =
   let edges = load_edges [] in
     (vertices, edges)
 
-  let dump_storeable_graph_to_file vertex_filename edge_filename g =
-    let (vertex_list, edge_list) = g in
-    let v_channel = open_out vertex_filename in
-    let e_channel = open_out edge_filename in
-      List.iter	(fun v -> Marshal.to_channel v_channel v []) vertex_list;
-      List.iter	(fun e -> Marshal.to_channel e_channel e []) edge_list;
-      close_out v_channel;
-      close_out e_channel
+let dump_storeable_graph_to_file vertex_filename edge_filename g =
+  let (vertex_list, edge_list) = g in
+  let v_channel = open_out vertex_filename in
+  let e_channel = open_out edge_filename in
+    List.iter	(fun v -> Marshal.to_channel v_channel v []) vertex_list;
+    List.iter	(fun e -> Marshal.to_channel e_channel e []) edge_list;
+    close_out v_channel;
+    close_out e_channel
+
+let graph_to_storeable_graph g edgeinfo_tbl=
+  let vertex_list = G.fold_vertex (fun v l -> v :: l) g [] in
+  let edge_map = G.fold_edges
+    (fun signer signee map -> 
+       let siginfo = Hashtbl.find edgeinfo_tbl (signer, signee) in
+       if Key_map.mem signee map then
+	 let old_entry = Key_map.find signee map in
+	 let (_, l) = old_entry in
+	 let new_entry = (signee, (signer, siginfo) :: l) in
+	   Key_map.add signee new_entry map
+       else
+	 let entry = (signee, [(signer, siginfo)]) in
+	 Key_map.add signee entry map
+    )
+    g
+    Key_map.empty
+  in
+    (vertex_list, List.of_enum (Key_map.values edge_map))
+	 
 
 let add_edges g vertex_tbl edge_list =
   let siginfos = Hashtbl.create 700000 in
