@@ -13,3 +13,14 @@ _build
 *.d.native
 *.p.byte
 *.sexp
+le/
+lib/
+prepared
+sks
+sks.8.gz
+sks_add_mail
+*.sexp2
+cryptokit-1.0/
+ocextr
+.depend
+*.mar

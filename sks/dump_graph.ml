@@ -82,8 +82,8 @@ struct
     in
       search 0 ((Array.length array) - 1)
 
-  let ekey_list_to_sexp_graph ekey_list =
-    print_endline "ekey_list_to_sexp_graph";
+  let ekey_list_to_storeable_graph ekey_list =
+    print_endline "ekey_list_to_storeable_graph";
 (*    let key_cnt = ref 0 in
     let sig_cnt = ref 0 in*)
     let vlist = List.map (fun ekey -> ekey.pki) ekey_list in
@@ -109,7 +109,7 @@ struct
       ;
       (vlist, (RefList.to_list edge_list))
 
-  let dump_sexp_graph_to_file vertex_filename edge_filename g =
+  let dump_storeable_graph_to_file vertex_filename edge_filename g =
     let (vertex_list, edge_list) = g in
     let v_channel = open_out vertex_filename in
     let e_channel = open_out edge_filename in
@@ -117,7 +117,6 @@ struct
       List.iter	(fun e -> Marshal.to_channel e_channel e []) edge_list;
       close_out v_channel;
       close_out e_channel
-
 
   let list_missing_keys skipped_keyids keys_so_far =
     let missing_keyids = ref Keyid_set.empty in
@@ -253,8 +252,8 @@ struct
     Keydb.open_dbs settings;
     begin
       let keys = time_evaluation fetch_keys "fetch_keys" in
-      let vertexf = "vertex.sexp" in
-      let edgef = "edge.sexp" in
-	dump_sexp_graph_to_file vertexf edgef (ekey_list_to_sexp_graph keys)
+      let vertexf = "vertex.mar" in
+      let edgef = "edge.mar" in
+	dump_storeable_graph_to_file vertexf edgef (ekey_list_to_storeable_graph keys)
     end
 end

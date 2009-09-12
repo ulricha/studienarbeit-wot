@@ -1,10 +1,4 @@
-TYPE_CONV_PATH "Ekey"
-
-open Format
-open Sexplib
-open Sexp
-open Conv
-
+open Printf
 open Misc
 
 type esiginfo = { mutable sig_puid_signed: bool;
@@ -12,25 +6,25 @@ type esiginfo = { mutable sig_puid_signed: bool;
 		   sig_ctime: float;
 		   sig_hash_alg: int;
 		   sig_pk_alg: int;
-		 } with sexp
+		}
 
-type esignature = (string * esiginfo) with sexp
+type esignature = (string * esiginfo) 
 
 type epki = { key_keyid: string;
 		     key_puid: string;
 		     key_ctime: float;
 		     key_alg: int;
 		     key_len: int;
-		   } with sexp
+		   } 
 
 type ekey = { pki: epki;
 	      mutable signatures: esignature list;
-	    } with sexp
+	    } 
 
-type vertex_list = epki list with sexp
-type sig_list_per_signee = string * ((string * esiginfo) list) with sexp
-type edge_list = sig_list_per_signee list with sexp
-type sexp_graph = vertex_list * edge_list with sexp
+type vertex_list = epki list 
+type sig_list_per_signee = string * ((string * esiginfo) list) 
+type edge_list = sig_list_per_signee list 
+type storable_graph = vertex_list * edge_list 
 type edge = string * string
 
 let compare_esignature esig1 esig2 =

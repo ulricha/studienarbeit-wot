@@ -1,4 +1,2 @@
 <**/*>: use_batteries,use_batteries_r,pkg_ocamlgraph
-"sks/ekey.ml": pkg_sexplib.syntax
-"graph/load_dummy.ml": pkg_sexplib.syntax
 "sks": include
