@@ -24,11 +24,6 @@ struct
   open Option
   open Printf
 
-  open Format
-  open Sexplib
-  open Sexp
-  open Conv
-
   open Ekey
   open Ekey_conv
   open Misc
@@ -118,21 +113,10 @@ struct
     let (vertex_list, edge_list) = g in
     let v_channel = open_out vertex_filename in
     let e_channel = open_out edge_filename in
-      List.iter
-	(fun v ->
-	   let s = sexp_of_epki v in
-	     output_mach v_channel s;	
-	     output_char v_channel '\n'
-	)
-	vertex_list
-      ;
-      List.iter
-	(fun e ->
-	   let s = sexp_of_sig_list_per_signee e in
-	     output_mach e_channel s;
-	     output_char e_channel '\n'
-	)
-	edge_list
+      List.iter	(fun v -> Marshal.to_channel v_channel v []) vertex_list;
+      List.iter	(fun e -> Marshal.to_channel e_channel e []) edge_list;
+      close_out v_channel;
+      close_out e_channel
 
 
   let list_missing_keys skipped_keyids keys_so_far =
@@ -265,18 +249,6 @@ struct
 	let keylist = List.of_enum (Hashtbl.values relevant_keys) in
 	  filter_signatures_to_missing_keys keylist relevant_keys
 
-  let dump_sexp_file file ekey_list =
-    let chan = open_out file in
-      List.iter 
-	(fun ekey ->
-	   let s = sexp_of_ekey ekey in
-	     output_mach chan s;
-	     output_char chan '\n'
-	)
-	ekey_list
-      ;
-      close_out chan
-	  
   let run () =
     Keydb.open_dbs settings;
     begin
