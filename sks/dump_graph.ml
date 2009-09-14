@@ -240,11 +240,11 @@ struct
 	     match fetch_single_key missing_id with
 	       | Some ekey -> 
 		   incr fetched_keys;
-		   print_endline ("fetched key " ^ (keyid_to_string missing_id));
+		   (*print_endline ("fetched key " ^ (keyid_to_string missing_id));*)
 		   add_key_without_duplicate relevant_keys ekey
 	       | None -> 
 		   incr fetch_misses;
-		   print_endline ("missed key " ^ (keyid_to_string missing_id));
+		   (*print_endline ("missed key " ^ (keyid_to_string missing_id)); *)
 		   skipped_keyids := Keyid_set.add missing_id !skipped_keyids
 	  )
 	  missing_keyids
