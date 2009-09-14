@@ -1,10 +1,12 @@
 open Batteries
 
 open Printf
+open Graph
 open Misc
-
 open Ekey
 open Wot_graph
+
+module Wot_components = Components.Make(G)
 
 let degree_distribution g in_output out_output =
   let (indeg_map, outdeg_map) = G.fold_vertex
@@ -29,6 +31,21 @@ let degree_distribution g in_output out_output =
     Map.IntMap.iter (fun deg count -> fprintf out_output "%d %d\n" deg count) outdeg_map;
     Map.IntMap.iter (fun deg count -> fprintf in_output "%d %d\n" deg count) indeg_map
 
+let scc_properties scc_list =
+  let compare_reverse a b =
+    match compare a b with 
+      | 0 -> 0
+      | x when x > 0 -> -1
+      | x -> 1
+  in
+  let l = List.map (fun scc -> List.length scc) scc_list in
+  let size_list =List.sort ~cmp:compare_reverse l in
+  let unique_size_list = List.sort_unique compare_reverse size_list in
+    printf "largest component %d\n" (List.hd size_list);
+    printf "number of components %d\n" (List.length scc_list);
+    List.iter (fun size -> printf "%d " size) unique_size_list;
+    print_endline "\n"
+
 let () =
   print_endline "compute basic properties of wot graph";
   let vertex_fname = Sys.argv.(1) in
@@ -37,6 +54,8 @@ let () =
   let g = time_evaluation (fun () -> create_graph storeable_g) "create_graph" in
   let indeg_output = File.open_out "indeg.plot" in
   let outdeg_output = File.open_out "outdeg.plot" in
-    degree_distribution g indeg_output outdeg_output
+  let scc_list = time_evaluation (fun () -> Wot_components.scc_list g) "scc_list" in
+    degree_distribution g indeg_output outdeg_output;
+    scc_properties scc_list
     
 
