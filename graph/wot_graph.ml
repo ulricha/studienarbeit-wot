@@ -69,7 +69,6 @@ let graph_to_storeable_graph g edgeinfo_tbl=
   in
     (vertex_list, List.of_enum (Key_map.values edge_map))
 	 
-
 let add_edges g vertex_tbl edge_list =
   let siginfos = Hashtbl.create 700000 in
   let add_edges_from_one_vertex edges =
@@ -96,11 +95,3 @@ let create_graph storeable_graph =
     List.iter (fun v -> G.add_vertex g v; Hashtbl.add vertex_tbl v.key_keyid v) vertices;
     add_edges g vertex_tbl edges;
     g
-
-let () =
-  print_endline "started";
-  let vertex_fname = Sys.argv.(1) in
-  let edge_fname = Sys.argv.(2) in
-  let storeable_g = time_evaluation (fun () -> load_storeable_graph_from_files vertex_fname edge_fname) "load_storeable_graph" in
-  let g = time_evaluation (fun () -> create_graph storeable_g) "create_graph" in
-    printf "vertices: %d edges: %d\n" (G.nb_vertex g) (G.nb_edges g) 

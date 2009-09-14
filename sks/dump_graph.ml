@@ -118,6 +118,11 @@ struct
       close_out v_channel;
       close_out e_channel
 
+  let dump_ekey_list_to_file ekl filename =
+    let out_chan = open_out filename in
+      time_evaluation (fun () -> Marshal.to_channel out_chan ekl []) "marshal ekpi_list";
+      close_out out_chan
+
   let list_missing_keys skipped_keyids keys_so_far =
     let missing_keyids = ref Keyid_set.empty in
     let add_if_missing (issuer, _) =
@@ -254,6 +259,7 @@ struct
       let keys = time_evaluation fetch_keys "fetch_keys" in
       let vertexf = "vertex.mar" in
       let edgef = "edge.mar" in
-	dump_storeable_graph_to_file vertexf edgef (ekey_list_to_storeable_graph keys)
+	dump_storeable_graph_to_file vertexf edgef (ekey_list_to_storeable_graph keys);
+	dump_ekey_list_to_file keys "ekeys.mar"
     end
 end
