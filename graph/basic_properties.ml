@@ -46,6 +46,48 @@ let scc_properties scc_list =
     List.iter (fun size -> printf "%d " size) unique_size_list;
     print_endline "\n"
 
+let apply_all_pairs l1 l2 f ~cmp =
+  let rec outer_loop l =
+    match l with
+      | v :: tl ->
+	  begin
+	    let rec inner_loop l =
+	      match l with 
+		| inner_v :: tl ->
+		    if (cmp v inner_v) = 0 then
+		      inner_loop tl
+		    else 
+		      begin
+			f v inner_v;
+			inner_loop tl
+		      end
+		| [] -> 
+		    ()
+	    in
+	      inner_loop l2;
+	      outer_loop tl
+	  end
+      | [] -> ()
+  in
+    outer_loop l1
+
+let graph_from_node_list nodes original_graph original_siginfo =
+  let g = G.create () in
+  let siginfo_tbl = Hashtbl.create 1000 in
+    List.iter (fun v -> G.add_vertex g v) nodes;
+    let get_edge v1 v2 =
+      if G.mem_edge original_graph v1 v2 then
+	begin
+	  G.add_edge g v1 v2;
+	  let siginfo = Hashtbl.find original_siginfo (v1, v2) in
+	    Hashtbl.add siginfo_tbl (v1, v2) siginfo
+	end
+    in
+      apply_all_pairs nodes nodes get_edge
+
+let scc_list_to_graph_list scc_list original_graph original_siginfo =
+  List.map (fun scc -> graph_from_node_list scc original_graph original_siginfo) scc_list
+
 let () =
   print_endline "compute basic properties of wot graph";
   let vertex_fname = Sys.argv.(1) in
