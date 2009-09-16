@@ -31,22 +31,7 @@ let degree_distribution g in_output out_output =
     Map.IntMap.iter (fun deg count -> fprintf out_output "%d %d\n" deg count) outdeg_map;
     Map.IntMap.iter (fun deg count -> fprintf in_output "%d %d\n" deg count) indeg_map
 
-let scc_properties scc_list =
-  let compare_reverse a b =
-    match compare a b with 
-      | 0 -> 0
-      | x when x > 0 -> -1
-      | x -> 1
-  in
-  let l = List.map (fun scc -> List.length scc) scc_list in
-  let size_list =List.sort ~cmp:compare_reverse l in
-  let unique_size_list = List.sort_unique compare_reverse size_list in
-    printf "largest component %d\n" (List.hd size_list);
-    printf "number of components %d\n" (List.length scc_list);
-    List.iter (fun size -> printf "%d " size) unique_size_list;
-    print_endline "\n"
-
-let apply_all_pairs l1 l2 f ~cmp =
+let apply_all_pairs l1 l2 f cmp =
   let rec outer_loop l =
     match l with
       | v :: tl ->
@@ -83,7 +68,30 @@ let graph_from_node_list nodes original_graph original_siginfo =
 	    Hashtbl.add siginfo_tbl (v1, v2) siginfo
 	end
     in
-      apply_all_pairs nodes nodes get_edge
+      apply_all_pairs nodes nodes get_edge V.compare;
+      (g, siginfo_tbl)
+
+let compare_reverse f a b =
+  match f a b with 
+    | 0 -> 0
+    | x when x > 0 -> -1
+    | x -> 1
+
+let largest_component_as_graph scc_list original_graph original_siginfo_tbl =
+  let compare_scc_length = 
+    compare_reverse (fun l1 l2 -> compare (List.length l1) (List.length l2)) in
+  let sorted_list = List.sort ~cmp:compare_scc_length scc_list in
+  let largest = List.hd sorted_list in
+    graph_from_node_list largest original_graph original_siginfo_tbl
+
+let scc_properties scc_list =
+  let l = List.map (fun scc -> List.length scc) scc_list in
+  let size_list =List.sort ~cmp:(compare_reverse compare) l in
+  let unique_size_list = List.sort_unique (compare_reverse compare) size_list in
+    printf "largest component %d\n" (List.hd size_list);
+    printf "number of components %d\n" (List.length scc_list);
+    List.iter (fun size -> printf "%d " size) unique_size_list;
+    print_endline "\n"
 
 let scc_list_to_graph_list scc_list original_graph original_siginfo =
   List.map (fun scc -> graph_from_node_list scc original_graph original_siginfo) scc_list
