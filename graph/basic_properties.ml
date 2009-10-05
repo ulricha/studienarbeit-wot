@@ -56,33 +56,24 @@ let apply_all_pairs l1 l2 f cmp =
   in
     outer_loop l1
 
-let graph_from_node_list nodes original_graph original_siginfo =
+(* creating a new siginfo table for the new graph from the original one 
+   is not necesarry because the old one can still be used *)
+let graph_from_node_list nodes original_graph =
   let g = G.create () in
-  let siginfo_tbl = Hashtbl.create 1000 in
     List.iter (fun v -> G.add_vertex g v) nodes;
     let get_edge v1 v2 =
       if G.mem_edge original_graph v1 v2 then
-	begin
-	  G.add_edge g v1 v2;
-	  let siginfo = Hashtbl.find original_siginfo (v1, v2) in
-	    Hashtbl.add siginfo_tbl (v1, v2) siginfo
-	end
+	G.add_edge g v1 v2;
     in
       apply_all_pairs nodes nodes get_edge V.compare;
-      (g, siginfo_tbl)
+      g
 
-let compare_reverse f a b =
-  match f a b with 
-    | 0 -> 0
-    | x when x > 0 -> -1
-    | x -> 1
-
-let largest_component_as_graph scc_list original_graph original_siginfo_tbl =
+let largest_component_as_graph scc_list original_graph =
   let compare_scc_length = 
     compare_reverse (fun l1 l2 -> compare (List.length l1) (List.length l2)) in
   let sorted_list = List.sort ~cmp:compare_scc_length scc_list in
   let largest = List.hd sorted_list in
-    graph_from_node_list largest original_graph original_siginfo_tbl
+    graph_from_node_list largest original_graph
 
 let scc_properties scc_list =
   let l = List.map (fun scc -> List.length scc) scc_list in
@@ -94,18 +85,32 @@ let scc_properties scc_list =
     print_endline "\n"
 
 let scc_list_to_graph_list scc_list original_graph original_siginfo =
-  List.map (fun scc -> graph_from_node_list scc original_graph original_siginfo) scc_list
+  List.map (fun scc -> graph_from_node_list scc original_graph) scc_list
+
+(* mscc = maximum strongly connected component *)
+let mscc_properties scc_list g =
+  let mscc_g = largest_component_as_graph scc_list g in
+  let mscc_nr_vertex = G.nb_vertex mscc_g in
+  let mscc_nr_edges = G.nb_edges mscc_g in
+    printf "mscc vertices %d mscc edges %d\n" mscc_nr_vertex mscc_nr_edges
 
 let () =
-  print_endline "compute basic properties of wot graph";
-  let vertex_fname = Sys.argv.(1) in
-  let edge_fname = Sys.argv.(2) in
-  let storeable_g = time_evaluation (fun () -> load_storeable_graph_from_files vertex_fname edge_fname) "load_storeable_graph" in
-  let g = time_evaluation (fun () -> create_graph storeable_g) "create_graph" in
-  let indeg_output = File.open_out "indeg.plot" in
-  let outdeg_output = File.open_out "outdeg.plot" in
-  let scc_list = time_evaluation (fun () -> Wot_components.scc_list g) "scc_list" in
-    degree_distribution g indeg_output outdeg_output;
-    scc_properties scc_list
-    
-
+  if (Array.length Sys.argv) <> 3 then
+    begin
+      print_endline "usage: basic_properties vertex.mar edges.mar";
+      exit (-1)
+    end
+  else
+    begin
+      print_endline "compute basic properties of wot graph";
+      let vertex_fname = Sys.argv.(1) in
+      let edge_fname = Sys.argv.(2) in
+      let storeable_g = time_evaluation (fun () -> load_storeable_graph_from_files vertex_fname edge_fname) "load_storeable_graph" in
+      let g = time_evaluation (fun () -> create_graph storeable_g) "create_graph" in
+      let indeg_output = File.open_out "indeg.plot" in
+      let outdeg_output = File.open_out "outdeg.plot" in
+      let scc_list = time_evaluation (fun () -> Wot_components.scc_list g) "scc_list" in
+	degree_distribution g indeg_output outdeg_output;
+	scc_properties scc_list;
+	mscc_properties scc_list g 
+    end

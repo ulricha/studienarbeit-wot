@@ -52,3 +52,9 @@ let display_iterations counter operation =
   incr counter;
   if (!counter mod 10000) = 0 then
     printf "%s: %d iterations\n" operation !counter
+
+let compare_reverse f a b =
+  match f a b with 
+    | 0 -> 0
+    | x when x > 0 -> -1
+    | x -> 1
