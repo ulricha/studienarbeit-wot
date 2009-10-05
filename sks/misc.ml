@@ -58,3 +58,28 @@ let compare_reverse f a b =
     | 0 -> 0
     | x when x > 0 -> -1
     | x -> 1
+
+let apply_all_pairs l1 l2 f cmp =
+  let rec outer_loop l =
+    match l with
+      | v :: tl ->
+	  begin
+	    let rec inner_loop l =
+	      match l with 
+		| inner_v :: tl ->
+		    if (cmp v inner_v) = 0 then
+		      inner_loop tl
+		    else 
+		      begin
+			f v inner_v;
+			inner_loop tl
+		      end
+		| [] -> 
+		    ()
+	    in
+	      inner_loop l2;
+	      outer_loop tl
+	  end
+      | [] -> ()
+  in
+    outer_loop l1

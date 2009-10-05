@@ -31,31 +31,6 @@ let degree_distribution g in_output out_output =
     Map.IntMap.iter (fun deg count -> fprintf out_output "%d %d\n" deg count) outdeg_map;
     Map.IntMap.iter (fun deg count -> fprintf in_output "%d %d\n" deg count) indeg_map
 
-let apply_all_pairs l1 l2 f cmp =
-  let rec outer_loop l =
-    match l with
-      | v :: tl ->
-	  begin
-	    let rec inner_loop l =
-	      match l with 
-		| inner_v :: tl ->
-		    if (cmp v inner_v) = 0 then
-		      inner_loop tl
-		    else 
-		      begin
-			f v inner_v;
-			inner_loop tl
-		      end
-		| [] -> 
-		    ()
-	    in
-	      inner_loop l2;
-	      outer_loop tl
-	  end
-      | [] -> ()
-  in
-    outer_loop l1
-
 (* creating a new siginfo table for the new graph from the original one 
    is not necesarry because the old one can still be used *)
 let graph_from_node_list nodes original_graph =
