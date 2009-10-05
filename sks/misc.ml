@@ -83,3 +83,9 @@ let apply_all_pairs l1 l2 f cmp =
       | [] -> ()
   in
     outer_loop l1
+
+let write_intmap_to_file map fname = 
+  let f out =
+    Map.IntMap.iter (fun k v -> fprintf out "%d %d\n" k v) map
+  in
+    File.with_file_out fname f

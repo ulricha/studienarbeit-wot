@@ -8,7 +8,7 @@ open Wot_graph
 
 module Wot_components = Components.Make(G)
 
-let degree_distribution g in_output out_output =
+let degree_distribution g indeg_fname outdeg_fname =
   let (indeg_map, outdeg_map) = G.fold_vertex
       (fun v (in_map, out_map) -> 
 	 let outdeg = G.out_degree g v in
@@ -28,8 +28,8 @@ let degree_distribution g in_output out_output =
       g
       (Map.IntMap.empty, Map.IntMap.empty)
   in
-    Map.IntMap.iter (fun deg count -> fprintf out_output "%d %d\n" deg count) outdeg_map;
-    Map.IntMap.iter (fun deg count -> fprintf in_output "%d %d\n" deg count) indeg_map
+    write_intmap_to_file indeg_map indeg_fname;
+    write_intmap_to_file outdeg_map outdeg_fname
 
 (* creating a new siginfo table for the new graph from the original one 
    is not necesarry because the original one can still be used *)
@@ -50,24 +50,32 @@ let largest_component_as_graph scc_list original_graph =
   let largest = List.hd sorted_list in
     graph_from_node_list largest original_graph
 
-let scc_properties scc_list =
+let overall_component_properties scc_list =
   let l = List.map (fun scc -> List.length scc) scc_list in
-  let size_list =List.sort ~cmp:(compare_reverse compare) l in
-  let unique_size_list = List.sort_unique (compare_reverse compare) size_list in
-    printf "largest component %d\n" (List.hd size_list);
+  let size_map = List.fold_left 
+    (fun m s ->
+       try 
+	 Map.IntMap.add s ((Map.IntMap.find s m) + 1) m
+       with Not_found -> Map.IntMap.add s 1 m)
+    Map.IntMap.empty
+    l
+  in
+  let cmp_pair = compare_reverse (fun (s1, nr1) (s2, nr2) -> compare s1 s2) in
+  let size_number_list = List.sort ~cmp:cmp_pair (List.of_enum (Map.IntMap.enum size_map)) in
+    printf "largest component %d\n" (fst (List.hd size_number_list));
     printf "number of components %d\n" (List.length scc_list);
-    List.iter (fun size -> printf "%d " size) unique_size_list;
-    print_endline "\n"
+    List.iter (fun (size, number) -> printf "%d: %d " size number) size_number_list;
+    write_intmap_to_file size_map "component_size.plot";
+    print_endline ""
 
 let scc_list_to_graph_list scc_list original_graph original_siginfo =
   List.map (fun scc -> graph_from_node_list scc original_graph) scc_list
 
 (* mscc = maximum strongly connected component *)
-let mscc_properties scc_list g =
-  let mscc_g = largest_component_as_graph scc_list g in
-  let mscc_nr_vertex = G.nb_vertex mscc_g in
-  let mscc_nr_edges = G.nb_edges mscc_g in
-    printf "mscc vertices %d mscc edges %d\n" mscc_nr_vertex mscc_nr_edges
+let component_properties component =
+  let scc_nr_vertex = G.nb_vertex component in
+  let scc_nr_edges = G.nb_edges component in
+    printf "component vertices %d component edges %d\n" scc_nr_vertex scc_nr_edges
 
 let () =
   if (Array.length Sys.argv) <> 3 then
@@ -84,10 +92,9 @@ let () =
       let storeable_g = time_evaluation l "load_storeable_graph" in
       let c = fun () -> graph_from_storeable_graph storeable_g in
       let g = time_evaluation c "graph_from_storeable_graph" in
-      let indeg_output = File.open_out "indeg.plot" in
-      let outdeg_output = File.open_out "outdeg.plot" in
       let scc_list = time_evaluation (fun () -> Wot_components.scc_list g) "scc_list" in
-	degree_distribution g indeg_output outdeg_output;
-	scc_properties scc_list;
-	mscc_properties scc_list g 
+      let mscc = largest_component_as_graph scc_list g in
+	degree_distribution g "indeg.plot" "outdeg.plot";
+	overall_component_properties scc_list;
+	component_properties mscc;
     end
