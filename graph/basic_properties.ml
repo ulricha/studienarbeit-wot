@@ -32,7 +32,7 @@ let degree_distribution g in_output out_output =
     Map.IntMap.iter (fun deg count -> fprintf in_output "%d %d\n" deg count) indeg_map
 
 (* creating a new siginfo table for the new graph from the original one 
-   is not necesarry because the old one can still be used *)
+   is not necesarry because the original one can still be used *)
 let graph_from_node_list nodes original_graph =
   let g = G.create () in
     List.iter (fun v -> G.add_vertex g v) nodes;
@@ -80,8 +80,10 @@ let () =
       print_endline "compute basic properties of wot graph";
       let vertex_fname = Sys.argv.(1) in
       let edge_fname = Sys.argv.(2) in
-      let storeable_g = time_evaluation (fun () -> load_storeable_graph_from_files vertex_fname edge_fname) "load_storeable_graph" in
-      let g = time_evaluation (fun () -> create_graph storeable_g) "create_graph" in
+      let l = fun () -> load_storeable_graph_from_files vertex_fname edge_fname in
+      let storeable_g = time_evaluation l "load_storeable_graph" in
+      let c = fun () -> graph_from_storeable_graph storeable_g in
+      let g = time_evaluation c "graph_from_storeable_graph" in
       let indeg_output = File.open_out "indeg.plot" in
       let outdeg_output = File.open_out "outdeg.plot" in
       let scc_list = time_evaluation (fun () -> Wot_components.scc_list g) "scc_list" in

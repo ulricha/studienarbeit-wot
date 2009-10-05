@@ -88,7 +88,7 @@ let add_edges g vertex_tbl edge_list =
   in
     List.iter (fun edges -> add_edges_from_one_vertex edges) edge_list
 
-let create_graph storeable_graph =
+let graph_from_storeable_graph storeable_graph =
   let vertex_tbl = Hashtbl.create 320000 in
   let (vertices, edges) = storeable_graph in
   let g = G.create ~size:300000 () in
