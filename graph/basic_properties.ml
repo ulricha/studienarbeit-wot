@@ -36,11 +36,11 @@ let degree_distribution g in_output out_output =
 let graph_from_node_list nodes original_graph =
   let g = G.create () in
     List.iter (fun v -> G.add_vertex g v) nodes;
-    let get_edge v1 v2 =
-      if G.mem_edge original_graph v1 v2 then
-	G.add_edge g v1 v2;
+    let add_edge v1 v2 =
+      if G.mem_vertex g v1 && G.mem_vertex g v2 then 
+	G.add_edge g v1 v2
     in
-      apply_all_pairs nodes nodes get_edge V.compare;
+      G.iter_edges add_edge original_graph;
       g
 
 let largest_component_as_graph scc_list original_graph =
