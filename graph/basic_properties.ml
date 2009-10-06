@@ -8,28 +8,19 @@ open Wot_graph
 
 module Wot_components = Components.Make(G)
 
-let degree_distribution g indeg_fname outdeg_fname =
+let degree_distribution g =
   let (indeg_map, outdeg_map) = G.fold_vertex
       (fun v (in_map, out_map) -> 
 	 let outdeg = G.out_degree g v in
 	 let indeg = G.in_degree g v in
-	 let out_map =
-	   try
-	     Map.IntMap.add outdeg ((Map.IntMap.find outdeg out_map) + 1) out_map
-	   with Not_found -> Map.IntMap.add outdeg 1 out_map
-	 in
-	 let in_map =
-	   try 
-	     Map.IntMap.add indeg ((Map.IntMap.find indeg in_map) + 1) in_map
-	   with Not_found -> Map.IntMap.add indeg 1 in_map
-	 in
+	 let out_map = intmap_increase_or_add out_map outdeg in
+	 let in_map = intmap_increase_or_add in_map indeg in
 	   (in_map, out_map)
       )
       g
       (Map.IntMap.empty, Map.IntMap.empty)
   in
-    write_intmap_to_file indeg_map indeg_fname;
-    write_intmap_to_file outdeg_map outdeg_fname
+    (indeg_map, outdeg_map)
 
 (* creating a new siginfo table for the new graph from the original one 
    is not necesarry because the original one can still be used *)
@@ -65,18 +56,22 @@ let overall_component_properties scc_list =
     printf "largest component %d\n" (fst (List.hd size_number_list));
     printf "number of components %d\n" (List.length scc_list);
     List.iter (fun (size, number) -> printf "%d: %d " size number) size_number_list;
-    write_intmap_to_file size_map "component_size.plot";
+    write_intmap_to_file size_map "component_size.plot"; 
     print_endline ""
 
 let scc_list_to_graph_list scc_list original_graph original_siginfo =
   List.map (fun scc -> graph_from_node_list scc original_graph) scc_list
 
-(* mscc = maximum strongly connected component *)
-let component_properties component =
-  let scc_nr_vertex = G.nb_vertex component in
-  let scc_nr_edges = G.nb_edges component in
-    printf "component vertices %d component edges %d\n" scc_nr_vertex scc_nr_edges
+let network_statistics graph graph_name =
+  let nr_vertex = G.nb_vertex graph in
+  let nr_edges = G.nb_edges graph in
+  let (indeg_map, outdeg_map) = degree_distribution graph in
+    print_endline ("network_statistics " ^ graph_name);
+    printf "graph vertices %d graph edges %d\n" nr_vertex nr_edges;
+    write_intmap_to_file indeg_map (graph_name ^ "_indeg.plot");
+    write_intmap_to_file outdeg_map (graph_name ^ "_outdeg.plot")
 
+(* mscc = maximum strongly connected component *)
 let () =
   if (Array.length Sys.argv) <> 3 then
     begin
@@ -94,7 +89,7 @@ let () =
       let g = time_evaluation c "graph_from_storeable_graph" in
       let scc_list = time_evaluation (fun () -> Wot_components.scc_list g) "scc_list" in
       let mscc = largest_component_as_graph scc_list g in
-	degree_distribution g "indeg.plot" "outdeg.plot";
+	network_statistics g "complete_graph";
+	network_statistics mscc "mscc";
 	overall_component_properties scc_list;
-	component_properties mscc;
     end
