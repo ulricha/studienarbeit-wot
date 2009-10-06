@@ -6,6 +6,7 @@ open Misc
 open Graph_misc
 open Ekey
 open Wot_graph
+open Network_statistics
 
 module Wot_components = Components.Make(G)
 
