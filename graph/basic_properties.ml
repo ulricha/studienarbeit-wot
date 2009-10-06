@@ -3,6 +3,7 @@ open Batteries
 open Printf
 open Graph
 open Misc
+open Graph_misc
 open Ekey
 open Wot_graph
 
@@ -65,11 +66,11 @@ let overall_component_properties scc_list =
 let scc_list_to_graph_list scc_list original_graph original_siginfo =
   List.map (fun scc -> graph_from_node_list scc original_graph) scc_list
 
-let network_statistics graph graph_name =
+let basic_network_statistics graph graph_name =
   let nr_vertex = G.nb_vertex graph in
   let nr_edges = G.nb_edges graph in
   let (indeg_map, outdeg_map, avg_indeg, avg_outdeg) = degree_distribution graph in
-    print_endline ("network_statistics " ^ graph_name);
+    print_endline ("basic_network_statistics " ^ graph_name);
     printf "vertices %d edges %d\n" nr_vertex nr_edges;
     printf "average indegree %f average outdegree %f\n" avg_indeg avg_outdeg;
     write_intmap_to_file indeg_map (graph_name ^ "_indeg.plot");
@@ -93,7 +94,7 @@ let () =
       let g = time_evaluation c "graph_from_storeable_graph" in
       let scc_list = time_evaluation (fun () -> Wot_components.scc_list g) "scc_list" in
       let mscc = largest_component_as_graph scc_list g in
-	network_statistics g "complete_graph";
-	network_statistics mscc "mscc";
+	basic_network_statistics g "complete_graph";
+	basic_network_statistics mscc "mscc";
 	overall_component_properties scc_list;
     end
