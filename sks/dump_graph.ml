@@ -139,7 +139,7 @@ struct
     let write_list () =
       List.iter 
 	(fun ekey -> 
-	   let s = sexp_of_ekey in
+	   let s = sexp_of_ekey ekey in
 	     output_mach out_chan s;
 	     output_char out_chan '\n'
 	)
