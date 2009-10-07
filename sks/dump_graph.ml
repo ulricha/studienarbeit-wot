@@ -126,6 +126,7 @@ struct
 	)
 	vertex_list
       ;
+      close_out v_channel;
       List.iter
 	(fun e ->
 	   let s = sexp_of_sig_list_per_signee e in
@@ -133,6 +134,8 @@ struct
 	     output_char e_channel '\n'
 	)
 	edge_list
+      ;
+      close_out e_channel
 
   let dump_ekey_list_to_file ekl filename =
     let out_chan = open_out filename in
