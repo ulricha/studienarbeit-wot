@@ -1,9 +1,9 @@
 open Batteries
 open Printf
 
-let write_intmap_to_file map fname = 
+let write_distribution_to_file enum fname = 
   let f out =
-    Map.IntMap.iter (fun k v -> fprintf out "%d %d\n" k v) map
+    Enum.iter (fun (k, v) -> fprintf out "%d %d\n" k v) enum
   in
     File.with_file_out fname f
 
