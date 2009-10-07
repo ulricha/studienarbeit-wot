@@ -11,21 +11,20 @@ open Network_statistics
 module Wot_components = Components.Make(G)
 
 let degree_distribution g =
-  let (indeg_map, outdeg_map, total_in, total_out) = G.fold_vertex
-      (fun v (in_map, out_map, tin, tout) -> 
+  let (indeg_map, outdeg_map, total_in) = G.fold_vertex
+      (fun v (in_map, out_map, tin) -> 
 	 let outdeg = G.out_degree g v in
 	 let indeg = G.in_degree g v in
 	 let out_map = intmap_increase_or_add out_map outdeg in
 	 let in_map = intmap_increase_or_add in_map indeg in
-	   (in_map, out_map, tin + indeg, tout + outdeg)
+	   (in_map, out_map, tin + indeg)
       )
       g
-      (Map.IntMap.empty, Map.IntMap.empty, 0, 0)
+      (Map.IntMap.empty, Map.IntMap.empty, 0)
   in
   let nr_vertex = float_of_int (G.nb_vertex g) in
   let avg_in = (float_of_int total_in) /. nr_vertex in
-  let avg_out = (float_of_int total_out) /. nr_vertex in
-    (indeg_map, outdeg_map, avg_in, avg_out)
+    (indeg_map, outdeg_map, avg_in)
 
 (* creating a new siginfo table for the new graph from the original one 
    is not necesarry because the original one can still be used *)
@@ -70,10 +69,10 @@ let scc_list_to_graph_list scc_list original_graph original_siginfo =
 let basic_network_statistics graph graph_name =
   let nr_vertex = G.nb_vertex graph in
   let nr_edges = G.nb_edges graph in
-  let (indeg_map, outdeg_map, avg_indeg, avg_outdeg) = degree_distribution graph in
+  let (indeg_map, outdeg_map, avg_indeg)= degree_distribution graph in
     print_endline ("basic_network_statistics " ^ graph_name);
     printf "vertices %d edges %d\n" nr_vertex nr_edges;
-    printf "average indegree %f average outdegree %f\n" avg_indeg avg_outdeg;
+    printf "average indegree = average outdegree %f\n" avg_indeg;
     write_intmap_to_file indeg_map (graph_name ^ "_indeg.plot");
     write_intmap_to_file outdeg_map (graph_name ^ "_outdeg.plot")
 
