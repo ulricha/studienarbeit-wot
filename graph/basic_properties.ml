@@ -10,6 +10,7 @@ open Network_statistics
 
 module Wot_components = Components.Make(G)
 module Wot_bfs_statistics = Bfs_statistics(G)
+module H = Hashtbl.Make(G.V)
 
 let degree_distribution g =
   let (indeg_map, outdeg_map, total_in) = G.fold_vertex
@@ -61,7 +62,7 @@ let overall_component_properties scc_list =
     printf "largest component %d\n" (fst (List.hd size_number_list));
     printf "number of components %d\n" (List.length scc_list);
     List.iter (fun (size, number) -> printf "%d: %d " size number) size_number_list;
-    write_intmap_to_file size_map "component_size.plot"; 
+    write_distribution_to_file (Map.IntMap.enum size_map) "component_size.plot"; 
     print_endline ""
 
 let scc_list_to_graph_list scc_list original_graph original_siginfo =
@@ -74,8 +75,29 @@ let basic_network_statistics graph graph_name =
     print_endline ("basic_network_statistics " ^ graph_name);
     printf "vertices %d edges %d\n" nr_vertex nr_edges;
     printf "average indegree = average outdegree %f\n" avg_indeg;
-    write_intmap_to_file indeg_map (graph_name ^ "_indeg.plot");
-    write_intmap_to_file outdeg_map (graph_name ^ "_outdeg.plot")
+    write_distribution_to_file (Map.IntMap.enum indeg_map) (graph_name ^ "_indeg.plot");
+    write_distribution_to_file (Map.IntMap.enum outdeg_map) (graph_name ^ "_outdeg.plot")
+
+let complete_statistics graph graph_name =
+  basic_network_statistics graph graph_name;
+  let (ecc_tbl, avg_distance, neigh_1_dist, neigh_2_dist, neigh_3_dist) =
+    Wot_bfs_statistics.distance_statistics graph in
+  let n = G.nb_vertex graph in
+  let (sum_ecc, max_ecc, min_ecc) = Enum.fold 
+    (fun (sum, max, min) ecc -> 
+       let larger a b = if a > b then a else b in
+       let smaller a b = if a < b then a else b in
+	 (sum + ecc, larger max ecc, smaller min ecc)
+    )
+    (0, 0, Int.max_num)
+    (H.values ecc_tbl) 
+  in
+  let avg_ecc = (float_of_int sum_ecc) /. (float_of_int n) in
+    print_endline ("complete_statistics " ^ graph_name);
+    printf "eccentricity average %f max %d min %d\n" avg_ecc max_ecc min_ecc;
+    write_distribution_to_file (Hashtbl.enum neigh_1_dist) (graph_name ^ "_neigh_1_dist.plot");
+    write_distribution_to_file (Hashtbl.enum neigh_2_dist) (graph_name ^ "_neigh_2_dist.plot");
+    write_distribution_to_file (Hashtbl.enum neigh_3_dist) (graph_name ^ "_neigh_3_dist.plot");
 
 exception Abort
 
@@ -110,10 +132,6 @@ let () =
       let scc_list = time_evaluation (fun () -> Wot_components.scc_list g) "scc_list" in
       let mscc = largest_component_as_graph scc_list g in
 	basic_network_statistics g "complete_graph";
-	basic_network_statistics mscc "mscc";
 	overall_component_properties scc_list;
-	let start_vertex = Option.get (take_some_vertex mscc) in
-	let s = fun () -> Wot_bfs_statistics.single_vertex_distance_statistics mscc start_vertex in
-	let (ecc, _, _, _, _) = time_evaluation s "single_vertex_distance_statistics" in
-	  printf "eccentricity %d\n" ecc
+	complete_statistics mscc "mscc";
     end
