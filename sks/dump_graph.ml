@@ -97,7 +97,7 @@ struct
       let signee_id = ekey.pki.key_keyid in
       let signer_list = List.fold_left 
 	(fun l esig ->
-	   (*display_iterations sig_cnt "sigs";*)
+	   (*display_iterations sig_cnt "sigs" 10000;*)
 	   let (signer_id, siginfo) = esig in
 	     (signer_id, siginfo) :: l)
 	[]
@@ -107,7 +107,7 @@ struct
     in
       List.iter
 	(fun ekey -> 
-	   (*display_iterations key_cnt "keys";*)
+	   (*display_iterations key_cnt "keys" 10000;*)
 	   RefList.push edge_list (one_key_signatures ekey)
 	)
 	ekey_list
@@ -241,7 +241,7 @@ struct
       try 
 	let key_struct = key_to_ekey key in
 	  begin
-	    display_iterations key_cnt "fetch_keys";
+	    display_iterations key_cnt "fetch_keys" 10000;
 	    match key_struct.signatures with
 	      | [] -> incr unsigned_cnt
 	      | _ -> add_key_without_duplicate relevant_keys key_struct
@@ -250,7 +250,7 @@ struct
 	| Skipped_key keyid ->
 	    begin
 	      incr skipped_cnt;
-	      display_iterations key_cnt "fetch_keys";
+	      display_iterations key_cnt "fetch_keys" 10000;
 	      skipped_keyids := Keyid_set.add keyid !skipped_keyids
 	    end
     in

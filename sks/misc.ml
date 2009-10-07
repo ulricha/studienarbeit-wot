@@ -48,9 +48,9 @@ let time_evaluation f operation =
     printf "%s: %f sec\n" operation (t2 -. t1);
     ret
 
-let display_iterations counter operation =
+let display_iterations counter operation interval =
   incr counter;
-  if (!counter mod 10000) = 0 then
+  if (!counter mod interval) = 0 then
     printf "%s: %d iterations\n" operation !counter
 
 let compare_reverse f a b =

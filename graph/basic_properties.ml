@@ -28,7 +28,8 @@ let () =
       let g = time_evaluation c "graph_from_storeable_graph" in
       let scc_list = time_evaluation (fun () -> C.scc_list g) "scc_list" in
       let mscc = C.largest_component_as_graph scc_list g in
+      let cnt = ref 0 in
 	Statistics.basic_network_statistics g "complete_graph";
 	C.overall_component_properties scc_list;
-	Statistics.complete_statistics mscc "mscc";
+	Statistics.complete_statistics mscc "mscc" cnt;
     end

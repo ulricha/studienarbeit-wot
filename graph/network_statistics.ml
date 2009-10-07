@@ -3,6 +3,7 @@ open Batteries
 open Printf
 open Graph
 open Graph_misc
+open Misc
 
 module type G = sig
   type t
@@ -68,14 +69,15 @@ module Make(G : G) = struct
       iter_component visit g u;
       (!ecc, !accum_dist, !neigh_1, !neigh_2, !neigh_3)
 
-  let distance_statistics g =
+  let distance_statistics g cnt =
     let n = G.nb_vertex g in
     let ecc_tbl = H.create n in
     let dist_accu = ref 0 in
     let neigh_1_dist = Hashtbl.create 1400 in
     let neigh_2_dist = Hashtbl.create 1000 in
-    let neigh_3_dist = Hashtbl.create 500 in
+    let neigh_3_dist = Hashtbl.create 500 in 
     let compute_vertex v =
+      display_iterations cnt "compute_vertex" 100;
       let (ecc, dist, neigh_1_size, neigh_2_size, neigh_3_size) = 
 	single_vertex_distance_statistics g v
       in
@@ -120,14 +122,15 @@ module Make(G : G) = struct
       printf "vertices %d edges %d\n" nr_vertex nr_edges;
       printf "average indegree = average outdegree %f\n" avg_indeg;
       write_distribution_to_file (Map.IntMap.enum indeg_map) (graph_name ^ "_indeg.plot");
-      write_distribution_to_file (Map.IntMap.enum outdeg_map) (graph_name ^ "_outdeg.plot")
+      write_distribution_to_file (Map.IntMap.enum outdeg_map) (graph_name ^ "_outdeg.plot");
+      print_endline ""
 
   (* adds computationally expensive statistics which can't be computed on 
      the whole graph *)
-  let complete_statistics graph graph_name =
+  let complete_statistics graph graph_name cnt =
     basic_network_statistics graph graph_name;
     let (ecc_tbl, avg_distance, neigh_1_dist, neigh_2_dist, neigh_3_dist) =
-      distance_statistics graph in
+      distance_statistics graph cnt in
     let n = G.nb_vertex graph in
     let (sum_ecc, max_ecc, min_ecc) = Enum.fold 
       (fun (sum, max, min) ecc -> 
@@ -144,4 +147,5 @@ module Make(G : G) = struct
       write_distribution_to_file (Hashtbl.enum neigh_1_dist) (graph_name ^ "_neigh_1_dist.plot");
       write_distribution_to_file (Hashtbl.enum neigh_2_dist) (graph_name ^ "_neigh_2_dist.plot");
       write_distribution_to_file (Hashtbl.enum neigh_3_dist) (graph_name ^ "_neigh_3_dist.plot");
+      print_endline ""
 end
