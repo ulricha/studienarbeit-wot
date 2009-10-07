@@ -51,7 +51,8 @@ let time_evaluation f operation =
 let display_iterations counter operation interval =
   incr counter;
   if (!counter mod interval) = 0 then
-    printf "%s: %d iterations\n" operation !counter
+    let msg = sprintf "%s: %d iterations\n" operation !counter in
+      print_endline msg
 
 let compare_reverse f a b =
   match f a b with 
