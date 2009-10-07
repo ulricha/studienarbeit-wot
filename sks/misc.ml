@@ -42,10 +42,10 @@ let hash_keyid keyid =
     x
 
 let time_evaluation f operation =
-  let t1 = Unix.time () in
+  let t1 = Unix.gettimeofday () in
   let ret = f () in
-  let t2 = Unix.time() in
-    printf "%s: %d sec\n" operation (int_of_float (t2 -. t1));
+  let t2 = Unix.gettimeofday() in
+    printf "%s: %f sec\n" operation (t2 -. t1);
     ret
 
 let display_iterations counter operation =

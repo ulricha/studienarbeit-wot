@@ -11,11 +11,11 @@ type esiginfo = { mutable sig_puid_signed: bool;
 type esignature = (string * esiginfo) 
 
 type epki = { key_keyid: string;
-		     key_puid: string;
-		     key_ctime: float;
-		     key_alg: int;
-		     key_len: int;
-		   } 
+	      key_puid: string;
+	      key_ctime: float;
+	      key_alg: int;
+	      key_len: int;
+	    } 
 
 type ekey = { pki: epki;
 	      mutable signatures: esignature list;

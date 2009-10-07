@@ -9,6 +9,7 @@ open Wot_graph
 open Network_statistics
 
 module Wot_components = Components.Make(G)
+module Wot_bfs_statistics = Bfs_statistics(G)
 
 let degree_distribution g =
   let (indeg_map, outdeg_map, total_in) = G.fold_vertex
@@ -69,12 +70,26 @@ let scc_list_to_graph_list scc_list original_graph original_siginfo =
 let basic_network_statistics graph graph_name =
   let nr_vertex = G.nb_vertex graph in
   let nr_edges = G.nb_edges graph in
-  let (indeg_map, outdeg_map, avg_indeg)= degree_distribution graph in
+  let (indeg_map, outdeg_map, avg_indeg) = degree_distribution graph in
     print_endline ("basic_network_statistics " ^ graph_name);
     printf "vertices %d edges %d\n" nr_vertex nr_edges;
     printf "average indegree = average outdegree %f\n" avg_indeg;
     write_intmap_to_file indeg_map (graph_name ^ "_indeg.plot");
     write_intmap_to_file outdeg_map (graph_name ^ "_outdeg.plot")
+
+exception Abort
+
+let take_some_vertex g =
+  let v = ref None in
+  let f u = 
+    match !v with
+      | Some v -> raise Abort
+      | None -> v := Some u
+  in
+    try 
+      G.iter_vertex f g;
+      None
+    with Abort -> !v
 
 (* mscc = maximum strongly connected component *)
 let () =
@@ -97,4 +112,8 @@ let () =
 	basic_network_statistics g "complete_graph";
 	basic_network_statistics mscc "mscc";
 	overall_component_properties scc_list;
+	let start_vertex = Option.get (take_some_vertex mscc) in
+	let s = fun () -> Wot_bfs_statistics.single_vertex_distance_statistics mscc start_vertex in
+	let (ecc, _, _, _, _) = time_evaluation s "single_vertex_distance_statistics" in
+	  printf "eccentricity %d\n" ecc
     end
