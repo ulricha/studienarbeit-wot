@@ -1,7 +1,8 @@
-(* compute eccentricity, average connected distance 
-   and h-Neighbourhood during breadth-first search *)
 
+open Batteries
+open Printf
 open Graph
+open Graph_misc
 
 module type G = sig
   type t
@@ -11,10 +12,16 @@ module type G = sig
   val iter_succ : (V.t -> unit) -> t -> V.t -> unit
   val fold_succ : (V.t -> 'a -> 'a) -> t -> V.t -> 'a -> 'a
   val nb_vertex : t -> int
+  val nb_edges : t -> int
+  val out_degree : t -> V.t -> int
+  val in_degree : t -> V.t -> int
 end
 
-module Bfs_statistics(G : G) = struct
+module Make(G : G) = struct
   module H = Hashtbl.Make(G.V)
+
+  (* compute eccentricity, average connected distance 
+     and h-Neighbourhood during breadth-first search *)
 
   (* modified BFS iterator from ocamlgraph which includes the distance 
      d(v0, v) for each visited node v \in V *)
@@ -87,4 +94,54 @@ module Bfs_statistics(G : G) = struct
       let nr_pairs = float_of_int ((n * (n-1)) / 2) in
       let connected_avg_dist = (float_of_int !dist_accu) /. nr_pairs in
 	(ecc_tbl, connected_avg_dist, neigh_1_dist, neigh_2_dist, neigh_3_dist)
+
+  let degree_distribution g =
+    let (indeg_map, outdeg_map, total_in) = G.fold_vertex
+      (fun v (in_map, out_map, tin) -> 
+	 let outdeg = G.out_degree g v in
+	 let indeg = G.in_degree g v in
+	 let out_map = intmap_increase_or_add out_map outdeg in
+	 let in_map = intmap_increase_or_add in_map indeg in
+	   (in_map, out_map, tin + indeg)
+      )
+      g
+      (Map.IntMap.empty, Map.IntMap.empty, 0)
+    in
+    let nr_vertex = float_of_int (G.nb_vertex g) in
+    let avg_in = (float_of_int total_in) /. nr_vertex in
+      (indeg_map, outdeg_map, avg_in)
+
+  (* statistics which can be computed regardless of the graph size *)
+  let basic_network_statistics graph graph_name =
+    let nr_vertex = G.nb_vertex graph in
+    let nr_edges = G.nb_edges graph in
+    let (indeg_map, outdeg_map, avg_indeg) = degree_distribution graph in
+      print_endline ("basic_network_statistics " ^ graph_name);
+      printf "vertices %d edges %d\n" nr_vertex nr_edges;
+      printf "average indegree = average outdegree %f\n" avg_indeg;
+      write_distribution_to_file (Map.IntMap.enum indeg_map) (graph_name ^ "_indeg.plot");
+      write_distribution_to_file (Map.IntMap.enum outdeg_map) (graph_name ^ "_outdeg.plot")
+
+  (* adds computationally expensive statistics which can't be computed on 
+     the whole graph *)
+  let complete_statistics graph graph_name =
+    basic_network_statistics graph graph_name;
+    let (ecc_tbl, avg_distance, neigh_1_dist, neigh_2_dist, neigh_3_dist) =
+      distance_statistics graph in
+    let n = G.nb_vertex graph in
+    let (sum_ecc, max_ecc, min_ecc) = Enum.fold 
+      (fun (sum, max, min) ecc -> 
+	 let larger a b = if a > b then a else b in
+	 let smaller a b = if a < b then a else b in
+	   (sum + ecc, larger max ecc, smaller min ecc)
+      )
+      (0, 0, Int.max_num)
+      (H.values ecc_tbl) 
+    in
+    let avg_ecc = (float_of_int sum_ecc) /. (float_of_int n) in
+      print_endline ("complete_statistics " ^ graph_name);
+      printf "eccentricity average %f max %d min %d\n" avg_ecc max_ecc min_ecc;
+      write_distribution_to_file (Hashtbl.enum neigh_1_dist) (graph_name ^ "_neigh_1_dist.plot");
+      write_distribution_to_file (Hashtbl.enum neigh_2_dist) (graph_name ^ "_neigh_2_dist.plot");
+      write_distribution_to_file (Hashtbl.enum neigh_3_dist) (graph_name ^ "_neigh_3_dist.plot");
 end
