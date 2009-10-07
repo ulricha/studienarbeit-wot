@@ -23,32 +23,9 @@ module G = Imperative.Digraph.ConcreteBidirectional(V)
 module Key_map = Map.Make(V)
 
 let load_storeable_graph_from_files vertex_filename edge_filename =
-  let v_inc = File.open_in vertex_filename in
-  let e_inc = File.open_in edge_filename in
-  let rec load_vertices vertices =
-    try
-      let v = Marshal.input v_inc in
-	load_vertices (v :: vertices)
-    with IO.No_more_input -> vertices
-  in
-  let rec load_edges edges =
-    try
-      let e = Marshal.input e_inc in
-	load_edges (e :: edges)
-    with IO.No_more_input -> edges
-  in
-  let vertices = load_vertices [] in
-  let edges = load_edges [] in
+  let vertices = List.map epki_of_sexp (load_sexps vertex_filename) in
+  let edges = List.map sig_list_per_signee_of_sexp (load_rev_sexps edge_filename) in
     (vertices, edges)
-
-let dump_storeable_graph_to_file vertex_filename edge_filename g =
-  let (vertex_list, edge_list) = g in
-  let v_channel = open_out vertex_filename in
-  let e_channel = open_out edge_filename in
-    List.iter	(fun v -> Marshal.to_channel v_channel v []) vertex_list;
-    List.iter	(fun e -> Marshal.to_channel e_channel e []) edge_list;
-    close_out v_channel;
-    close_out e_channel
 
 let graph_to_storeable_graph g edgeinfo_tbl=
   let vertex_list = G.fold_vertex (fun v l -> v :: l) g [] in
