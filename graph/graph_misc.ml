@@ -1,7 +1,12 @@
 open Batteries
 open Printf
 open Graph
+open Misc
 
+let list_list_sort_reverse l =
+  let c l1 l2 = compare (List.length l1) (List.length l2) in
+  let compare_length = compare_reverse c in
+    List.sort ~cmp:compare_length l
 
 let write_distribution_to_file enum fname = 
   let f out =
