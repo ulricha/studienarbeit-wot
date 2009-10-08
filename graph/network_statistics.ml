@@ -49,15 +49,11 @@ module Make(G : G) = struct
     let ecc = ref 0 in
       (* summed up distance (for average) so far *)
     let accum_dist = ref 0 in
-      (* number of nodes in the 1-neighbourhood, 2-neighbourhood and 
-	 3-neighbourhood respectively *)
-    let neigh_1 = ref 0 in
+      (* number of nodes in the 2-neighbourhood and 3-neighbourhood respectively *)
     let neigh_2 = ref 0 in
     let neigh_3 = ref 0 in
     let visit v d =
-      if d = 1 then 
-	incr neigh_1
-      else if d = 2 then 
+      if d = 2 then 
 	incr neigh_2
       else if d = 3 then 
 	incr neigh_3;
@@ -66,18 +62,17 @@ module Make(G : G) = struct
       accum_dist := !accum_dist + d
     in
       iter_component visit g u;
-      (!ecc, !accum_dist, !neigh_1, !neigh_2, !neigh_3)
+      (!ecc, !accum_dist, !neigh_2, !neigh_3)
 
   let distance_statistics g cnt =
     let n = G.nb_vertex g in
     let ecc_tbl = H.create n in
     let dist_accu = ref 0 in
-    let neigh_1_dist = Hashtbl.create 1400 in
     let neigh_2_dist = Hashtbl.create 1000 in
     let neigh_3_dist = Hashtbl.create 500 in 
     let compute_vertex v =
       display_iterations cnt "compute_vertex" 100;
-      let (ecc, dist, neigh_1_size, neigh_2_size, neigh_3_size) = 
+      let (ecc, dist, neigh_2_size, neigh_3_size) = 
 	single_vertex_distance_statistics g v
       in
 	H.add ecc_tbl v ecc;
@@ -87,14 +82,13 @@ module Make(G : G) = struct
 	    Hashtbl.replace tbl key ((Hashtbl.find tbl key) + 1)
 	  with Not_found -> Hashtbl.add tbl key 1
 	in
-	  htbl_incr neigh_1_dist neigh_1_size;
 	  htbl_incr neigh_2_dist neigh_2_size;
 	  htbl_incr neigh_3_dist neigh_3_size
     in
       G.iter_vertex compute_vertex g;
       let nr_pairs = float_of_int ((n * (n-1)) / 2) in
       let connected_avg_dist = (float_of_int !dist_accu) /. nr_pairs in
-	(ecc_tbl, connected_avg_dist, neigh_1_dist, neigh_2_dist, neigh_3_dist)
+	(ecc_tbl, connected_avg_dist, neigh_2_dist, neigh_3_dist)
 
   let degree_distribution g =
     let (indeg_map, outdeg_map, total_in) = G.fold_vertex
@@ -128,7 +122,7 @@ module Make(G : G) = struct
      the whole graph *)
   let complete_statistics graph graph_name cnt =
     basic_network_statistics graph graph_name;
-    let (ecc_tbl, avg_distance, neigh_1_dist, neigh_2_dist, neigh_3_dist) =
+    let (ecc_tbl, avg_distance, neigh_2_dist, neigh_3_dist) =
       distance_statistics graph cnt in
     let n = G.nb_vertex graph in
     let (sum_ecc, max_ecc, min_ecc) = Enum.fold 
@@ -141,15 +135,12 @@ module Make(G : G) = struct
       (H.values ecc_tbl) 
     in
     let avg_ecc = (float_of_int sum_ecc) /. (float_of_int n) in
-    let ((max_1, _), (min_1, _)) = distribution_max_min (Hashtbl.enum neigh_1_dist) in
     let ((max_2, _), (min_2, _)) = distribution_max_min (Hashtbl.enum neigh_2_dist) in
     let ((max_3, _), (min_3, _)) = distribution_max_min (Hashtbl.enum neigh_3_dist) in
       print_endline ("complete_statistics " ^ graph_name);
       printf "eccentricity average %f max %d min %d\n" avg_ecc max_ecc min_ecc;
-      printf "1-neighbourhood max %d min %d\n" max_1 min_1;
       printf "2-neighbourhood max %d min %d\n" max_2 min_2;
       printf "3-neighbourhood max %d min %d\n" max_3 min_3;
-      write_distribution_to_file (Hashtbl.enum neigh_1_dist) (graph_name ^ "_neigh_1_dist.plot");
       write_distribution_to_file (Hashtbl.enum neigh_2_dist) (graph_name ^ "_neigh_2_dist.plot");
       write_distribution_to_file (Hashtbl.enum neigh_3_dist) (graph_name ^ "_neigh_3_dist.plot");
       print_endline ""
