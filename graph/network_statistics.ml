@@ -53,9 +53,9 @@ module Make(G : G) = struct
     let neigh_2 = ref 0 in
     let neigh_3 = ref 0 in
     let visit v d =
-      if d = 2 then 
-	incr neigh_2
-      else if d = 3 then 
+      if d <= 2 then 
+	incr neigh_2;
+      if d <= 3 then 
 	incr neigh_3;
       if d > !ecc then 
 	ecc := d;
