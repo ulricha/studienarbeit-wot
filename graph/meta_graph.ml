@@ -1,3 +1,4 @@
+open Batteries
 open Graph
 
 (* metavertex *)
@@ -10,11 +11,64 @@ end
 
 (* metaedge *)
 module ME = struct
-  type t = int
-  let compare = fun w1 w2 -> compare w1 w2
-  let default = 0
+  type t = int ref
+  let compare = fun e1 e2 -> compare !e1 !e2
+  let default = ref 0
 end
 
-module M = Imperative.Digraph.ConcreteLabeled(MV)(ME)
+module MG = Imperative.Digraph.ConcreteLabeled(MV)(ME)
+
+module type G = sig
+  type t
+  module V : Sig.COMPARABLE
+  val iter_vertex : (V.t -> unit) -> t -> unit
+  val nb_vertex : t -> int
+end
+
+module Make(G : G) = struct
+  module VH = Hashtbl.Make(G.V)
+
+  (* returns a function - : G.V.t -> G.t which returns the component/graph 
+     to which the vertex belongs *)
+  let assoc_node_component component_list =
+    let h = VH.create 1000 in
+      List.iter	(fun g -> G.iter_vertex (fun v -> VH.add h v g) g) component_list;
+      (fun v -> VH.find h v)
+	
+  let construct_metagraph_nodes component_list = 
+    let mv_1 = (1, ref 0) in
+    let mv_2 = (2, ref 0) in
+    let i = ref 3 in
+    let h = Hashtbl.create (List.length component_list) in
+    (* create a metagraph which has nodes on the order of the number 
+       of components minus the number of components of size 1 and 2
+       which are contracted to one node *)
+    let mg = MG.create ~size:((List.length component_list) - 217000) () in
+      MG.add_vertex mg mv_1;
+      MG.add_vertex mg mv_2;
+      let add_metavertex component =
+	let n = G.nb_vertex component in
+	  if n = 1 then
+	    begin
+	      incr (snd mv_1);
+	      Hashtbl.add h component mv_1
+	    end
+	  else if n = 2 then
+	    begin
+	      incr (snd mv_2);
+	      Hashtbl.add h component mv_2
+	    end
+	  else
+	    begin
+	      incr i;
+	      let mv = (!i, ref n) in
+		MG.add_vertex mg mv;
+		Hashtbl.add h component mv
+	    end
+      in
+	List.iter add_metavertex component_list;
+	(mg, h)
+	  
+end
 
 let () = print_endline "foo"
