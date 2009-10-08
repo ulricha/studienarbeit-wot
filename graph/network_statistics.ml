@@ -1,4 +1,3 @@
-
 open Batteries
 open Printf
 open Graph
@@ -142,8 +141,14 @@ module Make(G : G) = struct
       (H.values ecc_tbl) 
     in
     let avg_ecc = (float_of_int sum_ecc) /. (float_of_int n) in
+    let ((max_1, _), (min_1, _)) = distribution_max_min (Hashtbl.enum neigh_1_dist) in
+    let ((max_2, _), (min_2, _)) = distribution_max_min (Hashtbl.enum neigh_2_dist) in
+    let ((max_3, _), (min_3, _)) = distribution_max_min (Hashtbl.enum neigh_3_dist) in
       print_endline ("complete_statistics " ^ graph_name);
       printf "eccentricity average %f max %d min %d\n" avg_ecc max_ecc min_ecc;
+      printf "1-neighbourhood max %d min %d\n" max_1 min_1;
+      printf "2-neighbourhood max %d min %d\n" max_2 min_2;
+      printf "3-neighbourhood max %d min %d\n" max_3 min_3;
       write_distribution_to_file (Hashtbl.enum neigh_1_dist) (graph_name ^ "_neigh_1_dist.plot");
       write_distribution_to_file (Hashtbl.enum neigh_2_dist) (graph_name ^ "_neigh_2_dist.plot");
       write_distribution_to_file (Hashtbl.enum neigh_3_dist) (graph_name ^ "_neigh_3_dist.plot");
