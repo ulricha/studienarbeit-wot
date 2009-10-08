@@ -1,3 +1,5 @@
+open Graph
+
 (* metavertex *)
 module MV = struct
   type t = int * int ref
@@ -8,11 +10,11 @@ end
 
 (* metaedge *)
 module ME = struct
-  type label = int
+  type t = int
   let compare = fun w1 w2 -> compare w1 w2
   let default = 0
 end
 
-(* module M = Imperative.S.ConcreteLabeled(MV) *)
+module M = Imperative.Digraph.ConcreteLabeled(MV)(ME)
 
 let () = print_endline "foo"
