@@ -120,7 +120,7 @@ module Make(G : G) = struct
 
   (* adds computationally expensive statistics which can't be computed on 
      the whole graph *)
-  let complete_statistics graph graph_name cnt =
+  let complete_network_statistics graph graph_name cnt =
     basic_network_statistics graph graph_name;
     let (ecc_tbl, avg_distance, neigh_2_dist, neigh_3_dist) =
       distance_statistics graph cnt in
