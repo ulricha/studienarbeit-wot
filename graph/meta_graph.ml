@@ -18,14 +18,7 @@ end
 
 module MG = Imperative.Digraph.ConcreteLabeled(MV)(ME)
 
-module type G = sig
-  type t
-  module V : Sig.COMPARABLE
-  val iter_vertex : (V.t -> unit) -> t -> unit
-  val nb_vertex : t -> int
-end
-
-module Make(G : G) = struct
+module Make(G : Sig.G) = struct
   module VH = Hashtbl.Make(G.V)
     
   (* associates each component (= vertex list) with a integer id. returns
@@ -96,11 +89,26 @@ module Make(G : G) = struct
 	List.iter add_metavertex component_list;
 	(mg, h)
 
-  let construct_metagraph_edges metagraph scc_mv_tbl scc_list =
-    ignore metagraph;
-    ignore scc_mv_tbl;
-    ignore scc_list
-
+  let construct_metagraph_edges metagraph scc_mv_tbl original_graph scc_list vertex_to_component_id =
+    let handle_edge e =
+      let (u, v) = ((G.E.src e), (G.E.dst e)) in
+      let u_cid = vertex_to_component_id u in
+      let v_cid = vertex_to_component_id v in
+	if u_cid = v_cid then
+	  ()
+	else
+	  let u_mv = Hashtbl.find scc_mv_tbl u_cid in
+	  let v_mv = Hashtbl.find scc_mv_tbl v_cid in
+	    try
+	      let me = MG.find_edge metagraph u_mv v_mv in
+	      let label = MG.E.label me in
+		incr label
+	    with Not_found -> 
+	      let me = MG.E.create u_mv (ref 0) v_mv in
+		MG.add_edge_e metagraph me
+    in
+      G.iter_vertex (fun v -> G.iter_succ_e handle_edge original_graph v) original_graph
+	  
 end
 
 let () = print_endline "foo"
