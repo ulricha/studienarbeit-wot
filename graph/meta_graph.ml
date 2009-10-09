@@ -61,7 +61,7 @@ module Make(G : G) = struct
       (fun v -> VH.find h v)
 
   (* *) 
-  let construct_metagraph_nodes component_list = 
+  let construct_metagraph_nodes component_list component_to_id = 
     let mv_1 = (1, ref 0) in
     let mv_2 = (2, ref 0) in
     let i = ref 3 in
@@ -73,23 +73,24 @@ module Make(G : G) = struct
       MG.add_vertex mg mv_1;
       MG.add_vertex mg mv_2;
       let add_metavertex component =
+	let component_id = component_to_id component in
 	let n = List.length component in
 	  if n = 1 then
 	    begin
 	      incr (snd mv_1);
-	      Hashtbl.add h component mv_1
+	      Hashtbl.add h component_id mv_1
 	    end
 	  else if n = 2 then
 	    begin
 	      incr (snd mv_2);
-	      Hashtbl.add h component mv_2
+	      Hashtbl.add h component_id mv_2
 	    end
 	  else
 	    begin
 	      incr i;
 	      let mv = (!i, ref n) in
 		MG.add_vertex mg mv;
-		Hashtbl.add h component mv
+		Hashtbl.add h component_id mv
 	    end
       in
 	List.iter add_metavertex component_list;
