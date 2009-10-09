@@ -139,6 +139,7 @@ module Make(G : G) = struct
     let ((max_3, _), (min_3, _)) = distribution_max_min (Hashtbl.enum neigh_3_dist) in
       print_endline ("complete_statistics " ^ graph_name);
       printf "eccentricity average %f max %d min %d\n" avg_ecc max_ecc min_ecc;
+      printf "(connected) average distance %f\n" avg_distance;
       printf "2-neighbourhood max %d min %d\n" max_2 min_2;
       printf "3-neighbourhood max %d min %d\n" max_3 min_3;
       write_distribution_to_file (Hashtbl.enum neigh_2_dist) (graph_name ^ "_neigh_2_dist.plot");

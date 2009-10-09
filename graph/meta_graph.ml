@@ -68,7 +68,6 @@ module Make(G : G) = struct
       in
 	List.iter add_metavertex component_list;
 	(mg, h)
-	  
 end
 
 let () = print_endline "foo"
