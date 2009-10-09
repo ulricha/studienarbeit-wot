@@ -22,24 +22,20 @@ module Make(G : Sig.G) = struct
   module VH = Hashtbl.Make(G.V)
     
   (* associates each component (= vertex list) with a integer id. returns
-     two functions which map component to id and the other direction *)
+     a function which maps component to id *)
   let build_component_identifier component_list =
     let n = List.length component_list in
     let ci = Hashtbl.create n in
-    let ic = Hashtbl.create n in
     let rec loop i l =
       match l with
 	| component :: tl ->
-	    Hashtbl.add ic i component;
 	    Hashtbl.add ci component i;
 	    loop (i + 1) tl
 	| [] ->
 	    ()
     in
       loop 1 component_list;
-      let id_to_component id = Hashtbl.find ic id in
-      let component_to_id c = Hashtbl.find ci c in
-	(id_to_component, component_to_id)
+      fun c -> Hashtbl.find ci c
 
   (* returns a function - : G.V.t -> G.t which returns the component/graph 
      to which the vertex belongs *)
@@ -108,6 +104,9 @@ module Make(G : Sig.G) = struct
 		MG.add_edge_e metagraph me
     in
       G.iter_vertex (fun v -> G.iter_succ_e handle_edge original_graph v) original_graph
+
+(*  let metagraph graph component_list = =*)
+    
 	  
 end
 
