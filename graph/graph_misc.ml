@@ -35,6 +35,13 @@ let distribution_max_min enum =
   in
     Enum.fold max_min ((0, 0), (0, Int.max_num)) enum
 
+let median a = 
+  Array.sort compare a;
+  Array.get a ((Array.length a) / 2)
+
+let values_to_distribution enum =
+  Enum.fold (fun d value -> intmap_increase_or_add d value) Map.IntMap.empty enum
+
 module type G = sig
   type t
   module V : Sig.COMPARABLE
