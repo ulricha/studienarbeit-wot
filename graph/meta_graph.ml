@@ -105,9 +105,12 @@ module Make(G : Sig.G) = struct
     in
       G.iter_vertex (fun v -> G.iter_succ_e handle_edge original_graph v) original_graph
 
-(*  let metagraph graph component_list = =*)
-    
-	  
+  let metagraph graph component_list =
+    let component_to_id = build_component_identifier component_list in
+    let vertex_to_component_id = assoc_vertex_component component_list component_to_id in
+    let (metagraph, cid_mv_tbl) = construct_metagraph_nodes component_list component_to_id in
+      construct_metagraph_edges metagraph cid_mv_tbl graph component_list vertex_to_component_id;
+      metagraph
 end
 
 let () = print_endline "foo"
