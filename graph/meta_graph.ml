@@ -30,11 +30,28 @@ module Make(G : G) = struct
 
   (* returns a function - : G.V.t -> G.t which returns the component/graph 
      to which the vertex belongs *)
-  let assoc_node_component component_list =
+  let assoc_vertex_component component_list =
     let h = VH.create 1000 in
       List.iter	(fun g -> G.iter_vertex (fun v -> VH.add h v g) g) component_list;
       (fun v -> VH.find h v)
-	
+
+  let build_component_identifier component_list =
+    let n = List.length component_list in
+    let ci = Hashtbl.create n in
+    let ic = Hashtbl.create n in
+    let rec loop i l =
+      match l with
+	| component :: tl ->
+	    Hashtbl.add ic i component;
+	    Hashtbl.add ci component i;
+	    loop (i + 1) tl
+	| [] ->
+	    ()
+    in
+      loop 1 component_list;
+      (ic, ci)
+
+  (* *) 
   let construct_metagraph_nodes component_list = 
     let mv_1 = (1, ref 0) in
     let mv_2 = (2, ref 0) in
@@ -47,7 +64,7 @@ module Make(G : G) = struct
       MG.add_vertex mg mv_1;
       MG.add_vertex mg mv_2;
       let add_metavertex component =
-	let n = G.nb_vertex component in
+	let n = List.length component in
 	  if n = 1 then
 	    begin
 	      incr (snd mv_1);
@@ -68,6 +85,12 @@ module Make(G : G) = struct
       in
 	List.iter add_metavertex component_list;
 	(mg, h)
+
+  let construct_metagraph_edges metagraph scc_mv_tbl scc_list =
+    ignore metagraph;
+    ignore scc_mv_tbl;
+    ignore scc_list
+
 end
 
 let () = print_endline "foo"
