@@ -36,10 +36,8 @@ let distribution_max_min enum =
     Enum.fold max_min ((0, 0), (0, Int.max_num)) enum
 
 let enum_max_min enum =
-  let max_min (max, min) x =
-    let larger a b = if a > b then a else b in
-    let smaller a b = if a > b then b else a in
-      (larger max x, smaller min x)
+  let max_min (maximum, minimum) x =
+      (max maximum x, min minimum x)
   in
     Enum.fold max_min (0, Int.max_num) enum
 

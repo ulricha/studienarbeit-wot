@@ -130,10 +130,8 @@ module Make(G : G) = struct
       distance_statistics graph cnt in
     let n = G.nb_vertex graph in
     let (sum_ecc, max_ecc, min_ecc) = Enum.fold 
-      (fun (sum, max, min) ecc -> 
-	 let larger a b = if a > b then a else b in
-	 let smaller a b = if a < b then a else b in
-	   (sum + ecc, larger max ecc, smaller min ecc)
+      (fun (sum, max_ecc, min_ecc) ecc -> 
+	 (sum + ecc, max max_ecc ecc, min min_ecc ecc)
       )
       (0, 0, Int.max_num)
       (H.values ecc_tbl) 
