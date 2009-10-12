@@ -26,7 +26,7 @@ module MG = Imperative.Digraph.ConcreteLabeled(MV)(ME)
 
 module Display = struct
   include MG
-  let vertex_name v = let (name, n) = v in sprintf "scc-%d (%d)" name n
+  let vertex_name v = let (name, n) = v in sprintf "scc-%d (%d)" name !n
   let graph_attributes _ = []
   let default_vertex_attributes _ = []
   let vertex_attributes _ = []
