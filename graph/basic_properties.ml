@@ -22,9 +22,9 @@ let () =
       print_endline "compute basic properties of wot graph";
       let vertex_fname = Sys.argv.(1) in
       let edge_fname = Sys.argv.(2) in
-      let l = fun () -> load_storeable_graph_from_files vertex_fname edge_fname in
-      let storeable_g = time_evaluation l "load_storeable_graph" in
-      let c = fun () -> graph_from_storeable_graph storeable_g in
+      let l = fun () -> load_structinfo_from_files vertex_fname edge_fname in
+      let storeable_g = time_evaluation l "load_structinfo" in
+      let c = fun () -> graph_from_structinfo storeable_g in
       let g = time_evaluation c "graph_from_storeable_graph" in
       let scc_list = time_evaluation (fun () -> C.scc_list g) "scc_list" in
       let scc_list_sorted = list_list_sort_reverse scc_list in
