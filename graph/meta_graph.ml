@@ -59,7 +59,9 @@ module Make(G : Sig.G) = struct
   let construct_metagraph_nodes component_list component_to_id = 
     let mv_1 = (1, ref 0) in
     let mv_2 = (2, ref 0) in
-    let i = ref 3 in
+    let mv_3 = (3, ref 0) in
+    let mv_4 = (4, ref 0) in
+    let i = ref 5 in
     let h = Hashtbl.create (List.length component_list) in
     (* create a metagraph which has nodes on the order of the number 
        of components minus the number of components of size 1 and 2
@@ -67,6 +69,7 @@ module Make(G : Sig.G) = struct
     let mg = MG.create ~size:((List.length component_list) - 217000) () in
       MG.add_vertex mg mv_1;
       MG.add_vertex mg mv_2;
+      MG.add_vertex mg mv_3;
       let add_metavertex component =
 	let component_id = component_to_id component in
 	let n = List.length component in
@@ -79,6 +82,16 @@ module Make(G : Sig.G) = struct
 	    begin
 	      incr (snd mv_2);
 	      Hashtbl.add h component_id mv_2
+	    end
+	  else if n = 3 then
+	    begin
+	      incr (snd mv_3);
+	      Hashtbl.add h component_id mv_3
+	    end
+	  else if n = 4 then
+	    begin
+	      incr (snd mv_4);
+	      Hashtbl.add h component_id mv_4
 	    end
 	  else
 	    begin
@@ -139,7 +152,10 @@ let () =
       let g = time_evaluation c "graph_from_storeable_graph" in
       let scc_list = time_evaluation (fun () -> C.scc_list g) "scc_list" in
       let metagraph = (time_evaluation (fun () -> M.metagraph g scc_list) "metagraph") in
-	Statistics.basic_network_statistics metagraph "metagraph"
+      let (in_dist, out_dist, avg_in) = Statistics.degree_distribution metagraph in
+	Statistics.basic_network_statistics metagraph "metagraph";
+	write_distribution_to_file (Map.IntMap.enum in_dist) "mg-indeg-dist.plot";
+	write_distribution_to_file (Map.IntMap.enum out_dist) "mg-outdeg-dist.plot";
     end
 
 
