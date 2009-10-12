@@ -24,6 +24,19 @@ end
 
 module MG = Imperative.Digraph.ConcreteLabeled(MV)(ME)
 
+module Display = struct
+  include MG
+  let vertex_name v = let (name, n) = v in sprintf "scc-%d (%d)" name n
+  let graph_attributes _ = []
+  let default_vertex_attributes _ = []
+  let vertex_attributes _ = []
+  let default_edge_attributes _ = []
+  let edge_attributes _ = []
+  let get_subgraph _ = None
+end
+
+module Dot = Graphviz.Dot(Display)
+
 module Make(G : Sig.G) = struct
   module VH = Hashtbl.Make(G.V)
     
@@ -70,6 +83,7 @@ module Make(G : Sig.G) = struct
       MG.add_vertex mg mv_1;
       MG.add_vertex mg mv_2;
       MG.add_vertex mg mv_3;
+      MG.add_vertex mg mv_4;
       let add_metavertex component =
 	let component_id = component_to_id component in
 	let n = List.length component in
