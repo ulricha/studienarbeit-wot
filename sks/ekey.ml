@@ -32,7 +32,8 @@ type vertex_list = epki list with sexp
 type sig_list_per_signee = string * ((string * esiginfo) list) with sexp
 type edge_list = sig_list_per_signee list with sexp
 type sexp_graph = vertex_list * edge_list with sexp
-type edge = string * string
+type edgelist_per_vertex = string * (string list) with sexp
+type vertex = string with sexp
 
 let compare_esignature esig1 esig2 =
   let (i1, _) = esig1 in

@@ -89,15 +89,12 @@ struct
 
   let ekey_list_to_storeable_graph ekey_list =
     print_endline "ekey_list_to_storeable_graph";
-(*    let key_cnt = ref 0 in
-    let sig_cnt = ref 0 in*)
     let vlist = List.map (fun ekey -> ekey.pki) ekey_list in
     let edge_list = RefList.empty () in
     let one_key_signatures ekey =
       let signee_id = ekey.pki.key_keyid in
       let signer_list = List.fold_left 
 	(fun l esig ->
-	   (*display_iterations sig_cnt "sigs" 10000;*)
 	   let (signer_id, siginfo) = esig in
 	     (signer_id, siginfo) :: l)
 	[]
@@ -107,17 +104,37 @@ struct
     in
       List.iter
 	(fun ekey -> 
-	   (*display_iterations key_cnt "keys" 10000;*)
 	   RefList.push edge_list (one_key_signatures ekey)
 	)
 	ekey_list
       ;
       (vlist, (RefList.to_list edge_list))
 
-  let dump_storeable_graph_to_file vertex_filename edge_filename g =
+  let ekey_list_to_struct_info ekey_list =
+    print_endline "ekey_list_to_struct_info";
+    let vlist = List.map (fun ekey -> ekey.pki.key_keyid) ekey_list in
+    let edge_list = RefList.empty () in
+    let one_key_signatures ekey =
+      let signee_id = ekey.pki.key_keyid in
+      let signer_list = List.fold_left
+	(fun l esig ->
+	   let (signer_id, _) = esig in
+	     signer_id :: l)
+	[]
+	ekey.signatures
+      in
+	(signee_id, signer_list)
+    in
+      List.iter
+	(fun ekey -> RefList.push edge_list (one_key_signatures ekey))
+	ekey_list
+      ;
+      (vlist, (RefList.to_list edge_list))
+
+  let dump_storeable_graph_to_file ekey_filename edgeinfo_filename g =
     let (vertex_list, edge_list) = g in
-    let v_channel = open_out vertex_filename in
-    let e_channel = open_out edge_filename in
+    let v_channel = open_out ekey_filename in
+    let e_channel = open_out edgeinfo_filename in
       List.iter
 	(fun v ->
 	   let s = sexp_of_epki v in
@@ -130,6 +147,29 @@ struct
       List.iter
 	(fun e ->
 	   let s = sexp_of_sig_list_per_signee e in
+	     output_mach e_channel s;
+	     output_char e_channel '\n'
+	)
+	edge_list
+      ;
+      close_out e_channel
+
+  let dump_structinfo_to_file vertex_filename edge_filename g_struct =
+    let (vertex_list, edge_list) = g_struct in
+    let v_channel = open_out vertex_filename in
+    let e_channel = open_out edge_filename in
+      List.iter
+	(fun v ->
+	   let s = sexp_of_vertex v in
+	     output_mach v_channel s;
+	     output_char v_channel '\n'
+	)
+	vertex_list
+      ;
+      close_out v_channel;
+      List.iter
+	(fun e -> 
+	   let s = sexp_of_edgelist_per_vertex e in
 	     output_mach e_channel s;
 	     output_char e_channel '\n'
 	)
@@ -297,9 +337,8 @@ struct
     Keydb.open_dbs settings;
     begin
       let keys = time_evaluation fetch_keys "fetch_keys" in
-      let vertexf = "vertex.sexp" in
-      let edgef = "edge.sexp" in
-	dump_storeable_graph_to_file vertexf edgef (ekey_list_to_storeable_graph keys);
+	dump_storeable_graph_to_file "epki.sexp" "esiginfo.sexp" (ekey_list_to_storeable_graph keys);
+	dump_structinfo_to_file "vertex.sexp" "edge.sexp" (ekey_list_to_struct_info keys);
 	dump_ekey_list_to_file keys "ekeys.sexp"
     end
 end
