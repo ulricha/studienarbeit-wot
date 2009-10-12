@@ -45,7 +45,8 @@ let time_evaluation f operation =
   let t1 = Unix.gettimeofday () in
   let ret = f () in
   let t2 = Unix.gettimeofday() in
-    printf "%s: %f sec\n" operation (t2 -. t1);
+  let m = sprintf "%s: %f sec" operation (t2 -. t1) in
+    print_endline m;
     ret
 
 let display_iterations counter operation interval =
