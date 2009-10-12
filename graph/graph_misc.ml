@@ -35,6 +35,14 @@ let distribution_max_min enum =
   in
     Enum.fold max_min ((0, 0), (0, Int.max_num)) enum
 
+let enum_max_min enum =
+  let max_min (max, min) x =
+    let larger a b = if a > b then a else b in
+    let smaller a b = if a > b then b else a in
+      (larger max x, smaller min x)
+  in
+    Enum.fold max_min (0, Int.max_num) enum
+
 let median a = 
   Array.sort compare a;
   Array.get a ((Array.length a) / 2)

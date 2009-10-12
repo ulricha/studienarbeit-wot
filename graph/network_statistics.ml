@@ -143,8 +143,8 @@ module Make(G : G) = struct
     let median_avg_dist_per_node = median (Array.of_enum (H.values avg_dist_per_node_tbl)) in
     let ecc_dist = values_to_distribution (H.values ecc_tbl) in
     let avg_distance_per_node_dist = values_to_distribution (H.values avg_dist_per_node_tbl) in
-    let ((max_2, _), (min_2, _)) = distribution_max_min (Hashtbl.enum neigh_2_dist) in
-    let ((max_3, _), (min_3, _)) = distribution_max_min (Hashtbl.enum neigh_3_dist) in
+    let (max_2, min_2) = enum_max_min (Hashtbl.keys neigh_2_dist) in
+    let (max_3, min_3) = enum_max_min (Hashtbl.keys neigh_3_dist) in
       print_endline ("complete_statistics " ^ graph_name);
       printf "eccentricity average %f median %d max %d min %d\n" 
 	avg_ecc median_ecc max_ecc min_ecc;
