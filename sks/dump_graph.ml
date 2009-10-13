@@ -188,7 +188,7 @@ struct
 	)
 	ekl
     in
-      time_evaluation write_list "marshal ekpi_list";
+      time_eval write_list "marshal ekpi_list";
       close_out out_chan
 
   let list_missing_keys skipped_keyids keys_so_far =
@@ -336,7 +336,7 @@ struct
   let run () =
     Keydb.open_dbs settings;
     begin
-      let keys = time_evaluation fetch_keys "fetch_keys" in
+      let keys = time_eval fetch_keys "fetch_keys" in
 	dump_storeable_graph_to_file "epki.sexp" "esiginfo.sexp" (ekey_list_to_storeable_graph keys);
 	dump_structinfo_to_file "vertex.sexp" "edge.sexp" (ekey_list_to_struct_info keys);
 	dump_ekey_list_to_file keys "ekeys.sexp"
