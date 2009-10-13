@@ -186,11 +186,16 @@ module Make(G : G) = struct
       update_betweeness b_tbl lookup_sigma pred stack s n 
 
   (* iteratively compute the betweeness centrality values for the graph g. *)
-  let betweeness_centrality_iterative g =
+  let betweeness_centrality_iterative g cnt =
     let n = G.nb_vertex g in
     let b_tbl = H.create n in
-    let f v = betweeness_round g v b_tbl in
-      G.iter_vertex f g
+    let f v = 
+      display_iterations cnt "betweeness_centrality_iterative" 100;
+      betweeness_round g v b_tbl 
+    in
+      G.iter_vertex f g;
+      b_tbl
+
 
   (* statistics which can be computed regardless of the graph size *)
   let basic_network_statistics graph graph_name =

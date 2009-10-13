@@ -8,13 +8,23 @@ open Ekey
 open Wot_graph
 
 module C = Component_helpers.Make(G)
-module Statistics = Network_statistics.Make(G)
+module Stat = Network_statistics.Make(G)
+
+let sort_alist_by_value l =
+  let cmp (k1, v1) (k2, v2) = compare v1 v2 in
+    List.sort ~cmp:(compare_reverse cmp) l
+
+let betweeness_centrality betweeness_function g name cnt =
+  let betweeness_values = betweeness_function g cnt in
+  let sorted = List.of_enum (Stat.H.enum betweeness_values) in
+  let (keyid, value) = List.hd sorted in
+    printf "most central key in %s: %s (%f)\n" name (keyid_to_string keyid) value
 
 (* mscc = maximum strongly connected component *)
 let () =
   if (Array.length Sys.argv) <> 3 then
     begin
-      print_endline "usage: basic_properties vertex.sexp edges.sexp";
+      print_endline "usage: basic_properties vertex.sexp edge.sexp";
       exit (-1)
     end
   else
@@ -29,8 +39,6 @@ let () =
       let scc_list = time_evaluation (fun () -> C.scc_list g) "scc_list" in
       let scc_list_sorted = list_list_sort_reverse scc_list in
       let cnt = ref 0 in
-	C.overall_component_properties scc_list;
-	Statistics.basic_network_statistics g "complete_graph";
 	let rec loop l =
 	  match l with
 	    | node_list :: tl ->
@@ -42,7 +50,7 @@ let () =
 		    begin
 		      let name = "scc-" ^ (string_of_int n) in
 			cnt := 0;
-			Statistics.complete_network_statistics scc name cnt;
+			betweeness_centrality Stat.betweeness_centrality_iterative g name cnt;
 			loop tl
 		    end
 	    | [] -> 
