@@ -14,10 +14,10 @@ let write_distribution_to_file enum fname =
   in
     File.with_file_out fname f
 
-let intmap_increase_or_add map key =
+let intmap_add_or_create map key increment =
   try 
-    Map.IntMap.add key ((Map.IntMap.find key map) + 1) map
-  with Not_found -> Map.IntMap.add key 1 map
+    Map.IntMap.add key ((Map.IntMap.find key map) + increment) map
+  with Not_found -> Map.IntMap.add key increment map
 
 let distribution_max_min enum =
   let max_min (max_p, min_p) p =
@@ -46,7 +46,7 @@ let median a =
   Array.get a ((Array.length a) / 2)
 
 let values_to_distribution enum =
-  Enum.fold (fun d value -> intmap_increase_or_add d value) Map.IntMap.empty enum
+  Enum.fold (fun d value -> intmap_add_or_create d value 1) Map.IntMap.empty enum
 
 module type G = sig
   type t

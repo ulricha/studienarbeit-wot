@@ -99,8 +99,8 @@ module Make(G : G) = struct
       (fun v (in_map, out_map, tin) -> 
 	 let outdeg = G.out_degree g v in
 	 let indeg = G.in_degree g v in
-	 let out_map = intmap_increase_or_add out_map outdeg in
-	 let in_map = intmap_increase_or_add in_map indeg in
+	 let out_map = intmap_add_or_create out_map outdeg 1 in
+	 let in_map = intmap_add_or_create in_map indeg 1 in
 	   (in_map, out_map, tin + indeg)
       )
       g
@@ -143,7 +143,14 @@ module Make(G : G) = struct
 	let pred_list = H.find pred w in
 	  Enum.iter compute_delta (Ref_list.backwards pred_list);
 	  if not (w = s) then
-	    H.replace b_tbl w ((H.find b_tbl w) +. (lookup_delta w))
+	    let tbl_add_or_create key increment =
+	      if H.mem b_tbl key then
+		let prev_val = H.find b_tbl key in
+		  H.replace b_tbl key (prev_val +. increment)
+	      else
+		H.add b_tbl key increment
+	    in
+	      tbl_add_or_create w (lookup_delta w)
       done
 
   (* compute the round function of the Betweeness Centrality algorithm: do a 
@@ -195,7 +202,6 @@ module Make(G : G) = struct
     in
       G.iter_vertex f g;
       b_tbl
-
 
   (* statistics which can be computed regardless of the graph size *)
   let basic_network_statistics graph graph_name =
