@@ -110,6 +110,71 @@ module Make(G : G) = struct
     let avg_in = (float_of_int total_in) /. nr_vertex in
       (indeg_map, outdeg_map, avg_in)
 
+  let betweeness_round g s b_tbl =
+    let stack = Stack.create () in
+      (* is this a reasonable estimate for P's initial size? *)
+    let n = G.nb_vertex g in
+    let pred = H.create n in
+      (* append w to the predecessor list of v *)
+    let append_pred v w =
+      try
+	let l = H.find pred v in
+	  Ref_list.push l w
+      with
+	| Not_found ->
+	    let l = Ref_list.empty () in
+	      Ref_list.push l w;
+	      H.add pred v l
+    in
+    let sigma = H.create n in
+      (* lookup \sigma[v] and return the default value 0 if it does not exist *)
+    let lookup_sigma v =
+      try H.find sigma v with Not_found -> 0
+    in
+    let d = H.create n in
+    let q = Queue.create () in
+      H.add sigma s 1;
+      H.add d s 0;
+      Queue.add s q;
+      while not (Queue.is_empty q) do
+	let v = Queue.take q in
+	let push w =
+	  if not (H.mem d w) then
+	    begin
+	      H.add d w ((H.find d w) + 1);
+	      Queue.add w q;
+	    end;
+	  let d_v = H.find d v in
+	  let d_w = H.find d w in
+	    if d_w = d_v + 1 then
+	      begin
+		H.replace sigma w ((lookup_sigma v) + (lookup_sigma w));
+		append_pred w v
+	      end
+	in
+	  Stack.push v stack;
+	  G.iter_succ push g v
+      done;
+      let delta = H.create n in
+      let lookup_delta v =
+	try H.find delta v with Not_found -> 0.0
+      in
+	while not (Stack.is_empty stack) do
+	  let w = Stack.pop stack in
+	  let compute_delta v =
+	    let delta_v = lookup_delta v in
+	    let delta_w = lookup_delta w in
+	    let div = (float_of_int (lookup_sigma v)) /. (float_of_int (lookup_sigma w)) in
+	    let t = delta_v +. div *. (1.0 +. delta_w) in
+	      H.replace delta v t
+	  in
+	  let pred_list = H.find pred w in
+	    Enum.iter compute_delta (Ref_list.backwards pred_list);
+	    if not (w = s) then
+	      H.replace b_tbl w ((H.find b_tbl w) +. (lookup_delta w))
+	done
+	    
+
   (* statistics which can be computed regardless of the graph size *)
   let basic_network_statistics graph graph_name =
     let nr_vertex = G.nb_vertex graph in
