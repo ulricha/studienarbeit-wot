@@ -8,7 +8,7 @@ open Ekey
 open Wot_graph
 
 module C = Component_helpers.Make(G)
-module Stat = Network_statistics.Make(G)
+module B = Betweeness.Make(G)
 
 let sort_alist_by_value l =
   let cmp (k1, v1) (k2, v2) = compare v1 v2 in
@@ -16,7 +16,7 @@ let sort_alist_by_value l =
 
 let betweeness_centrality betweeness_function g name cnt =
   let betweeness_values = betweeness_function g cnt in
-  let sorted = List.of_enum (Stat.H.enum betweeness_values) in
+  let sorted = List.of_enum (B.H.enum betweeness_values) in
   let (keyid, value) = List.hd sorted in
     printf "most central key in %s: %s (%f)\n" name (keyid_to_string keyid) value
 
@@ -50,7 +50,7 @@ let () =
 		    begin
 		      let name = "scc-" ^ (string_of_int n) in
 			print_endline ("betweeness_centrality " ^ name);
-			betweeness_centrality Stat.betweeness_centrality_iterative g name benchmark;
+			betweeness_centrality B.betweeness_centrality_iterative g name benchmark;
 			loop tl
 		    end
 	    | [] -> 
