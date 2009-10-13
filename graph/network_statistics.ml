@@ -213,7 +213,7 @@ module Make(G : G) = struct
     let b_tbl = H.create n in
     let f v = 
       display_iterations cnt "betweeness_centrality_iterative" 100;
-      time_evaluation (fun () -> betweeness_round g v b_tbl) "betweeness_round"
+      time_eval (fun () -> betweeness_round g v b_tbl) "betweeness_round"
     in
       G.iter_vertex f g;
       b_tbl
