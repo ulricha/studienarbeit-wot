@@ -110,22 +110,50 @@ module Make(G : G) = struct
     let avg_in = (float_of_int total_in) /. nr_vertex in
       (indeg_map, outdeg_map, avg_in)
 
+  (* append w to the predecessor list of v *)
+  let append_pred tbl v w =
+    try
+      let l = H.find tbl v in
+	Ref_list.push l w
+    with
+      | Not_found ->
+	  let l = Ref_list.empty () in
+	    Ref_list.push l w;
+	    H.add tbl v l
+
+  (* update betweeness centrality values as part of the round function.
+     b_tbl maps vertices to their current centrality value; lookup_sigma
+     returns the sigma value of a vertex; pred maps a vertex to its list
+     predecessors on shortest paths; stack is the stack accumulated during
+     BFS traversal; s is the start vertex of the round and n = |V| *)
+  let update_betweeness b_tbl lookup_sigma pred stack s n =
+    let delta = H.create n in
+    let lookup_delta v =
+      try H.find delta v with Not_found -> 0.0
+    in
+      while not (Stack.is_empty stack) do
+	let w = Stack.pop stack in
+	let compute_delta v =
+	  let delta_v = lookup_delta v in
+	  let delta_w = lookup_delta w in
+	  let div = (float_of_int (lookup_sigma v)) /. (float_of_int (lookup_sigma w)) in
+	  let t = delta_v +. div *. (1.0 +. delta_w) in
+	    H.replace delta v t
+	in
+	let pred_list = H.find pred w in
+	  Enum.iter compute_delta (Ref_list.backwards pred_list);
+	  if not (w = s) then
+	    H.replace b_tbl w ((H.find b_tbl w) +. (lookup_delta w))
+      done
+
+  (* compute the round function of the Betweeness Centrality algorithm: do a 
+     BFS traversal beginning on s, compute the vertex dependencies and use them
+     to update the betweeness values in b_tbl. *)
   let betweeness_round g s b_tbl =
     let stack = Stack.create () in
       (* is this a reasonable estimate for P's initial size? *)
     let n = G.nb_vertex g in
     let pred = H.create n in
-      (* append w to the predecessor list of v *)
-    let append_pred v w =
-      try
-	let l = H.find pred v in
-	  Ref_list.push l w
-      with
-	| Not_found ->
-	    let l = Ref_list.empty () in
-	      Ref_list.push l w;
-	      H.add pred v l
-    in
     let sigma = H.create n in
       (* lookup \sigma[v] and return the default value 0 if it does not exist *)
     let lookup_sigma v =
@@ -149,31 +177,20 @@ module Make(G : G) = struct
 	    if d_w = d_v + 1 then
 	      begin
 		H.replace sigma w ((lookup_sigma v) + (lookup_sigma w));
-		append_pred w v
+		append_pred pred w v
 	      end
 	in
 	  Stack.push v stack;
 	  G.iter_succ push g v
       done;
-      let delta = H.create n in
-      let lookup_delta v =
-	try H.find delta v with Not_found -> 0.0
-      in
-	while not (Stack.is_empty stack) do
-	  let w = Stack.pop stack in
-	  let compute_delta v =
-	    let delta_v = lookup_delta v in
-	    let delta_w = lookup_delta w in
-	    let div = (float_of_int (lookup_sigma v)) /. (float_of_int (lookup_sigma w)) in
-	    let t = delta_v +. div *. (1.0 +. delta_w) in
-	      H.replace delta v t
-	  in
-	  let pred_list = H.find pred w in
-	    Enum.iter compute_delta (Ref_list.backwards pred_list);
-	    if not (w = s) then
-	      H.replace b_tbl w ((H.find b_tbl w) +. (lookup_delta w))
-	done
-	    
+      update_betweeness b_tbl lookup_sigma pred stack s n 
+
+  (* iteratively compute the betweeness centrality values for the graph g. *)
+  let betweeness_centrality_iterative g =
+    let n = G.nb_vertex g in
+    let b_tbl = H.create n in
+    let f v = betweeness_round g v b_tbl in
+      G.iter_vertex f g
 
   (* statistics which can be computed regardless of the graph size *)
   let basic_network_statistics graph graph_name =
