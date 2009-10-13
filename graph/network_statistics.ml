@@ -189,18 +189,18 @@ module Make(G : G) = struct
       while not (Queue.is_empty q) do
 	let v = Queue.take q in
 	let push w =
-	  if not (H.mem d w) then
-	    begin
-	      H.add d w ((H.find d v) + 1);
-	      Queue.add w q;
-	    end;
 	  let d_v = H.find d v in
-	  let d_w = H.find d w in
-	    if d_w = d_v + 1 then
+	    if not (H.mem d w) then
 	      begin
-		H.replace sigma w ((lookup_sigma v) +. (lookup_sigma w));
-		append_pred pred w v
-	      end
+		H.add d w (d_v + 1);
+		Queue.add w q;
+	      end;
+	    let d_w = H.find d w in
+	      if d_w = d_v + 1 then
+		begin
+		  H.replace sigma w ((lookup_sigma v) +. (lookup_sigma w));
+		  append_pred pred w v
+		end
 	in
 	  Stack.push v stack;
 	  G.iter_succ push g v
