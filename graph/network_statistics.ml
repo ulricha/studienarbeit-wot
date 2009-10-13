@@ -121,6 +121,21 @@ module Make(G : G) = struct
 	    Ref_list.push l w;
 	    H.add tbl v l
 
+  type vertex_info = {
+    mutable d : int;
+    mutable sigma : float;
+    mutable pred : G.V.t Ref_list.t;
+    mutable delta : float
+  }
+
+  let lookup_vertex_info_or_create tbl v =
+    try
+      H.find tbl v
+    with Not_found ->
+      let i = { d = (-1); sigma = 0.0; pred = Ref_list.empty (); delta = 0.0 } in
+	H.add tbl v i;
+	i
+
   (* update betweeness centrality values as part of the round function.
      b_tbl maps vertices to their current centrality value; lookup_sigma
      returns the sigma value of a vertex; pred maps a vertex to its list of
@@ -198,7 +213,7 @@ module Make(G : G) = struct
     let b_tbl = H.create n in
     let f v = 
       display_iterations cnt "betweeness_centrality_iterative" 100;
-      betweeness_round g v b_tbl 
+      time_evaluation (fun () -> betweeness_round g v b_tbl) "betweeness_round"
     in
       G.iter_vertex f g;
       b_tbl
