@@ -110,17 +110,6 @@ module Make(G : G) = struct
     let avg_in = (float_of_int total_in) /. nr_vertex in
       (indeg_map, outdeg_map, avg_in)
 
-  (* append w to the predecessor list of v *)
-  let append_pred tbl v w =
-    try
-      let l = H.find tbl v in
-	Ref_list.push l w
-    with
-      | Not_found ->
-	  let l = Ref_list.empty () in
-	    Ref_list.push l w;
-	    H.add tbl v l
-
   type vertex_info = {
     mutable d : int;
     mutable sigma : float;
@@ -141,71 +130,61 @@ module Make(G : G) = struct
      returns the sigma value of a vertex; pred maps a vertex to its list of
      predecessors on shortest paths; stack is the stack accumulated during
      BFS traversal; s is the start vertex of the round and n = |V| *)
-  let update_betweeness b_tbl lookup_sigma pred stack s n =
-    let delta = H.create n in
-    let lookup_delta v =
-      try H.find delta v with Not_found -> 0.0
-    in
-      while not (Stack.is_empty stack) do
-	let w = Stack.pop stack in
-	let compute_delta v =
-	  let delta_v = lookup_delta v in
-	  let delta_w = lookup_delta w in
-	  let div = (lookup_sigma v) /. (lookup_sigma w) in
-	  let t = delta_v +. div *. (1.0 +. delta_w) in
-	    H.replace delta v t
-	in
-	let pred_list = try H.find pred w with Not_found -> Ref_list.empty () in
-	  Enum.iter compute_delta (Ref_list.backwards pred_list);
-	  if not (w = s) then
-	    let tbl_add_or_create key increment =
-	      if H.mem b_tbl key then
-		let prev_val = H.find b_tbl key in
-		  H.replace b_tbl key (prev_val +. increment)
-	      else
-		H.add b_tbl key increment
-	    in
-	      tbl_add_or_create w (lookup_delta w)
-      done
+  let update_betweeness b_tbl lookup stack s n =
+    while not (Stack.is_empty stack) do
+      let w = Stack.pop stack in
+      let w_info = lookup w in
+      let compute_delta v =
+	let v_info = lookup v in
+	let div = v_info.sigma /. w_info.sigma in
+	let t = v_info.delta +. div *. (1.0 +. w_info.delta) in
+	  v_info.delta <- t
+      in
+	Enum.iter compute_delta (Ref_list.backwards w_info.pred);
+	if not (w = s) then
+	  let tbl_add_or_create key increment =
+	    if H.mem b_tbl key then
+	      let prev_val = H.find b_tbl key in
+		H.replace b_tbl key (prev_val +. increment)
+	    else
+	      H.add b_tbl key increment
+	  in
+	    tbl_add_or_create w (w_info.delta)
+    done
 
   (* compute the round function of the Betweeness Centrality algorithm: do a 
      BFS traversal beginning on s, compute the vertex dependencies and use them
      to update the betweeness values in b_tbl. *)
   let betweeness_round g s b_tbl =
     let stack = Stack.create () in
-      (* is this a reasonable estimate for P's initial size? *)
     let n = G.nb_vertex g in
-    let pred = H.create n in
-    let sigma = H.create n in
-      (* lookup \sigma[v] and return the default value 0 if it does not exist *)
-    let lookup_sigma v =
-      try H.find sigma v with Not_found -> 0.0
-    in
-    let d = H.create n in
+    let info_tbl = H.create n in
+    let lookup = lookup_vertex_info_or_create info_tbl in
     let q = Queue.create () in
-      H.add sigma s 1.0;
-      H.add d s 0;
+    let s_info = lookup s in
+      s_info.sigma <- 1.0;
+      s_info.d <- 0;
       Queue.add s q;
       while not (Queue.is_empty q) do
 	let v = Queue.take q in
+	let v_info = lookup v in
 	let push w =
-	  let d_v = H.find d v in
-	    if not (H.mem d w) then
+	  let w_info = lookup w in
+	  if w_info.d < 0 then
+	    begin
+	      w_info.d <- (v_info.d + 1);
+	      Queue.add w q;
+	    end;
+	    if w_info.d = v_info.d + 1 then
 	      begin
-		H.add d w (d_v + 1);
-		Queue.add w q;
-	      end;
-	    let d_w = H.find d w in
-	      if d_w = d_v + 1 then
-		begin
-		  H.replace sigma w ((lookup_sigma v) +. (lookup_sigma w));
-		  append_pred pred w v
-		end
+		w_info.sigma <- w_info.sigma +. v_info.sigma;
+		Ref_list.push w_info.pred v
+	      end
 	in
 	  Stack.push v stack;
 	  G.iter_succ push g v
       done;
-      update_betweeness b_tbl lookup_sigma pred stack s n 
+      update_betweeness b_tbl lookup stack s n 
 
   (* iteratively compute the betweeness centrality values for the graph g. *)
   let betweeness_centrality_iterative g bench =
