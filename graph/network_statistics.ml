@@ -123,7 +123,7 @@ module Make(G : G) = struct
 
   (* update betweeness centrality values as part of the round function.
      b_tbl maps vertices to their current centrality value; lookup_sigma
-     returns the sigma value of a vertex; pred maps a vertex to its list
+     returns the sigma value of a vertex; pred maps a vertex to its list of
      predecessors on shortest paths; stack is the stack accumulated during
      BFS traversal; s is the start vertex of the round and n = |V| *)
   let update_betweeness b_tbl lookup_sigma pred stack s n =
@@ -136,7 +136,7 @@ module Make(G : G) = struct
 	let compute_delta v =
 	  let delta_v = lookup_delta v in
 	  let delta_w = lookup_delta w in
-	  let div = (float_of_int (lookup_sigma v)) /. (float_of_int (lookup_sigma w)) in
+	  let div = (lookup_sigma v) /. (lookup_sigma w) in
 	  let t = delta_v +. div *. (1.0 +. delta_w) in
 	    H.replace delta v t
 	in
@@ -157,11 +157,11 @@ module Make(G : G) = struct
     let sigma = H.create n in
       (* lookup \sigma[v] and return the default value 0 if it does not exist *)
     let lookup_sigma v =
-      try H.find sigma v with Not_found -> 0
+      try H.find sigma v with Not_found -> 0.0
     in
     let d = H.create n in
     let q = Queue.create () in
-      H.add sigma s 1;
+      H.add sigma s 1.0;
       H.add d s 0;
       Queue.add s q;
       while not (Queue.is_empty q) do
@@ -169,14 +169,14 @@ module Make(G : G) = struct
 	let push w =
 	  if not (H.mem d w) then
 	    begin
-	      H.add d w ((H.find d w) + 1);
+	      H.add d w ((H.find d v) + 1);
 	      Queue.add w q;
 	    end;
 	  let d_v = H.find d v in
 	  let d_w = H.find d w in
 	    if d_w = d_v + 1 then
 	      begin
-		H.replace sigma w ((lookup_sigma v) + (lookup_sigma w));
+		H.replace sigma w ((lookup_sigma v) +. (lookup_sigma w));
 		append_pred pred w v
 	      end
 	in
