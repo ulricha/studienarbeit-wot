@@ -161,11 +161,11 @@ let () =
       let vertex_fname = Sys.argv.(1) in
       let edge_fname = Sys.argv.(2) in
       let l = fun () -> load_structinfo_from_files vertex_fname edge_fname in
-      let storeable_g = time_evaluation l "load_storeable_graph" in
+      let storeable_g = time_eval l "load_storeable_graph" in
       let c = fun () -> graph_from_structinfo storeable_g in
-      let g = time_evaluation c "graph_from_storeable_graph" in
-      let scc_list = time_evaluation (fun () -> C.scc_list g) "scc_list" in
-      let metagraph = (time_evaluation (fun () -> M.metagraph g scc_list) "metagraph") in
+      let g = time_eval c "graph_from_storeable_graph" in
+      let scc_list = time_eval (fun () -> C.scc_list g) "scc_list" in
+      let metagraph = (time_eval (fun () -> M.metagraph g scc_list) "metagraph") in
       let (in_dist, out_dist, avg_in) = Statistics.degree_distribution metagraph in
 	Statistics.basic_network_statistics metagraph "metagraph";
 	write_distribution_to_file (Map.IntMap.enum in_dist) "mg-indeg-dist.plot";

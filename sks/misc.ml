@@ -41,7 +41,7 @@ let hash_keyid keyid =
   let x = x lor (int_of_char keyid.[0]) in
     x
 
-let time_evaluation f operation =
+let time_eval f operation =
   let t1 = Unix.gettimeofday () in
   let ret = f () in
   let t2 = Unix.gettimeofday() in
