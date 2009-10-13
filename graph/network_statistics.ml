@@ -208,12 +208,12 @@ module Make(G : G) = struct
       update_betweeness b_tbl lookup_sigma pred stack s n 
 
   (* iteratively compute the betweeness centrality values for the graph g. *)
-  let betweeness_centrality_iterative g cnt =
+  let betweeness_centrality_iterative g bench =
     let n = G.nb_vertex g in
     let b_tbl = H.create n in
     let f v = 
-      display_iterations cnt "betweeness_centrality_iterative" 100;
-      time_eval (fun () -> betweeness_round g v b_tbl) "betweeness_round"
+      bench ();
+      betweeness_round g v b_tbl
     in
       G.iter_vertex f g;
       b_tbl

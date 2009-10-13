@@ -49,6 +49,18 @@ let time_eval f operation =
     print_endline m;
     ret
 
+let time_iterations op interval =
+  let counter = ref 0 in
+  let timer = ref (Unix.gettimeofday ()) in
+    fun () ->
+      incr counter;
+      if (!counter mod interval) = 0 then
+	let current_time = Unix.gettimeofday () in
+	let last_interval = current_time -. !timer in
+	let msg = sprintf "%s: %d iterations (last interval took %f sec)" op !counter last_interval in
+	  timer := current_time;
+	  print_endline msg
+
 let display_iterations counter operation interval =
   incr counter;
   if (!counter mod interval) = 0 then

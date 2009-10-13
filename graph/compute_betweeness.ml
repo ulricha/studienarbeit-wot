@@ -38,7 +38,7 @@ let () =
       let g = time_eval c "graph_from_storeable_graph" in
       let scc_list = time_eval (fun () -> C.scc_list g) "scc_list" in
       let scc_list_sorted = list_list_sort_reverse scc_list in
-      let cnt = ref 0 in
+      let benchmark = time_iterations "betweeness_round" 100 in
 	let rec loop l =
 	  match l with
 	    | node_list :: tl ->
@@ -49,9 +49,8 @@ let () =
 		  else
 		    begin
 		      let name = "scc-" ^ (string_of_int n) in
-			cnt := 0;
 			print_endline ("betweeness_centrality " ^ name);
-			betweeness_centrality Stat.betweeness_centrality_iterative g name cnt;
+			betweeness_centrality Stat.betweeness_centrality_iterative g name benchmark;
 			loop tl
 		    end
 	    | [] -> 
