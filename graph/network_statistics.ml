@@ -140,7 +140,7 @@ module Make(G : G) = struct
 	  let t = delta_v +. div *. (1.0 +. delta_w) in
 	    H.replace delta v t
 	in
-	let pred_list = H.find pred w in
+	let pred_list = try H.find pred w with Not_found -> Ref_list.empty () in
 	  Enum.iter compute_delta (Ref_list.backwards pred_list);
 	  if not (w = s) then
 	    let tbl_add_or_create key increment =

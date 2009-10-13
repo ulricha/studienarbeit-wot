@@ -50,6 +50,7 @@ let () =
 		    begin
 		      let name = "scc-" ^ (string_of_int n) in
 			cnt := 0;
+			print_endline ("betweeness_centrality " ^ name);
 			betweeness_centrality Stat.betweeness_centrality_iterative g name cnt;
 			loop tl
 		    end
