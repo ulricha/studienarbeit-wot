@@ -34,6 +34,7 @@ let distribute_work g numworkers =
   let nr_per_worker = (List.length v_list) / (numworkers - 1) in
   let rec divide_and_send_work worker list =
     printf "worker %d list %d numworkers %d\n" worker (List.length list) numworkers;
+    flush stdout;
     match List.length list with
       | 0 -> ()
       | l when l > nr_per_worker ->
