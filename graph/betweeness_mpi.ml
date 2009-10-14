@@ -50,17 +50,22 @@ let distribute_work g numworkers =
 
 let accumulate_results result_tbl numworkers n =
   let finished = ref 0 in
-    while !finished <> numworkers do
-      let res = Mpi.receive 0 0 Mpi.comm_world in
+    while !finished < numworkers do
+      print_endline "accumulate_receive";
+      flush stdout;
+      let res = Mpi.receive Mpi.any_source 0 Mpi.comm_world in
 	incr finished;
 	printf "received result %d from worker\n" !finished;
 	flush stdout;
-	combine_hashtbl_enum result_tbl (List.enum res)
+	combine_hashtbl_enum result_tbl (List.enum res);
+	print_endline "res done";
+	flush stdout
     done
 
 let server g result_tbl =
   let numworkers = Mpi.comm_size Mpi.comm_world -1 in
     distribute_work g numworkers;
+    print_endline "server: accumulate results";
     accumulate_results result_tbl numworkers (G.nb_vertex g)
     
 let worker g =
