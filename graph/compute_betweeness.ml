@@ -50,7 +50,7 @@ let () =
 		    begin
 		      let name = "scc-" ^ (string_of_int n) in
 			print_endline ("betweeness_centrality " ^ name);
-			betweeness_centrality B.betweeness_centrality_iterative g name benchmark;
+			betweeness_centrality B.betweeness_centrality_iterative scc name benchmark;
 			loop tl
 		    end
 	    | [] -> 
