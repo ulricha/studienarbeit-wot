@@ -31,20 +31,20 @@ let combine_hashtbl_enum h e =
 
 let distribute_work g numworkers =
   let v_list = G.fold_vertex (fun v l -> v :: l) g [] in
-  let nr_per_worker = (List.length v_list) / (numworkers - 1) in
+  let nr_per_worker = (List.length v_list) / numworkers in
   let rec divide_and_send_work worker list =
     printf "worker %d list %d numworkers %d\n" worker (List.length list) numworkers;
     flush stdout;
     match List.length list with
       | 0 -> ()
-      | l when l > nr_per_worker ->
+      | length when length < 2*nr_per_worker ->
+	  printf "server: send workunit of size %d to worker %d\n" length worker;
+	  Mpi.send list worker 0 Mpi.comm_world
+      | length ->
 	  let (workunit, rest) = List.split_at nr_per_worker list in
 	    printf "server: send workunit of size %d to worker %d\n" nr_per_worker worker;
 	    Mpi.send workunit worker 0 Mpi.comm_world;
 	    divide_and_send_work (worker + 1) rest
-      | l -> 
-	  printf "server: send workunit of size %d to worker %d\n" l worker;
-	  Mpi.send list worker 0 Mpi.comm_world
   in
     divide_and_send_work 1 v_list
 
