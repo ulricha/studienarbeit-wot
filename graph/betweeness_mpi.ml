@@ -33,8 +33,6 @@ let distribute_work g numworkers =
   let v_list = G.fold_vertex (fun v l -> v :: l) g [] in
   let nr_per_worker = (List.length v_list) / numworkers in
   let rec divide_and_send_work worker list =
-    printf "worker %d list %d numworkers %d\n" worker (List.length list) numworkers;
-    flush stdout;
     match List.length list with
       | 0 -> ()
       | length when length < 2*nr_per_worker ->
@@ -48,9 +46,18 @@ let distribute_work g numworkers =
   in
     divide_and_send_work 1 v_list
 
-let server g =
+let accumulate_results result_tbl numworkers n =
+  let finished = ref 0 in
+    while !finished <> numworkers do
+      let res = Mpi.receive 0 0 Mpi.comm_world in
+	incr finished;
+	combine_hashtbl_enum result_tbl (List.enum res)
+    done
+
+let server g result_tbl =
   let numworkers = Mpi.comm_size Mpi.comm_world -1 in
-    distribute_work g numworkers
+    distribute_work g numworkers;
+    accumulate_results result_tbl numworkers (G.nb_vertex g)
     
 let worker g =
   let rank = Mpi.comm_rank Mpi.comm_world in
@@ -78,8 +85,9 @@ let () =
     let mscc = load_mscc Sys.argv.(1) Sys.argv.(2) in
       if rank = 0 then
 	begin
-	  print_endline "server started";
-	  server mscc
+	  let result_tbl = B.H.create (G.nb_vertex mscc) in
+	    print_endline "server started";
+	    server mscc result_tbl
 	end
       else
 	begin
