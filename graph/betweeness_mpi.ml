@@ -51,6 +51,8 @@ let accumulate_results result_tbl numworkers n =
     while !finished <> numworkers do
       let res = Mpi.receive 0 0 Mpi.comm_world in
 	incr finished;
+	printf "received result %d from worker\n" !finished;
+	flush stdout;
 	combine_hashtbl_enum result_tbl (List.enum res)
     done
 
@@ -63,8 +65,11 @@ let worker g =
   let rank = Mpi.comm_rank Mpi.comm_world in
   let work = Mpi.receive 0 0 Mpi.comm_world in
   let msg = sprintf "worker %d: workunit size %d" rank (List.length work) in
+    print_endline msg;
     ignore g;
-    print_endline msg
+    let key = sprintf "v-%d" rank in
+    let result = [(key, 5)] in
+      Mpi.send result 0 0 Mpi.comm_world
 
 let load_mscc v_fname e_fname =
   let storeable_g = load_structinfo_from_files v_fname e_fname in
