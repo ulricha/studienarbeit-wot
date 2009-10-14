@@ -33,6 +33,7 @@ let distribute_work g numworkers =
   let v_list = G.fold_vertex (fun v l -> v :: l) g [] in
   let nr_per_worker = (List.length v_list) / (numworkers - 1) in
   let rec divide_and_send_work worker list =
+    printf "worker %d list %d numworkers %d\n" worker (List.length list) numworkers;
     match List.length list with
       | 0 -> ()
       | l when l > nr_per_worker ->
@@ -72,9 +73,17 @@ let () =
       exit (-1)
     end
   else
+    let rank = Mpi.comm_rank Mpi.comm_world in
     let mscc = load_mscc Sys.argv.(1) Sys.argv.(2) in
-      if Mpi.comm_rank Mpi.comm_world = 0 then
-	server mscc
+      if rank = 0 then
+	begin
+	  print_endline "server started";
+	  server mscc
+	end
       else
-	worker mscc;
+	begin
+	  printf "worker %d started\n" rank;
+	  flush stdout;
+	  worker mscc
+	end;
       Mpi.barrier Mpi.comm_world
