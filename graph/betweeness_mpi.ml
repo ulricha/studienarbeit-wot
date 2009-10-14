@@ -37,10 +37,12 @@ let distribute_work g numworkers =
       | 0 -> ()
       | length when length < 2*nr_per_worker ->
 	  printf "server: send workunit of size %d to worker %d\n" length worker;
+	  flush stdout;
 	  Mpi.send list worker 0 Mpi.comm_world
       | length ->
 	  let (workunit, rest) = List.split_at nr_per_worker list in
 	    printf "server: send workunit of size %d to worker %d\n" nr_per_worker worker;
+	    flush stdout;
 	    Mpi.send workunit worker 0 Mpi.comm_world;
 	    divide_and_send_work (worker + 1) rest
   in
@@ -69,6 +71,8 @@ let worker g =
     ignore g;
     let key = sprintf "v-%d" rank in
     let result = [(key, 5)] in
+      printf "worker %d send result\n" rank;
+      flush stdout;
       Mpi.send result 0 0 Mpi.comm_world
 
 let load_mscc v_fname e_fname =
