@@ -21,13 +21,13 @@ let betweeness_centrality betweeness_function g name cnt =
   let (keyid, value) = List.hd sorted in
     printf "most central key in %s: %s (%f)\n" name (keyid_to_string keyid) value
 
-let combine_hashtbl_enum h e =
+let combine_hashtbl_enum h alist =
   let add_or_create (key, value) =
     try
       B.H.replace h key ((B.H.find h key) + value)
     with Not_found -> B.H.add h key value
   in
-    Enum.iter add_or_create e
+    List.iter add_or_create alist
 
 let distribute_work g numworkers =
   let v_list = G.fold_vertex (fun v l -> v :: l) g [] in
@@ -48,25 +48,56 @@ let distribute_work g numworkers =
   in
     divide_and_send_work 1 v_list
 
-let accumulate_results result_tbl numworkers n =
+(*
+let accumulate_results numworkers n =
+  let result_tbl = B.H.create n in
+    B.H.add result_tbl "foo" 6;
   let finished = ref 0 in
     while !finished < numworkers do
-      print_endline "accumulate_receive";
-      flush stdout;
-      let res = Mpi.receive Mpi.any_source 0 Mpi.comm_world in
-	incr finished;
-	printf "received result %d from worker\n" !finished;
+      begin
+	print_endline "accumulate_receive";
 	flush stdout;
-	combine_hashtbl_enum result_tbl (List.enum res);
-	print_endline "res done";
-	flush stdout
+	let res = Mpi.receive Mpi.any_source 0 Mpi.comm_world in
+	  incr finished;
+	  printf "received result %d from worker\n" !finished;
+	  flush stdout;
+	  (*combine_hashtbl_enum result_tbl res; *)
+	  let f (key, value) =
+	    print_endline (key ^ " " ^ (string_of_int value))
+	    (*B.H.add result_tbl key value*)
+	  in
+	    List.iter f res;
+	    print_endline "res done";
+	    flush stdout
+      end
     done
+*)
 
-let server g result_tbl =
+let accumulate_results numworkers n =
+  let result_map = Map.StringMap.empty in
+  let rec loop_results map unfinished_workers =
+    match unfinished_workers with
+      | 0 -> map
+      | x ->
+	  printf "waiting for %d workers to finish\n" x;
+	  let result = Mpi.receive Mpi.any_source 0 Mpi.comm_world in
+	  let (key, value) = List.hd result in
+	    printf "received result %d from worker\n" (numworkers -x);
+	    let add_or_create key value =
+	      try
+		let prev = Map.StringMap.find key map in
+		  Map.StringMap.add key (value +. prev) map
+	      with Not_found -> Map.StringMap.add key value map
+	    in
+	      loop_results (add_or_create key value) (x - 1)
+  in
+    loop_results result_map numworkers
+
+let server g =
   let numworkers = Mpi.comm_size Mpi.comm_world -1 in
     distribute_work g numworkers;
     print_endline "server: accumulate results";
-    accumulate_results result_tbl numworkers (G.nb_vertex g)
+    accumulate_results numworkers (G.nb_vertex g)
     
 let worker g =
   let rank = Mpi.comm_rank Mpi.comm_world in
@@ -75,7 +106,7 @@ let worker g =
     print_endline msg;
     ignore g;
     let key = sprintf "v-%d" rank in
-    let result = [(key, 5)] in
+    let result = [(key, 5.0)] in
       printf "worker %d send result\n" rank;
       flush stdout;
       Mpi.send result 0 0 Mpi.comm_world
@@ -99,9 +130,10 @@ let () =
     let mscc = load_mscc Sys.argv.(1) Sys.argv.(2) in
       if rank = 0 then
 	begin
-	  let result_tbl = B.H.create (G.nb_vertex mscc) in
-	    print_endline "server started";
-	    server mscc result_tbl
+	  print_endline "server started";
+	  let res = server mscc in
+	    print_endline "server finished";
+	    Map.StringMap.iter (fun k v -> printf "k %s v %f\n" k v; flush stdout) res
 	end
       else
 	begin
