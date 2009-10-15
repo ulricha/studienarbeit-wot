@@ -1,4 +1,10 @@
 graph/basic_properties.native
+graph/basic_properties.p.native
+graph/basic_properties.d.byte
 graph/meta_graph.native
+graph/meta_graph.p.native
+graph/meta_graph.d.byte
 graph/compute_betweeness.native
 graph/betweeness_mpi.native
+graph/betweeness_mpi.p.native
+graph/betweeness_mpi.d.byte
