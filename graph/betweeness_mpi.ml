@@ -69,13 +69,6 @@ let worker g =
     Mpi.send result 0 0 Mpi.comm_world;
     print_endline (sprintf "worker %d finished" rank)
 
-let load_mscc v_fname e_fname =
-  let storeable_g = load_structinfo_from_files v_fname e_fname in
-  let g = graph_from_structinfo storeable_g in
-  let scc_list = C.scc_list g in
-  let scc_list_sorted = list_list_sort_reverse scc_list in
-    C.graph_from_node_list (List.at scc_list_sorted 2) g
-
 (* mscc = maximum strongly connected component *)
 let () =
   if (Array.length Sys.argv) <> 3 then
@@ -85,7 +78,8 @@ let () =
     end
   else
     let rank = Mpi.comm_rank Mpi.comm_world in
-    let mscc = load_mscc Sys.argv.(1) Sys.argv.(2) in
+    let (g, mscc_nodelist) = Component_helpers.load_mscc Sys.argv.(1) Sys.argv.(2) in
+    let mscc = C.graph_from_node_list mscc_nodelist g in
       if rank = 0 then
 	begin
 	  print_endline "server started";

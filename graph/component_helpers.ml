@@ -2,6 +2,7 @@ open Printf
 open Graph
 open Misc
 open Graph_misc
+open Wot_graph
 
 module Make(G : Sig.I) = struct
   module C = Components.Make(G)
@@ -51,3 +52,17 @@ module Make(G : Sig.I) = struct
   let graph_list g = scc_list_to_graph_list (scc_list g)
 
 end
+
+module C = Make(G)
+
+let load_scc_list v_fname e_fname =
+  let storeable_g = load_structinfo_from_files v_fname e_fname in
+  let g = graph_from_structinfo storeable_g in
+  let scc_list = C.scc_list g in
+  let scc_list_sorted = list_list_sort_reverse scc_list in
+    (g, scc_list_sorted)
+
+let load_mscc v_fname e_fname =
+  let (g, scc_list_sorted) = load_scc_list v_fname e_fname in
+    (g, List.hd scc_list_sorted)
+
