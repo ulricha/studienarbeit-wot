@@ -28,7 +28,7 @@ let () =
       let g = time_eval c "graph_from_storeable_graph" in
       let scc_list = time_eval (fun () -> C.scc_list g) "scc_list" in
       let scc_list_sorted = list_list_sort_reverse scc_list in
-      let cnt = ref 0 in
+      let bench = time_iterations "distance_statistics" 100 in
 	C.overall_component_properties scc_list;
 	Statistics.basic_network_statistics g "complete_graph";
 	let rec loop l =
@@ -41,8 +41,7 @@ let () =
 		  else
 		    begin
 		      let name = "scc-" ^ (string_of_int n) in
-			cnt := 0;
-			Statistics.complete_network_statistics scc name cnt;
+			Statistics.complete_network_statistics scc name bench;
 			loop tl
 		    end
 	    | [] -> 

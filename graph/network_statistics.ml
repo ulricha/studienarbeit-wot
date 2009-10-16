@@ -66,7 +66,7 @@ module Make(G : G) = struct
       let avg_dist = !accum_dist / (n-1) in
       (!ecc, !accum_dist, avg_dist, !neigh_2, !neigh_3)
 
-  let distance_statistics g cnt =
+  let distance_statistics g bench =
     let n = G.nb_vertex g in
     let ecc_tbl = H.create n in
     let avg_dist_per_node_tbl = H.create n in
@@ -74,7 +74,7 @@ module Make(G : G) = struct
     let neigh_2_dist = Hashtbl.create 1000 in
     let neigh_3_dist = Hashtbl.create 500 in 
     let compute_vertex v =
-      display_iterations cnt "compute_vertex" 100;
+      bench ();
       let (ecc, dist_sum, dist_avg, neigh_2_size, neigh_3_size) = 
 	single_vertex_distance_statistics g v
       in
@@ -124,10 +124,10 @@ module Make(G : G) = struct
 
   (* adds computationally expensive statistics which can't be computed on 
      the whole graph *)
-  let complete_network_statistics graph graph_name cnt =
+  let complete_network_statistics graph graph_name bench =
     basic_network_statistics graph graph_name;
     let (ecc_tbl, avg_distance, avg_dist_per_node_tbl, neigh_2_dist, neigh_3_dist) =
-      distance_statistics graph cnt in
+      distance_statistics graph bench in
     let n = G.nb_vertex graph in
     let (sum_ecc, max_ecc, min_ecc) = Enum.fold 
       (fun (sum, max_ecc, min_ecc) ecc -> 
