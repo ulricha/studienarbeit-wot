@@ -32,6 +32,13 @@ end
 
 module Mpi_betweeness = Mpi_framework.Make(Betweeness_job)
 
+let write_betweeness_values_to_file enum component_size =
+  let write output =
+    Enum.iter (fun (k, v) -> fprintf output "%s %f\n" (keyid_to_string k) v) enum
+  in
+  let fname = sprintf "scc-%d.out" component_size in
+    File.with_file_out fname write
+
 (* mscc = maximum strongly connected component *)
 let () =
   if (Array.length Sys.argv) <> 3 then
@@ -41,19 +48,16 @@ let () =
     end
   else
     let rank = Mpi.comm_rank Mpi.comm_world in
-    let (g, mscc_nodelist) = Component_helpers.load_mscc Sys.argv.(1) Sys.argv.(2) in
+    let (g, scc_list_sorted) = Component_helpers.load_scc_list Sys.argv.(1) Sys.argv.(2) in
+    let mscc_nodelist = List.hd scc_list_sorted in
+    let smaller_components_nodelists = List.tl scc_list_sorted in
     let mscc = C.graph_from_node_list mscc_nodelist g in
       if rank = 0 then
 	begin
 	  print_endline "server started";
 	  let res = Mpi_betweeness.server 0 mscc in
 	    print_endline "server finished";
-	    let write output =
-	      Map.StringMap.iter 
-		(fun k v -> fprintf output "k %s v %f\n" (keyid_to_string k) v; flush stdout) 
-		res
-	    in
-	      File.with_file_out "mscc-betweeness.out" write
+	    write_betweeness_values_to_file (Map.StringMap.enum res) (G.nb_vertex mscc)
 	end
       else
 	begin
@@ -61,4 +65,14 @@ let () =
 	  flush stdout;
 	  Mpi_betweeness.worker [mscc]
 	end;
-      Mpi.barrier Mpi.comm_world
+      Mpi.barrier Mpi.comm_world;
+      let rec loop component_list =
+	match component_list with
+	  | component_nodelist :: tl when (List.length component_nodelist) > 30 ->
+	      let component = C.graph_from_node_list component_nodelist g in
+	      let res = B.betweeness_centrality_iterative g (fun () -> ()) in
+		write_betweeness_values_to_file (B.H.enum res) (G.nb_vertex component);
+		loop tl
+	  | _ -> ()
+      in
+	loop smaller_components_nodelists
