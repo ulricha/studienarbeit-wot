@@ -94,6 +94,14 @@ module Make(G : G) = struct
       let connected_avg_dist = (float_of_int !dist_accu) /. nr_pairs in
 	(ecc_tbl, connected_avg_dist, avg_dist_per_node_tbl, neigh_2_dist, neigh_3_dist)
 
+  let distance_statistics_node_subset g vlist bench =
+    let f alist v =
+      bench ();
+      let res_tuple = single_vertex_distance_statistics g v in
+	(v, res_tuple) :: alist
+    in
+      List.fold_left f [] vlist
+
   let degree_distribution g =
     let (indeg_map, outdeg_map, total_in) = G.fold_vertex
       (fun v (in_map, out_map, tin) -> 
