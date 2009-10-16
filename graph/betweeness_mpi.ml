@@ -10,76 +10,27 @@ open Wot_graph
 module C = Component_helpers.Make(G)
 module B = Betweeness.Make(G)
 
+let combine_betweeness_results map alist =
+  List.fold_left
+    (fun m (k, v) ->
+       try 
+	 let prev = Map.StringMap.find k m in
+	   Map.StringMap.add k (v +. prev) m
+       with Not_found -> Map.StringMap.add k v m)
+    map
+    alist
+
 module Betweeness_job = struct
   include Wot_graph.G
-  type worker_result = int
-  let worker_function = fun a b c -> 5
-  type combine_type = int
-  let combine_start = 5
-  let combine_results = fun a b -> 6
-  let jobname = "foo"
+  type worker_result = (V.t * float) list
+  let worker_function = B.betweeness_centrality_node_subset
+  type combine_type = float Map.StringMap.t
+  let combine_start = Map.StringMap.empty
+  let combine_results = combine_betweeness_results
+  let jobname = "betweeness_centrality"
 end
 
-module Foo = Mpi_framework.Make(Betweeness_job)
-
-let distribute_work g numworkers =
-  let v_list = G.fold_vertex (fun v l -> v :: l) g [] in
-  let nr_per_worker = (List.length v_list) / numworkers in
-  let rec divide_and_send_work worker list =
-    match List.length list with
-      | 0 -> ()
-      | length when length < 2*nr_per_worker ->
-	  printf "server: send workunit of size %d to worker %d\n" length worker;
-	  flush stdout;
-	  Mpi.send list worker 0 Mpi.comm_world
-      | length ->
-	  let (workunit, rest) = List.split_at nr_per_worker list in
-	    printf "server: send workunit of size %d to worker %d\n" nr_per_worker worker;
-	    flush stdout;
-	    Mpi.send workunit worker 0 Mpi.comm_world;
-	    divide_and_send_work (worker + 1) rest
-  in
-    divide_and_send_work 1 v_list
-
-let accumulate_results numworkers n =
-  let result_map = Map.StringMap.empty in
-  let rec loop_results map unfinished_workers =
-    match unfinished_workers with
-      | 0 -> map
-      | x ->
-	  printf "waiting for %d workers to finish\n" x;
-	  flush stdout;
-	  let result = Mpi.receive Mpi.any_source 0 Mpi.comm_world in
-	    printf "received result %d from worker\n" (numworkers -x);
-	    let combine_results map alist =
-	      List.fold_left
-		(fun m (k, v) -> 
-		   try
-		     let prev = Map.StringMap.find k m in
-		       Map.StringMap.add k (v +. prev) m
-		   with Not_found -> Map.StringMap.add k v m)
-		map
-		alist
-	    in
-	      loop_results (combine_results map result) (x - 1)
-  in
-    loop_results result_map numworkers
-
-let server g =
-  let numworkers = Mpi.comm_size Mpi.comm_world -1 in
-    distribute_work g numworkers;
-    print_endline "server: accumulate results";
-    accumulate_results numworkers (G.nb_vertex g)
-    
-let worker g =
-  let rank = Mpi.comm_rank Mpi.comm_world in
-  let work = Mpi.receive 0 0 Mpi.comm_world in
-  let msg = sprintf "worker %d: workunit size %d" rank (List.length work) in
-  let bench = time_iterations (sprintf "worker %d betweeness_round" rank) 100 in
-  let result = B.betweeness_centrality_node_subset g work bench in
-    print_endline msg;
-    Mpi.send result 0 0 Mpi.comm_world;
-    print_endline (sprintf "worker %d finished" rank)
+module Mpi_betweeness = Mpi_framework.Make(Betweeness_job)
 
 (* mscc = maximum strongly connected component *)
 let () =
@@ -95,7 +46,7 @@ let () =
       if rank = 0 then
 	begin
 	  print_endline "server started";
-	  let res = server mscc in
+	  let res = Mpi_betweeness.server 0 mscc in
 	    print_endline "server finished";
 	    let write output =
 	      Map.StringMap.iter 
@@ -108,6 +59,6 @@ let () =
 	begin
 	  printf "worker %d started\n" rank;
 	  flush stdout;
-	  worker mscc
+	  Mpi_betweeness.worker [mscc]
 	end;
       Mpi.barrier Mpi.comm_world

@@ -4,9 +4,6 @@ open Printf
 open Wot_graph
 open Misc
 
-module C = Component_helpers.Make(G)
-module Stat = Network_statistics.Make(G)
-
 module type Mpi_job = sig
   include Sig.G
   type worker_result
@@ -64,7 +61,6 @@ module Make(Job : Mpi_job) = struct
 	      loop_results (Job.combine_results combined_result result) (x - 1)
     in
       loop_results Job.combine_start numworkers
-
 
   let server component_index component =
     let numworkers = Mpi.comm_size Mpi.comm_world -1 in
