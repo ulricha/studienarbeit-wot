@@ -100,7 +100,7 @@ module Make(G : G) = struct
       G.iter_vertex f g;
       b_tbl
 
-  let betweeness_centrality_node_subset g bench vlist =
+  let betweeness_centrality_node_subset g vlist bench =
     let n = G.nb_vertex g in
     let b_tbl = H.create n in
     let f v =
@@ -108,5 +108,5 @@ module Make(G : G) = struct
       betweeness_round g v b_tbl
     in
       List.iter f vlist;
-      b_tbl
+      List.of_enum (H.enum b_tbl)
 end

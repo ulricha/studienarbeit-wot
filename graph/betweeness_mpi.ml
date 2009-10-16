@@ -64,8 +64,7 @@ let worker g =
   let work = Mpi.receive 0 0 Mpi.comm_world in
   let msg = sprintf "worker %d: workunit size %d" rank (List.length work) in
   let bench = time_iterations (sprintf "worker %d betweeness_round" rank) 100 in
-  let result_tbl = B.betweeness_centrality_node_subset g bench work in
-  let result = List.of_enum (B.H.enum result_tbl) in
+  let result = B.betweeness_centrality_node_subset g work bench in
     print_endline msg;
     Mpi.send result 0 0 Mpi.comm_world;
     print_endline (sprintf "worker %d finished" rank)
