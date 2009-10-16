@@ -21,7 +21,7 @@ let () =
     begin
       print_endline "compute basic properties of wot graph";
       let (g, scc_list_sorted) = Component_helpers.load_scc_list Sys.argv.(1) Sys.argv.(2) in
-      let bench = time_iterations "distance_statistics" 100 in
+      let bench = time_iterations "distance_statistics" 1000 in
 	C.overall_component_properties scc_list_sorted;
 	Statistics.basic_network_statistics g "complete_graph";
 	let rec loop l =
