@@ -36,6 +36,7 @@ let accumulate_results numworkers n =
       | 0 -> map
       | x ->
 	  printf "waiting for %d workers to finish\n" x;
+	  flush stdout;
 	  let result = Mpi.receive Mpi.any_source 0 Mpi.comm_world in
 	    printf "received result %d from worker\n" (numworkers -x);
 	    let combine_results map alist =
