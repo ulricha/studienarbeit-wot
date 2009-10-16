@@ -2,6 +2,7 @@ open Batteries
 open Graph
 open Graph_misc
 open Misc
+open Printf
 
 module type G = sig
   type t
@@ -97,5 +98,15 @@ module Make(G : G) = struct
       betweeness_round g v b_tbl
     in
       G.iter_vertex f g;
+      b_tbl
+
+  let betweeness_centrality_node_subset g bench vlist =
+    let n = G.nb_vertex g in
+    let b_tbl = H.create n in
+    let f v =
+      bench ();
+      betweeness_round g v b_tbl
+    in
+      List.iter f vlist;
       b_tbl
 end
