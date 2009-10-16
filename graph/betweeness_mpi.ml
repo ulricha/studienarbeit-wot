@@ -10,6 +10,18 @@ open Wot_graph
 module C = Component_helpers.Make(G)
 module B = Betweeness.Make(G)
 
+module Betweeness_job = struct
+  include Wot_graph.G
+  type worker_result = int
+  let worker_function = fun a b c -> 5
+  type combine_type = int
+  let combine_start = 5
+  let combine_results = fun a b -> 6
+  let jobname = "foo"
+end
+
+module Foo = Mpi_framework.Make(Betweeness_job)
+
 let distribute_work g numworkers =
   let v_list = G.fold_vertex (fun v l -> v :: l) g [] in
   let nr_per_worker = (List.length v_list) / numworkers in

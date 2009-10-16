@@ -2,5 +2,6 @@
 "sks/ekey.ml": pkg_sexplib.syntax
 "graph/load_dummy.ml": pkg_sexplib.syntax
 "graph/betweeness_mpi.ml": pkg_ocamlmpi
+"graph/mpi_framework.ml": pkg_ocamlmpi
 <graph/betweeness_mpi.{native,d.byte,p.native}>: pkg_ocamlmpi
 "sks": include
