@@ -1,6 +1,9 @@
 graph/basic_properties.native
 graph/basic_properties.p.native
 graph/basic_properties.d.byte
+graph/basic_properties_mpi.native
+graph/basic_properties_mpi.p.native
+graph/basic_properties_mpi.d.byte
 graph/meta_graph.native
 graph/meta_graph.p.native
 graph/meta_graph.d.byte

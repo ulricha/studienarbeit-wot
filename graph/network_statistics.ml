@@ -185,4 +185,27 @@ module Make(G : G) = struct
     let results = distance_statistics graph bench in
     let n = G.nb_vertex graph in
       analyze_and_print_results n graph_name results
+
+  let add_result_to_maps (dist_sum, ecc_map, dist_avg_map, n2_map, n3_map) (v, result) =
+    let (ecc, dist_sum_v, avg_dist, neigh2_size, neigh3_size) = result in
+    let new_ecc_map = M.add v ecc ecc_map in
+    let new_dist_avg_map = M.add v avg_dist dist_avg_map in
+    let new_n2_map = M.add v neigh2_size n2_map in
+    let new_n3_map = M.add v neigh3_size n3_map in
+      (dist_sum + dist_sum_v, new_ecc_map, new_dist_avg_map, new_n2_map, new_n3_map)
+
+  let combine_distance_results (dist_sum, ecc_map, dist_avg_map, n2_map, n3_map) alist =
+    let init = (0, M.empty, M.empty, M.empty, M.empty) in
+      List.fold_left add_result_to_maps init alist
+
+  module Distance_statistics_job = struct
+    include Wot_graph.G
+      (* ecc, dist_sum_v, avg_dist, n2_size, n3_size *)
+    type worker_result = (G.V.t * (int * int * int * int * int)) list
+    let worker_function = distance_statistics_vertex_subset
+    type combine_type = int * int M.t * int M.t * int M.t * int M.t
+    let combine_start = (0, M.empty, M.empty, M.empty, M.empty)
+    let combine_results = combine_distance_results
+    let jobname = "distance_statistics"
+  end
 end
