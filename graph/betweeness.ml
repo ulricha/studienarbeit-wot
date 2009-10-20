@@ -4,15 +4,7 @@ open Graph_misc
 open Misc
 open Printf
 
-module type G = sig
-  type t
-  module V : Sig.COMPARABLE
-  val nb_vertex : t -> int
-  val iter_vertex : (V.t -> unit) -> t -> unit
-  val iter_succ : (V.t -> unit) -> t -> V.t -> unit
-end
-
-module Make(G : G) = struct
+module Make(G : Sig.G) = struct
   module H = Hashtbl.Make(G.V)
 
   type vertex_info = {
@@ -109,4 +101,25 @@ module Make(G : G) = struct
     in
       List.iter f vlist;
       List.of_enum (H.enum b_tbl)
+
+  let combine_betweeness_results map alist =
+    List.fold_left
+      (fun m (k, v) ->
+	 try 
+	   let prev = Map.StringMap.find k m in
+	     Map.StringMap.add k (v +. prev) m
+	 with Not_found -> Map.StringMap.add k v m)
+      map
+      alist
+
+  module Betweeness_job = struct
+    include G
+    type worker_result = (G.V.t * float) list
+    let worker_function = betweeness_centrality_node_subset
+    type combine_type = float Map.StringMap.t
+    let combine_start = Map.StringMap.empty
+    let combine_results = combine_betweeness_results
+    let jobname = "betweeness_centrality"
+  end
+
 end

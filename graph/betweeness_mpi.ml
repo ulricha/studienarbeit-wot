@@ -10,27 +10,7 @@ open Wot_graph
 module C = Component_helpers.Make(G)
 module B = Betweeness.Make(G)
 
-let combine_betweeness_results map alist =
-  List.fold_left
-    (fun m (k, v) ->
-       try 
-	 let prev = Map.StringMap.find k m in
-	   Map.StringMap.add k (v +. prev) m
-       with Not_found -> Map.StringMap.add k v m)
-    map
-    alist
-
-module Betweeness_job = struct
-  include Wot_graph.G
-  type worker_result = (V.t * float) list
-  let worker_function = B.betweeness_centrality_node_subset
-  type combine_type = float Map.StringMap.t
-  let combine_start = Map.StringMap.empty
-  let combine_results = combine_betweeness_results
-  let jobname = "betweeness_centrality"
-end
-
-module Mpi_betweeness = Mpi_framework.Make(Betweeness_job)
+module Mpi_betweeness = Mpi_framework.Make(B.Betweeness_job)
 
 let write_betweeness_values_to_file enum component_size =
   let write output =
