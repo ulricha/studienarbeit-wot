@@ -16,7 +16,7 @@ let write_betweeness_values_to_file enum component_size =
   let write output =
     Enum.iter (fun (k, v) -> fprintf output "%s %f\n" (keyid_to_string k) v) enum
   in
-  let fname = sprintf "scc-%d.out" component_size in
+  let fname = sprintf "bc-scc-%d.out" component_size in
     File.with_file_out fname write
 
 (* mscc = maximum strongly connected component *)
