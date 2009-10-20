@@ -19,6 +19,7 @@ end
 
 module Make(G : G) = struct
   module H = Hashtbl.Make(G.V)
+  module M = Map.Make(G.V)
 
   (* compute eccentricity, average connected distance 
      and h-Neighbourhood during breadth-first search *)
@@ -67,6 +68,15 @@ module Make(G : G) = struct
       let avg_dist = !accum_dist / (n-1) in
       (!ecc, !accum_dist, avg_dist, !neigh_2, !neigh_3)
 
+  let distance_statistics_vertex_subset g vlist bench =
+    let compute_vertex l v =
+      bench ();
+      let result = single_vertex_distance_statistics g v in
+	(v, result) :: l
+    in
+      List.fold_left compute_vertex [] vlist
+
+(*
   let distance_statistics g bench =
     let n = G.nb_vertex g in
     let ecc_tbl = H.create n in
@@ -94,14 +104,51 @@ module Make(G : G) = struct
       let nr_pairs = float_of_int ((n * (n-1)) / 2) in
       let connected_avg_dist = (float_of_int !dist_accu) /. nr_pairs in
 	(ecc_tbl, connected_avg_dist, avg_dist_per_node_tbl, neigh_2_dist, neigh_3_dist)
+*)
 
-  let distance_statistics_node_subset g vlist bench =
-    let f alist v =
-      bench ();
-      let res_tuple = single_vertex_distance_statistics g v in
-	(v, res_tuple) :: alist
+  let distance_statistics g bench =
+    let compute_vertex v (dist_sum, ecc_map, dist_avg_map, n2_map, n3_map) =
+      let (ecc, dist_sum_v, dist_avg, neigh2_size, neigh3_size) =
+	single_vertex_distance_statistics g v
+      in
+      let new_ecc_map = M.add v ecc ecc_map in
+      let new_dist_avg_map = M.add v dist_avg dist_avg_map in
+      let new_n2_map = M.add v neigh2_size n2_map in
+      let new_n3_map = M.add v neigh3_size n3_map in
+	(dist_sum + dist_sum_v, new_ecc_map, new_dist_avg_map, new_n2_map, new_n3_map)
     in
-      List.fold_left f [] vlist
+    let init = (0, M.empty, M.empty, M.empty, M.empty) in
+      G.fold_vertex compute_vertex g init
+
+  let analyze_and_print_results v_number graph_name results =
+    let (dist_sum, ecc_map, dist_avg_map, n2_map, n3_map) = results in
+    let nr_pairs = float_of_int ((v_number * (v_number-1)) / 2) in
+    let connected_avg_distance = (float_of_int dist_sum) /. nr_pairs in
+    let (max_ecc, min_ecc) = enum_max_min (M.values ecc_map) in
+    let median_ecc = median (Array.of_enum (M.values ecc_map)) in
+    let median_avg_dist_per_node = median (Array.of_enum (M.values dist_avg_map)) in
+    let ecc_dist = values_to_distribution (M.values ecc_map) in
+    let avg_distance_dist = values_to_distribution (M.values dist_avg_map) in
+    let n2_dist = values_to_distribution (M.values n2_map) in
+    let n3_dist = values_to_distribution (M.values n3_map) in
+    let (max_2, min_2) = enum_max_min (M.values n2_map) in
+    let (max_3, min_3) = enum_max_min (M.values n3_map) in
+      print_endline ("complete_statistics " ^ graph_name);
+      printf "eccentricity median %d max %d min %d\n" 
+	median_ecc max_ecc min_ecc;
+      printf "(connected) average distance %f\n" connected_avg_distance;
+      printf "median average distance per node %d\n" median_avg_dist_per_node;
+      printf "2-neighbourhood max %d min %d\n" max_2 min_2;
+      printf "3-neighbourhood max %d min %d\n" max_3 min_3;
+      write_distribution_to_file (Map.IntMap.enum avg_distance_dist) 
+	(graph_name ^ "-avg_distance_per_node_dist.plot");
+      write_distribution_to_file (Map.IntMap.enum ecc_dist) 
+	(graph_name ^ "ecc_dist.plot");
+      write_distribution_to_file (Map.IntMap.enum n2_dist) 
+	(graph_name ^ "_neigh_2_dist.plot");
+      write_distribution_to_file (Map.IntMap.enum n3_dist) 
+	(graph_name ^ "_neigh_3_dist.plot");
+      print_endline ""
 
   let degree_distribution g =
     let (indeg_map, outdeg_map, total_in) = G.fold_vertex
@@ -133,39 +180,9 @@ module Make(G : G) = struct
 
   (* adds computationally expensive statistics which can't be computed on 
      the whole graph *)
-  let complete_network_statistics graph graph_name bench =
+  let complete_network_statistics_ser graph graph_name bench =
     basic_network_statistics graph graph_name;
-    let (ecc_tbl, avg_distance, avg_dist_per_node_tbl, neigh_2_dist, neigh_3_dist) =
-      distance_statistics graph bench in
+    let results = distance_statistics graph bench in
     let n = G.nb_vertex graph in
-    let (sum_ecc, max_ecc, min_ecc) = Enum.fold 
-      (fun (sum, max_ecc, min_ecc) ecc -> 
-	 (sum + ecc, max max_ecc ecc, min min_ecc ecc)
-      )
-      (0, 0, Int.max_num)
-      (H.values ecc_tbl) 
-    in
-    let avg_ecc = (float_of_int sum_ecc) /. (float_of_int n) in
-    let median_ecc = median (Array.of_enum (H.values ecc_tbl)) in
-    let median_avg_dist_per_node = median (Array.of_enum (H.values avg_dist_per_node_tbl)) in
-    let ecc_dist = values_to_distribution (H.values ecc_tbl) in
-    let avg_distance_per_node_dist = values_to_distribution (H.values avg_dist_per_node_tbl) in
-    let (max_2, min_2) = enum_max_min (Hashtbl.keys neigh_2_dist) in
-    let (max_3, min_3) = enum_max_min (Hashtbl.keys neigh_3_dist) in
-      print_endline ("complete_statistics " ^ graph_name);
-      printf "eccentricity average %f median %d max %d min %d\n" 
-	avg_ecc median_ecc max_ecc min_ecc;
-      printf "(connected) average distance %f\n" avg_distance;
-      printf "median average distance per node %d\n" median_avg_dist_per_node;
-      printf "2-neighbourhood max %d min %d\n" max_2 min_2;
-      printf "3-neighbourhood max %d min %d\n" max_3 min_3;
-      write_distribution_to_file (Map.IntMap.enum avg_distance_per_node_dist) 
-	(graph_name ^ "-avg_distance_per_node_dist.plot");
-      write_distribution_to_file (Map.IntMap.enum ecc_dist) 
-	(graph_name ^ "ecc_dist.plot");
-      write_distribution_to_file (Hashtbl.enum neigh_2_dist) 
-	(graph_name ^ "_neigh_2_dist.plot");
-      write_distribution_to_file (Hashtbl.enum neigh_3_dist) 
-	(graph_name ^ "_neigh_3_dist.plot");
-      print_endline ""
+      analyze_and_print_results n graph_name results
 end

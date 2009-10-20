@@ -34,7 +34,7 @@ let () =
 		  else
 		    begin
 		      let name = "scc-" ^ (string_of_int n) in
-			Statistics.complete_network_statistics scc name bench;
+			Statistics.complete_network_statistics_ser scc name bench;
 			loop tl
 		    end
 	    | [] -> 
