@@ -4,20 +4,7 @@ open Graph
 open Graph_misc
 open Misc
 
-module type G = sig
-  type t
-  module V : Sig.COMPARABLE
-  val iter_vertex : (V.t -> unit) -> t -> unit
-  val fold_vertex : (V.t -> 'a -> 'a) -> t  -> 'a -> 'a
-  val iter_succ : (V.t -> unit) -> t -> V.t -> unit
-  val fold_succ : (V.t -> 'a -> 'a) -> t -> V.t -> 'a -> 'a
-  val nb_vertex : t -> int
-  val nb_edges : t -> int
-  val out_degree : t -> V.t -> int
-  val in_degree : t -> V.t -> int
-end
-
-module Make(G : G) = struct
+module Make(G : Sig.G) = struct
   module H = Hashtbl.Make(G.V)
   module M = Map.Make(G.V)
 
@@ -199,7 +186,7 @@ module Make(G : G) = struct
       List.fold_left add_result_to_maps init alist
 
   module Distance_statistics_job = struct
-    include Wot_graph.G
+    include G
       (* ecc, dist_sum_v, avg_dist, n2_size, n3_size *)
     type worker_result = (G.V.t * (int * int * int * int * int)) list
     let worker_function = distance_statistics_vertex_subset
