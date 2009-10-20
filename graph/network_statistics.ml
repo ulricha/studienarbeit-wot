@@ -33,14 +33,15 @@ module Make(G : G) = struct
       Queue.add v0 q;
       while not (Queue.is_empty q) do
 	let u = Queue.pop q in
+	let d_u = H.find h u in
 	let push v = 
 	  if not (H.mem h v) then 
 	    begin 
-	      H.add h v ((H.find h u) + 1);
+	      H.add h v (d_u + 1);
 	      Queue.add v q;
 	    end 
 	in
-	  f u (H.find h u);
+	  f u d_u;
 	  G.iter_succ push g u
       done
 
