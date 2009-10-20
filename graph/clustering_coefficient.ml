@@ -26,13 +26,18 @@ module Make(G : Sig.G) = struct
 	incr triangle_counter
     in
       apply_all_pairs neighbour_list neighbour_list test_edge compare;
-      (float_of_int !triangle_counter) /. divisor
+      if degree <> 0 then
+	let cc = (float_of_int !triangle_counter) /. divisor in
+	  Some cc
+      else
+	None
 
   let clustering_coefficient_all_vertices g =
     G.fold_vertex 
       (fun v m -> 
-	 let c = clustering_coefficient g v in
-	   M.add v c m)
+	 match clustering_coefficient g v with
+	   | None -> m
+	   | Some cc ->  M.add v cc m)
       g
       M.empty
 
@@ -40,8 +45,9 @@ module Make(G : Sig.G) = struct
     List.fold_left
       (fun alist v ->
 	 bench ();
-	 let c = clustering_coefficient g v in
-	   (v, c) :: alist)
+	 match clustering_coefficient g v with
+	   | None -> alist
+	   | Some cc -> (v, cc) :: alist)
       []
       vlist
 
