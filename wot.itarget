@@ -14,3 +14,6 @@ graph/betweeness_mpi.d.byte
 graph/clustering_coefficient_mpi.native
 graph/clustering_coefficient_mpi.p.native
 graph/clustering_coefficient_mpi.d.byte
+graph/clustering_coefficient_ser.native
+graph/clustering_coefficient_ser.p.native
+graph/clustering_coefficient_ser.d.byte

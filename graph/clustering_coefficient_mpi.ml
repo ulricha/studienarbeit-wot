@@ -48,10 +48,11 @@ let () =
       Mpi.barrier Mpi.comm_world;
       if rank <> 0 then exit 0;
       let rec loop component_list =
+	let bench = time_iterations "clustering_coefficient" 100 in
 	match component_list with
 	  | component_nodelist :: tl when (List.length component_nodelist) > 30 ->
 	      let component = C.graph_from_node_list component_nodelist g in
-	      let res = CC.clustering_coefficient_all_vertices g in
+	      let res = CC.clustering_coefficient_all_vertices g bench in
 	      let component_size = G.nb_vertex component in
 	      let fname = sprintf "cc-scc-%d.out" component_size in
 		print_endline ("compute clustering coefficient for %s" ^ fname);
