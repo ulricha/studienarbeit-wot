@@ -26,13 +26,13 @@ module Make(G : Sig.G) = struct
 	incr triangle_counter
     in
       apply_all_pairs neighbour_list neighbour_list test_edge compare;
-      if divisor <> 0.0 then
-	let cc = (float_of_int !triangle_counter) /. divisor in
-	  if (classify_float cc) = FP_nan then
-	    printf "%d %f %d\n" degree divisor !triangle_counter;
+      let cc = (float_of_int !triangle_counter) /. divisor in
+	if (classify_float cc) = FP_nan then
+	  let msg = sprintf "%d %f %d" degree divisor !triangle_counter in
+	    print_endline msg;
+	    None
+	else
 	  Some cc
-      else
-	None
 
   let clustering_coefficient_all_vertices g =
     G.fold_vertex 
