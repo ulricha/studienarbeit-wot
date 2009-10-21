@@ -130,7 +130,7 @@ module Make(G : Sig.G) = struct
       write_distribution_to_file (Map.IntMap.enum avg_distance_dist) 
 	(graph_name ^ "-avg_distance_per_node_dist.plot");
       write_distribution_to_file (Map.IntMap.enum ecc_dist) 
-	(graph_name ^ "ecc_dist.plot");
+	(graph_name ^ "_ecc_dist.plot");
       write_distribution_to_file (Map.IntMap.enum n2_dist) 
 	(graph_name ^ "_neigh_2_dist.plot");
       write_distribution_to_file (Map.IntMap.enum n3_dist) 
