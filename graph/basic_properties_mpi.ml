@@ -26,6 +26,8 @@ let () =
     let mscc_nodelist = List.hd scc_list_sorted in
     let smaller_components_nodelists = List.tl scc_list_sorted in
     let mscc = C.graph_from_node_list mscc_nodelist g in
+      C.overall_component_properties scc_list_sorted;
+      Statistics.basic_network_statistics g "complete_graph";
       if rank = 0 then
 	begin
 	  print_endline "server started";
@@ -47,7 +49,7 @@ let () =
 	match component_list with
 	  | component_nodelist :: tl when (List.length component_nodelist) > 30 ->
 	      let component = C.graph_from_node_list component_nodelist g in
-	      let component_name = sprintf "scc-%d" (G.nb_vertex mscc) in
+	      let component_name = sprintf "scc-%d" (G.nb_vertex component) in
 		Statistics.complete_network_statistics_ser component component_name (fun () -> ());
 		loop tl
 	  | _ -> ()
