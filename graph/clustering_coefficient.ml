@@ -26,8 +26,10 @@ module Make(G : Sig.G) = struct
 	incr triangle_counter
     in
       apply_all_pairs neighbour_list neighbour_list test_edge compare;
-      if degree <> 0 then
+      if divisor <> 0.0 then
 	let cc = (float_of_int !triangle_counter) /. divisor in
+	  if (classify_float cc) = FP_nan then
+	    printf "%d %f %d\n" degree divisor !triangle_counter;
 	  Some cc
       else
 	None
