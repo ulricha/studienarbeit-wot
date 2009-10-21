@@ -26,10 +26,10 @@ let () =
     let mscc_nodelist = List.hd scc_list_sorted in
     let smaller_components_nodelists = List.tl scc_list_sorted in
     let mscc = C.graph_from_node_list mscc_nodelist g in
-      C.overall_component_properties scc_list_sorted;
-      Statistics.basic_network_statistics g "complete_graph";
       if rank = 0 then
 	begin
+	  C.overall_component_properties scc_list_sorted;
+	  Statistics.basic_network_statistics g "complete_graph";
 	  print_endline "server started";
 	  let res = Mpi_statistics.server 0 mscc in
 	    print_endline "server finished";
