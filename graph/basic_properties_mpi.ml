@@ -45,7 +45,7 @@ let () =
 	end;
       Mpi.barrier Mpi.comm_world;
       if rank <> 0 then exit 0;
-      Statistics.basic_network_statistics g (sprintf "scc-%d" (G.nb_vertex mscc));
+      Statistics.basic_network_statistics mscc (sprintf "scc-%d" (G.nb_vertex mscc));
       let rec loop component_list =
 	match component_list with
 	  | component_nodelist :: tl when (List.length component_nodelist) > 30 ->
