@@ -17,8 +17,8 @@ let print_basic_values (nr_vertex, nr_edges, indeg_map, outdeg_map, avg_indeg) g
   print_endline ("basic_network_statistics " ^ graph_name);
   printf "vertices %d edges %d\n" nr_vertex nr_edges;
   printf "average indegree = average outdegree %f\n" avg_indeg;
-  write_int_values_to_file (Statistics.M.enum indeg_map) (graph_name ^ "_indeg.plot");
-  write_int_values_to_file (Statistics.M.enum outdeg_map) (graph_name ^ "_outdeg.plot");
+  write_int_values_to_file (Statistics.M.enum indeg_map) (graph_name ^ "_indeg.values");
+  write_int_values_to_file (Statistics.M.enum outdeg_map) (graph_name ^ "_outdeg.values");
   print_endline ""
 
 (* mscc = maximum strongly connected component *)
@@ -40,7 +40,7 @@ let () =
 	  let n = G.nb_vertex mscc in
 	  let component_name = sprintf "scc-%d" n in
 	  let res = Statistics.basic_network_statistics g in
-	    print_basic_values res component_name;
+	    print_basic_values res "whole_graph";
 	    print_endline "server started";
 	    let res = Mpi_statistics.server 0 mscc in
 	      print_endline "server finished";
