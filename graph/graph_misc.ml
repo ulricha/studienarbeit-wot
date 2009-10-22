@@ -14,6 +14,18 @@ let write_distribution_to_file enum fname =
   in
     File.with_file_out fname f
 
+let write_float_values_to_file enum fname =
+  let write output =
+    Enum.iter (fun (k, v) -> fprintf output "%s %f\n" (keyid_to_string k) v) enum
+  in
+    File.with_file_out fname write
+
+let write_int_values_to_file enum fname =
+  let write output =
+    Enum.iter (fun (k, v) -> fprintf output "%s %d\n" (keyid_to_string k) v) enum
+  in
+    File.with_file_out fname write
+
 let intmap_add_or_create map key increment =
   try 
     Map.IntMap.add key ((Map.IntMap.find key map) + increment) map

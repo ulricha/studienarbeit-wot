@@ -131,7 +131,7 @@ module Make(G : Sig.G) = struct
 	(graph_name ^ "-avg_distance_per_node_dist.plot");
       write_distribution_to_file (Map.IntMap.enum ecc_dist) 
 	(graph_name ^ "_ecc_dist.plot");
-      write_distribution_to_file (Map.IntMap.enum n2_dist) 
+      write_distribution_to_file (Map.IntMap.enum n2_dist)
 	(graph_name ^ "_neigh_2_dist.plot");
       write_distribution_to_file (Map.IntMap.enum n3_dist) 
 	(graph_name ^ "_neigh_3_dist.plot");
@@ -142,33 +142,27 @@ module Make(G : Sig.G) = struct
       (fun v (in_map, out_map, tin) -> 
 	 let outdeg = G.out_degree g v in
 	 let indeg = G.in_degree g v in
-	 let out_map = intmap_add_or_create out_map outdeg 1 in
-	 let in_map = intmap_add_or_create in_map indeg 1 in
+	 let out_map = M.add v outdeg out_map in
+	 let in_map = M.add v indeg in_map in
 	   (in_map, out_map, tin + indeg)
       )
       g
-      (Map.IntMap.empty, Map.IntMap.empty, 0)
+      (M.empty, M.empty, 0)
     in
     let nr_vertex = float_of_int (G.nb_vertex g) in
     let avg_in = (float_of_int total_in) /. nr_vertex in
       (indeg_map, outdeg_map, avg_in)
 
   (* statistics which can be computed regardless of the graph size *)
-  let basic_network_statistics graph graph_name =
+  let basic_network_statistics graph =
     let nr_vertex = G.nb_vertex graph in
     let nr_edges = G.nb_edges graph in
     let (indeg_map, outdeg_map, avg_indeg) = degree_distribution graph in
-      print_endline ("basic_network_statistics " ^ graph_name);
-      printf "vertices %d edges %d\n" nr_vertex nr_edges;
-      printf "average indegree = average outdegree %f\n" avg_indeg;
-      write_distribution_to_file (Map.IntMap.enum indeg_map) (graph_name ^ "_indeg.plot");
-      write_distribution_to_file (Map.IntMap.enum outdeg_map) (graph_name ^ "_outdeg.plot");
-      print_endline ""
+      (nr_vertex, nr_edges, indeg_map, outdeg_map, avg_indeg)
 
   (* adds computationally expensive statistics which can't be computed on 
      the whole graph *)
-  let complete_network_statistics_ser graph graph_name bench =
-    basic_network_statistics graph graph_name;
+  let distance_network_statistics_ser graph graph_name bench =
     let results = distance_statistics graph bench in
     let n = G.nb_vertex graph in
       analyze_and_print_results n graph_name results

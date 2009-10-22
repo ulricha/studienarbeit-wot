@@ -166,11 +166,7 @@ let () =
       let g = time_eval c "graph_from_storeable_graph" in
       let scc_list = time_eval (fun () -> C.scc_list g) "scc_list" in
       let metagraph = (time_eval (fun () -> M.metagraph g scc_list) "metagraph") in
-      let (in_dist, out_dist, avg_in) = Statistics.degree_distribution metagraph in
-	Statistics.basic_network_statistics metagraph "metagraph";
-	write_distribution_to_file (Map.IntMap.enum in_dist) "mg-indeg-dist.plot";
-	write_distribution_to_file (Map.IntMap.enum out_dist) "mg-outdeg-dist.plot";
-	let oc = Pervasives.open_out "metagraph.dot" in 
-	  Dot.output_graph oc metagraph;
-	  Pervasives.close_out oc
+      let oc = Pervasives.open_out "metagraph.dot" in 
+	Dot.output_graph oc metagraph;
+	Pervasives.close_out oc
     end
