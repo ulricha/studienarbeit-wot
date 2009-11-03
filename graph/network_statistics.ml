@@ -135,6 +135,11 @@ module Make(G : Sig.G) = struct
 	(graph_name ^ "_neigh_2_dist.plot");
       write_distribution_to_file (Map.IntMap.enum n3_dist) 
 	(graph_name ^ "_neigh_3_dist.plot");
+      write_int_values_to_file (M.values n2_map) (graph_name ^ "_n2.values");
+      write_int_values_to_file (M.values n3_map) (graph_name ^ "_n3.values");
+      write_int_values_to_file (M.values ecc_map) (graph_name ^ "_ecc.values");
+      write_int_values_to_file (M.values dist_avg_map) (graph_name ^ "_avg_dist.values");
+      
       print_endline ""
 
   let degree_distribution g =

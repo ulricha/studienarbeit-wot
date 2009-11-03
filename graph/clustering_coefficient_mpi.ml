@@ -12,13 +12,6 @@ module CC = Clustering_coefficient.Make(G)
 
 module Mpi_cc = Mpi_framework.Make(CC.Clustering_coefficient_job)
 
-let write_values_to_file enum component_size =
-  let write output =
-    Enum.iter (fun (k, v) -> fprintf output "%s %f\n" (keyid_to_string k) v) enum
-  in
-  let fname = sprintf "cc-scc-%d.out" component_size in
-    File.with_file_out fname write
-
 (* mscc = maximum strongly connected component *)
 let () =
   if (Array.length Sys.argv) <> 3 then
@@ -37,7 +30,8 @@ let () =
 	  print_endline "server started";
 	  let res = Mpi_cc.server 0 mscc in
 	    print_endline "server finished";
-	    write_values_to_file (CC.M.enum res) (G.nb_vertex mscc)
+	    let fname = sprintf "scc-%d_cc.values" (G.nb_vertex mscc) in
+	      write_float_values_to_file (CC.M.values res) fname
 	end
       else
 	begin
@@ -54,9 +48,9 @@ let () =
 	      let component = C.graph_from_node_list component_nodelist g in
 	      let res = CC.clustering_coefficient_all_vertices g bench in
 	      let component_size = G.nb_vertex component in
-	      let fname = sprintf "cc-scc-%d.out" component_size in
+	      let fname = sprintf "scc-%d_cc.values" component_size in
 		print_endline ("compute clustering coefficient for %s" ^ fname);
-		write_values_to_file (CC.M.enum res) (G.nb_vertex component);
+		write_float_values_to_file (CC.M.values res) fname;
 		loop tl
 	  | _ -> ()
       in

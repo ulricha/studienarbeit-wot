@@ -12,13 +12,6 @@ module B = Betweeness.Make(G)
 
 module Mpi_betweeness = Mpi_framework.Make(B.Betweeness_job)
 
-let write_betweeness_values_to_file enum component_size =
-  let write output =
-    Enum.iter (fun (k, v) -> fprintf output "%s %f\n" (keyid_to_string k) v) enum
-  in
-  let fname = sprintf "bc-scc-%d.out" component_size in
-    File.with_file_out fname write
-
 (* mscc = maximum strongly connected component *)
 let () =
   if (Array.length Sys.argv) <> 3 then
@@ -37,7 +30,8 @@ let () =
 	  print_endline "server started";
 	  let res = Mpi_betweeness.server 0 mscc in
 	    print_endline "server finished";
-	    write_betweeness_values_to_file (Map.StringMap.enum res) (G.nb_vertex mscc)
+	    let fname = sprintf "scc-%d_bet.values" (G.nb_vertex mscc) in
+	      write_float_values_to_file (Map.StringMap.values res) fname
 	end
       else
 	begin
@@ -52,7 +46,8 @@ let () =
 	  | component_nodelist :: tl when (List.length component_nodelist) > 30 ->
 	      let component = C.graph_from_node_list component_nodelist g in
 	      let res = B.betweeness_centrality_iterative g (fun () -> ()) in
-		write_betweeness_values_to_file (B.H.enum res) (G.nb_vertex component);
+	      let fname = sprintf "scc-%d_bet.values" (G.nb_vertex component) in
+		write_float_values_to_file (B.H.values res) fname;
 		loop tl
 	  | _ -> ()
       in

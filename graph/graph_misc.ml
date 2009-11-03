@@ -16,13 +16,13 @@ let write_distribution_to_file enum fname =
 
 let write_float_values_to_file enum fname =
   let write output =
-    Enum.iter (fun (k, v) -> fprintf output "%s %f\n" (keyid_to_string k) v) enum
+    Enum.iter (fun v -> fprintf output "%f\n" v) enum
   in
     File.with_file_out fname write
 
 let write_int_values_to_file enum fname =
   let write output =
-    Enum.iter (fun (k, v) -> fprintf output "%s %d\n" (keyid_to_string k) v) enum
+    Enum.iter (fun v -> fprintf output "%d\n" v) enum
   in
     File.with_file_out fname write
 
