@@ -46,7 +46,7 @@ let () =
 	match component_list with
 	  | component_nodelist :: tl when (List.length component_nodelist) > 30 ->
 	      let component = C.graph_from_node_list component_nodelist g in
-	      let res = CC.clustering_coefficient_all_vertices g bench in
+	      let res = CC.clustering_coefficient_all_vertices component bench in
 	      let component_size = G.nb_vertex component in
 	      let fname = sprintf "scc-%d_cc.values" component_size in
 		print_endline ("compute clustering coefficient for %s" ^ fname);
