@@ -1,0 +1,39 @@
+* Noch offene Punkte
+** TODO Paper zu Community-Algorithmen an Hauck schicken
+** TODO Modul für wotsap-export schreiben
+** TODO In sksdump alle benötigten Daten extrahieren
+*** Alle gültigen UIDs pro Schlüssel ausgeben -> Liste von UIDs pro Schlüssel
+** TODO Datenformat umstellen: wotsap + postgres für Schlüsselinformationen
+*** TODO Modul schreiben, dass Liste von ekeys in postgresql ablegt
+*** TODO vorhandenen Code für Wotsap-import anpassen
+** TODO Vorhandenen Code (insb. clustering_coefficient und betweeness) überprüfen
+** TODO Metagraph zeichnen
+*** Wie viele Komponenten müssen weggelassen werden, damit das ganze zeichenbar wird? < 10?
+*** TODO Bild an Hauck schicken
+** TODO Systematisch die Entwicklung der Komponenten anhand von 3 Dumps nachvollziehen
+Bisher wurden zwei Dumps verwendet: 1. Anfang August, 2. Ende
+September (?). Beim zweiten ist erwartungsgemäss die MSCC gewachsen
+(wenige hundert Knoten). Allerdings hat sich die nächstkleinere
+Komponente eine geringere Grösse als beim 1. dump. Das kann eigentlich
+nur daran liegen, dass diese Komponente durch das Expiren von
+Schlüsseln/Signaturen zerfallen sind.
+** TODO Statistik über Schlüsseleigenschaften
+*** Verwendete Algorithmen (Pubkey, Signatur)
+*** Schlüssellängen (insb. für RSA interessant -- gibt es noch nennenswert RSA-Schlüssel <= 1024 bit?)
+*** Cert level (werden Level != 0x10 von nennenswert vielen Leuten verwendet?)
+*** Wie viele Schlüssel haben ein Ablaufdatum?
+*** Wie viele Signaturen haben ein Ablaufdatum?
+*** Alter der Schlüssel
+** TODO Untersuchung der grösseren Komponenten (2-3 grössten)
+*** Wie alt sind die Schlüssel im Durschschnitt?
+*** Wann wurde in dieser Komponente das letzte mal signiert?
+*** aus welchen Domains kommen user-ids?
+** TODO Reachable und Reaching set ausrechnen
+*** Anhand des Metagraphen ausrechnen, wie viele Knoten von der MSCC erreicht werden können bzw. wie viele diese erreichen können
+** TODO Analyse der Community-Struktur
+*** TODO Kann der Graph ohne (wesentlichen) Informationsverlust in einen ungerichteten Graphen umgewandelt werden?
+*** TODO Wie entwickelt sich der Graph, wenn (iterativ) Knoten mit Grad 1 entfernt werden?
+*** TODO Literatur über Community-Algorithmen sichten
+*** TODO Einen Algorithmus auswählen und implementieren
+** TODO Besseres Zentralitätsmass
+** TODO Zeitlichen Verlauf der ZKs untersuchen
