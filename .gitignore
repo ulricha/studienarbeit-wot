@@ -25,3 +25,8 @@ ocextr
 .depend
 *.mar
 *.plot
+*.png
+*.ps
+results-*
+*.out
+*.opt
