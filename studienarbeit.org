@@ -1,5 +1,13 @@
 * Noch offene Punkte
 ** TODO Paper zu Community-Algorithmen an Hauck schicken
+** TODO Metagraph zeichnen
+*** DONE Selbstkanten entfernen
+    CLOSED: [2009-11-05 Thu 18:05]
+*** DONE Knoten ohne Kanten entfernen
+    CLOSED: [2009-11-05 Thu 18:05]
+*** TODO Wie viele Komponenten müssen weggelassen werden, damit das ganze zeichenbar wird? < 10?
+*** TODO Bild an Hauck schicken
+
 ** TODO Modul für wotsap-export schreiben
 ** TODO In sksdump alle benötigten Daten extrahieren
 *** Alle gültigen UIDs pro Schlüssel ausgeben -> Liste von UIDs pro Schlüssel
@@ -7,16 +15,7 @@
 *** TODO Modul schreiben, dass Liste von ekeys in postgresql ablegt
 *** TODO vorhandenen Code für Wotsap-import anpassen
 ** TODO Vorhandenen Code (insb. clustering_coefficient und betweeness) überprüfen
-** TODO Metagraph zeichnen
-*** Wie viele Komponenten müssen weggelassen werden, damit das ganze zeichenbar wird? < 10?
-*** TODO Bild an Hauck schicken
-** TODO Systematisch die Entwicklung der Komponenten anhand von 3 Dumps nachvollziehen
-Bisher wurden zwei Dumps verwendet: 1. Anfang August, 2. Ende
-September (?). Beim zweiten ist erwartungsgemäss die MSCC gewachsen
-(wenige hundert Knoten). Allerdings hat sich die nächstkleinere
-Komponente eine geringere Grösse als beim 1. dump. Das kann eigentlich
-nur daran liegen, dass diese Komponente durch das Expiren von
-Schlüsseln/Signaturen zerfallen sind.
+*** Warum fehlen teilweise Werte?
 ** TODO Statistik über Schlüsseleigenschaften
 *** Verwendete Algorithmen (Pubkey, Signatur)
 *** Schlüssellängen (insb. für RSA interessant -- gibt es noch nennenswert RSA-Schlüssel <= 1024 bit?)
@@ -30,10 +29,57 @@ Schlüsseln/Signaturen zerfallen sind.
 *** aus welchen Domains kommen user-ids?
 ** TODO Reachable und Reaching set ausrechnen
 *** Anhand des Metagraphen ausrechnen, wie viele Knoten von der MSCC erreicht werden können bzw. wie viele diese erreichen können
+** TODO Systematisch die Entwicklung der Komponenten anhand von 3 Dumps nachvollziehen
+Bisher wurden zwei Dumps verwendet: 1. Anfang August, 2. Ende
+September (?). Beim zweiten ist erwartungsgemäss die MSCC gewachsen
+(wenige hundert Knoten). Allerdings hat sich die nächstkleinere
+Komponente eine geringere Grösse als beim 1. dump. Das kann eigentlich
+nur daran liegen, dass diese Komponente durch das Expiren von
+Schlüsseln/Signaturen zerfallen sind.
+
 ** TODO Analyse der Community-Struktur
-*** TODO Kann der Graph ohne (wesentlichen) Informationsverlust in einen ungerichteten Graphen umgewandelt werden?
+b*** DONE Kann der Graph ohne (wesentlichen) Informationsverlust in einen ungerichteten Graphen umgewandelt werden?
+    CLOSED: [2009-11-05 Thu 18:17]
 *** TODO Wie entwickelt sich der Graph, wenn (iterativ) Knoten mit Grad 1 entfernt werden?
 *** TODO Literatur über Community-Algorithmen sichten
 *** TODO Einen Algorithmus auswählen und implementieren
 ** TODO Besseres Zentralitätsmass
 ** TODO Zeitlichen Verlauf der ZKs untersuchen
+
+* Lablog
+** Notizen <2009-11-05 Thu> 
+*** Frage: Woher stammen die Signaturen?
+    Lässt sich unterscheiden, ob Signaturen aus einem privatem
+    Face-to-face-meeting stammen oder auf einer (grossen)
+    Keysigning-Party entstanden sind? Wie hoch ist der Anteil der
+    Nicht-Keysigning-Signaturen?
+*** Idee: Unterscheidung soziale Gruppe <-> KSP
+    Die Unterscheidung, ob eine Community eine soziale Gruppe oder
+    eine Keysigning-Party darstellt, kann anhand der Signaturzeit
+    getroffen werden. Wenn alle (die meisten) Signaturen in einer
+    Community in einem engen Zeitfenster gemacht wurden, ist es
+    höchstwahrscheinlich eine Keysigning-Party.
+*** Ergebnis one-way-Signaturen
+    Mit dem Datenstand vom 05.11.09 sind 408464 von 439355 Signaturen
+    nicht one-way, d.h. die grosse Mehrzahl der Signaturen beruht auf
+    Gegenseitigkeit. Das sind wie erwartet wenige, da Signaturen im
+    normalen Vorgang in beide Richtungen unternommen werden. Damit
+    scheint es vertretbar, den Graphen für die Community-Analyse in
+    einen ungerichteten Graphen umzuwandeln.
+*** Zwischenstand Metagraph
+    Mit 263 (max_size = 10) Knoten wird das Ganze darstellbar (fdp ->
+    spring model, Fruchtermann und Rheingold).
+
+    Allerdings:
+**** Jeder Knoten hat eine Kante zu sich selbst -- Grund?
+**** Eine Reihe von Komponten hat keine ausgehenden/eingehenden Kanten. Solche Knoten entfernen und herausfinden, wie weit die Komponentengrösse dann reduziert werden kann.
+
+
+    Ohne singleton Knoten und n = 224 (max_size = 8) ist der Graph
+    noch zeichenbar. Allgemein scheint fdp die besten bzw. einzig
+    brauchbaren Ergebnisse zu liefern. Die Qualität der Zeichnung ist
+    noch sehr zu verbessern. Dazu könnte die Grösse der Knoten
+    reduziert werden (nur Grösse, Kreis enger gezeichnet). Ausserdem
+    sollte die Anzahl der aggregierten Kanten sichtbar sein,
+    z.B. indem eine "Metakante" unterschiedlich dick gezeichnet wird.
+
