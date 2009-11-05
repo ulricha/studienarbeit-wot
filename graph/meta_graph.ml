@@ -95,10 +95,8 @@ module Make(G : Sig.G) = struct
       let u_cid = vertex_to_component_id u in
       let v_cid = vertex_to_component_id v in
 	if u_cid = v_cid then
-	  (*print_endline "u_cid = v_cid"*)
 	  ()
 	else
-	  print_endline "u_cid != v_cid";
 	  let u_mv = Hashtbl.find scc_mv_tbl u_cid in
 	  let v_mv = Hashtbl.find scc_mv_tbl v_cid in
 	    try
@@ -128,7 +126,7 @@ exception Invalid_arg
 let remove_small_components g component_list =
   let rec loop cl large_components =
     match cl with
-      | c :: tl when List.length c >= 10 ->
+      | c :: tl when List.length c >= 8 ->
 	  loop tl (c :: large_components)
       | c :: tl ->
 	  (tl, large_components)
@@ -160,6 +158,13 @@ let filter g component_list =
     G.iter_vertex remove_if_notin_c g;
     !c
 
+let remove_singletons mg =
+  let f v =
+    if MG.out_degree mg v = 0 && MG.in_degree mg v = 0 then
+      MG.remove_vertex mg v
+  in
+    MG.iter_vertex f mg
+
 let () =
   if (Array.length Sys.argv) <> 3 then
     begin
@@ -177,6 +182,8 @@ let () =
 	printf "filtered %d keys - WTF?" c;
       let metagraph = (time_eval (fun () -> M.metagraph g large_components) "metagraph") in
       let oc = Pervasives.open_out "metagraph.dot" in 
+	print_endline (sprintf "vertices %d edges %d" (MG.nb_vertex metagraph) (MG.nb_edges metagraph));
+	remove_singletons metagraph;
 	print_endline (sprintf "vertices %d edges %d" (MG.nb_vertex metagraph) (MG.nb_edges metagraph));
 	Dot.output_graph oc metagraph;
 	Pervasives.close_out oc
