@@ -36,7 +36,7 @@ let () =
     let mscc = C.graph_from_node_list mscc_nodelist g in
       if rank = 0 then
 	begin
-	  printf "edges total %d oneway %d\n" (G.nb_edges g) (Statistics.count_oneway_edges mscc);
+	  printf "edges total %d oneway %d\n" (G.nb_edges mscc) (Statistics.count_oneway_edges mscc);
 	  C.overall_component_properties scc_list_sorted;
 	  let n = G.nb_vertex mscc in
 	  let component_name = sprintf "scc-%d" n in
