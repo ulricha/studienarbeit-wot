@@ -36,6 +36,7 @@ let () =
     let mscc = C.graph_from_node_list mscc_nodelist g in
       if rank = 0 then
 	begin
+	  printf "edges total %d oneway %d\n" (G.nb_edges g) (Statistics.count_oneway_edges g);
 	  C.overall_component_properties scc_list_sorted;
 	  let n = G.nb_vertex mscc in
 	  let component_name = sprintf "scc-%d" n in
@@ -44,7 +45,7 @@ let () =
 	    print_endline "server started";
 	    let res = Mpi_statistics.server 0 mscc in
 	      print_endline "server finished";
-	      Statistics.analyze_and_print_results n component_name res 
+	      Statistics.analyze_and_print_results n component_name res
 	end
       else
 	begin

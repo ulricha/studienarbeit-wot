@@ -8,6 +8,15 @@ module Make(G : Sig.G) = struct
   module H = Hashtbl.Make(G.V)
   module M = Map.Make(G.V)
 
+  let count_oneway_edges g =
+    let count src dst c =
+      if not (G.mem_edge g dst src) then
+	c + 1
+      else
+	c
+    in
+      G.fold_edges count g 0
+	
   (* compute eccentricity, average connected distance 
      and h-Neighbourhood during breadth-first search *)
 
@@ -195,3 +204,4 @@ module Make(G : Sig.G) = struct
     let jobname = "distance_statistics"
   end
 end
+
