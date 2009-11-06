@@ -126,7 +126,7 @@ exception Invalid_arg
 let remove_small_components g component_list =
   let rec loop cl large_components =
     match cl with
-      | c :: tl when List.length c >= 8 ->
+      | c :: tl when List.length c >= 6 ->
 	  loop tl (c :: large_components)
       | c :: tl ->
 	  (tl, large_components)

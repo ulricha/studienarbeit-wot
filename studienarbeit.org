@@ -38,7 +38,7 @@ nur daran liegen, dass diese Komponente durch das Expiren von
 Schlüsseln/Signaturen zerfallen sind.
 
 ** TODO Analyse der Community-Struktur
-b*** DONE Kann der Graph ohne (wesentlichen) Informationsverlust in einen ungerichteten Graphen umgewandelt werden?
+*** DONE Kann der Graph ohne (wesentlichen) Informationsverlust in einen ungerichteten Graphen umgewandelt werden?
     CLOSED: [2009-11-05 Thu 18:17]
 *** TODO Wie entwickelt sich der Graph, wenn (iterativ) Knoten mit Grad 1 entfernt werden?
 *** TODO Literatur über Community-Algorithmen sichten
