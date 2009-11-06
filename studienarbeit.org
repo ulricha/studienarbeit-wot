@@ -5,8 +5,10 @@
     CLOSED: [2009-11-05 Thu 18:05]
 *** DONE Knoten ohne Kanten entfernen
     CLOSED: [2009-11-05 Thu 18:05]
-*** TODO Wie viele Komponenten müssen weggelassen werden, damit das ganze zeichenbar wird? < 10?
-*** TODO Bild an Hauck schicken
+*** DONE Wie viele Komponenten müssen weggelassen werden, damit das ganze zeichenbar wird? < 10?
+    CLOSED: [2009-11-06 Fri 13:35]
+*** DONE Bild an Hauck schicken
+    CLOSED: [2009-11-06 Fri 15:41]
 
 ** TODO Modul für wotsap-export schreiben
 ** TODO In sksdump alle benötigten Daten extrahieren
@@ -82,4 +84,33 @@ Schlüsseln/Signaturen zerfallen sind.
     reduziert werden (nur Grösse, Kreis enger gezeichnet). Ausserdem
     sollte die Anzahl der aggregierten Kanten sichtbar sein,
     z.B. indem eine "Metakante" unterschiedlich dick gezeichnet wird.
+** Notizen <2009-11-06 Fri>
+*** Richtiges Ergebnis one-way-Signaturen
+    Es sind nicht 408000 Signaturen nicht-one-way wie gestern
+    behauptet, sondern es ist gerade anders herum. D.h. zu 408000
+    Signaturen gibt es keine Signatur in umgekehrter Richtung. Demnach
+    gibt es nur zwischen $(440000-408000) / 2 = 16000$ Paaren von
+    Knoten wechselseitige Signaturen. Das kann eigentlich nicht sein
+    und wirft (offensichtlich optimistische) Annahmen über die
+    Entstehung von Signaturen über den Haufen.
+
+    Allerdings wird das plausibler, wenn man sich die Gradverteilung
+    anschaut. Die grosse Mehrheit der Knoten hat einen Grad von
+    höchstens 3 (allein 18000 mit 1) und es scheint nicht
+    unwahrscheinlich, dass das eine Signaturenpaar eines
+    Grad-1-Knotens gerade nicht auf Gegenseitigkeit beruht. Das würde
+    bedeuten, dass die ganzen Grad-1/2/3 Knoten nur signiert haben
+    (eher nicht signiert wurden bzw. nicht vom signierten signiert
+    wurden).
+
+    Wie sieht die Verteilung der Indegrees aus? Trifft out-degree < 3
+    und in-degree < 3 häufig zusammen (sehr wahrscheinlich)?
+
+    Das Problem bleibt allerdings, dass der Graph nicht so ohne
+    weiteres in einen ungerichteten Graphen umgewandelt werden
+    kann. Es muss jetzt darüber nachgedacht werden:
+**** wie gross der Informationsverlust ist, wenn one-way- und two-way Signaturen unterschiedslos in eine ungerichtete Kante überführt werden
+**** ob es Sinn macht, wie bei Pons et al. angemerkt, iterativ Kanten mit Grad 1 zu entfernen. Tragen diese tatsächlich nichts zur Community-Struktur bei?
+
+    
 
