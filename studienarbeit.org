@@ -14,7 +14,8 @@
 
 ** STARTED Modul für wotsap-export schreiben
    - State "STARTED"    [2009-11-09 Mon 12:30]
-** TODO In sksdump alle benötigten Daten extrahieren
+** STARTED In sksdump alle benötigten Daten extrahieren
+   - State "STARTED"    [2009-11-11 Wed 12:00]
 *** Alle gültigen UIDs pro Schlüssel ausgeben -> Liste von UIDs pro Schlüssel
 *** Ablaufdatum eines Schlüssels und Ablaufdatum von Signaturen
 ** TODO Datenformat umstellen: wotsap + postgres für Schlüsselinformationen
@@ -116,6 +117,20 @@ Schlüsseln/Signaturen zerfallen sind.
 **** wie gross der Informationsverlust ist, wenn one-way- und two-way Signaturen unterschiedslos in eine ungerichtete Kante überführt werden
 **** ob es Sinn macht, wie bei Pons et al. angemerkt, iterativ Kanten mit Grad 1 zu entfernen. Tragen diese tatsächlich nichts zur Community-Struktur bei?
 
+
+** Notizen <2009-11-11 Wed>
+*** Problem: Zusammengefasste Signaturen
+    Wenn die statistische Auswertung mit den ekeys durchgeführt werden
+    soll, ergibt sich ein Problem: Von allen (validen) Signaturen, die
+    ein issuer auf einem bestimmten Key angebracht hat, wird nur eine
+    (d.h. eine signierte uid) übernommen. Problematisch wird das, wenn
+    der issuer zu unterschiedlichen Zeiten unterschiedliche UIDs
+    signiert hat und sich dabei z.B. der Signaturalgorithmus
+    (unwahrscheinlich weil gleicher Key), die Ablaufzeit (schon
+    wahrscheinlicher unter der Prämisse dass überhaupt Ablaufzeiten
+    auf Signaturen verwendet werden) oder der cert level (nicht
+    unwahrscheinlich insoweit cert level != 0x10 benutzt werden)
+    geändert hat.
 * org-mode configuration
 #+STARTUP: overview
 #+STARTUP: hidestars
