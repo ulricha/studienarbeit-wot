@@ -1,5 +1,4 @@
 open ExtList
-open Option
 open Printf
 
 open Format
@@ -93,7 +92,7 @@ let sort_reverse_siginfo_list siglist =
 	  | 0 -> 0
 	  | d when d > 0 -> -1
 	  | d -> 1
-    with No_value -> raise Signature_without_creation_time
+    with Option.No_value -> raise Signature_without_creation_time
   in
     List.sort ~cmp:compare_ctime_reverse siglist
       
@@ -125,6 +124,7 @@ let siginfo_to_esignature issuer siginfo =
   in
     (issuer, esiginfo)
 
+(* returns true if the key (for v4 keys) or signature is expired *)
 let check_expired ctime signature =
   if is_signature_expired signature then
     raise (Skip_uid "most recent self-signature expired")
@@ -139,121 +139,115 @@ let is_signature_valid siginfo =
     | Some time -> true
     | None -> false
 
-let iter_sigs keyid uid_packet siglist sig_accumulator puid pubkey_info =
-  let sigs_so_far = ref Keyid_set.empty in
-  let siglist_descending = sort_reverse_siginfo_list siglist in
-  let handle_selfsig signature issuer_keyid =
-    (* handle self-signature *)
-    match signature.Index.sigtype with
-      | 0x20 ->
-	  (* key is revoked - can this appear in a uid list? *)
-	  raise (Skip_key "key revoked (0x20)")
-      | 0x30 ->
-	  (* uid is revoked *)
-	  raise (Skip_uid "uid is revoked (0x30)")
-      | 0x10 | 0x11 | 0x12 | 0x13 ->
-	  begin
-	    check_expired pubkey_info.Packet.pk_ctime signature;
-	    if is_none !puid then
-	      puid := Some uid_packet.Packet.packet_body
-	    else
-	      if signature.Index.is_primary_uid then
-		(* user attributes should be skipped, so this must be a User ID *)
-		puid := Some uid_packet.Packet.packet_body
-	      else
-		()
-	    ;
-	    sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far
-	  end
-      | _ ->
-	  (* skip unexpected/irrelevant sig type *)
-	  ()
-  in
-  let handle_foreign_sig signature issuer_keyid =
-    match signature.Index.sigtype with
-      | 0x30 ->
-	  (* sig is revoked -> don't consider this issuer for further sigs *)
-	  sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far
-      | 0x10 | 0x11 | 0x12 | 0x13 ->
-	  if is_signature_expired signature then
-	    (* sig is expired -> don't consider this issuer for further sigs *)
-	    sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far
-	  else
-	    begin
-	      sig_accumulator := Signature_set.add (siginfo_to_esignature issuer_keyid signature) !sig_accumulator;
-	      sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far
-	    end
-      | t ->
-	  (* skip unexpected/irrelevant sig type *)
-	  ()
-  in
-  let f signature =
+(* return true if this is the puid, false otherwise *)
+let handle_self_sig pubkey_info ignore_issuers signature issuer_keyid =
+  match signature.Index.sigtype with
+    | 0x20 ->
+	(* key is revoked - can this appear in a uid list? *)
+	raise (Skip_key "key revoked (0x20)")
+    | 0x30 ->
+	(* uid is revoked *)
+	raise (Skip_uid "uid is revoked (0x30)")
+    | 0x10 | 0x11 | 0x12 | 0x13 ->
+	check_expired pubkey_info.Packet.pk_ctime signature;
+	(* return true if this is the puid, false otherwise *)
+	signature.Index.is_primary_uid
+	  (* TODO: might be dangerous *)
+    | _ -> failwith "handle_self_sig: unexpected signature type"
+
+(* return Some esig if this signature is valid, None otherwise *)
+let handle_foreign_sig signature issuer_keyid =
+  match signature.Index.sigtype with
+    | 0x30 ->
+	(* sig is revoked -> don't consider this issuer for further sigs *)
+	None
+    | 0x10 | 0x11 | 0x12 | 0x13 ->
+	if is_signature_expired signature then
+	  (* sig is expired -> don't consider this issuer for further sigs *)
+	  None
+	else
+	  Some (siginfo_to_esignature issuer_keyid signature)
+    | t ->
+	(* skip unexpected/irrelevant sig type *)
+	None
+
+let extract_sigs keyid siglist pubkey_info =
+  let handle_signature (esigs, ignore_issuers, puid_flag) signature =
     if is_signature_valid signature then
-      let issuer_keyid = get signature.Index.keyid in
-	if not (Keyid_set.mem issuer_keyid !sigs_so_far) then
+      let issuer_keyid = Option.get signature.Index.keyid in
+      let ignore_issuers = Keyid_set.add issuer_keyid ignore_issuers in
+	if Keyid_set.mem issuer_keyid ignore_issuers then
+	  (esigs, ignore_issuers, puid_flag)
+	else
 	  if keyid = issuer_keyid then
-	    handle_selfsig signature issuer_keyid
+	    let puid_flag = handle_self_sig pubkey_info ignore_issuers signature issuer_keyid in
+	      (esigs, ignore_issuers, puid_flag)
 	  else
-	    handle_foreign_sig signature issuer_keyid
+	    match handle_foreign_sig signature issuer_keyid with
+	      | Some esig -> (Signature_set.add esig esigs, ignore_issuers, puid_flag)
+	      | None -> (esigs, ignore_issuers, puid_flag)
+    else
+      (esigs, ignore_issuers, puid_flag)
   in
-    List.iter f siglist_descending
+  let (esigs, _, puid_flag) = 
+    List.fold_left handle_signature (Signature_set.empty, Keyid_set.empty, false) siglist in
+    (esigs, puid_flag)
+
+let handle_uid pkey pubkey_info (sigs, puid, uids) (uid_packet, siglist) =
+  match uid_packet.Packet.packet_type with
+    | Packet.User_ID_Packet ->
+	(try 
+	  let uid = uid_packet.Packet.packet_body in
+	  let keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
+	  let (new_sigs, puid_flag) = extract_sigs keyid siglist pubkey_info in
+	  let sigs = Signature_set.union sigs new_sigs in
+	  let uids = uid :: uids in
+	  let puid = 
+	    if puid_flag then
+	      match puid with
+		| Some puid -> print_endline "multiple puids?"; Some uid
+		| None -> Some uid
+	    else
+	      puid
+	  in
+	    (sigs, puid, uids)
+	with Skip_uid s -> (sigs, puid, uids))
+    | Packet.User_Attribute_Packet ->
+	(sigs, puid, uids)
+    | _ ->
+	failwith "key_to_ekey: unexpected packet type in uid list"
 
 let key_to_ekey key =
-  try 
+  try
     let pkey = KeyMerge.parse_keystr (KeyMerge.key_to_stream key) in
+    let keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
     let pubkey_info = ParsePGP.parse_pubkey_info pkey.KeyMerge.key in
+    let handle_uid = handle_uid pkey pubkey_info in
     let sig_pkey = pkey_to_pkey_siginfo pkey in
-      if is_v3_expired pubkey_info || is_revoked_pkey_siginfo sig_pkey then	
+      if is_v3_expired pubkey_info || is_revoked_pkey_siginfo sig_pkey then
 	raise (Skip_key "key is expired (v3) or revoked")
       else
-	let keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
-	let sig_accu = ref Signature_set.empty in
-	let puid = ref None in
-	let iter_uids = 
-	  (fun (uid_packet, siglist) ->
-	     match uid_packet.Packet.packet_type with
-	       | Packet.User_ID_Packet ->
-		   begin
-		     let this_uid_sigs = ref Signature_set.empty in
-		       try
-			 begin
-			   iter_sigs keyid uid_packet siglist this_uid_sigs puid pubkey_info;
-			   sig_accu := Signature_set.union !this_uid_sigs !sig_accu
-			 end
-		       with
-			 | Skip_uid s -> 
-			     ()
-		   end
-	       | Packet.User_Attribute_Packet ->
-		   (* attribute packet can only contain a photo id at the moment -> skip*)
-		   ()
-	       | _ -> 
-		   failwith "key_to_ekey: unexpected packet type in uid list"
-	  )
-	in
-	  List.iter iter_uids sig_pkey.info_uids;
-	  match !puid with
+	let (sigs, puid, uids) = List.fold_left handle_uid (Signature_set.empty, None, []) sig_pkey.info_uids in
+	  match puid with
 	    | None -> 
 		let keyid = Fingerprint.keyid_from_packet (List.hd key) in
 		  raise (Skipped_key keyid)
-	    | Some s -> 
-		let siglist = Signature_set.elements !sig_accu in 
+	    | Some uid ->
+		let siglist = Signature_set.elements sigs in
 		let algo = pubkey_info.Packet.pk_alg in
 		let keylen = pubkey_info.Packet.pk_keylen in
 		let ctime = Int64.to_float pubkey_info.Packet.pk_ctime in
 		let pki = 
 		  { key_keyid = keyid; 
-		    key_puid = s; 
+		    key_puid = uid; 
 		    key_alg = algo; 
 		    key_len = keylen;
 		    key_ctime = ctime ;
 		  }
 		in
 		  { pki = pki; signatures = siglist }
-		  
   with
-    | Skip_key s -> 
-	(* print_endline ("skip key: " ^ s); *)
+    | Skip_key s ->
 	let keyid = Fingerprint.keyid_from_packet (List.hd key) in
 	  raise (Skipped_key keyid)
     | ParsePGP.Overlong_mpi | Unparseable_signature_packet | Signature_without_creation_time ->
