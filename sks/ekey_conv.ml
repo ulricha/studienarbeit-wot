@@ -191,7 +191,8 @@ let extract_sigs keyid siglist pubkey_info =
       (esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime)
   in
   let (esigs, _, is_puid, valid_selfsig, keyexptime) = 
-    List.fold_left handle_signature (Signature_set.empty, Keyid_set.empty, false, false, None) siglist in
+    let start = (Signature_set.empty, Keyid_set.empty, false, false, None) in
+    List.fold_left handle_signature  start siglist in
     (esigs, is_puid, valid_selfsig, keyexptime)
 
 let handle_uid pkey pubkey_info (sigs, puid, uids, valid_selfsig, exptime) (uid_packet, siglist) =
@@ -200,7 +201,8 @@ let handle_uid pkey pubkey_info (sigs, puid, uids, valid_selfsig, exptime) (uid_
 	(try 
 	  let uid = uid_packet.Packet.packet_body in
 	  let keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
-	  let (new_sigs, puid_flag, valid_selfsig, keyexptime) = extract_sigs keyid siglist pubkey_info in
+	  let (new_sigs, puid_flag, valid_selfsig, keyexptime) = 
+	    extract_sigs keyid siglist pubkey_info in
 	  let sigs = Signature_set.union sigs new_sigs in
 	  let uids = uid :: uids in
 	  let puid = 
@@ -228,7 +230,9 @@ let key_to_ekey key =
       if is_v3_expired pubkey_info || is_revoked_pkey_siginfo sig_pkey then
 	raise (Skip_key "key is expired (v3) or revoked")
       else
-	let (sigs, puid, uids, valid_selfsig, exptime) = List.fold_left handle_uid (Signature_set.empty, None, [], false, None) sig_pkey.info_uids in
+	let start = (Signature_set.empty, None, [], false, None) in
+	let (sigs, puid, uids, valid_selfsig, exptime) = 
+	  List.fold_left handle_uid start sig_pkey.info_uids in
 	  if valid_selfsig then
 	    match puid with
 	      | None -> 
@@ -255,6 +259,8 @@ let key_to_ekey key =
     | Skip_key s ->
 	let keyid = Fingerprint.keyid_from_packet (List.hd key) in
 	  raise (Skipped_key keyid)
-    | ParsePGP.Overlong_mpi | Unparseable_signature_packet | Signature_without_creation_time ->
+    | ParsePGP.Overlong_mpi 
+    | Unparseable_signature_packet 
+    | Signature_without_creation_time ->
 	let keyid = Fingerprint.keyid_from_packet (List.hd key) in
 	  raise (Skipped_key keyid)
