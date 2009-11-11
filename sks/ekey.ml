@@ -9,17 +9,20 @@ open Printf
 open Misc
 
 type esiginfo = { mutable sig_puid_signed: bool;
-		   sig_level: int;
-		   sig_ctime: float;
-		   sig_hash_alg: int;
-		   sig_pk_alg: int;
-		 } with sexp
+		  sig_level: int;
+		  sig_ctime: float option;
+		  sig_exptime: float option;
+		  sig_hash_alg: int;
+		  sig_pk_alg: int;
+		} with sexp
 
 type esignature = (string * esiginfo) with sexp
 
 type epki = { key_keyid: string;
 	      key_puid: string;
+	      key_all_uids: string list;
 	      key_ctime: float;
+	      key_exptime: float option;
 	      key_alg: int;
 	      key_len: int;
 	    } with sexp

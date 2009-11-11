@@ -111,18 +111,18 @@ let is_revoked pkey =
 let is_revoked_pkey_siginfo k =
   List.exists sig_is_revok k.info_selfsigs
 
-let siginfo_to_esignature issuer siginfo =
-  let esiginfo = 
-    { sig_puid_signed = false; 
-      sig_level = siginfo.Index.sigtype; 
-      sig_hash_alg = siginfo.Index.siginfo_hash_alg;
-      sig_pk_alg = siginfo.Index.siginfo_pk_alg;
-      sig_ctime = match siginfo.Index.sig_creation_time with 
-	| Some time -> Int64.to_float time
-	| None -> Int64.to_float 0L;
-    }
-  in
-    (issuer, esiginfo)
+let i64_to_float_option = function
+  | Some i -> Some (Int64.to_float i)
+  | None -> None
+
+let siginfo_to_esignature siginfo =
+  { sig_puid_signed = false; 
+    sig_level = siginfo.Index.sigtype; 
+    sig_hash_alg = siginfo.Index.siginfo_hash_alg;
+    sig_pk_alg = siginfo.Index.siginfo_pk_alg;
+    sig_ctime = i64_to_float_option siginfo.Index.sig_creation_time;
+    sig_exptime = i64_to_float_option siginfo.Index.sig_expiration_time;
+  }
 
 (* returns true if the key (for v4 keys) or signature is expired *)
 let check_expired ctime signature =
@@ -150,9 +150,10 @@ let handle_self_sig pubkey_info ignore_issuers signature issuer_keyid =
 	raise (Skip_uid "uid is revoked (0x30)")
     | 0x10 | 0x11 | 0x12 | 0x13 ->
 	check_expired pubkey_info.Packet.pk_ctime signature;
+	let exptime = i64_to_float_option signature.Index.key_expiration_time in
 	(* return true if this is the puid, false otherwise *)
-	signature.Index.is_primary_uid
-	  (* TODO: might be dangerous *)
+	  (signature.Index.is_primary_uid, exptime)
+	    (* TODO: might be dangerous *)
     | _ -> failwith "handle_self_sig: unexpected signature type"
 
 (* return Some esig if this signature is valid, None otherwise *)
@@ -166,40 +167,40 @@ let handle_foreign_sig signature issuer_keyid =
 	  (* sig is expired -> don't consider this issuer for further sigs *)
 	  None
 	else
-	  Some (siginfo_to_esignature issuer_keyid signature)
+	  Some (issuer_keyid, siginfo_to_esignature signature)
     | t ->
 	(* skip unexpected/irrelevant sig type *)
 	None
 
 let extract_sigs keyid siglist pubkey_info =
-  let handle_signature (esigs, ignore_issuers, puid_flag) signature =
+  let handle_signature (esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime) signature =
     if is_signature_valid signature then
       let issuer_keyid = Option.get signature.Index.keyid in
       let ignore_issuers = Keyid_set.add issuer_keyid ignore_issuers in
 	if Keyid_set.mem issuer_keyid ignore_issuers then
-	  (esigs, ignore_issuers, puid_flag)
+	  (esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime)
 	else
 	  if keyid = issuer_keyid then
-	    let puid_flag = handle_self_sig pubkey_info ignore_issuers signature issuer_keyid in
-	      (esigs, ignore_issuers, puid_flag)
+	    let (is_puid, keyexptime) = handle_self_sig pubkey_info ignore_issuers signature issuer_keyid in
+	      (esigs, ignore_issuers, is_puid, true, keyexptime)
 	  else
 	    match handle_foreign_sig signature issuer_keyid with
-	      | Some esig -> (Signature_set.add esig esigs, ignore_issuers, puid_flag)
-	      | None -> (esigs, ignore_issuers, puid_flag)
+	      | Some esig -> (Signature_set.add esig esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime)
+	      | None -> (esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime)
     else
-      (esigs, ignore_issuers, puid_flag)
+      (esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime)
   in
-  let (esigs, _, puid_flag) = 
-    List.fold_left handle_signature (Signature_set.empty, Keyid_set.empty, false) siglist in
-    (esigs, puid_flag)
+  let (esigs, _, is_puid, valid_selfsig, keyexptime) = 
+    List.fold_left handle_signature (Signature_set.empty, Keyid_set.empty, false, false, None) siglist in
+    (esigs, is_puid, valid_selfsig, keyexptime)
 
-let handle_uid pkey pubkey_info (sigs, puid, uids) (uid_packet, siglist) =
+let handle_uid pkey pubkey_info (sigs, puid, uids, valid_selfsig, exptime) (uid_packet, siglist) =
   match uid_packet.Packet.packet_type with
     | Packet.User_ID_Packet ->
 	(try 
 	  let uid = uid_packet.Packet.packet_body in
 	  let keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
-	  let (new_sigs, puid_flag) = extract_sigs keyid siglist pubkey_info in
+	  let (new_sigs, puid_flag, valid_selfsig, keyexptime) = extract_sigs keyid siglist pubkey_info in
 	  let sigs = Signature_set.union sigs new_sigs in
 	  let uids = uid :: uids in
 	  let puid = 
@@ -210,10 +211,10 @@ let handle_uid pkey pubkey_info (sigs, puid, uids) (uid_packet, siglist) =
 	    else
 	      puid
 	  in
-	    (sigs, puid, uids)
-	with Skip_uid s -> (sigs, puid, uids))
+	    (sigs, puid, uids, valid_selfsig, keyexptime)
+	with Skip_uid s -> (sigs, puid, uids, valid_selfsig, None))
     | Packet.User_Attribute_Packet ->
-	(sigs, puid, uids)
+	(sigs, puid, uids, valid_selfsig, exptime)
     | _ ->
 	failwith "key_to_ekey: unexpected packet type in uid list"
 
@@ -227,25 +228,29 @@ let key_to_ekey key =
       if is_v3_expired pubkey_info || is_revoked_pkey_siginfo sig_pkey then
 	raise (Skip_key "key is expired (v3) or revoked")
       else
-	let (sigs, puid, uids) = List.fold_left handle_uid (Signature_set.empty, None, []) sig_pkey.info_uids in
-	  match puid with
-	    | None -> 
-		let keyid = Fingerprint.keyid_from_packet (List.hd key) in
-		  raise (Skipped_key keyid)
-	    | Some uid ->
-		let siglist = Signature_set.elements sigs in
-		let algo = pubkey_info.Packet.pk_alg in
-		let keylen = pubkey_info.Packet.pk_keylen in
-		let ctime = Int64.to_float pubkey_info.Packet.pk_ctime in
-		let pki = 
-		  { key_keyid = keyid; 
-		    key_puid = uid; 
-		    key_alg = algo; 
-		    key_len = keylen;
-		    key_ctime = ctime ;
-		  }
-		in
-		  { pki = pki; signatures = siglist }
+	let (sigs, puid, uids, valid_selfsig, exptime) = List.fold_left handle_uid (Signature_set.empty, None, [], false, None) sig_pkey.info_uids in
+	  if valid_selfsig then
+	    match puid with
+	      | None -> 
+		  raise (Skip_key "key_to_ekey: no puid found -> skip key")
+	      | Some uid ->
+		  let siglist = Signature_set.elements sigs in
+		  let algo = pubkey_info.Packet.pk_alg in
+		  let keylen = pubkey_info.Packet.pk_keylen in
+		  let ctime = Int64.to_float pubkey_info.Packet.pk_ctime in
+		  let pki = 
+		    { key_keyid = keyid; 
+		      key_puid = uid; 
+		      key_alg = algo; 
+		      key_len = keylen;
+		      key_ctime = ctime;
+		      key_all_uids = uids;
+		      key_exptime = exptime;
+		    }
+		  in
+		    { pki = pki; signatures = siglist }
+	  else
+	    raise (Skip_key "key_to_ekey: found no valid selfsignature -> skip key")
   with
     | Skip_key s ->
 	let keyid = Fingerprint.keyid_from_packet (List.hd key) in
