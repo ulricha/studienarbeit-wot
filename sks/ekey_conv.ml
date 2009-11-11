@@ -142,82 +142,62 @@ let is_signature_valid siginfo =
 let iter_sigs keyid uid_packet siglist sig_accumulator puid pubkey_info =
   let sigs_so_far = ref Keyid_set.empty in
   let siglist_descending = sort_reverse_siginfo_list siglist in
-  let rec iter l =
-    match l with
-      | signature :: tl when not (is_signature_valid signature) ->
-	  iter tl
-      | signature :: tl ->
+  let handle_selfsig signature issuer_keyid =
+    (* handle self-signature *)
+    match signature.Index.sigtype with
+      | 0x20 ->
+	  (* key is revoked - can this appear in a uid list? *)
+	  raise (Skip_key "key revoked (0x20)")
+      | 0x30 ->
+	  (* uid is revoked *)
+	  raise (Skip_uid "uid is revoked (0x30)")
+      | 0x10 | 0x11 | 0x12 | 0x13 ->
 	  begin
-	    let issuer_keyid = get signature.Index.keyid in
-	      if not (Keyid_set.mem issuer_keyid !sigs_so_far) then
-		(* issuer was not handled so far *)
-		begin
-		  if keyid = issuer_keyid then
-		    begin
-		      (* handle self-signature *)
-		      match signature.Index.sigtype with
-			| 0x20 ->
-			    (* key is revoked - can this appear in a uid list? *)
-			    raise (Skip_key "key revoked (0x20)")
-			| 0x30 ->
-			    (* uid is revoked *)
-			    raise (Skip_uid "uid is revoked (0x30)")
-			| 0x10 | 0x11 | 0x12 | 0x13 ->
-			    begin
-			      check_expired pubkey_info.Packet.pk_ctime signature;
-			      if is_none !puid then
-				puid := Some uid_packet.Packet.packet_body
-			      else
-				if signature.Index.is_primary_uid then
-				  (* user attributes should be skipped, so this must be a User ID *)
-				  puid := Some uid_packet.Packet.packet_body
-				else
-				  ()
-			      ;
-			      sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
-			      iter tl
-			    end
-			| _ ->
-			    (* skip unexpected/irrelevant sig type *)
-			    iter tl
-		    end
-		  else
-		    (* handle signature by another key *)
-		    begin
-		      match signature.Index.sigtype with
-			| 0x30 ->
-			    (* sig is revoked -> don't consider this issuer for further sigs *)
-			    sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
-			    iter tl
-			| 0x10 | 0x11 | 0x12 | 0x13 ->
-			    if is_signature_expired signature then
-			      begin
-				(* sig is expired -> don't consider this issuer for further sigs *)
-				sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
-				iter tl
-			      end
-			    else
-			      begin
-				sig_accumulator := Signature_set.add (siginfo_to_esignature issuer_keyid signature) !sig_accumulator;
-				sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far;
-				iter tl
-			      end
-			| t ->
-			    (* skip unexpected/irrelevant sig type *)
-			    iter tl
-		    end
-		end
+	    check_expired pubkey_info.Packet.pk_ctime signature;
+	    if is_none !puid then
+	      puid := Some uid_packet.Packet.packet_body
+	    else
+	      if signature.Index.is_primary_uid then
+		(* user attributes should be skipped, so this must be a User ID *)
+		puid := Some uid_packet.Packet.packet_body
 	      else
-		begin
-		  (* issuer was already handled -> skip *)
-		  iter tl
-		end
+		()
+	    ;
+	    sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far
 	  end
-      | [] ->
+      | _ ->
+	  (* skip unexpected/irrelevant sig type *)
 	  ()
   in
-    iter siglist_descending
-      
+  let handle_foreign_sig signature issuer_keyid =
+    match signature.Index.sigtype with
+      | 0x30 ->
+	  (* sig is revoked -> don't consider this issuer for further sigs *)
+	  sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far
+      | 0x10 | 0x11 | 0x12 | 0x13 ->
+	  if is_signature_expired signature then
+	    (* sig is expired -> don't consider this issuer for further sigs *)
+	    sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far
+	  else
+	    begin
+	      sig_accumulator := Signature_set.add (siginfo_to_esignature issuer_keyid signature) !sig_accumulator;
+	      sigs_so_far := Keyid_set.add issuer_keyid !sigs_so_far
+	    end
+      | t ->
+	  (* skip unexpected/irrelevant sig type *)
+	  ()
+  in
+  let f signature =
+    if is_signature_valid signature then
+      let issuer_keyid = get signature.Index.keyid in
+	if not (Keyid_set.mem issuer_keyid !sigs_so_far) then
+	  if keyid = issuer_keyid then
+	    handle_selfsig signature issuer_keyid
+	  else
+	    handle_foreign_sig signature issuer_keyid
+  in
+    List.iter f siglist_descending
+
 let key_to_ekey key =
   try 
     let pkey = KeyMerge.parse_keystr (KeyMerge.key_to_stream key) in
