@@ -155,6 +155,8 @@ let handle_self_sig pubkey_info ignore_issuers signature issuer_keyid =
 	check_expired pubkey_info.Packet.pk_ctime signature;
 	let exptime = i64_to_float_option signature.Index.key_expiration_time in
 	  Some ((signature.Index.is_primary_uid, exptime))
+    | 0x18 | 0x28 ->
+	None
     | _ as t -> 
 	printf "handle_self_sig: unexpected signature type 0x%x\n" t;
 	None
@@ -215,7 +217,7 @@ let handle_uid pkey pubkey_info (sigs, puid, uids, valid_selfsig, exptime) (uid_
 	  let puid = 
 	    if puid_flag then
 	      match puid with
-		| Some puid -> print_endline "multiple puids?"; Some uid
+		| Some puid -> Some uid
 		| None -> Some uid
 	    else
 	      puid
