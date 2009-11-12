@@ -1,13 +1,11 @@
 open Ekey
+open Printf
 
 let keyid32_of_keyid k =
   let s = Utils.hexstring k in
   let hex = if not (s.[0] = '0' && s.[1] = 'x') then "0x" ^ s else s in
   let x = Int64.of_string hex in
-  let x = Int64.to_int32 x in
-  let cout = Channel.new_buffer_outc 4 in
-    cout#write_int32 x;
-    cout#contents
+    Int64.to_int32 x
 
 let wotsap_signature esig index =
   let cert_level = 
@@ -60,9 +58,13 @@ let write_filename output filename size =
   let s = Printf.sprintf "%-16s/%-12s%-6s%-6s%-8s%-10s`\n" 
     filename mtime uid gid mode size in
     IO.nwrite output s
-  
+
+let timestamp_string () =
+  let tm = Unix.localtime (Unix.time ()) in
+    sprintf "%d.%d.%d" tm.Unix.tm_mday tm.Unix.tm_mon (tm.Unix.tm_year + 1900)
+
 let write_header_sections output = 
-  let readme = "wotsap complete graph created by foo" in
+  let readme = sprintf "wotsap complete graph (%s)" (timestamp_string ()) in
   let version = "0.2\n" in
   IO.nwrite output "!<arch>\n";
     write_filename output "README" (String.length readme);
@@ -89,3 +91,19 @@ let write_signature_section output signatures =
   let len = List.fold_left (fun len (num, _) -> len + 1 + (4 + (Int32.to_int num))) 0 signatures in
     write_filename output "signatures" len;
     List.iter write_single_key_sigs signatures
+
+exception Finished
+
+let dump_wotsap_file fname ekeys =
+  let (keyids, puids, signatures) = ekey_list_to_wotsap_data ekeys in
+  let output = IO.output_channel (open_out fname) in
+    try 
+      write_header_sections output;
+      write_names_section output puids;
+      write_keys_section output keyids;
+      write_signature_section output signatures;
+      raise Finished
+    with 
+      | Finished -> IO.close_out output
+      | _ as e -> IO.close_out output; raise e
+    
