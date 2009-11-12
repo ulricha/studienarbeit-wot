@@ -174,34 +174,27 @@ let handle_foreign_sig signature issuer_keyid =
 
 let extract_sigs keyid siglist pubkey_info =
   let handle_signature (esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime) signature =
-    print_endline "handle_signature";
-    if is_signature_valid signature then(
+    if is_signature_valid signature then
       let issuer_keyid = Option.get signature.Index.keyid in
-      let ignore_issuers = Keyid_set.add issuer_keyid ignore_issuers in
-	if Keyid_set.mem issuer_keyid ignore_issuers then (
-	  print_endline "key in ignore_issuers";
-	  (esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime))
+	if Keyid_set.mem issuer_keyid ignore_issuers then
+	  (esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime)
 	else
-	  if keyid = issuer_keyid then (
-	    print_endline "selfsig";
+	  if keyid = issuer_keyid then
 	    let (is_puid, keyexptime) = handle_self_sig pubkey_info ignore_issuers signature issuer_keyid in
 	      print_endline "found valid self signature";
 	      (esigs, ignore_issuers, is_puid, true, keyexptime)
-	  )
-	  else (
-	    print_endline "foreign sig";
+	  else 
 	    match handle_foreign_sig signature issuer_keyid with
 	      | Some esig -> (Signature_set.add esig esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime)
 	      | None -> (esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime)
-	  )
-    ) else
+    else
       (esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime)
   in
   let siglist_reverse = sort_reverse_siginfo_list siglist in
   let (esigs, _, is_puid, valid_selfsig, keyexptime) = 
     print_endline (sprintf "siglist length %d" (List.length siglist_reverse));
     let start = (Signature_set.empty, Keyid_set.empty, false, false, None) in
-    List.fold_left handle_signature  start siglist_reverse in
+      List.fold_left handle_signature  start siglist_reverse in
     (esigs, is_puid, valid_selfsig, keyexptime)
 
 let handle_uid pkey pubkey_info (sigs, puid, uids, valid_selfsig, exptime) (uid_packet, siglist) =
