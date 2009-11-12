@@ -1,5 +1,14 @@
 open Ekey
 
+let keyid32_of_keyid k =
+  let s = Utils.hexstring k in
+  let hex = if not (s.[0] = '0' && s.[1] = 'x') then "0x" ^ s else s in
+  let x = Int64.of_string hex in
+  let x = Int64.to_int32 x in
+  let cout = Channel.new_buffer_outc 4 in
+    cout#write_int32 x;
+    cout#contents
+
 let wotsap_signature esig index =
   let cert_level = 
     let l = esig.sig_level in
@@ -22,7 +31,7 @@ let wotsap_signatures all_key_sigs lookup_index =
       List.map 
 	(fun esig ->
 	   let (signer_id, siginfo) = esig in
-	   let index = lookup_index signer_id in
+	   let index = lookup_index (keyid32_of_keyid signer_id) in
 	     wotsap_signature siginfo index)
 	single_key_sigs
     in
@@ -32,7 +41,7 @@ let wotsap_signatures all_key_sigs lookup_index =
       
 let ekey_list_to_wotsap_data ekeys =
   let sorted = List.sort Ekey.compare_ekey ekeys in
-  let keyid_list = List.map (fun ekey -> ekey.pki.key_keyid) sorted in
+  let keyid_list = List.map (fun ekey -> keyid32_of_keyid ekey.pki.key_keyid) sorted in
   let puid_list = List.map (fun ekey -> ekey.pki.key_puid) sorted in
   let siglist = List.map (fun ekey -> ekey.signatures) sorted in
   let keyid_array = Array.of_list keyid_list in
@@ -68,10 +77,9 @@ let write_names_section output names =
     IO.nwrite output (Buffer.contents buf)
 
 let write_keys_section output keyids =
-  let buf = Buffer.create ((Array.length keyids) * 8) in
-    Array.iter (fun k -> Buffer.add_string buf k) keyids;
-    write_filename output "keys" (Buffer.length buf);
-    IO.nwrite output (Buffer.contents buf)
+  let len = Array.length keyids * 8 in
+    write_filename output "keys" len;
+    Array.iter (fun k -> IO.BigEndian.write_real_i32 output k) keyids
 
 let write_signature_section output signatures =
   let write_single_key_sigs (num, sigs) =
