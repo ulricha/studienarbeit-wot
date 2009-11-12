@@ -257,6 +257,7 @@ let key_to_ekey key =
 	    raise (Skip_key "key_to_ekey: found no valid selfsignature -> skip key")
   with
     | Skip_key s ->
+	print_endline s;
 	let keyid = Fingerprint.keyid_from_packet (List.hd key) in
 	  raise (Skipped_key keyid)
     | ParsePGP.Overlong_mpi 
