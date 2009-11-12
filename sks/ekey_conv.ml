@@ -246,6 +246,7 @@ let key_to_ekey key =
 	      | None -> 
 		  raise (Skip_key "key_to_ekey: no puid found -> skip key")
 	      | Some uid ->
+		  print_endline "found puid";
 		  let siglist = Signature_set.elements sigs in
 		  let algo = pubkey_info.Packet.pk_alg in
 		  let keylen = pubkey_info.Packet.pk_keylen in
