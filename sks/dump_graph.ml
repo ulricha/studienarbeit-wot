@@ -281,7 +281,7 @@ struct
       try 
 	let key_struct = key_to_ekey key in
 	  begin
-	    display_iterations key_cnt "fetch_keys" 10000;
+	    display_iterations key_cnt "fetch_keys" 100;
 	    match key_struct.signatures with
 	      | [] -> incr unsigned_cnt
 	      | _ -> add_key_without_duplicate relevant_keys key_struct

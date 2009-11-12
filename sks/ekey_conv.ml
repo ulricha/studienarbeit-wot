@@ -248,6 +248,7 @@ let key_to_ekey key =
 		    printf "no puid on v%d key\n" pubkey_info.Packet.pk_version;
 		    List.hd uids
 		| Some uid ->
+		    print_endline "found uid";
 		    uid
 	    in
 	    let siglist = Signature_set.elements sigs in
