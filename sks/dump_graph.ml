@@ -281,7 +281,7 @@ struct
       try 
 	let key_struct = key_to_ekey key in
 	  begin
-	    display_iterations key_cnt "fetch_keys" 100;
+	    display_iterations key_cnt "fetch_keys" 10000;
 	    match key_struct.signatures with
 	      | [] -> incr unsigned_cnt
 	      | _ -> add_key_without_duplicate relevant_keys key_struct
@@ -302,9 +302,11 @@ struct
       let fetch_misses = ref 0 in
       let missing_keyids = list_missing_keys !skipped_keyids relevant_keys in
       let nr_missing_keys = List.length missing_keyids in
+      let bench = time_iterations "fetch_keys" 1000 in
 	printf "%d keys to fetch\n" nr_missing_keys;
 	List.iter 
 	  (fun missing_id -> 
+	     bench ();
 	     match fetch_single_key missing_id with
 	       | Some ekey -> 
 		   incr fetched_keys;
