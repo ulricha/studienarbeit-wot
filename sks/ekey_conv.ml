@@ -186,10 +186,12 @@ let extract_sigs keyid siglist pubkey_info =
 	      print_endline "found valid self signature";
 	      (esigs, ignore_issuers, is_puid, true, keyexptime)
 	  )
-	  else
+	  else (
+	    print_endline "foreign sig";
 	    match handle_foreign_sig signature issuer_keyid with
 	      | Some esig -> (Signature_set.add esig esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime)
 	      | None -> (esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime)
+	  )
     else
       (esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime)
   in
