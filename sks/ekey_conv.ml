@@ -151,11 +151,13 @@ let handle_self_sig pubkey_info ignore_issuers signature issuer_keyid =
     | 0x10 | 0x11 | 0x12 | 0x13 ->
 	check_expired pubkey_info.Packet.pk_ctime signature;
 	let exptime = i64_to_float_option signature.Index.key_expiration_time in
-	(* return true if this is the puid, false otherwise *)
+	  if signature.Index.is_primary_uid then
+	    print_endline "is uid"
+	  else
+	    print_endline "is not uid";
 	  Some ((signature.Index.is_primary_uid, exptime))
-	    (* TODO: might be dangerous *)
     | _ as t -> 
-	printf "handle_self_sig: unexpected signature type 0x%x" t;
+	printf "handle_self_sig: unexpected signature type 0x%x\n" t;
 	None
 
 (* return Some esig if this signature is valid, None otherwise *)
