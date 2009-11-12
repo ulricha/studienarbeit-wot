@@ -152,9 +152,11 @@ let handle_self_sig pubkey_info ignore_issuers signature issuer_keyid =
 	check_expired pubkey_info.Packet.pk_ctime signature;
 	let exptime = i64_to_float_option signature.Index.key_expiration_time in
 	(* return true if this is the puid, false otherwise *)
-	  (signature.Index.is_primary_uid, exptime)
+	  Some ((signature.Index.is_primary_uid, exptime))
 	    (* TODO: might be dangerous *)
-    | _ -> failwith "handle_self_sig: unexpected signature type"
+    | _ as t -> 
+	printf "handle_self_sig: unexpected signature type 0x%x" t;
+	None
 
 (* return Some esig if this signature is valid, None otherwise *)
 let handle_foreign_sig signature issuer_keyid =
@@ -180,9 +182,12 @@ let extract_sigs keyid siglist pubkey_info =
 	  (esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime)
 	else
 	  if keyid = issuer_keyid then
-	    let (is_puid, keyexptime) = handle_self_sig pubkey_info ignore_issuers signature issuer_keyid in
-	      print_endline "found valid self signature";
-	      (esigs, ignore_issuers, is_puid, true, keyexptime)
+	    match handle_self_sig pubkey_info ignore_issuers signature issuer_keyid with
+	      | Some (is_puid, exptime) ->
+		  let ignore_issuers = Keyid_set.add issuer_keyid ignore_issuers in
+		    (esigs, ignore_issuers, is_puid, true, keyexptime)
+	      | None ->
+		  (esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime)
 	  else 
 	    match handle_foreign_sig signature issuer_keyid with
 	      | Some esig -> (Signature_set.add esig esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime)
@@ -192,7 +197,6 @@ let extract_sigs keyid siglist pubkey_info =
   in
   let siglist_reverse = sort_reverse_siginfo_list siglist in
   let (esigs, _, is_puid, valid_selfsig, keyexptime) = 
-    print_endline (sprintf "siglist length %d" (List.length siglist_reverse));
     let start = (Signature_set.empty, Keyid_set.empty, false, false, None) in
       List.fold_left handle_signature  start siglist_reverse in
     (esigs, is_puid, valid_selfsig, keyexptime)
