@@ -239,29 +239,32 @@ let key_to_ekey key =
 	raise (Skip_key "key is expired (v3) or revoked")
       else
 	let start = (Signature_set.empty, None, [], false, None) in
-	let (sigs, puid, uids, valid_selfsig, exptime) = 
+	let (sigs, puid_option, uids, valid_selfsig, exptime) = 
 	  List.fold_left handle_uid start sig_pkey.info_uids in
 	  if valid_selfsig then
-	    match puid with
-	      | None -> 
-		  raise (Skip_key "key_to_ekey: no puid found -> skip key")
-	      | Some uid ->
-		  print_endline "found puid";
-		  let siglist = Signature_set.elements sigs in
-		  let algo = pubkey_info.Packet.pk_alg in
-		  let keylen = pubkey_info.Packet.pk_keylen in
-		  let ctime = Int64.to_float pubkey_info.Packet.pk_ctime in
-		  let pki = 
-		    { key_keyid = keyid; 
-		      key_puid = uid; 
-		      key_alg = algo; 
-		      key_len = keylen;
-		      key_ctime = ctime;
-		      key_all_uids = uids;
-		      key_exptime = exptime;
-		    }
-		  in
-		    { pki = pki; signatures = siglist }
+	    let puid = 
+	      match puid_option with
+		| None -> 
+		    printf "no puid on v%d key\n" pubkey_info.Packet.pk_version;
+		    List.hd uids
+		| Some uid ->
+		    uid
+	    in
+	    let siglist = Signature_set.elements sigs in
+	    let algo = pubkey_info.Packet.pk_alg in
+	    let keylen = pubkey_info.Packet.pk_keylen in
+	    let ctime = Int64.to_float pubkey_info.Packet.pk_ctime in
+	    let pki = 
+	      { key_keyid = keyid; 
+		key_puid = puid; 
+		key_alg = algo; 
+		key_len = keylen;
+		key_ctime = ctime;
+		key_all_uids = uids;
+		key_exptime = exptime;
+	      }
+	    in
+	      { pki = pki; signatures = siglist }
 	  else
 	    raise (Skip_key "key_to_ekey: found no valid selfsignature -> skip key")
   with
