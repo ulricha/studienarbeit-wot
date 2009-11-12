@@ -16,11 +16,13 @@ module Signature_set = Set.Make(struct
 				  let compare = compare_esignature
 				end)
 
+type skip_reason = Expired | Revoked | No_valid_selfsig | Unparseable
+
 exception Unparseable_signature_packet
 exception Signature_without_creation_time
-exception Skip_key of string
+exception Skip_key of skip_reason * string
 exception Skip_uid of string
-exception Skipped_key of string
+exception Skipped_key of skip_reason * string
 
 type sigpair_siginfo = Packet.packet * Index.siginfo list
 
@@ -131,7 +133,7 @@ let check_expired ctime signature =
     raise (Skip_uid "most recent self-signature expired")
   else
     if is_key_expired ctime signature then
-      raise (Skip_key "key expired")
+      raise (Skip_key (Expired, "key expired"))
     else
       ()
 
@@ -145,7 +147,7 @@ let handle_self_sig pubkey_info ignore_issuers signature issuer_keyid =
   match signature.Index.sigtype with
     | 0x20 ->
 	(* key is revoked - can this appear in a uid list? *)
-	raise (Skip_key "key revoked (0x20)")
+	raise (Skip_key (Revoked, "key revoked (0x20)"))
     | 0x30 ->
 	(* uid is revoked *)
 	raise (Skip_uid "uid is revoked (0x30)")
@@ -233,7 +235,9 @@ let key_to_ekey key =
     let handle_uid = handle_uid pkey pubkey_info in
     let sig_pkey = pkey_to_pkey_siginfo pkey in
       if is_v3_expired pubkey_info || is_revoked_pkey_siginfo sig_pkey then
-	raise (Skip_key "key is expired (v3) or revoked")
+	raise (Skip_key (Expired, "key expired"))
+      else if is_revoked_pkey_siginfo sig_pkey then
+	raise (Skip_key (Revoked, "key revoked"))
       else
 	let start = (Signature_set.empty, None, [], false, None) in
 	let (sigs, puid_option, uids, valid_selfsig, exptime) = 
@@ -262,14 +266,13 @@ let key_to_ekey key =
 	    in
 	      { pki = pki; signatures = siglist }
 	  else
-	    raise (Skip_key "key_to_ekey: found no valid selfsignature -> skip key")
+	    raise (Skip_key (No_valid_selfsig, "key_to_ekey: found no valid selfsignature -> skip key"))
   with
-    | Skip_key s ->
-	print_endline s;
+    | Skip_key (reason, s) ->
 	let keyid = Fingerprint.keyid_from_packet (List.hd key) in
-	  raise (Skipped_key keyid)
+	  raise (Skipped_key (reason, keyid))
     | ParsePGP.Overlong_mpi 
     | Unparseable_signature_packet 
     | Signature_without_creation_time ->
 	let keyid = Fingerprint.keyid_from_packet (List.hd key) in
-	  raise (Skipped_key keyid)
+	  raise (Skipped_key (Unparseable, keyid))

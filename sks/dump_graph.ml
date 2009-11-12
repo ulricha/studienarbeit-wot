@@ -66,7 +66,7 @@ struct
 	  begin
 	    try
 	      Some (key_to_ekey key)
-	    with Skipped_key keyid -> None
+	    with Skipped_key (reason, keyid) -> None
 	  end
       | [] -> None
 
@@ -287,7 +287,7 @@ struct
 	      | _ -> add_key_without_duplicate relevant_keys key_struct
 	  end
       with
-	| Skipped_key keyid ->
+	| Skipped_key (reason, keyid) ->
 	    begin
 	      incr skipped_cnt;
 	      display_iterations key_cnt "fetch_keys" 10000;
