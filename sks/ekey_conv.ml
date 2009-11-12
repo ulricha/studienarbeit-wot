@@ -242,7 +242,6 @@ let key_to_ekey key =
 	    let puid = 
 	      match puid_option with
 		| None -> 
-		    printf "no puid on v%d key %s\n" pubkey_info.Packet.pk_version (keyid_to_string keyid);
 		    List.hd uids
 		| Some uid ->
 		    uid
