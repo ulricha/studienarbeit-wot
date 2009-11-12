@@ -182,6 +182,7 @@ let extract_sigs keyid siglist pubkey_info =
 	else
 	  if keyid = issuer_keyid then
 	    let (is_puid, keyexptime) = handle_self_sig pubkey_info ignore_issuers signature issuer_keyid in
+	      print_endline "found valid self signature";
 	      (esigs, ignore_issuers, is_puid, true, keyexptime)
 	  else
 	    match handle_foreign_sig signature issuer_keyid with
