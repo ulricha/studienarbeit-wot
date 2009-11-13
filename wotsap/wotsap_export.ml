@@ -1,12 +1,6 @@
 open Ekey
 open Printf
 
-let keyid32_of_keyid k =
-  let s = Utils.hexstring k in
-  let hex = if not (s.[0] = '0' && s.[1] = 'x') then "0x" ^ s else s in
-  let x = Int64.of_string hex in
-    Int64.to_int32 x
-
 let wotsap_signature esig index =
   let cert_level = 
     let l = esig.sig_level in
@@ -29,7 +23,7 @@ let wotsap_signatures all_key_sigs lookup_index =
       List.map 
 	(fun esig ->
 	   let (signer_id, siginfo) = esig in
-	   let index = lookup_index (keyid32_of_keyid signer_id) in
+	   let index = lookup_index (Misc.keyid32_of_keyid signer_id) in
 	     wotsap_signature siginfo index)
 	single_key_sigs
     in
@@ -38,14 +32,14 @@ let wotsap_signatures all_key_sigs lookup_index =
     List.map f all_key_sigs
       
 let ekey_list_to_wotsap_data ekeys =
-  let sorted = List.sort Ekey.compare_ekey ekeys in
-  let keyid_list = List.map (fun ekey -> keyid32_of_keyid ekey.pki.key_keyid) sorted in
+  let sorted = List.sort ~cmp:Ekey.compare_ekey ekeys in
+  let keyid_list = List.map (fun ekey -> Misc.keyid32_of_keyid ekey.pki.key_keyid) sorted in
   let puid_list = List.map (fun ekey -> ekey.pki.key_puid) sorted in
   let siglist = List.map (fun ekey -> ekey.signatures) sorted in
   let keyid_array = Array.of_list keyid_list in
   let lookup_index k =
     let f i = compare k (Array.get keyid_array i) in
-      Utils.bsearch f 0 (Array.length keyid_array - 1)
+      Misc.bsearch f 0 (Array.length keyid_array - 1)
   in
     (keyid_array, puid_list, (wotsap_signatures siglist lookup_index))
 
@@ -96,7 +90,7 @@ exception Finished
 
 let dump_wotsap_file fname ekeys =
   let (keyids, puids, signatures) = ekey_list_to_wotsap_data ekeys in
-  let output = IO.output_channel (open_out fname) in
+  let output = File.open_out fname in
     try 
       write_header_sections output;
       write_names_section output puids;

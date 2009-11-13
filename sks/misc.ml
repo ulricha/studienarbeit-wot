@@ -10,6 +10,12 @@ let hexstring digest =
     done;
     result
 
+let keyid32_of_keyid k =
+  let s = hexstring k in
+  let hex = if not (s.[0] = '0' && s.[1] = 'x') then "0x" ^ s else s in
+  let x = Int64.of_string hex in
+    Int64.to_int32 x
+
 let keyid_to_string ?(short=false) keyid = 
   let hex = hexstring keyid in
   if short
@@ -97,3 +103,35 @@ let apply_all_pairs l1 l2 f cmp =
       | [] -> ()
   in
     outer_loop l1
+
+
+(** Binary search.
+
+   (f i) returns -1, 0 or 1, and should be monotonic.
+   f should have values for all i in [low,high], inclusive.
+
+   if \E i \in [low,high] such that (f i) = 0, 
+   then such an i is returned.
+   Otherwise, i is returned such that 
+   (f i = 1) and (f (i-1)=-1).
+   Unless it's all 1's or all -1s.  If it's all 1s, the first 1 is returned.
+   If it's all -1's, then raise Not_found
+*)
+let bsearch ~f ~low ~high = 
+  let rec bsearch ~f ~low ~high =
+    if low = high then 
+      match f low with
+	  0 -> low
+	| 1 -> low
+	| _ -> raise Not_found
+    else let mid = (low + high)/2 in
+      match f mid with
+	  0 -> mid
+	| 1 -> bsearch ~f ~low ~high:mid
+	| (-1) -> bsearch ~f ~low:(mid+1) ~high
+	| _ -> raise (Failure ("bsearch: " ^ 
+			       "Search returned value other than -1,0,1"))
+  in 
+    if high < low
+    then raise Not_found
+    else bsearch ~f ~low ~high

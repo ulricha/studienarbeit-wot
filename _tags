@@ -5,3 +5,4 @@
 "graph/mpi_framework.ml": pkg_ocamlmpi
 <graph/*_mpi.{native,d.byte,p.native}>: pkg_ocamlmpi
 "sks": include
+"wotsap": include
