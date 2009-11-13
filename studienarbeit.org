@@ -12,12 +12,29 @@
 **** DONE Bild an Hauck schicken
      CLOSED: [2009-11-06 Fri 15:41]
 
-** STARTED Modul für wotsap-export schreiben
+** DONE Modul für wotsap-export schreiben
+   CLOSED: [2009-11-12 Thu 15:25]
+   - State "DONE"       [2009-11-12 Thu 15:24]
    - State "STARTED"    [2009-11-09 Mon 12:30]
-** STARTED In sksdump alle benötigten Daten extrahieren
+** DONE In sksdump alle benötigten Daten extrahieren
+   CLOSED: [2009-11-12 Thu 18:25]
+   - State "DONE"       [2009-11-12 Thu 18:24]
    - State "STARTED"    [2009-11-11 Wed 12:00]
-*** Alle gültigen UIDs pro Schlüssel ausgeben -> Liste von UIDs pro Schlüssel
-*** Ablaufdatum eines Schlüssels und Ablaufdatum von Signaturen
+*** DONE Alle gültigen UIDs pro Schlüssel ausgeben -> Liste von UIDs pro Schlüssel
+    CLOSED: [2009-11-12 Thu 11:05]
+    - State "DONE"       [2009-11-12 Thu 11:05]
+    - State "TODO"       [2009-11-12 Thu 11:04]
+*** DONE Ablaufdatum eines Schlüssels und Ablaufdatum von Signaturen
+    CLOSED: [2009-11-12 Thu 11:05]
+    - State "DONE"       [2009-11-12 Thu 11:05]
+    - State "TODO"       [2009-11-12 Thu 11:05]
+*** DONE Testen
+    CLOSED: [2009-11-12 Thu 18:25]
+    - State "DONE"       [2009-11-12 Thu 18:24]
+    - State "TODO"       [2009-11-12 Thu 11:05]
+** DONE Build-Problem mit batteries Debian Paket beheben
+   CLOSED: [2009-11-13 Fri 11:45]
+   - State "DONE"       [2009-11-13 Fri 11:46]
 ** TODO Datenformat umstellen: wotsap + postgres für Schlüsselinformationen
 *** TODO Modul schreiben, dass Liste von ekeys in postgresql ablegt
 *** TODO vorhandenen Code für Wotsap-import anpassen
@@ -47,8 +64,12 @@ Schlüsseln/Signaturen zerfallen sind.
 ** TODO Analyse der Community-Struktur
 *** DONE Kann der Graph ohne (wesentlichen) Informationsverlust in einen ungerichteten Graphen umgewandelt werden?
     CLOSED: [2009-11-05 Thu 18:17]
+*** TODO Was passiert, wenn in der MSCC (iterativ) Knoten vom Grad 1 entfernt werden? (outdegree/indegree)?
+    - State "TODO"       [2009-11-12 Thu 18:49]
 *** TODO Wie entwickelt sich der Graph, wenn (iterativ) Knoten mit Grad 1 entfernt werden?
 *** TODO Literatur über Community-Algorithmen sichten
+*** TODO Literaturrecherche: gibt es jemand der schon die Community-Struktur des WoT analysiert hat?
+    - State "TODO"       [2009-11-12 Thu 12:07]
 *** TODO Einen Algorithmus auswählen und implementieren
 ** TODO Besseres Zentralitätsmass
 ** TODO Zeitlichen Verlauf der ZKs untersuchen
