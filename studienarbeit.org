@@ -37,7 +37,9 @@
    - State "DONE"       [2009-11-13 Fri 11:46]
 ** TODO Datenformat umstellen: wotsap + postgres für Schlüsselinformationen
 *** TODO Modul schreiben, dass Liste von ekeys in postgresql ablegt
-*** TODO vorhandenen Code für Wotsap-import anpassen
+*** DEFERRED vorhandenen Code für Wotsap-import anpassen
+    CLOSED: [2009-11-16 Mon 14:25]
+    - State "DEFERRED"   [2009-11-16 Mon 14:27]
 ** TODO Vorhandenen Code (insb. clustering_coefficient und betweeness) überprüfen
 *** Warum fehlen teilweise Werte?
 ** TODO Statistik über Schlüsseleigenschaften

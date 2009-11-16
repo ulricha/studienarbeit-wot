@@ -38,6 +38,7 @@ let ekey_list_to_wotsap_data ekeys =
   let siglist = List.map (fun ekey -> ekey.signatures) sorted in
   let keyid_array = Array.of_list keyid_list in
   let lookup_index k =
+    printf "lookup_index 0x%x\n" (Int32.to_int k);
     let f i = compare k (Array.get keyid_array i) in
       Misc.bsearch f 0 (Array.length keyid_array - 1)
   in
