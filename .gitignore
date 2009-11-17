@@ -30,3 +30,4 @@ ocextr
 results-*
 *.out
 *.opt
+*.dot
