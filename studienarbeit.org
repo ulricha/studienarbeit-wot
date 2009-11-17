@@ -36,7 +36,10 @@
    CLOSED: [2009-11-13 Fri 11:45]
    - State "DONE"       [2009-11-13 Fri 11:46]
 ** TODO Datenformat umstellen: wotsap + postgres für Schlüsselinformationen
-*** TODO Modul schreiben, dass Liste von ekeys in postgresql ablegt
+*** STARTED Modul schreiben, dass Liste von ekeys in postgresql ablegt
+    - State "STARTED"    [2009-11-17 Tue 11:21]
+**** TODO möglichst minimal-invasiv kaputtes UTF8 in UIDs reparieren
+     - State "TODO"       [2009-11-17 Tue 15:00]
 *** DEFERRED vorhandenen Code für Wotsap-import anpassen
     CLOSED: [2009-11-16 Mon 14:25]
     - State "DEFERRED"   [2009-11-16 Mon 14:27]
@@ -140,7 +143,6 @@ Schlüsseln/Signaturen zerfallen sind.
 **** wie gross der Informationsverlust ist, wenn one-way- und two-way Signaturen unterschiedslos in eine ungerichtete Kante überführt werden
 **** ob es Sinn macht, wie bei Pons et al. angemerkt, iterativ Kanten mit Grad 1 zu entfernen. Tragen diese tatsächlich nichts zur Community-Struktur bei?
 
-
 ** Notizen <2009-11-11 Wed>
 *** Problem: Zusammengefasste Signaturen
     Wenn die statistische Auswertung mit den ekeys durchgeführt werden
@@ -154,6 +156,10 @@ Schlüsseln/Signaturen zerfallen sind.
     auf Signaturen verwendet werden) oder der cert level (nicht
     unwahrscheinlich insoweit cert level != 0x10 benutzt werden)
     geändert hat.
+
+** Notizen <2009-11-17 Tue>
+*** Warum doppelte Keys in ekey-Liste?
+
 * org-mode configuration
 #+STARTUP: overview
 #+STARTUP: hidestars
