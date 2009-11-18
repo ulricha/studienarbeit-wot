@@ -44,11 +44,14 @@ let email_regex = Str.regexp "<.*>"
 let validate_utf8 s =
   let repair s = 
     let e = Str.search email_regex s in
+    let backup = "unrepairable string" in
       match Enum.get e with
 	| Some (_, _, email) -> 
 	    Printf.printf "repair %s %s" s email;
-	    email
-	| None -> "unrepairable string"
+	    (try
+	      UTF8.validate s; s 
+	    with UTF8.Malformed_code -> backup)
+	| None -> backup
   in
     try
       UTF8.validate s; s
