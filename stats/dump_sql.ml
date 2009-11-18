@@ -3,7 +3,7 @@ open Ekey
 open Misc
 
 exception Malformed_code
-
+(* TODO: rewrite function to replace invalid UTF8 sequences
 let validate s =
   let rec trail c i a =
     if c = 0 then a else
@@ -34,17 +34,23 @@ let validate s =
       main (i + 6)
     else raise Malformed_code in
   main 0
+*)
 
 let load_ekey_list fname = 
   List.map ekey_of_sexp (SExpr.load_sexps fname)
 
+let email_regex = Str.regexp ".*<.*>.*"
+
 let validate_utf8 s =
   let repair s = 
-    "invalid utf8"
+    let e = Str.search email_regex s in
+      match Enum.get e with
+	| Some (_, _, email) -> email
+	| None -> "unrepairable string"
   in
-  try
-    UTF8.validate s; s
-  with UTF8.Malformed_code -> repair s
+    try
+      UTF8.validate s; s
+    with UTF8.Malformed_code -> repair s
 
 let insert_epki dbh epki =
   let keyid = keyid_to_string epki.key_keyid in
