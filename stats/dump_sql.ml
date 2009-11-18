@@ -2,9 +2,15 @@ open Batteries
 open Ekey
 open Misc
 
+(*
 exception Malformed_code
-(* TODO: rewrite function to replace invalid UTF8 sequences
+(* TODO: rewrite function to replace invalid UTF8 sequences *)
 let validate s =
+  let replace s start c =
+    for i = start to (start + c - 1) do
+      s.[i] < '?'
+    done
+  in
   let rec trail c i a =
     if c = 0 then a else
     if i >= String.length s then raise Malformed_code else
@@ -41,25 +47,40 @@ let load_ekey_list fname =
 
 let email_regex = Str.regexp "<.*>"
 
-let validate_utf8 s =
-  let repair s = 
-    let e = Str.search email_regex s in
-    let backup = "unrepairable string" in
-      match Enum.get e with
-	| Some (_, _, email) -> 
-	    Printf.printf "repair %s %s" s email;
-	    (try
-	      UTF8.validate s; s 
-	    with UTF8.Malformed_code -> backup)
-	| None -> backup
-  in
+let invalid_chars c =
+  match c with
+    | '\x00' .. '\x1f' -> ' '
+    | c -> c
+
+let replace_chars f s =
+  for i = 0 to ((String.length s) - 1) do
+    s.[i] <- f s.[i]
+  done
+
+let repair s = 
+  let e = Str.search email_regex s in
+  let backup = "unrepairable string" in
+    match Enum.get e with
+      | Some (_, _, email) -> 
+	  (try
+	     UTF8.validate email; email
+	   with UTF8.Malformed_code -> backup)
+      | None -> backup
+
+let validate_string o =
+  let s = 
     try
-      UTF8.validate s; s
-    with UTF8.Malformed_code -> repair s
+      UTF8.validate o; o
+    with UTF8.Malformed_code -> repair o
+  in
+    replace_chars invalid_chars s;
+    if o <> s then
+      Printf.printf "repair %s %s\n" o s;
+    s
 
 let insert_epki dbh epki =
   let keyid = keyid_to_string epki.key_keyid in
-  let puid = validate_utf8 epki.key_puid in
+  let puid = validate_string epki.key_puid in
   let ctime = epki.key_ctime in
   let exptime = epki.key_exptime in
   let key_alg = Int32.of_int epki.key_alg in
@@ -71,7 +92,7 @@ let insert_uid_list dbh epki =
   let keyid = keyid_to_string epki.key_keyid in
   List.iter
     (fun uid -> 
-       let uid = validate_utf8 uid in
+       let uid = validate_string uid in
 	 PGSQL(dbh) "insert into uids (keyid, uid) values ($keyid, $uid)")
     epki.key_all_uids
 
@@ -105,6 +126,16 @@ let filter_duplicates ekeys =
       | [] -> unique
   in
     filter ekeys [] Set.StringSet.empty
+
+(*
+let filter_missing_signers ekeys =
+  let set = 
+    List.fold_left 
+      (fun s ekey -> Set.StringSet.add ekey.pki.key_keyid) 
+      Set.StringSet.empty
+      ekeys
+  in
+*)    
 
 let insert_ekeys dbh ekey_list =
   let bench = time_iterations "insert_epki" 10000 in
