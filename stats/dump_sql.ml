@@ -2,81 +2,107 @@ open Batteries
 open Ekey
 open Misc
 
-(*
 exception Malformed_code
-(* TODO: rewrite function to replace invalid UTF8 sequences *)
+  (* TODO: rewrite function to replace invalid UTF8 sequences *)
 let validate s =
   let replace s start c =
+    if start + c - 1 >= String.length s then raise Malformed_code;
     for i = start to (start + c - 1) do
-      s.[i] < '?'
+      s.[i] <- '?'
     done
   in
   let rec trail c i a =
     if c = 0 then a else
-    if i >= String.length s then raise Malformed_code else
-    let n = Char.code (String.unsafe_get s i) in
-    if n < 0x80 || n >= 0xc0 then raise Malformed_code else
-    trail (c - 1) (i + 1) (a lsl 6 lor (n - 0x80)) in
+      if i >= String.length s then raise Malformed_code else
+	let n = Char.code (String.unsafe_get s i) in
+	  if n < 0x80 || n >= 0xc0 then 0 else
+	    trail (c - 1) (i + 1) (a lsl 6 lor (n - 0x80)) in
   let rec main i =
-    if i >= String.length s then () else
-    let n = Char.code (String.unsafe_get s i) in
-    if n < 0x80 then main (i + 1) else
-    if n < 0xc2 then raise Malformed_code else
-    if n <= 0xdf then 
-      if trail 1 (i + 1) (n - 0xc0) < 0x80 then raise Malformed_code else 
-      main (i + 2)
-    else if n <= 0xef then 
-      if trail 2 (i + 1) (n - 0xe0) < 0x800 then raise Malformed_code else 
-      main (i + 3)
-    else if n <= 0xf7 then 
-      if trail 3 (i + 1) (n - 0xf0) < 0x10000 then raise Malformed_code else
-      main (i + 4)
-    else if n <= 0xfb then 
-      if trail 4 (i + 1) (n - 0xf8) < 0x200000 then raise Malformed_code else
-      main (i + 5)
-    else if n <= 0xfd then 
-      let n = trail 5 (i + 1) (n - 0xfc) in
-      if n lsr 16 < 0x400 then raise Malformed_code else
-      main (i + 6)
-    else raise Malformed_code in
-  main 0
-*)
+    if i >= String.length s then
+      () 
+    else
+      let n = Char.code (String.unsafe_get s i) in
+	if n < 0x80 then 
+	  main (i + 1) 
+	else if n < 0xc2 then 
+	  begin
+	    replace s i 1; 
+	    main (i + 1) 
+	  end
+	else if n <= 0xdf then 
+	  begin
+	    if trail 1 (i + 1) (n - 0xc0) < 0x80 then 
+	      replace s i 2; 
+	    main (i + 2)
+	  end
+	else if n <= 0xef then 
+	  begin
+	    if trail 2 (i + 1) (n - 0xe0) < 0x800 then 
+	      replace s i 3; 
+	    main (i + 3)
+	  end
+	else if n <= 0xf7 then 
+	  begin
+	    if trail 3 (i + 1) (n - 0xf0) < 0x10000 then 
+	      replace s i 4; 
+	    main (i + 4)
+	  end
+	else if n <= 0xfb then 
+	  begin
+	    if trail 4 (i + 1) (n - 0xf8) < 0x200000 then 
+	      replace s i 5; 
+	    main (i + 5)
+	  end
+	else if n <= 0xfd then 
+	  let n = trail 5 (i + 1) (n - 0xfc) in
+	    begin
+	      if n lsr 16 < 0x400 then 
+		replace s i 6;
+	      main (i + 6)
+	    end
+	else raise Malformed_code 
+  in
+    try
+      main 0
+    with Invalid_argument x as e -> print_endline s; raise e
 
 let load_ekey_list fname = 
   List.map ekey_of_sexp (SExpr.load_sexps fname)
 
-let email_regex = Str.regexp "<.*>"
-
-let invalid_chars c =
-  match c with
-    | '\x00' .. '\x1f' -> ' '
-    | c -> c
-
-let replace_chars f s =
+let replace_chars s =
   for i = 0 to ((String.length s) - 1) do
-    s.[i] <- f s.[i]
+    match s.[i] with
+      | '\x00' .. '\x1f' -> s.[i] <- '?'
+      | _ -> ()
   done
 
-let repair s = 
-  let e = Str.search email_regex s in
-  let backup = "unrepairable string" in
+let regex_mail = Str.regexp "<.*>"
+
+let extract_email s =
+  let e = Str.search regex_mail s in
     match Enum.get e with
-      | Some (_, _, email) -> 
-	  (try
-	     UTF8.validate email; email
-	   with UTF8.Malformed_code -> backup)
-      | None -> backup
+      | Some (_, _, email) -> email
+      | None -> "unrepairable"
 
 let validate_string o =
-  let s = 
+  let s = o in
     try
-      UTF8.validate o; o
-    with UTF8.Malformed_code -> repair o
-  in
-    replace_chars invalid_chars s;
-    if o <> s then
-      Printf.printf "repair %s %s\n" o s;
-    s
+      validate s;
+      replace_chars s;
+      if s <> o then
+	Printf.printf "repair %s %s\n" o s;
+      s
+    with Malformed_code ->
+      let email = extract_email s in
+	try
+	  validate email;
+	  replace_chars s;
+	  if s <> o then
+	    Printf.printf "repair %s %s\n" o email;
+	  email
+	with Malformed_code ->
+	  Printf.printf "repair %s not possible\n" o;
+	  "unrepairable"
 
 let insert_epki dbh epki =
   let keyid = keyid_to_string epki.key_keyid in
@@ -90,11 +116,12 @@ let insert_epki dbh epki =
 
 let insert_uid_list dbh epki =
   let keyid = keyid_to_string epki.key_keyid in
+  let validated = List.map validate_string epki.key_all_uids in
+  let unique = List.sort_unique compare validated in
   List.iter
     (fun uid -> 
-       let uid = validate_string uid in
 	 PGSQL(dbh) "insert into uids (keyid, uid) values ($keyid, $uid)")
-    epki.key_all_uids
+    unique
 
 let insert_sig_list dbh signee esig_list =
   let insert_esig esig =
