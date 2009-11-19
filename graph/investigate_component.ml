@@ -1,6 +1,18 @@
 open Batteries
 open Unix
 
+let regexp_email = Str.regexp ".*<\\(.*\\)>.*"
+let regexp_tld = Str.regexp "@.+\\.\\([^\\.]+\\)"
+let regexp_sld = Str.regexp "@.*\\([^\\.]+\\.[^\\.]+\\)"
+
+let extract_regexp_group regexp strings =
+  let extract l a =
+    if Str.string_match regexp a 0 then
+      (Str.matched_group 1 a) :: l
+    else
+      l
+  in List.fold_left extract [] strings
+
 let format_time_option = function
   | Some t -> 
       let ts = gmtime t in
@@ -30,6 +42,10 @@ let creation_time dbh keyids =
   let oldest = Array.get a 0 in
     (median, oldest, newest)
 
+let sig_creation_times dbh keyids =
+  let ctimes = PGSQL(dbh) "select ctime from sigs where signee in $@keyids and signer in $@keyids" in
+    ctimes
+
 let get_key_records dbh keyids =
   let keyids = List.map Misc.keyid_to_string keyids in
   PGSQL(dbh) "select keyid, puid, ctime, exptime from keys where keyid in $@keyids"
@@ -49,8 +65,9 @@ let main () =
 	| hd :: tl when (List.length hd) > 30000 -> 
 	    loop tl
 	| hd :: tl when (List.length hd) > minsize -> 
-	    let records = get_key_records dbh hd in
-	      Printf.printf "\nmembers of scc %d\n" (List.length hd);
+	    let keyids = List.map Misc.keyid_to_string hd in
+	    let records = get_key_records dbh keyids in
+	      Printf.printf "\nmembers of scc %d\n" (List.length keyids);
 	      print_key_records records;
 	      loop tl
 	| hd :: tl -> ()
