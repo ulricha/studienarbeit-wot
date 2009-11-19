@@ -118,6 +118,10 @@ let i64_to_float_option = function
   | Some i -> Some (Int64.to_float i)
   | None -> None
 
+let int_to_float_option = function
+  | Some i -> Some (float_of_int i)
+  | None -> None
+
 let siginfo_to_esignature siginfo =
   { sig_puid_signed = false; 
     sig_level = siginfo.Index.sigtype; 
@@ -186,9 +190,9 @@ let extract_sigs keyid siglist pubkey_info =
 	else
 	  if keyid = issuer_keyid then
 	    match handle_self_sig pubkey_info ignore_issuers signature issuer_keyid with
-	      | Some (is_puid, exptime) ->
+	      | Some (is_puid, new_exptime) ->
 		  let ignore_issuers = Keyid_set.add issuer_keyid ignore_issuers in
-		    (esigs, ignore_issuers, is_puid, true, keyexptime)
+		    (esigs, ignore_issuers, is_puid, true, new_exptime)
 	      | None ->
 		  (esigs, ignore_issuers, is_puid, valid_selfsig, keyexptime)
 	  else 
@@ -251,6 +255,12 @@ let key_to_ekey key =
 		    List.hd uids
 		| Some uid ->
 		    uid
+	    in
+	    let exptime =
+	      match pubkey_info.Packet.pk_version with
+		| 4 -> exptime
+		| 2 | 3 -> int_to_float_option pubkey_info.Packet.pk_expiration
+		| _ -> raise (Skip_key (Unparseable, "Unparseable: unknown version"))
 	    in
 	    let siglist = Signature_set.elements sigs in
 	    let algo = pubkey_info.Packet.pk_alg in
