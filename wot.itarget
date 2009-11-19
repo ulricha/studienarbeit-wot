@@ -19,3 +19,4 @@ graph/clustering_coefficient_ser.p.native
 graph/clustering_coefficient_ser.d.byte
 graph/test_wotsap_export.native
 graph/test_wotsap_export.d.byte
+graph/investigate_component.native

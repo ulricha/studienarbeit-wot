@@ -1,9 +1,9 @@
 <**/*>: use_batteries,use_batteries_r,pkg_ocamlgraph
 "sks/ekey.ml": pkg_sexplib.syntax
-"graph/load_dummy.ml": pkg_sexplib.syntax
 <graph/*_mpi.ml>: pkg_ocamlmpi
 "graph/mpi_framework.ml": pkg_ocamlmpi
 <graph/*_mpi.{native,d.byte,p.native}>: pkg_ocamlmpi
 <stats/*>: pkg_pgocaml, pkg_pgocaml.syntax
+<graph/investigate_component.*>: pkg_pgocaml, pkg_pgocaml.syntax
 "sks": include
 "wotsap": include
