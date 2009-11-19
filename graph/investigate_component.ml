@@ -20,6 +20,16 @@ let print_key_records l =
   in
     List.iter print l
 
+let creation_time dbh keyids =
+  let ctimes = PGSQL(dbh) "select ctime from keys where keyid in $@keyids" in
+  let ctimes = List.sort ctimes in
+  let a = Array.of_list ctimes in
+  let l = Array.length a in
+  let median = Array.get a (l / 2) in
+  let newest = Array.get a (l - 1) in
+  let oldest = Array.get a 0 in
+    (median, oldest, newest)
+
 let get_key_records dbh keyids =
   let keyids = List.map Misc.keyid_to_string keyids in
   PGSQL(dbh) "select keyid, puid, ctime, exptime from keys where keyid in $@keyids"
@@ -33,7 +43,7 @@ let main () =
   let minsize = int_of_string Sys.argv.(3) in
     print_endline ("investigate smaller components down to size " ^ Sys.argv.(3));
     let dbh = PGOCaml.connect ~database:"wot" () in
-    let (_, scc_list_sorted) = Component_helpers.load_scc_list Sys.argv.(1) Sys.argv.(2) in
+    let (g, scc_list_sorted) = Component_helpers.load_scc_list Sys.argv.(1) Sys.argv.(2) in
     let rec loop l =
       match l with
 	| hd :: tl when (List.length hd) > 30000 -> 
