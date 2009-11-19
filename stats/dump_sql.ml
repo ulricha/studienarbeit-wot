@@ -3,7 +3,9 @@ open Ekey
 open Misc
 
 exception Malformed_code
-  (* TODO: rewrite function to replace invalid UTF8 sequences *)
+
+(* Try to replace malformed byte sequences in a UTF8 string.
+   (looted from Camomile UTF8.validate) *)
 let validate s =
   let replace s start c =
     if start + c - 1 >= String.length s then raise Malformed_code;

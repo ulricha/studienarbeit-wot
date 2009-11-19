@@ -1,0 +1,5 @@
+create table keys (keyid char(16) primary key, puid text not null, ctime float, exptime float, alg int, keylen int);
+
+create table uids (keyid char(16) references keys(keyid), uid text, primary key(keyid, uid));
+
+create table sigs (signer char(16) references keys(keyid), signee char(16) references keys(keyid), level int not null check (level >= 16 and level <= 19), exptime float, ctime float, hash_alg int not null, pk_alg int not null);
