@@ -36,7 +36,9 @@
    CLOSED: [2009-11-13 Fri 11:45]
    - State "DONE"       [2009-11-13 Fri 11:46]
 ** TODO Datenformat umstellen: wotsap + postgres für Schlüsselinformationen
-*** STARTED Modul schreiben, dass Liste von ekeys in postgresql ablegt
+*** DONE Modul schreiben, dass Liste von ekeys in postgresql ablegt
+    CLOSED: [2009-11-19 Thu 10:50]
+    - State "DONE"       [2009-11-19 Thu 10:52]
     - State "STARTED"    [2009-11-17 Tue 11:21]
 **** TODO möglichst minimal-invasiv kaputtes UTF8 in UIDs reparieren
      - State "TODO"       [2009-11-17 Tue 15:00]
@@ -47,11 +49,14 @@
 *** Warum fehlen teilweise Werte?
 ** TODO Statistik über Schlüsseleigenschaften
 *** Verwendete Algorithmen (Pubkey, Signatur)
+*** Wie verändert sich die Verwendung von Algorithmen über die Zeit (abhängig von ctime?)
 *** Schlüssellängen (insb. für RSA interessant -- gibt es noch nennenswert RSA-Schlüssel <= 1024 bit?)
+*** Gibt es noch Schlüssel, die MD5 einsetzen und damit signieren? Gibt es halbwegs aktuelle Signaturen auf Basis von MD5?
 *** Cert level (werden Level != 0x10 von nennenswert vielen Leuten verwendet?)
 *** Wie viele Schlüssel haben ein Ablaufdatum?
 *** Wie viele Signaturen haben ein Ablaufdatum?
 *** Alter der Schlüssel
+*** Möglicherweise diese ganzen Eigenschaften für die MSCC und den Rest ausreichen und vergleichen
 ** TODO Untersuchung der grösseren Komponenten (2-3 grössten)
 *** Wie alt sind die Schlüssel im Durschschnitt?
 *** Wann wurde in dieser Komponente das letzte mal signiert?
@@ -159,6 +164,15 @@ Schlüsseln/Signaturen zerfallen sind.
 
 ** Notizen <2009-11-17 Tue>
 *** Warum doppelte Keys in ekey-Liste?
+** Notizen <2009-11-19 Thu>
+*** Problem
+    Kein einziger Schlüssel im dump 091109 hat ein Ablaufdatum. Das
+    ist entweder ein Fehler im DB-Export oder im
+    SQL-import. Vermutlich das erste.
+*** Subkeys
+    wotsap beachtet scheinbar keine subkeys, d.h. auch keine
+    Signaturen auf Subkeys. Es scheint daher gerechtfertigt, das genau
+    so zu machen.
 
 * org-mode configuration
 #+STARTUP: overview
