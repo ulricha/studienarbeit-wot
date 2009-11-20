@@ -52,11 +52,15 @@ let format_time_option = function
       let ts = gmtime t in
 	Printf.sprintf "%d.%d.%d" ts.tm_mday ts.tm_mon (1900 + ts.tm_year)
   | None -> "void"
+      
+let format_time t = 
+  let ts = gmtime t in
+    Printf.sprintf "%d.%d.%d" ts.tm_mday ts.tm_mon (1900 + ts.tm_year)
 
 let print_key_records l =
   let print r =
     let (keyid, puid, ctime, exptime) = r in
-    let ctime_string = format_time_option ctime in
+    let ctime_string = format_time ctime in
     let exptime_string = format_time_option exptime in
     let s = Printf.sprintf 
       "%s %s %s %s" 
@@ -82,8 +86,7 @@ let print_statistics l =
   let tlds = extract_regexp_group regexp_tld adresses in
   let slds = extract_slds adresses in
   let (median, oldest, newest) = creation_time ctimes in
-  let (median, oldest, newest) = 
-    (format_time_option median, format_time_option oldest, format_time_option newest) 
+  let (median, oldest, newest) = (format_time median, format_time oldest, format_time newest) 
   in
     print_endline "\nCreation times of keys:";
     Printf.printf "median %s oldest %s newest %s\n" median oldest newest;
