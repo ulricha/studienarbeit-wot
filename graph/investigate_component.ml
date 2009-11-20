@@ -1,5 +1,6 @@
 open Batteries
 open Unix
+open Wot_graph
 
 let regexp_email = Str.regexp ".*<\\(.*\\)>.*"
 let regexp_tld = Str.regexp ".*@.+\\.\\([^\\.]+\\)$"
@@ -70,7 +71,7 @@ let print_key_records l =
   in
     List.iter print l
 
-let creation_time ctimes =
+let characterize_times ctimes =
   let ctimes = List.sort ctimes in
   let a = Array.of_list ctimes in
   let l = Array.length a in
@@ -79,25 +80,30 @@ let creation_time ctimes =
     let oldest = Array.get a 0 in
       (median, oldest, newest)
 
-let print_statistics l =
-  let uids = List.map (fun (_, uid, _, _) -> uid) l in
-  let ctimes = List.map (fun (_, _, ctime, _) -> ctime ) l in
+let print_statistics key_records sig_ctimes =
+  let uids = List.map (fun (_, uid, _, _) -> uid) key_records in
+  let ctimes = List.map (fun (_, _, ctime, _) -> ctime ) key_records in
   let adresses = extract_regexp_group regexp_email uids in
   let tlds = extract_regexp_group regexp_tld adresses in
   let slds = extract_slds adresses in
-  let (median, oldest, newest) = creation_time ctimes in
-  let (median, oldest, newest) = (format_time median, format_time oldest, format_time newest) 
+  let (median, oldest, newest) = characterize_times ctimes in
+  let (median, oldest, newest) = 
+    (format_time median, format_time oldest, format_time newest) in
+  let (median_sig, oldest_sig, newest_sig) = characterize_times sig_ctimes in
+  let (median_sig, oldest_sig, newest_sig) = 
+    (format_time median_sig, format_time oldest_sig, format_time newest_sig)
   in
     print_endline "\nCreation times of keys:";
     Printf.printf "median %s oldest %s newest %s\n" median oldest newest;
+    print_endline "\nCreation times of signatures:";
+    Printf.printf "median %s oldest %s newest %s\n" median_sig oldest_sig newest_sig;
     print_endline "\nDistribution of Top-Level-Domains:";
     domain_distribution tlds;
     print_endline "\nDistribution of Second-Level-Domains:";
     domain_distribution slds
 
 let sig_creation_times dbh keyids =
-  let ctimes = PGSQL(dbh) "select ctime from sigs where signee in $@keyids and signer in $@keyids" in
-    ctimes
+  PGSQL(dbh) "select ctime from sigs where signee in $@keyids and signer in $@keyids"
 
 let get_key_records dbh keyids =
   PGSQL(dbh) "select keyid, puid, ctime, exptime from keys where keyid in $@keyids"
@@ -119,9 +125,10 @@ let main () =
 	| hd :: tl when (List.length hd) > minsize -> 
 	    let keyids = List.map Misc.keyid_to_string hd in
 	    let records = get_key_records dbh keyids in
+	    let sig_ctimes = sig_creation_times dbh keyids in
 	      assert (List.length records > 0);
 	      Printf.printf "\nmembers of scc %d\n" (List.length keyids);
-	      print_statistics records;
+	      print_statistics records sig_ctimes;
 	      print_key_records records;
 	      print_endline "";
 	      loop tl
