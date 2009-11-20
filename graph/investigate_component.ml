@@ -66,18 +66,7 @@ let print_key_records l =
   in
     List.iter print l
 
-let print_statistics l =
-  let uids = List.map (fun (_, uid, _, _) -> uid) l in
-  let adresses = extract_regexp_group regexp_email uids in
-  let tlds = extract_regexp_group regexp_tld adresses in
-  let slds = extract_slds adresses in
-    print_endline "Distribution of Top-Level-Domains";
-    domain_distribution tlds;
-    print_endline "Distribution of Second-Level-Domains";
-    domain_distribution slds
-
-let creation_time dbh keyids =
-  let ctimes = PGSQL(dbh) "select ctime from keys where keyid in $@keyids" in
+let creation_time ctimes =
   let ctimes = List.sort ctimes in
   let a = Array.of_list ctimes in
   let l = Array.length a in
@@ -85,6 +74,23 @@ let creation_time dbh keyids =
   let newest = Array.get a (l - 1) in
   let oldest = Array.get a 0 in
     (median, oldest, newest)
+
+let print_statistics l =
+  let uids = List.map (fun (_, uid, _, _) -> uid) l in
+  let ctimes = List.map (fun (_, _, ctime, _) -> ctime ) l in
+  let adresses = extract_regexp_group regexp_email uids in
+  let tlds = extract_regexp_group regexp_tld adresses in
+  let slds = extract_slds adresses in
+  let (median, oldest, newest) = creation_time ctimes in
+  let (median, oldest, newest) = 
+    (format_time_option median, format_time_option oldest, format_time_option newest) 
+  in
+    print_endline "\nCreation times of keys:";
+    Printf.printf "median %s oldest %s newest %s\n" median oldest newest;
+    print_endline "\nDistribution of Top-Level-Domains:";
+    domain_distribution tlds;
+    print_endline "\nDistribution of Second-Level-Domains:";
+    domain_distribution slds
 
 let sig_creation_times dbh keyids =
   let ctimes = PGSQL(dbh) "select ctime from sigs where signee in $@keyids and signer in $@keyids" in
@@ -112,7 +118,9 @@ let main () =
 	    let keyids = List.map Misc.keyid_to_string hd in
 	    let records = get_key_records dbh keyids in
 	      Printf.printf "\nmembers of scc %d\n" (List.length keyids);
+	      print_statistics records;
 	      print_key_records records;
+	      print_endline "";
 	      loop tl
 	| hd :: tl -> ()
 	| [] -> ()
