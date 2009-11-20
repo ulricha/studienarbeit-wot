@@ -2,8 +2,8 @@ open Batteries
 open Unix
 
 let regexp_email = Str.regexp ".*<\\(.*\\)>.*"
-let regexp_tld = Str.regexp "@.+\\.\\([^\\.]+\\)"
-let regexp_sld = Str.regexp "@.*\\([^\\.]+\\.[^\\.]+\\)"
+let regexp_tld = Str.regexp ".*@.+\\.\\([^\\.]+\\)$"
+let regexp_sld = Str.regexp "[^\\.]+\\.[^\\.]+$"
 
 let extract_regexp_group regexp strings =
   let extract l a =
@@ -11,6 +11,32 @@ let extract_regexp_group regexp strings =
       (Str.matched_group 1 a) :: l
     else
       l
+  in List.fold_left extract [] strings
+
+let extract_sld strings =
+  let extract l a =
+    try
+      let pos = String.index a '@' in
+      let domain = Str.string_after a (pos + 1) in
+	if Str.string_match regexp_sld domain 0 then (
+	  print_endline "first match";
+	  domain :: l)
+	else 
+	  let rec loop domain =
+	    let pos = String.index domain '.' in
+	    let maybe_sld = Str.string_after domain (pos + 1) in
+	      Printf.printf "loop domain %s pos %d maybe_sld %s\n" domain pos maybe_sld;
+	      if Str.string_match regexp_sld maybe_sld 0 then
+		Some maybe_sld
+	      else if maybe_sld <> "" then
+		loop maybe_sld
+	      else
+		None
+	  in
+	    match loop domain with 
+	      | Some sld -> sld :: l
+	      | None -> l
+    with _ -> l
   in List.fold_left extract [] strings
 
 let format_time_option = function
