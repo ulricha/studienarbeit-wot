@@ -73,17 +73,14 @@ let print_key_records l =
     List.iter print l
 
 let creation_time ctimes =
-  Printf.printf "list len %d\n" (List.length ctimes);
   print_endline "creation_time";
   let ctimes = List.sort ctimes in
   let a = Array.of_list ctimes in
   let l = Array.length a in
-    Printf.printf "len %d\n" l;
     let median = Array.get a (l / 2) in
     let newest = Array.get a (l - 1) in
     let oldest = Array.get a 0 in
       (median, oldest, newest)
-	(*  with _ -> (0., 0., 0.)*)
 
 let print_statistics l =
   let uids = List.map (fun (_, uid, _, _) -> uid) l in
@@ -106,7 +103,6 @@ let sig_creation_times dbh keyids =
     ctimes
 
 let get_key_records dbh keyids =
-  let keyids = List.map Misc.keyid_to_string keyids in
   PGSQL(dbh) "select keyid, puid, ctime, exptime from keys where keyid in $@keyids"
 
 let _ =
@@ -126,8 +122,6 @@ let main () =
 	| hd :: tl when (List.length hd) > minsize -> 
 	    let keyids = List.map Misc.keyid_to_string hd in
 	    let records = get_key_records dbh keyids in
-	      Printf.printf "hd id %s\n" (List.hd keyids);
-	      Printf.printf "hd id %s\n" (List.at keyids 2);
 	      assert (List.length records > 0);
 	      Printf.printf "\nmembers of scc %d\n" (List.length keyids);
 	      print_statistics records;
