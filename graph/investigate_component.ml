@@ -13,19 +13,17 @@ let extract_regexp_group regexp strings =
       l
   in List.fold_left extract [] strings
 
-let extract_sld strings =
+let extract_slds strings =
   let extract l a =
     try
       let pos = String.index a '@' in
       let domain = Str.string_after a (pos + 1) in
 	if Str.string_match regexp_sld domain 0 then (
-	  print_endline "first match";
 	  domain :: l)
 	else 
 	  let rec loop domain =
 	    let pos = String.index domain '.' in
 	    let maybe_sld = Str.string_after domain (pos + 1) in
-	      Printf.printf "loop domain %s pos %d maybe_sld %s\n" domain pos maybe_sld;
 	      if Str.string_match regexp_sld maybe_sld 0 then
 		Some maybe_sld
 	      else if maybe_sld <> "" then
@@ -38,6 +36,16 @@ let extract_sld strings =
 	      | None -> l
     with _ -> l
   in List.fold_left extract [] strings
+
+let domain_distribution domains =
+  let increase_or_add m k =
+    try
+      let old = Map.StringMap.find k m in
+	Map.StringMap.add k (old + 1) m
+    with Not_found -> Map.StringMap.add k 1 m
+  in
+  let map = List.fold_left increase_or_add Map.StringMap.empty domains in
+    Enum.iter (fun (k, v) -> Printf.printf "%s %d\n" k v) (Map.StringMap.enum map)
 
 let format_time_option = function
   | Some t -> 
@@ -57,6 +65,16 @@ let print_key_records l =
       print_endline s
   in
     List.iter print l
+
+let print_statistics l =
+  let uids = List.map (fun (_, uid, _, _) -> uid) l in
+  let adresses = extract_regexp_group regexp_email uids in
+  let tlds = extract_regexp_group regexp_tld adresses in
+  let slds = extract_slds adresses in
+    print_endline "Distribution of Top-Level-Domains";
+    domain_distribution tlds;
+    print_endline "Distribution of Second-Level-Domains";
+    domain_distribution slds
 
 let creation_time dbh keyids =
   let ctimes = PGSQL(dbh) "select ctime from keys where keyid in $@keyids" in
