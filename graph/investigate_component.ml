@@ -50,7 +50,7 @@ let domain_distribution domains =
 let format_time_option = function
   | Some t -> 
       let ts = gmtime t in
-	Printf.sprintf "%d.%d.%d" ts.tm_mday ts.tm_mon (1900 + ts.tm_year)
+	Printf.sprintf "%d.%d.%d" ts.tm_mday (ts.tm_mon + 1) (1900 + ts.tm_year)
   | None -> "void"
       
 let format_time t = 
