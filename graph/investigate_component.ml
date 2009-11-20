@@ -126,6 +126,8 @@ let main () =
 	| hd :: tl when (List.length hd) > minsize -> 
 	    let keyids = List.map Misc.keyid_to_string hd in
 	    let records = get_key_records dbh keyids in
+	      Printf.printf "hd id %s\n" (List.hd keyids);
+	      assert (List.length records > 0);
 	      Printf.printf "\nmembers of scc %d\n" (List.length keyids);
 	      print_statistics records;
 	      print_key_records records;
