@@ -6,6 +6,7 @@ let regexp_tld = Str.regexp ".*@.+\\.\\([^\\.]+\\)$"
 let regexp_sld = Str.regexp "[^\\.]+\\.[^\\.]+$"
 
 let extract_regexp_group regexp strings =
+  print_endline "extract_regexp_group";
   let extract l a =
     if Str.string_match regexp a 0 then
       (Str.matched_group 1 a) :: l
@@ -14,6 +15,7 @@ let extract_regexp_group regexp strings =
   in List.fold_left extract [] strings
 
 let extract_slds strings =
+  print_endline "extract_slds";
   let extract l a =
     try
       let pos = String.index a '@' in
@@ -71,6 +73,7 @@ let print_key_records l =
     List.iter print l
 
 let creation_time ctimes =
+  print_endline "creation_time";
   let ctimes = List.sort ctimes in
   let a = Array.of_list ctimes in
   let l = Array.length a in
