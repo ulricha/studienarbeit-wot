@@ -73,16 +73,17 @@ let print_key_records l =
     List.iter print l
 
 let creation_time ctimes =
-    print_endline "creation_time";
-    let ctimes = List.sort ctimes in
-    let a = Array.of_list ctimes in
-    let l = Array.length a in
-      Printf.printf "len %d\n" l;
+  Printf.printf "list len %d\n" (List.length ctimes);
+  print_endline "creation_time";
+  let ctimes = List.sort ctimes in
+  let a = Array.of_list ctimes in
+  let l = Array.length a in
+    Printf.printf "len %d\n" l;
     let median = Array.get a (l / 2) in
     let newest = Array.get a (l - 1) in
     let oldest = Array.get a 0 in
       (median, oldest, newest)
-(*  with _ -> (0., 0., 0.)*)
+	(*  with _ -> (0., 0., 0.)*)
 
 let print_statistics l =
   let uids = List.map (fun (_, uid, _, _) -> uid) l in
