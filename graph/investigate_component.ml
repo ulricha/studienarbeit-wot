@@ -127,6 +127,7 @@ let main () =
 	    let keyids = List.map Misc.keyid_to_string hd in
 	    let records = get_key_records dbh keyids in
 	      Printf.printf "hd id %s\n" (List.hd keyids);
+	      Printf.printf "hd id %s\n" (List.at keyids 2);
 	      assert (List.length records > 0);
 	      Printf.printf "\nmembers of scc %d\n" (List.length keyids);
 	      print_statistics records;
