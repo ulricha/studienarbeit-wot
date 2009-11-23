@@ -18,18 +18,19 @@ let write_values_to_file enum component_size =
     File.with_file_out fname write
 
 (* mscc = maximum strongly connected component *)
-let () =
+let _ =
   if (Array.length Sys.argv) <> 3 then
-    begin
       print_endline "usage: basic_properties vertex.sexp edges.sexp";
       exit (-1)
-    end
-  else
-    begin
-      print_endline "compute basic properties of wot graph";
-      let (g, mscc_nodelist) = Component_helpers.load_mscc Sys.argv.(1) Sys.argv.(2) in
-      let bench = time_iterations "clustering_coefficient" 1000 in
-      let mscc = C.graph_from_node_list mscc_nodelist g in
-      let res = CC.clustering_coefficient_all_vertices mscc bench in
-	write_values_to_file (CC.M.enum res) (G.nb_vertex mscc)
-    end
+
+let main () =
+  print_endline "compute basic properties of wot graph";
+  let (g, mscc_nodelist) = Component_helpers.load_mscc Sys.argv.(1) Sys.argv.(2) in
+  let bench = time_iterations "clustering_coefficient" 1000 in
+  let mscc = C.graph_from_node_list mscc_nodelist g in
+  let res = CC.clustering_coefficient_all_vertices mscc bench in
+    write_values_to_file (CC.M.enum res) (G.nb_vertex mscc)
+
+let _ = 
+  try main () with
+    | e -> prerr_endline (Printexc.to_string e)

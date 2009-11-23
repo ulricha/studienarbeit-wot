@@ -165,26 +165,28 @@ let remove_singletons mg =
   in
     MG.iter_vertex f mg
 
-let () =
+let _ =
   if (Array.length Sys.argv) <> 3 then
-    begin
       print_endline "usage: basic_properties vertex.mar edges.mar";
       exit (-1)
-    end
-  else
-    begin
-      print_endline "construct metagraph";
-      let vertex_fname = Sys.argv.(1) in
-      let edge_fname = Sys.argv.(2) in
-      let (g, scc_list) = Component_helpers.load_scc_list vertex_fname edge_fname in
-      let large_components = remove_small_components g scc_list in
-      let c = filter g large_components in
-	printf "filtered %d keys - WTF?" c;
-      let metagraph = (time_eval (fun () -> M.metagraph g large_components) "metagraph") in
-      let oc = Pervasives.open_out "metagraph.dot" in 
-	print_endline (sprintf "vertices %d edges %d" (MG.nb_vertex metagraph) (MG.nb_edges metagraph));
-	remove_singletons metagraph;
-	print_endline (sprintf "vertices %d edges %d" (MG.nb_vertex metagraph) (MG.nb_edges metagraph));
-	Dot.output_graph oc metagraph;
-	Pervasives.close_out oc
-    end
+
+let main () =
+  print_endline "construct metagraph";
+  let vertex_fname = Sys.argv.(1) in
+  let edge_fname = Sys.argv.(2) in
+  let (g, scc_list) = Component_helpers.load_scc_list vertex_fname edge_fname in
+  let large_components = remove_small_components g scc_list in
+  let c = filter g large_components in
+    printf "filtered %d keys - WTF?" c;
+    let metagraph = (time_eval (fun () -> M.metagraph g large_components) "metagraph") in
+    let oc = Pervasives.open_out "metagraph.dot" in 
+      print_endline (sprintf "vertices %d edges %d" (MG.nb_vertex metagraph) (MG.nb_edges metagraph));
+      remove_singletons metagraph;
+      print_endline (sprintf "vertices %d edges %d" (MG.nb_vertex metagraph) (MG.nb_edges metagraph));
+      Dot.output_graph oc metagraph;
+      Pervasives.close_out oc
+
+let _ = 
+  try main () with
+    | e -> prerr_endline (Printexc.to_string e)
+
