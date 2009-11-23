@@ -1,6 +1,7 @@
 open Batteries
 open Unix
 open Wot_graph
+open Db_interface
 
 let regexp_email = Str.regexp ".*<\\(.*\\)>.*"
 let regexp_tld = Str.regexp ".*@.+\\.\\([^\\.]+\\)$"
@@ -101,12 +102,6 @@ let print_statistics key_records sig_ctimes =
     domain_distribution tlds;
     print_endline "\nDistribution of Second-Level-Domains:";
     domain_distribution slds
-
-let sig_creation_times dbh keyids =
-  PGSQL(dbh) "select ctime from sigs where signee in $@keyids and signer in $@keyids"
-
-let get_key_records dbh keyids =
-  PGSQL(dbh) "select keyid, puid, ctime, exptime from keys where keyid in $@keyids"
 
 let _ =
   if Array.length Sys.argv <> 4 then (
