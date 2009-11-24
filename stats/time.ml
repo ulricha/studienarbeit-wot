@@ -81,7 +81,7 @@ let main () =
   let (g, mscc) = Component_helpers.load_mscc Sys.argv.(1) Sys.argv.(2) in
     print_endline "mscc loaded";
   let mscc = List.map (fun v -> Misc.keyid_to_string v) mscc in
-  let period_list = divide_period 0. (Unix.time ()) 2592000. in
+  let period_list = divide_period 665362800. (Unix.time ()) 2592000. in
   let period_list = List.sort ~cmp:(fun (start1, _) (start2, _) -> compare start1 start2) period_list in
   let keys_per_period = Db_interface.get_keys_per_period dbh period_list mscc in
   let algorithm_use_stats = map_records_to_statistics count_algorithm_use keys_per_period in
