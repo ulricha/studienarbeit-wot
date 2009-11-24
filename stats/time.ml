@@ -45,9 +45,11 @@ let count_dsa_keylen records =
     List.fold_left project_record Int32Map.empty records
 
 let map_records_to_statistics f period_record_list =
+  print_endline "map_records_to_statistics";
   List.map (fun (start, records) -> (start, f records)) period_record_list
 
 let explode_maps stats_list =
+  print_endline "explode_maps";
   let add_new_values keys (start, map) =
     let new_keys = Int32Set.of_enum (Int32Map.keys map) in
       Int32Set.union keys new_keys
@@ -77,6 +79,7 @@ let _ =
 let main () =
   let dbh = PGOCaml.connect ~database:"wot" () in
   let (g, mscc) = Component_helpers.load_mscc Sys.argv.(1) Sys.argv.(2) in
+    print_endline "mscc loaded";
   let mscc = List.map (fun v -> Misc.keyid_to_string v) mscc in
   let period_list = divide_period 0. (Unix.time ()) 2592000. in
   let period_list = List.sort ~cmp:(fun (start1, _) (start2, _) -> compare start1 start2) period_list in
