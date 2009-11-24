@@ -58,7 +58,7 @@ let explode_maps stats_list =
   let single_key_values key maplist =
     let f l (start, map) = 
       let value = try Int32Map.find key map with Not_found -> 0 in
-	(start, value) :: l
+	((Int64.of_float start), value) :: l
     in
       List.fold_left f [] maplist
   in
@@ -89,7 +89,7 @@ let main () =
   let dsa_keylen_stats = map_records_to_statistics count_dsa_keylen keys_per_period in
   let write basename (key, dist) =
     let fname = Printf.sprintf "%s-%ld" basename key in
-      write_distribution_to_file "%f %d\n" (List.enum dist) fname
+      write_distribution_to_file "%Ld %d\n" (List.enum dist) fname
   in
     List.iter (write "pkalg_use_stats") (explode_maps algorithm_use_stats);
     List.iter (write "rsa_keylen_stats") (explode_maps rsa_keylen_stats);
