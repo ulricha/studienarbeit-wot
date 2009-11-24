@@ -9,6 +9,7 @@ let get_key_records dbh keyids =
 let get_keys_per_period dbh interval_list keyids =
   print_endline "get_keys_per_period";
   let get (interval_start, interval_end) =
+    print_endline (Printf.sprintf "get interval %f" interval_start);
     let records = 
       PGSQL(dbh) "select * from keys where ctime >= $interval_start and ctime <= $interval_end and keyid in $@keyids"
     in
