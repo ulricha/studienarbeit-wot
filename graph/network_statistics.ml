@@ -136,13 +136,13 @@ module Make(G : Sig.G) = struct
       printf "median average distance per node %d\n" median_avg_dist_per_node;
       printf "2-neighbourhood max %d min %d\n" max_2 min_2;
       printf "3-neighbourhood max %d min %d\n" max_3 min_3;
-      write_distribution_to_file (Map.IntMap.enum avg_distance_dist) 
+      write_distribution_to_file "%d %d\n"(Map.IntMap.enum avg_distance_dist) 
 	(graph_name ^ "-avg_distance_per_node_dist.plot");
-      write_distribution_to_file (Map.IntMap.enum ecc_dist) 
+      write_distribution_to_file "%d %d\n" (Map.IntMap.enum ecc_dist) 
 	(graph_name ^ "_ecc_dist.plot");
-      write_distribution_to_file (Map.IntMap.enum n2_dist)
+      write_distribution_to_file "%d %d\n" (Map.IntMap.enum n2_dist)
 	(graph_name ^ "_neigh_2_dist.plot");
-      write_distribution_to_file (Map.IntMap.enum n3_dist) 
+      write_distribution_to_file "%d %d\n" (Map.IntMap.enum n3_dist) 
 	(graph_name ^ "_neigh_3_dist.plot");
       write_int_values_to_file (M.values n2_map) (graph_name ^ "_n2.values");
       write_int_values_to_file (M.values n3_map) (graph_name ^ "_n3.values");

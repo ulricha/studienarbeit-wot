@@ -8,9 +8,9 @@ let list_list_sort_reverse l =
   let compare_length = compare_reverse c in
     List.sort ~cmp:compare_length l
 
-let write_distribution_to_file enum fname = 
+let write_distribution_to_file format enum fname = 
   let f out =
-    Enum.iter (fun (k, v) -> fprintf out "%d %d\n" k v) enum
+    Enum.iter (fun (k, v) -> fprintf out format k v) enum
   in
     File.with_file_out fname f
 
@@ -26,10 +26,24 @@ let write_int_values_to_file enum fname =
   in
     File.with_file_out fname write
 
-let intmap_add_or_create map key increment =
+let intmap_add_or_create increment map key =
   try 
     Map.IntMap.add key ((Map.IntMap.find key map) + increment) map
   with Not_found -> Map.IntMap.add key increment map
+
+module Int32Map = Map.Make(Int32)
+
+let int32map_add_or_create increment map key =
+  try 
+    let old = Int32Map.find key map in
+      Int32Map.add key (old + increment) map
+  with Not_found -> Int32Map.add key increment map
+
+let stringmap_add_or_create increment map key =
+  try
+    let old = Map.StringMap.find key map in
+      Map.StringMap.add key (old + increment) map
+  with Not_found -> Map.StringMap.add key increment map
 
 let distribution_max_min enum =
   let max_min (max_p, min_p) p =
@@ -58,7 +72,7 @@ let median a =
   Array.get a ((Array.length a) / 2)
 
 let values_to_distribution enum =
-  Enum.fold (fun d value -> intmap_add_or_create d value 1) Map.IntMap.empty enum
+  Enum.fold (fun d value -> intmap_add_or_create 1 d value) Map.IntMap.empty enum
 
 module type G = sig
   type t

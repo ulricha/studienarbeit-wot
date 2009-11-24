@@ -17,5 +17,5 @@ graph/clustering_coefficient_mpi.d.byte
 graph/clustering_coefficient_ser.native
 graph/clustering_coefficient_ser.p.native
 graph/clustering_coefficient_ser.d.byte
-graph/investigate_component.native
-
+stats/investigate_component.native
+stats/time.native

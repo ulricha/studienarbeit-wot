@@ -40,13 +40,8 @@ let extract_slds strings =
   in List.fold_left extract [] strings
 
 let domain_distribution domains =
-  let increase_or_add m k =
-    try
-      let old = Map.StringMap.find k m in
-	Map.StringMap.add k (old + 1) m
-    with Not_found -> Map.StringMap.add k 1 m
-  in
-  let map = List.fold_left increase_or_add Map.StringMap.empty domains in
+  let increment_by_one = Graph_misc.stringmap_add_or_create 1 in
+  let map = List.fold_left increment_by_one Map.StringMap.empty domains in
     Enum.iter (fun (k, v) -> Printf.printf "%s %d\n" k v) (Map.StringMap.enum map)
 
 let format_time_option = function
