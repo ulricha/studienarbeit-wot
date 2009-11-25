@@ -58,7 +58,7 @@ let explode_maps stats_list =
   let single_key_values key maplist =
     let f l (start, map) = 
       let value = try Int32Map.find key map with Not_found -> 0 in
-	((Int64.of_float start), value) :: l
+	(start, value) :: l
     in
       List.fold_left f [] maplist
   in
@@ -71,16 +71,38 @@ let explode_maps stats_list =
 let keyids_from_graph g =
   G.fold_vertex (fun v l -> (Misc.keyid_to_string v) :: l) g []
 
-let algorithm_stats dbh keyids graph_name =
+let fetch_keys_per_period dbh keyids =
   let period_list = divide_period 665362800. (Unix.time ()) 2592000. in
-  let period_list = List.sort ~cmp:(fun (start1, _) (start2, _) -> compare start1 start2) period_list in
+  let cmp = fun (start1, _) (start2, _) -> compare start1 start2 in
+  let period_list = List.sort ~cmp:cmp period_list in
   let keys_per_period = Db_interface.get_keys_per_period dbh period_list keyids in
+    List.mapi (fun i (start, records) -> (i, records)) keys_per_period
+  
+let creation_stats dbh keys_per_period graph_name =
+  let f = (fun (i, records) -> (i, List.length records)) in
+  let numbers_per_period = List.map f keys_per_period in
+  let rec cumulative l result =
+    match l with
+      | (i, num) :: tl ->
+	  (match result with 
+	     | (_, sofar) :: _ ->
+		 cumulative tl ((i, num + sofar) :: result)
+	     | [] ->
+		 cumulative tl ((i, num) :: result)
+	  )
+      | [] -> List.rev result
+  in
+  let cumulative_numbers = cumulative numbers_per_period [] in
+  let fname = graph_name ^ "-key_creation_cumulative_stats" in
+    write_distribution_to_file "%d %d\n" (List.enum cumulative_numbers) fname
+
+let algorithm_stats dbh keys_per_period graph_name =
   let algorithm_use_stats = map_records_to_statistics count_algorithm_use keys_per_period in
   let rsa_keylen_stats = map_records_to_statistics count_rsa_keylen keys_per_period in
   let dsa_keylen_stats = map_records_to_statistics count_dsa_keylen keys_per_period in
   let write basename (key, dist) =
     let fname = Printf.sprintf "%s-%ld" basename key in
-      write_distribution_to_file "%Ld %d\n" (List.enum dist) fname
+      write_distribution_to_file "%d %d\n" (List.enum dist) fname
   in
     List.iter (write (graph_name ^ "-pkalg_use_stats")) (explode_maps algorithm_use_stats);
     List.iter (write (graph_name ^ "-rsa_keylen_stats")) (explode_maps rsa_keylen_stats);
@@ -96,8 +118,12 @@ let main () =
   let (g, mscc) = Component_helpers.load_mscc Sys.argv.(1) Sys.argv.(2) in
     print_endline "mscc loaded";
   let mscc = List.map (fun v -> Misc.keyid_to_string v) mscc in
-    algorithm_stats dbh mscc "mscc";
-    algorithm_stats dbh (keyids_from_graph g) "whole-graph"
+  let keys_mscc = fetch_keys_per_period dbh mscc in
+  let keys_g = fetch_keys_per_period dbh (keyids_from_graph g) in
+    algorithm_stats dbh keys_mscc "mscc";
+    algorithm_stats dbh keys_g "whole_graph";
+    creation_stats dbh keys_mscc "mscc";
+    creation_stats dbh keys_g "whole_graph"
 
 let _ =
   try main () with
