@@ -70,7 +70,6 @@ struct
 	  end
       | [] -> None
 
-
   let lookup_key_index_in_array array keyid =
     let cmp keyid epki = compare keyid epki.key_keyid in
     let rec search low high =

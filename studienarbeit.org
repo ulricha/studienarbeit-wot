@@ -35,7 +35,9 @@
 ** DONE Build-Problem mit batteries Debian Paket beheben
    CLOSED: [2009-11-13 Fri 11:45]
    - State "DONE"       [2009-11-13 Fri 11:46]
-** TODO Datenformat umstellen: wotsap + postgres für Schlüsselinformationen
+** DONE Datenformat umstellen: wotsap + postgres für Schlüsselinformationen
+   CLOSED: [2009-11-25 Wed 16:25]
+   - State "DONE"       [2009-11-25 Wed 16:23]
 *** DONE Modul schreiben, dass Liste von ekeys in postgresql ablegt
     CLOSED: [2009-11-19 Thu 10:50]
     - State "DONE"       [2009-11-19 Thu 10:52]
@@ -47,7 +49,9 @@
     - State "DEFERRED"   [2009-11-16 Mon 14:27]
 ** TODO Vorhandenen Code (insb. clustering_coefficient und betweeness) überprüfen
 *** Warum fehlen teilweise Werte?
-** TODO Statistik über Schlüsseleigenschaften
+** DONE Statistik über Schlüsseleigenschaften
+   CLOSED: [2009-11-25 Wed 16:25]
+   - State "DONE"       [2009-11-25 Wed 16:24]
 *** Verwendete Algorithmen (Pubkey, Signatur)
 *** Wie verändert sich die Verwendung von Algorithmen über die Zeit (abhängig von ctime?)
 *** Schlüssellängen (insb. für RSA interessant -- gibt es noch nennenswert RSA-Schlüssel <= 1024 bit?)
@@ -57,7 +61,9 @@
 *** Wie viele Signaturen haben ein Ablaufdatum?
 *** Alter der Schlüssel
 *** Möglicherweise diese ganzen Eigenschaften für die MSCC und den Rest ausreichen und vergleichen
-** TODO Untersuchung der grösseren Komponenten (2-3 grössten)
+** DONE Untersuchung der grösseren Komponenten (2-3 grössten)
+   CLOSED: [2009-11-25 Wed 16:25]
+   - State "DONE"       [2009-11-25 Wed 16:24]
 *** Wie alt sind die Schlüssel im Durschschnitt?
 *** Wann wurde in dieser Komponente das letzte mal signiert?
 *** aus welchen Domains kommen user-ids?
@@ -174,6 +180,26 @@ Schlüsseln/Signaturen zerfallen sind.
     Signaturen auf Subkeys. Es scheint daher gerechtfertigt, das genau
     so zu machen.
 
+** Notizen <2009-11-25 Wed>
+*** Ergebnis Schlüsselstatistiken
+    Die Statistiken über die zeitliche Entwicklung von
+    Algorithmenbenutzung und Schlüssellänge für RSA/DSA sehen hübsch
+    aus und scheinen auch Sinn zu machen. Z.b. sieht man in jüngster
+    Zeit einen Peak von RSA-keys mit grosser Schlüssellänge, der
+    wahrscheinlich mit dem Bekanntwerden der Probleme mit SHA-1
+    korreliert.
+
+    Das Problem dabei ist, das im Moment nur die Keys betrachtet
+    werden, die im Moment als _valide_ und _signiert_ betrachtet
+    werden. Eigentlich müssten aber für ein Intervall alle Keys
+    betrachtet werden, die in diesem Intervall erstellt wurden, auch
+    wenn sie inzwischen nicht mehr gültig bzw. nicht vernetzt sind.
+
+    Es müssten also alle Keys aus der Datenbank extrahiert und in SQL
+    abgelegt werden. Dabei muss für revoked Keys abgespeichert werden,
+    wann der Key revoked wurde. Bei der Abfrage muss dann zusätzlich
+    zu den Intervall-Kriterien beachtet werden, ob der Key vor
+    Intervallende abgelaufen ist oder revoked wurde.
 * org-mode configuration
 #+STARTUP: overview
 #+STARTUP: hidestars
