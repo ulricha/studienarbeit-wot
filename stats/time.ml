@@ -71,6 +71,21 @@ let explode_maps stats_list =
 let keyids_from_graph g =
   G.fold_vertex (fun v l -> (Misc.keyid_to_string v) :: l) g []
 
+let algorithm_stats dbh keyids graph_name =
+  let period_list = divide_period 665362800. (Unix.time ()) 2592000. in
+  let period_list = List.sort ~cmp:(fun (start1, _) (start2, _) -> compare start1 start2) period_list in
+  let keys_per_period = Db_interface.get_keys_per_period dbh period_list keyids in
+  let algorithm_use_stats = map_records_to_statistics count_algorithm_use keys_per_period in
+  let rsa_keylen_stats = map_records_to_statistics count_rsa_keylen keys_per_period in
+  let dsa_keylen_stats = map_records_to_statistics count_dsa_keylen keys_per_period in
+  let write basename (key, dist) =
+    let fname = Printf.sprintf "%s-%ld" basename key in
+      write_distribution_to_file "%Ld %d\n" (List.enum dist) fname
+  in
+    List.iter (write (graph_name ^ "-pkalg_use_stats")) (explode_maps algorithm_use_stats);
+    List.iter (write (graph_name ^ "-rsa_keylen_stats")) (explode_maps rsa_keylen_stats);
+    List.iter (write (graph_name ^ "-dsa_keylen_stats")) (explode_maps dsa_keylen_stats)
+
 let _ =
   if Array.length Sys.argv <> 3 then (
     print_endline "usage: vertex.sexp edge.sexp";
@@ -81,19 +96,8 @@ let main () =
   let (g, mscc) = Component_helpers.load_mscc Sys.argv.(1) Sys.argv.(2) in
     print_endline "mscc loaded";
   let mscc = List.map (fun v -> Misc.keyid_to_string v) mscc in
-  let period_list = divide_period 665362800. (Unix.time ()) 2592000. in
-  let period_list = List.sort ~cmp:(fun (start1, _) (start2, _) -> compare start1 start2) period_list in
-  let keys_per_period = Db_interface.get_keys_per_period dbh period_list mscc in
-  let algorithm_use_stats = map_records_to_statistics count_algorithm_use keys_per_period in
-  let rsa_keylen_stats = map_records_to_statistics count_rsa_keylen keys_per_period in
-  let dsa_keylen_stats = map_records_to_statistics count_dsa_keylen keys_per_period in
-  let write basename (key, dist) =
-    let fname = Printf.sprintf "%s-%ld" basename key in
-      write_distribution_to_file "%Ld %d\n" (List.enum dist) fname
-  in
-    List.iter (write "pkalg_use_stats") (explode_maps algorithm_use_stats);
-    List.iter (write "rsa_keylen_stats") (explode_maps rsa_keylen_stats);
-    List.iter (write "dsa_keylen_stats") (explode_maps dsa_keylen_stats)
+    algorithm_stats dbh mscc "mscc";
+    algorithm_stats dbh (keyids_from_graph g) "whole-graph"
 
 let _ =
   try main () with
