@@ -77,6 +77,13 @@ let fetch_keys_per_period dbh keyids =
   let period_list = List.sort ~cmp:cmp period_list in
   let keys_per_period = Db_interface.get_keys_per_period dbh period_list keyids in
     List.mapi (fun i (start, records) -> (i, records)) keys_per_period
+
+let fetch_keys_per_period_all dbh =
+  let period_list = divide_period 665362800. (Unix.time ()) 2592000. in
+  let cmp = fun (start1, _) (start2, _) -> compare start1 start2 in
+  let period_list = List.sort ~cmp:cmp period_list in
+  let keys_per_period = Db_interface.get_keys_per_period_all dbh period_list in
+    List.mapi (fun i (start, records) -> (i, records)) keys_per_period
   
 let creation_stats dbh keys_per_period graph_name =
   let f = (fun (i, records) -> (i, List.length records)) in
@@ -119,7 +126,7 @@ let main () =
     print_endline "mscc loaded";
   let mscc = List.map (fun v -> Misc.keyid_to_string v) mscc in
   let keys_mscc = fetch_keys_per_period dbh mscc in
-  let keys_g = fetch_keys_per_period dbh (keyids_from_graph g) in
+  let keys_g = fetch_keys_per_period_all dbh in
     algorithm_stats dbh keys_mscc "mscc";
     algorithm_stats dbh keys_g "whole_graph";
     creation_stats dbh keys_mscc "mscc";
