@@ -135,3 +135,11 @@ let bsearch ~f ~low ~high =
     if high < low
     then raise Not_found
     else bsearch ~f ~low ~high
+
+let i64_to_float_option = function
+  | Some i -> Some (Int64.to_float i)
+  | None -> None
+
+let int_to_float_option = function
+  | Some i -> Some (float_of_int i)
+  | None -> None

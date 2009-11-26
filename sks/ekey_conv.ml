@@ -122,13 +122,14 @@ let int_to_float_option = function
   | Some i -> Some (float_of_int i)
   | None -> None
 
-let siginfo_to_esignature siginfo =
+let siginfo_to_esiginfo siginfo =
   { sig_puid_signed = false; 
     sig_level = siginfo.Index.sigtype; 
     sig_hash_alg = siginfo.Index.siginfo_hash_alg;
     sig_pk_alg = siginfo.Index.siginfo_pk_alg;
     sig_ctime = i64_to_float_option siginfo.Index.sig_creation_time;
     sig_exptime = i64_to_float_option siginfo.Index.sig_expiration_time;
+    sig_revoktime = None;
   }
 
 (* returns true if the key (for v4 keys) or signature is expired *)
@@ -176,7 +177,7 @@ let handle_foreign_sig signature issuer_keyid =
 	  (* sig is expired -> don't consider this issuer for further sigs *)
 	  None
 	else
-	  Some (issuer_keyid, siginfo_to_esignature signature)
+	  Some (issuer_keyid, siginfo_to_esiginfo signature)
     | t ->
 	(* skip unexpected/irrelevant sig type *)
 	None
@@ -274,6 +275,7 @@ let key_to_ekey key =
 		key_ctime = ctime;
 		key_all_uids = uids;
 		key_exptime = exptime;
+		key_revoktime = None;
 	      }
 	    in
 	      { pki = pki; signatures = siglist }

@@ -12,6 +12,7 @@ type esiginfo = { mutable sig_puid_signed: bool;
 		  sig_level: int;
 		  sig_ctime: float option;
 		  sig_exptime: float option;
+		  sig_revoktime: float option;
 		  sig_hash_alg: int;
 		  sig_pk_alg: int;
 		} with sexp
@@ -23,6 +24,7 @@ type epki = { key_keyid: string;
 	      key_all_uids: string list;
 	      key_ctime: float;
 	      key_exptime: float option;
+	      mutable key_revoktime: float option;
 	      key_alg: int;
 	      key_len: int;
 	    } with sexp
