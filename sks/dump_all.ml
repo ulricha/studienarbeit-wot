@@ -95,7 +95,7 @@ struct
 	  add_key_without_duplicate keys_so_far ekey
       with
 	| Skipped_key (reason, keyid) ->
-	    incr skipped_cnt;
+	    display_iterations skipped_cnt "skipped" 100;
 	    display_iterations key_cnt "fetch_keys" 100;
 	    match reason with
 	      | Unparseable ->
