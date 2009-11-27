@@ -84,19 +84,15 @@ struct
 	Hashtbl.add keys_so_far newkey.pki.key_keyid (decide_who_stays newkey dupe)
     with Not_found -> Hashtbl.add keys_so_far newkey.pki.key_keyid newkey
 
-  let fetch_keys out_chan =
+  let fetch_keys () =
     let key_cnt = ref 0 in
     let skipped_cnt = ref 0 in
-    let keys_so_far = ref Keyid_set.empty in
+    let keys_so_far = Hashtbl.create 3000000 in
     let extract_key ~hash ~key =
       try 
 	let ekey = key_to_ekey key in
 	  display_iterations key_cnt "fetch_keys" 100;
-	  if not (Keyid_set.mem ekey.pki.key_keyid !keys_so_far) then
-	    keys_so_far := Keyid_set.add ekey.pki.key_keyid !keys_so_far;
-	    let sexp = sexp_of_ekey ekey in
-	      output_mach out_chan sexp;
-	      output_char out_chan '\n'
+	  add_key_without_duplicate keys_so_far ekey
       with
 	| Skipped_key (reason, keyid) ->
 	    display_iterations skipped_cnt "skipped" 100;
@@ -109,10 +105,11 @@ struct
 	      | _ -> failwith "Expired and revoked keys should be ok"
     in
       Keydb.iter ~f:extract_key;
-      print_endline (sprintf "keys altogether %d skipped %d" !key_cnt !skipped_cnt)
+      print_endline (sprintf "keys altogether %d skipped %d" !key_cnt !skipped_cnt);
+      List.of_enum (Hashtbl.values keys_so_far)
 	  
   let run () =
     Keydb.open_dbs settings;
-    let out_chan = open_out "ekeys_all.sexp" in
-      fetch_keys out_chan
+    let keys = time_eval fetch_keys "fetch_keys" in
+      dump_ekey_list_to_file keys "ekeys_all.sexp"
 end
