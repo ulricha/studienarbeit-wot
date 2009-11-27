@@ -104,6 +104,14 @@ let rec commands = [
 	      M.run ()
 	   )
   };
+  { name = "dump_all";
+    usage = "";
+    desc = "dump ekeys";
+    func = (fun () -> 
+	      let module M = Dump_all.F(struct end) in
+	      M.run ()
+	   )
+  };
   { name = "merge";
     usage = "";
     desc = "Adds key from key files to existing database";

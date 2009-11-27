@@ -144,7 +144,7 @@ let check_expired ctime signature =
 
 let is_signature_valid siginfo =
   match siginfo.Index.keyid with
-    | Some time -> true
+    | Some keyid -> true
     | None -> false
 
 (* return true if this is the puid, false otherwise *)
