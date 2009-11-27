@@ -110,5 +110,5 @@ struct
   let run () =
     Keydb.open_dbs settings;
     let keys = time_eval fetch_keys "fetch_keys" in
-      dump_ekey_list_to_file keys "ekeys.sexp"
+      dump_ekey_list_to_file keys "ekeys_all.sexp"
 end
