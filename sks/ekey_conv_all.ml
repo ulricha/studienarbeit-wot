@@ -39,7 +39,10 @@ let get_self_sig_status siginfo keyid =
   match siginfo.Index.sigtype with
     | 0x30 ->
 	(* uid is revoked *)
-	Revoked (Option.get (i64_to_float_option siginfo.Index.sig_creation_time))
+	(try
+	  Revoked (Option.get (i64_to_float_option siginfo.Index.sig_creation_time))
+	with Option.No_value ->
+	  failwith "get_self_sig_status: sig without creation time")
     | 0x10 | 0x11 | 0x12 | 0x13 ->
 	let key_exptime = i64_to_float_option siginfo.Index.key_expiration_time in
 	  Valid_selfsig ((siginfo.Index.is_primary_uid, key_exptime))
@@ -55,7 +58,10 @@ let get_foreign_sig_status siginfo =
   match siginfo.Index.sigtype with
     | 0x30 ->
 	(* sig is revoked -> don't consider this issuer for further sigs *)
-	Revoked (Option.get (i64_to_float_option siginfo.Index.sig_creation_time))
+	(try
+	  Revoked (Option.get (i64_to_float_option siginfo.Index.sig_creation_time))
+	with Option.No_value ->
+	  failwith "get_foreign_sig_status: sig without creation time")
     | 0x10 | 0x11 | 0x12 | 0x13 ->
 	(* include expired signatures *)
 	Valid_foreignsig (siginfo_to_esiginfo siginfo)
@@ -66,7 +72,12 @@ let get_foreign_sig_status siginfo =
 (* if we encounter a cert revocation, search for the revoked sig and include it
    together with the revoke time. *)
 let handle_foreign_sig own_keyid current_sig remaining_sigs ignore_set =
-  let issuer_keyid = Option.get current_sig.Index.keyid in
+  let issuer_keyid = 
+    try 
+      Option.get current_sig.Index.keyid 
+    with Option.No_value -> 
+      failwith "handle_foreign_sig: sig without keyid"
+  in
     match get_foreign_sig_status current_sig with
       | Valid_foreignsig esiginfo -> ((Keyid_set.add issuer_keyid ignore_set), (Some esiginfo))
       | Revoked time ->
@@ -96,7 +107,12 @@ let extract_sigs keyid siglist pubkey_info =
       match l with
 	| siginfo :: tl -> 
 	    if is_signature_valid siginfo then
-	      let issuer_keyid = Option.get siginfo.Index.keyid in
+	      let issuer_keyid = 
+		try 
+		  Option.get siginfo.Index.keyid 
+		with Option.No_value -> 
+		  failwith "handle_foreign_sig: sig without keyid"
+	      in
 		if Keyid_set.mem issuer_keyid ignore_set then
 		  handle (esigs, ignore_set, is_puid, valid_selfsig, keyexptime) tl
 		else
