@@ -91,12 +91,12 @@ struct
     let extract_key ~hash ~key =
       try 
 	let ekey = key_to_ekey key in
-	  display_iterations key_cnt "fetch_keys" 10000;
+	  display_iterations key_cnt "fetch_keys" 100;
 	  add_key_without_duplicate keys_so_far ekey
       with
 	| Skipped_key (reason, keyid) ->
 	    incr skipped_cnt;
-	    display_iterations key_cnt "fetch_keys" 10000;
+	    display_iterations key_cnt "fetch_keys" 100;
 	    match reason with
 	      | Unparseable ->
 		  print_endline (sprintf "skipped unparseable key %s" (keyid_to_string keyid))
