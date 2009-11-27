@@ -94,15 +94,17 @@ struct
 	  add_key_without_duplicate keys_so_far ekey
       with
 	| Skipped_key (reason, keyid) ->
+	    incr skipped_cnt;
+	    display_iterations key_cnt "fetch_keys" 10000;
 	    match reason with
-	      | Unparseable | No_valid_selfsig ->
-		  begin
-		    incr skipped_cnt;
-		    display_iterations key_cnt "fetch_keys" 10000
-		  end
+	      | Unparseable ->
+		  print_endline (sprintf "skipped unparseable key %s" (keyid_to_string keyid))
+	      | No_valid_selfsig ->
+		  print_endline (sprintf "skipped key without selfsig %s" (keyid_to_string keyid))
 	      | _ -> failwith "Expired and revoked keys should be ok"
     in
       Keydb.iter ~f:extract_key;
+      print_endline (sprintf "keys altogether %d skipped %d" !key_cnt !skipped_cnt);
       List.of_enum (Hashtbl.values keys_so_far)
 	  
   let run () =
