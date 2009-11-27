@@ -8,46 +8,7 @@ open Conv
 open Misc
 
 open Ekey
-
-module Keyid_set = Set.Make(String)
-
-module Signature_set = Set.Make(struct
-				  type t = esignature
-				  let compare = compare_esignature
-				end)
-
-type skip_reason = Expired | Revoked | No_valid_selfsig | Unparseable
-
-exception Unparseable_signature_packet
-exception Signature_without_creation_time
-exception Skip_key of skip_reason * string
-exception Skip_uid of string
-exception Skipped_key of skip_reason * string
-
-type sigpair_siginfo = Packet.packet * Index.siginfo list
-
-type pkey_siginfo = { info_key : Packet.packet;
-		      info_selfsigs: Index.siginfo list;
-		      info_uids: sigpair_siginfo list
-		    }
-
-let pkey_to_pkey_siginfo k = 
-  try
-    let s = List.map Index.sig_to_siginfo k.KeyMerge.selfsigs in
-    let uids = 
-      List.map 
-	(fun pair -> 
-	   (fst pair, List.map Index.sig_to_siginfo (snd pair)))
-	k.KeyMerge.uids
-    in
-      { info_key = k.KeyMerge.key; info_selfsigs = s; info_uids = uids }
-  with
-    | _ -> raise Unparseable_signature_packet
-
-let key_to_pkey key =
-  let stream = KeyMerge.key_to_stream key in
-    try Some (KeyMerge.parse_keystr stream) with
-	KeyMerge.Unparseable_packet_sequence -> None
+open Ekey_conv_aux
 
 let is_v3_expired pubkey_info =
   match pubkey_info.Packet.pk_expiration with
@@ -85,19 +46,6 @@ let is_key_expired ctime siginfo =
 	    false
       | None ->
 	  false
-
-let sort_reverse_siginfo_list siglist =
-  let compare_ctime_reverse sig1 sig2 =
-    try
-      let ctime1 = Option.get sig1.Index.sig_creation_time in
-      let ctime2 = Option.get sig2.Index.sig_creation_time in
-	match Int64.to_int (Int64.sub ctime1 ctime2) with
-	  | 0 -> 0
-	  | d when d > 0 -> -1
-	  | d -> 1
-    with Option.No_value -> raise Signature_without_creation_time
-  in
-    List.sort ~cmp:compare_ctime_reverse siglist
       
 let sig_is_revok siginfo =
   match siginfo.Index.sigtype with
@@ -113,14 +61,6 @@ let is_revoked pkey =
 
 let is_revoked_pkey_siginfo k =
   List.exists sig_is_revok k.info_selfsigs
-
-let i64_to_float_option = function
-  | Some i -> Some (Int64.to_float i)
-  | None -> None
-
-let int_to_float_option = function
-  | Some i -> Some (float_of_int i)
-  | None -> None
 
 let siginfo_to_esiginfo siginfo =
   { sig_puid_signed = false; 
@@ -141,11 +81,6 @@ let check_expired ctime signature =
       raise (Skip_key (Expired, "key expired"))
     else
       ()
-
-let is_signature_valid siginfo =
-  match siginfo.Index.keyid with
-    | Some keyid -> true
-    | None -> false
 
 (* return true if this is the puid, false otherwise *)
 let handle_self_sig pubkey_info ignore_issuers signature issuer_keyid =

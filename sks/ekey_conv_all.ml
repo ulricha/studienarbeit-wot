@@ -6,7 +6,7 @@ open Sexplib
 open Sexp
 open Conv
 open Misc
-open Ekey_conv
+open Ekey_conv_aux
 open Ekey
 
 (* v3 keys specify expiration time as number of days relative to the creation time *)

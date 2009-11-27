@@ -30,7 +30,8 @@ struct
   open Conv
 
   open Ekey
-  open Ekey_conv
+  open Ekey_conv_aux
+  open Ekey_conv_all
   open Misc
 
   let settings = {
