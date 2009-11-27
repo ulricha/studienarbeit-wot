@@ -83,19 +83,23 @@ let handle_foreign_sig own_keyid current_sig remaining_sigs ignore_set =
       | Revoked time ->
 	  (* search backwards in time for the revoked signature *)
 	  (try 
-	    let pred s = ((Option.get s.Index.keyid) = issuer_keyid) in
-	    let revoked_sig = List.find_exc pred Not_found remaining_sigs in
-	    let sigtype = revoked_sig.Index.sigtype in
-	      if sigtype >= 0x10 && sigtype <= 0x13 then
-		let esiginfo = 
-		  Some ({ (siginfo_to_esiginfo revoked_sig) with sig_revoktime = Some time }) in
-		  ((Keyid_set.add issuer_keyid ignore_set), esiginfo)
-	      else (
-		printf "%s found no sig for sig revocation\n" (keyid_to_string own_keyid);
-		(ignore_set, None))
-	  with Not_found -> 
-	    printf "%s found no sig for sig revocation\n" (keyid_to_string own_keyid);
-	    ((Keyid_set.add issuer_keyid ignore_set), None))
+	     let pred s = ((Option.get s.Index.keyid) = issuer_keyid) in
+	     let revoked_sig = List.find_exc pred Not_found remaining_sigs in
+	     let sigtype = revoked_sig.Index.sigtype in
+	       if sigtype >= 0x10 && sigtype <= 0x13 then
+		 let esiginfo = 
+		   Some ({ (siginfo_to_esiginfo revoked_sig) with sig_revoktime = Some time }) in
+		   ((Keyid_set.add issuer_keyid ignore_set), esiginfo)
+	       else (
+		 printf "%s found no sig for sig revocation\n" (keyid_to_string own_keyid);
+		 (ignore_set, None))
+	   with 
+	       Not_found -> 
+		 printf "%s found no sig for sig revocation\n" (keyid_to_string own_keyid);
+		 ((Keyid_set.add issuer_keyid ignore_set), None)
+	     | Option.No_value ->
+		 printf "%s has sig without keyid \n" (keyid_to_string own_keyid);
+		 (ignore_set, None))
       | Irrelevant_sigtype -> 
 	  (ignore_set, None)
       | Valid_selfsig _ -> 
