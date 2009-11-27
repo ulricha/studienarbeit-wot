@@ -81,7 +81,9 @@ struct
     with Not_found -> Hashtbl.add keys_so_far newkey.pki.key_keyid newkey
 
   let filter_sigs_to_missing_keys tbl =
+    let bench = time_iterations "filter_sigs" 10000 in
     let filter_single_key ekey =
+      bench ();
       let before = List.length ekey.signatures in
       let rec loop siglist result =
 	match siglist with
@@ -93,10 +95,10 @@ struct
 	  | [] -> result
       in
       let filtered = loop ekey.signatures [] in
-      let after = List.length filtered in
-	if before <> after then 
-	  printf "filtered %d sigs\n" (before - after);
-	ekey.signatures <- filtered
+	ekey.signatures <- filtered;
+	let after = List.length ekey.signatures in
+	  if before <> after then 
+	    printf "filtered %d sigs\n" (before - after)
     in
       Enum.iter filter_single_key (Hashtbl.values tbl)
 
