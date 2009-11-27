@@ -46,18 +46,14 @@ struct
 
   module Keyid_set = Set.Make(String)
 
-  let dump_ekey_list_to_file ekl filename =
+  let dump_ekeys_to_file ekeys_enum filename =
     let out_chan = open_out filename in
-    let write_list () =
-      List.iter 
-	(fun ekey -> 
+    let write ekey =
 	   let s = sexp_of_ekey ekey in
 	     output_mach out_chan s;
 	     output_char out_chan '\n'
-	)
-	ekl
     in
-      time_eval write_list "marshal ekpi_list";
+      Enum.iter write ekeys_enum;
       close_out out_chan
 
   let decide_who_stays ekey1 ekey2 = 
@@ -84,6 +80,26 @@ struct
 	Hashtbl.add keys_so_far newkey.pki.key_keyid (decide_who_stays newkey dupe)
     with Not_found -> Hashtbl.add keys_so_far newkey.pki.key_keyid newkey
 
+  let filter_sigs_to_missing_keys tbl =
+    let filter_single_key ekey =
+      let before = List.length ekey.signatures in
+      let rec loop siglist result =
+	match siglist with
+	  | ((issuer, _) as s) :: tl -> 
+	      if Hashtbl.mem tbl issuer then
+		loop tl (s :: result)
+	      else
+		loop tl result
+	  | [] -> result
+      in
+      let filtered = loop ekey.signatures [] in
+      let after = List.length filtered in
+	if before <> after then 
+	  printf "filtered %d sigs\n" (before - after);
+	ekey.signatures <- filtered
+    in
+      Enum.iter filter_single_key (Hashtbl.values tbl)
+
   let fetch_keys () =
     let key_cnt = ref 0 in
     let skipped_cnt = ref 0 in
@@ -106,10 +122,11 @@ struct
     in
       Keydb.iter ~f:extract_key;
       print_endline (sprintf "keys altogether %d skipped %d" !key_cnt !skipped_cnt);
-      List.of_enum (Hashtbl.values keys_so_far)
+      keys_so_far
 	  
   let run () =
     Keydb.open_dbs settings;
     let keys = time_eval fetch_keys "fetch_keys" in
-      dump_ekey_list_to_file keys "ekeys_all.sexp"
+      filter_sigs_to_missing_keys keys;
+      dump_ekeys_to_file (Hashtbl.values keys) "ekeys_all.sexp"
 end
