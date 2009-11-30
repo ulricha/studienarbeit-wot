@@ -39,15 +39,6 @@ type edge_list = sig_list_per_signee list with sexp
 type edgelist_per_vertex = string * (string list) with sexp
 type vertex = string with sexp
 
-let siginfo_to_esiginfo siginfo =
-  { sig_puid_signed = false; 
-    sig_level = siginfo.Index.sigtype; 
-    sig_hash_alg = siginfo.Index.siginfo_hash_alg;
-    sig_pk_alg = siginfo.Index.siginfo_pk_alg;
-    sig_ctime = i64_to_float_option siginfo.Index.sig_creation_time;
-    sig_exptime = i64_to_float_option siginfo.Index.sig_expiration_time;
-    sig_revoktime = None;
-  }
 
 let compare_esignature esig1 esig2 =
   let (i1, _) = esig1 in

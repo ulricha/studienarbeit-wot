@@ -60,3 +60,13 @@ let is_signature_valid siginfo =
   match siginfo.Index.keyid with
     | Some keyid -> true
     | None -> false
+
+let siginfo_to_esiginfo siginfo =
+  { sig_puid_signed = false; 
+    sig_level = siginfo.Index.sigtype; 
+    sig_hash_alg = siginfo.Index.siginfo_hash_alg;
+    sig_pk_alg = siginfo.Index.siginfo_pk_alg;
+    sig_ctime = i64_to_float_option siginfo.Index.sig_creation_time;
+    sig_exptime = i64_to_float_option siginfo.Index.sig_expiration_time;
+    sig_revoktime = None;
+  }
