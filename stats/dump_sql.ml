@@ -210,7 +210,7 @@ let insert_records_from_file dbh fname =
       apply_lines input insert_sigs_from_string
 
 let _ =
-  let dbh = PGOCaml.connect ~database:"wot" () in
+  let dbh = PGOCaml.connect ~database:"wot2" () in
     print_endline "connected to db";
     insert_records_from_file dbh Sys.argv.(1)
     
