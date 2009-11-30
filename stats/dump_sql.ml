@@ -156,16 +156,6 @@ let filter_duplicates ekeys =
   in
     filter ekeys [] Set.StringSet.empty
 
-(*
-let filter_missing_signers ekeys =
-  let set = 
-    List.fold_left 
-      (fun s ekey -> Set.StringSet.add ekey.pki.key_keyid) 
-      Set.StringSet.empty
-      ekeys
-  in
-*)    
-
 let insert_ekeys dbh ekey_list =
   let bench = time_iterations "insert_epki" 10000 in
     List.iter (fun ekey -> bench (); insert_epki dbh ekey.pki) ekey_list;
@@ -178,9 +168,8 @@ let insert_ekeys dbh ekey_list =
 	       bench ();
 	       insert_sig_list dbh signee ekey.signatures)
 	  ekey_list
-  
-let get_all_keys dbh =
-  PGSQL(dbh) "select * from keys"
+
+	  
 
 let _ =
   let dbh = PGOCaml.connect ~database:"wot" () in
