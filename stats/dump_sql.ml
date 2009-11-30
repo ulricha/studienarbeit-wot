@@ -113,10 +113,11 @@ let insert_epki dbh epki =
   let puid = validate_string epki.key_puid in
   let ctime = epki.key_ctime in
   let exptime = epki.key_exptime in
+  let revoktime = epki.key_revoktime in
   let key_alg = Int32.of_int epki.key_alg in
   let key_len = Int32.of_int epki.key_len in
-    PGSQL(dbh) "INSERT into keys (keyid, puid, ctime, exptime, alg, keylen)
-    values ($keyid, $puid, $ctime, $?exptime, $key_alg, $key_len)"
+    PGSQL(dbh) "INSERT into keys (keyid, puid, ctime, exptime, revoktime, alg, keylen)
+    values ($keyid, $puid, $ctime, $?exptime, $?revoktime, $key_alg, $key_len)"
 
 let insert_uid_list dbh epki =
   let keyid = keyid_to_string epki.key_keyid in
@@ -134,11 +135,12 @@ let insert_sig_list dbh signee esig_list =
     let signer = keyid_to_string signer in
     let level = Int32.of_int info.sig_level in
     let exptime = info.sig_exptime in
+    let revoktime = info.sig_revoktime in
     let ctime = info.sig_ctime in
     let hash_alg = Int32.of_int info.sig_hash_alg in
     let pk_alg = Int32.of_int info.sig_pk_alg in
-      PGSQL(dbh) "insert into sigs (signer, signee, level, exptime, ctime, hash_alg, pk_alg)
-                  values ($signer, $signee, $level, $?exptime, $?ctime,
+      PGSQL(dbh) "insert into sigs (signer, signee, level, exptime, ctime, revoktime, hash_alg, pk_alg)
+                  values ($signer, $signee, $level, $?exptime, $?ctime, $?revoktime,
                   $hash_alg, $pk_alg)"
   in
     List.iter insert_esig esig_list
@@ -210,7 +212,7 @@ let insert_records_from_file dbh fname =
       apply_lines input insert_sigs_from_string
 
 let _ =
-  let dbh = PGOCaml.connect ~database:"wot2" () in
+  let dbh = PGOCaml.connect ~database:"wot-all" () in
     print_endline "connected to db";
     insert_records_from_file dbh Sys.argv.(1)
     
