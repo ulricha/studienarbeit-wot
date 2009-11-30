@@ -1,8 +1,10 @@
-open Batteries
+open IO
 open Ekey
 open Misc
 
 exception Malformed_code
+
+module StringSet = Set.Make(String)
 
 (* Try to replace malformed byte sequences in a UTF8 string.
    (looted from Camomile UTF8.validate) *)
@@ -146,15 +148,15 @@ let filter_duplicates ekeys =
     match l with
       | ekey :: tl ->
 	  let keyid = keyid_to_string ekey.pki.key_keyid in
-	    if Set.StringSet.mem keyid s then (
+	    if StringSet.mem keyid s then (
 	      Printf.printf "dupe %s %s\n" keyid ekey.pki.key_puid;
 	      filter tl unique s
 	    ) else (
-	      filter tl (ekey :: unique) (Set.StringSet.add keyid s)
+	      filter tl (ekey :: unique) (StringSet.add keyid s)
 	    )
       | [] -> unique
   in
-    filter ekeys [] Set.StringSet.empty
+    filter ekeys [] StringSet.empty
 
 let insert_ekeys dbh ekey_list =
   let bench = time_iterations "insert_epki" 10000 in
@@ -169,13 +171,47 @@ let insert_ekeys dbh ekey_list =
 	       insert_sig_list dbh signee ekey.signatures)
 	  ekey_list
 
-	  
+let epki_from_sexp_string s =
+  let sexp = Sexplib.Sexp.of_string s in
+  let ekey = ekey_of_sexp sexp in
+    ekey.pki
+
+let esigs_from_sexp_string s =
+  let sexp = Sexplib.Sexp.of_string s in
+  let ekey = ekey_of_sexp sexp in
+    (ekey.pki.key_keyid, ekey.signatures)
+
+let apply_lines input f = 
+  try
+    while true do
+      let line = IO.read_line input in
+	try
+	  f line
+	with PGOCaml.PostgreSQL_Error (s, _) ->
+	  Printf.printf "caught pg backend exception: %s\n" s
+    done;
+  with Overflow s -> ()
+
+let insert_records_from_file dbh fname =
+  let open_file () = IO.input_channel (Pervasives.open_in fname) in
+  let insert_keys_uids_from_string s =
+    let epki = epki_from_sexp_string s in
+      insert_epki dbh epki;
+      insert_uid_list dbh epki
+  in
+  let insert_sigs_from_string s =
+    let (signee, esigs) = esigs_from_sexp_string s in
+      insert_sig_list dbh signee esigs
+  in
+  let input = open_file () in
+    apply_lines input insert_keys_uids_from_string;
+    IO.close_in input;
+    let input = open_file () in
+      apply_lines input insert_sigs_from_string
 
 let _ =
   let dbh = PGOCaml.connect ~database:"wot" () in
     print_endline "connected to db";
-    let ekeys = load_ekey_list Sys.argv.(1) in
-    let ekeys_unique = filter_duplicates ekeys in
-      print_endline "loaded ekeys";
-      Printf.printf "ekeys %d unique %d\n" (List.length ekeys) (List.length ekeys_unique);
-      insert_ekeys dbh ekeys_unique
+    insert_records_from_file dbh Sys.argv.(1)
+    
+      
