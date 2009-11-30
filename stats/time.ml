@@ -19,14 +19,14 @@ let increment_by_one = Graph_misc.int32map_add_or_create 1
 
 let count_algorithm_use records =
   let project_record m r =
-    let (_, _, _, _, pk_alg, _) = r in
+    let (_, _, _, _, _, pk_alg, _) = r in
       increment_by_one m pk_alg
   in
     List.fold_left project_record Int32Map.empty records
 
 let count_rsa_keylen records =
   let project_record m r =
-    let (_, _, _, _, pk_alg, pk_keylen) = r in
+    let (_, _, _, _, _, pk_alg, pk_keylen) = r in
       if pk_alg = 1l then
 	increment_by_one m pk_keylen
       else
@@ -36,7 +36,7 @@ let count_rsa_keylen records =
 
 let count_dsa_keylen records =
   let project_record m r =
-    let (_, _, _, _, pk_alg, pk_keylen) = r in
+    let (_, _, _, _, _, pk_alg, pk_keylen) = r in
       if pk_alg = 17l then
 	increment_by_one m pk_keylen
       else
@@ -121,7 +121,7 @@ let _ =
     exit 1)
 
 let main () =
-  let dbh = PGOCaml.connect ~database:"wot" () in
+  let dbh = PGOCaml.connect ~database:"wot-all" () in
   let (g, mscc) = Component_helpers.load_mscc Sys.argv.(1) Sys.argv.(2) in
     print_endline "mscc loaded";
   let mscc = List.map (fun v -> Misc.keyid_to_string v) mscc in
