@@ -39,10 +39,16 @@ let extract_slds strings =
     with _ -> l
   in List.fold_left extract [] strings
 
-let domain_distribution domains =
+let domain_distribution domains threshold =
   let increment_by_one = Graph_misc.stringmap_add_or_create 1 in
   let map = List.fold_left increment_by_one Map.StringMap.empty domains in
-    Enum.iter (fun (k, v) -> Printf.printf "%s %d\n" k v) (Map.StringMap.enum map)
+    Enum.iter 
+      (fun (k, v) -> 
+	 if v < threshold then 
+	   ()
+	 else
+	   Printf.printf "%s %d\n" k v) 
+      (Map.StringMap.enum map)
 
 let format_time_option = function
   | Some t -> 
@@ -94,9 +100,9 @@ let print_statistics key_records sig_ctimes =
     print_endline "\nCreation times of signatures:";
     Printf.printf "median %s oldest %s newest %s\n" median_sig oldest_sig newest_sig;
     print_endline "\nDistribution of Top-Level-Domains:";
-    domain_distribution tlds;
+    domain_distribution tlds 1;
     print_endline "\nDistribution of Second-Level-Domains:";
-    domain_distribution slds
+    domain_distribution slds 1
 
 let _ =
   if Array.length Sys.argv <> 4 then (
