@@ -84,7 +84,9 @@ Schlüsseln/Signaturen zerfallen sind.
     - State "TODO"       [2009-11-12 Thu 18:49]
 *** TODO Wie entwickelt sich der Graph, wenn (iterativ) Knoten mit Grad 1 entfernt werden?
 *** TODO Literatur über Community-Algorithmen sichten
-*** TODO Literaturrecherche: gibt es jemand der schon die Community-Struktur des WoT analysiert hat?
+*** DONE Literaturrecherche: gibt es jemand der schon die Community-Struktur des WoT analysiert hat?
+    CLOSED: [2009-11-30 Mon 17:25]
+    - State "DONE"       [2009-11-30 Mon 17:24]
     - State "TODO"       [2009-11-12 Thu 12:07]
 *** TODO Einen Algorithmus auswählen und implementieren
 ** TODO Besseres Zentralitätsmass
