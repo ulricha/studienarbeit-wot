@@ -193,6 +193,7 @@ let apply_lines input f =
 	  Printf.printf "caught pg backend exception: %s\n" s
     done;
   with Overflow s -> ()
+    | IO.No_more_input -> ()
 
 let insert_records_from_file dbh fname =
   let open_file () = IO.input_channel (Pervasives.open_in fname) in
