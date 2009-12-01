@@ -20,3 +20,4 @@ graph/clustering_coefficient_ser.d.byte
 stats/investigate_component.native
 stats/time.native
 stats/dump_sql.native
+stats/simple_stats.native
