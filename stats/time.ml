@@ -101,7 +101,9 @@ let creation_stats dbh keys_per_period graph_name =
   in
   let cumulative_numbers = cumulative numbers_per_period [] in
   let fname = graph_name ^ "-key_creation_cumulative_stats" in
-    write_distribution_to_file "%d %d\n" (List.enum cumulative_numbers) fname
+    write_distribution_to_file "%d %d\n" (List.enum cumulative_numbers) fname;
+    let fname = graph_name ^ "-key_creation_stats" in
+      write_distribution_to_file "%d %d\n" (List.enum numbers_per_period) fname
 
 let algorithm_stats dbh keys_per_period graph_name =
   let algorithm_use_stats = map_records_to_statistics count_algorithm_use keys_per_period in
