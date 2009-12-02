@@ -6,19 +6,19 @@ let today = Unix.time ()
 let extract_first l = Option.get (List.hd l)
 
 let all_keys_stats dbh =
-  let overall = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today)" in
-  let rsa_keys = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 1" in
-  let dsa_keys = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 17" in
-  let otheralg_keys = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg <> 1 and alg <> 17" in
-  let rsa_512 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 1 and keylen = 512" in
-  let rsa_768 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 1 and keylen = 768" in
-  let rsa_1024 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 1 and keylen = 1024" in
-  let rsa_2048 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 1 and keylen = 2048" in
-  let rsa_3072 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 1 and keylen = 3072" in
-  let rsa_4096 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 1 and keylen = 4096" in
+  let overall = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today)" in
+  let rsa_keys = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 1" in
+  let dsa_keys = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 17" in
+  let otheralg_keys = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg <> 1 and alg <> 17" in
+  let rsa_512 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 1 and keylen = 512" in
+  let rsa_768 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 1 and keylen = 768" in
+  let rsa_1024 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 1 and keylen = 1024" in
+  let rsa_2048 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 1 and keylen = 2048" in
+  let rsa_3072 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 1 and keylen = 3072" in
+  let rsa_4096 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 1 and keylen = 4096" in
   let usual_keylens = [512l; 768l; 1024l; 2048l; 3072l; 4096l] in
-  let rsa_unusual = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 1 and keylen not in $@usual_keylens" in
-  let keys_with_expire_date = PGSQL(dbh) "select count(*) from keys where revoktime is null and exptime is not null and exptime < $today" in
+  let rsa_unusual = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 1 and keylen not in $@usual_keylens" in
+  let keys_with_expire_date = PGSQL(dbh) "select count(*) from keys where revoktime is null and exptime is not null and exptime > $today" in
   let avg_uids = PGSQL(dbh) "select avg(total) from (select keyid, count(*) as total from uids group by keyid) as uids_per_key" in
     printf "total number of keys %Ld\n" (extract_first overall);
     printf "number of rsa keys %Ld\n" (extract_first rsa_keys);
@@ -35,16 +35,16 @@ let all_keys_stats dbh =
     printf "average number of uids per key %f\n" (extract_first avg_uids)
 
 let some_keys_stats dbh keyids =
-  let overall = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and keyid in $@keyids" in
-  let rsa_keys = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 1 and keyid in $@keyids" in
-  let dsa_keys = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 17 and keyid in $@keyids" in
-  let otheralg_keys = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg <> 1 and alg <> 17 and keyid in $@keyids" in
-  let rsa_512 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 1 and keylen = 512 and keyid in $@keyids" in
-  let rsa_768 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 1 and keylen = 768 and keyid in $@keyids" in
-  let rsa_1024 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 1 and keylen = 1024 and keyid in $@keyids" in
-  let rsa_2048 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 1 and keylen = 2048 and keyid in $@keyids" in
-  let rsa_3072 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 1 and keylen = 3072 and keyid in $@keyids" in
-  let rsa_4096 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 1 and keylen = 4096 and keyid in $@keyids" in
+  let overall = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and keyid in $@keyids" in
+  let rsa_keys = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 1 and keyid in $@keyids" in
+  let dsa_keys = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 17 and keyid in $@keyids" in
+  let otheralg_keys = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg <> 1 and alg <> 17 and keyid in $@keyids" in
+  let rsa_512 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 1 and keylen = 512 and keyid in $@keyids" in
+  let rsa_768 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 1 and keylen = 768 and keyid in $@keyids" in
+  let rsa_1024 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 1 and keylen = 1024 and keyid in $@keyids" in
+  let rsa_2048 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 1 and keylen = 2048 and keyid in $@keyids" in
+  let rsa_3072 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 1 and keylen = 3072 and keyid in $@keyids" in
+  let rsa_4096 = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 1 and keylen = 4096 and keyid in $@keyids" in
   let usual_keylens = [512l; 768l; 1024l; 2048l; 3072l; 4096l] in
   let rsa_unusual = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime < $today) and alg = 1 and keylen not in $@usual_keylens and keyid in $@keyids" in
   let keys_with_expire_date = PGSQL(dbh) "select count(*) from keys where revoktime is null and exptime is not null and exptime < $today and keyid in $@keyids" in
