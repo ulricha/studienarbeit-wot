@@ -50,6 +50,7 @@ let all_keys_stats dbh =
 
 let some_keys_stats dbh keyids =
   let overall = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and keyid in $@keyids" in
+    print_endline "some_key_stats overall";
   let rsa_keys = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 1 and keyid in $@keyids" in
   let dsa_keys = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg = 17 and keyid in $@keyids" in
   let otheralg_keys = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today) and alg <> 1 and alg <> 17 and keyid in $@keyids" in
