@@ -122,14 +122,8 @@ let _ =
 
 let main () =
   let dbh = PGOCaml.connect ~database:"wot-all" () in
-  let (g, mscc) = Component_helpers.load_mscc Sys.argv.(1) Sys.argv.(2) in
-    print_endline "mscc loaded";
-  let mscc = List.map (fun v -> Misc.keyid_to_string v) mscc in
-  let keys_mscc = fetch_keys_per_period dbh mscc in
   let keys_g = fetch_keys_per_period_all dbh in
-    (* algorithm_stats dbh keys_mscc "mscc"; *)
     algorithm_stats dbh keys_g "whole_graph";
-(*    creation_stats dbh keys_mscc "mscc"; *)
     creation_stats dbh keys_g "whole_graph"
 
 let _ =

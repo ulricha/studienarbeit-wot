@@ -100,13 +100,11 @@ let _ =
 
 let main () =
   let dbh = PGOCaml.connect ~database:"wot-all" () in
-  let (g, mscc) = Component_helpers.load_mscc Sys.argv.(1) Sys.argv.(2) in
-    print_endline "mscc loaded";
-    let mscc = List.map (fun v -> Misc.keyid_to_string v) mscc in
+    (* let mscc = List.map (fun v -> Misc.keyid_to_string v) mscc in *)
       print_endline "\nall keys:";
-      all_keys_stats dbh;
-      print_endline "\n mscc keys:";
-      some_keys_stats dbh mscc
+      all_keys_stats dbh
+      (*print_endline "\n mscc keys:"
+       some_keys_stats dbh mscc *)
 
 let _ = 
   try main () with
