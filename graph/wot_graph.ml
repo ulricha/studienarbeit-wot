@@ -32,9 +32,8 @@ let directed_to_undirected g =
     gu
 
 let load_structinfo_from_files vertex_filename edge_filename =
-  let vertices = List.map vertex_of_sexp (load_sexps vertex_filename) in
   let edges = List.map edgelist_per_vertex_of_sexp (load_rev_sexps edge_filename) in
-    (vertices, edges)
+    ([], edges)
 
 let graph_to_structinfo g =
   let vertex_list = G.fold_vertex (fun v l -> v :: l) g [] in
@@ -66,6 +65,5 @@ let add_edges g edge_list =
 let graph_from_structinfo structinfo =
   let (vertices, edges) = structinfo in
   let g = G.create ~size:300000 () in
-    List.iter (fun v -> G.add_vertex g v) vertices;
     add_edges g edges;
     g
