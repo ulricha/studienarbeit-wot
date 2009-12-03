@@ -5,6 +5,7 @@
 <graph/*_mpi.{native,d.byte,p.native}>: pkg_ocamlmpi
 <stats/*>: pkg_pgocaml, pkg_pgocaml.syntax
 <stats/dump_sql.native>: pkg_sexplib, pkg_extlib
+<stats/db_scc_information.native>: pkg_ocamlgraph
 <graph/investigate_component.*>: pkg_pgocaml, pkg_pgocaml.syntax
 "sks": include
 "wotsap": include
