@@ -17,6 +17,17 @@ let get_keys_per_period dbh interval_list keyids =
   in
     List.map get interval_list
 
+let get_keys_per_period_cid dbh interval_list cid =
+  print_endline "get_keys_per_period";
+  let get (interval_start, interval_end) =
+    let records = 
+      PGSQL(dbh) "select keys.keyid, keys.puid, keys.ctime, keys.exptime, keys.revoktime, keys.alg, keys.keylen from keys inner join component_ids on keys.keyid = component_ids.keyid where component_id = $cid and ctime >= $interval_start and ctime <= $interval_end"
+    in
+      print_endline (Printf.sprintf "get interval %f keys %d" interval_start (List.length records));
+      (interval_start, records)
+  in
+    List.map get interval_list
+
 let get_keys_per_period_all dbh interval_list =
   print_endline "get_keys_per_period";
   let get (interval_start, interval_end) =
