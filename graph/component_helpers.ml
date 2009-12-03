@@ -66,3 +66,6 @@ let load_mscc v_fname e_fname =
   let (g, scc_list_sorted) = load_scc_list v_fname e_fname in
     (g, List.hd scc_list_sorted)
 
+let component_ids scc_list =
+  let scc_list = List.filter (fun c -> (List.length c) > 1) scc_list in
+    List.mapi (fun i c -> (c, i)) scc_list
