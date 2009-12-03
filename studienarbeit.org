@@ -67,6 +67,14 @@
 *** Wie alt sind die Schlüssel im Durschschnitt?
 *** Wann wurde in dieser Komponente das letzte mal signiert?
 *** aus welchen Domains kommen user-ids?
+** DONE bool Feld in Keys-Tabelle einfügen, dass Mitgliedschaft in MSCC markiert.
+   CLOSED: [2009-12-03 Thu 11:20]
+   - State "DONE"       [2009-12-03 Thu 11:22]
+** DONE MSCC in ungerichteten Graphen umwandeln und in igraph-Format exportieren
+   CLOSED: [2009-12-03 Thu 17:00]
+   - State "DONE"       [2009-12-03 Thu 16:58]
+** TODO Komponentenstruktur aus DB extrahieren, mit dump_graph vergleichen mit snapshot-Funktionalität
+** TODO Statistiken abschliessen und ausdrucken
 ** TODO Reachable und Reaching set ausrechnen
 *** Anhand des Metagraphen ausrechnen, wie viele Knoten von der MSCC erreicht werden können bzw. wie viele diese erreichen können
 ** TODO Systematisch die Entwicklung der Komponenten anhand von 3 Dumps nachvollziehen
@@ -202,6 +210,32 @@ Schlüsseln/Signaturen zerfallen sind.
     wann der Key revoked wurde. Bei der Abfrage muss dann zusätzlich
     zu den Intervall-Kriterien beachtet werden, ob der Key vor
     Intervallende abgelaufen ist oder revoked wurde.
+** Notizen <2009-12-02 Wed>
+*** Mitgliedschaft von Keys in Komponenten explizit in DB eintragen
+**** Nur bool flag für mscc
+**** Komponenten benennen (durchnummerien a la metagraph) und dann für jeden key die nummer merken (falls er in einer komponente ist).
+*** CFinder
+**** Bleibt auf hpc-bw per PBS nach 54 % Prozent hängen (reproduzierbar).
+**** Läuft nicht auf LRZ-TU Cluster (Itanium)
+**** dauert auf Frontend-Rechner des hpc-bw zu lange (gibt ärger)
+*** Igraph
+*** Fast-Modularity
+** Notizen <2009-12-03 Thu>
+*** Problem
+    dump_graph ist offensichtlich fehlerhaft, weil es Keys liefert,
+    die längst expired sind. Ein Vergleich der MSCC mit wot-all deutet
+    an, dass von den knapp 43000 Keys ca. 4000 expired sind. wotsap
+    liefert aktuell (03.12.09) 42000 Keys mit ca. 420000
+    Signaturen. Mit grosser Wahrscheinlichkeit waren das vor kurzem
+    aber noch eher ca. 38000 Schlüssel.
+    
+    Update: Die aktuell bearbeiteten Daten stammen vom 15.11.09. Der
+    wotsap-Datensatz vom 13.11.09 enthält tatsächlich nur ~37000
+    Keys. Aus den Dateigrössen ist auch ersichtlich, dass die Grösse
+    erheblich schwankt. Der übliche Wert scheint aber eher bei
+    ca. 42000 Keys zu liegen.
+
+    Möglichkeit: Noch mal einen neuen Dump ziehen und vergleichen.
 * org-mode configuration
 #+STARTUP: overview
 #+STARTUP: hidestars
