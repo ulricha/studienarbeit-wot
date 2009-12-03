@@ -1,0 +1,1530 @@
+Only in gconvert: Gconvert
+diff -ur gconvert_clean/Gconvert.cpp gconvert/Gconvert.cpp
+--- gconvert_clean/Gconvert.cpp	2005-11-30 17:48:52.000000000 +0100
++++ gconvert/Gconvert.cpp	2009-12-03 16:31:25.000000000 +0100
+@@ -79,7 +79,7 @@
+   bool quiet = false;
+   char* output_file = 0;
+   char* input_file = 0;
+-  char* delimiters = " \t";
++  const char* delimiters = " \t";
+   Format input_format = ADJACENCY_EDGE_LIST;
+   Format output_format = ADJACENCY_EDGE_LIST;
+   Multi_edge_policy multi_edge_policy = ADD;
+diff -ur gconvert_clean/graph.cpp gconvert/graph.cpp
+--- gconvert_clean/graph.cpp	2005-11-30 16:40:58.000000000 +0100
++++ gconvert/graph.cpp	2009-12-03 16:33:28.000000000 +0100
+@@ -1,626 +1,627 @@
+-// File: graph.cpp
+-//-----------------------------------------------------------------------------
+-// Gconvert v0.2 -- A simple tool to convert different graph formats.
+-// Copyright (C) 2004-2005 Pascal Pons.
+-//
+-// This program is free software; you can redistribute it and/or modify
+-// it under the terms of the GNU General Public License as published by
+-// the Free Software Foundation; either version 2 of the License, or
+-// (at your option) any later version.
+-//
+-// This program is distributed in the hope that it will be useful,
+-// but WITHOUT ANY WARRANTY; without even the implied warranty of
+-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-// GNU General Public License for more details.
+-//
+-// You should have received a copy of the GNU General Public License
+-// along with this program; if not, write to the Free Software
+-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+-//-----------------------------------------------------------------------------
+-// Author   : Pascal Pons 
+-// Email    : pons@liafa.jussieu.fr
+-// Web page : http://liafa.jussieu.fr/~pons/
+-// Location : Paris, France
+-// Time	    : December 2005
+-//-----------------------------------------------------------------------------
+-// see readme.txt for more details
+-
+-#include "graph.h"
+-#include <cmath>
+-#include <vector>
+-#include <map>
+-
+-using namespace std;
+-
+-Graph::Graph(Format _input_format, Format _output_format, bool _output_real_name, Multi_edge_policy _multi_edge_policy, float _output_time, float _caracteristic_time, const char* _delimiters, bool _quiet):
+-    input_format(_input_format),
+-    output_format(_output_format),
+-    output_real_name(_output_real_name),
+-    multi_edge_policy(_multi_edge_policy), 
+-    output_time(_output_time), 
+-    caracteristic_time(_caracteristic_time),
+-    delimiters(_delimiters),
+-    quiet(_quiet),
+-    components(0),
+-    nb_vertices(0) {
+-      
+-  Vertices_name::G = this;
+-  size_t pos = 0;
+-  while(pos != string::npos) {
+-    pos = delimiters.find("\\t", 0);
+-    if(pos != string::npos) {
+-      delimiters.erase(pos, 2);
+-      delimiters.insert(pos, "\t");
+-    }
+-  }
+-  Vertex::policy = multi_edge_policy;
+-  Vertex::output_time = output_time;
+-  Vertex::caracteristic_time = caracteristic_time;
+-  
+-  if((output_format == EDGE_LIST || output_format == WEIGHTED_EDGE_LIST || output_format == ADJACENCY_EDGE_LIST || output_format == DYNAMIC_EDGE_LIST || output_format == DYNAMIC_WEIGHTED_EDGE_LIST)) {
+-    if (input_format == ARC_LIST) input_format = EDGE_LIST;
+-    if (input_format == DYNAMIC_ARC_LIST) input_format = DYNAMIC_EDGE_LIST;
+-    if (input_format == WEIGHTED_ARC_LIST) input_format = WEIGHTED_EDGE_LIST;
+-    if (input_format == DYNAMIC_WEIGHTED_ARC_LIST) input_format = DYNAMIC_WEIGHTED_EDGE_LIST;
+-    if (input_format == ADJACENCY_ARC_LIST) input_format = ADJACENCY_EDGE_LIST;
+-  }  
+-}
+-
+-Graph::~Graph() {
+-  if(components) delete[] components;
+-}
+-
+-void Graph::add_arc(unsigned int v1, unsigned int v2, float w, float t) {
+-  switch(multi_edge_policy) {
+-    case ADD:
+-      if (t <= output_time && t >= output_time - caracteristic_time) {
+-	neighbor& n = vertices[v1][v2];
+-  	n.w += w;
+-    	n.t = t;
+-      }
+-      break;
+-    case MULTI:
+-      if (t <= output_time && t >= output_time - caracteristic_time) {
+-  	neighbor& n = vertices[v1][v2];
+-  	n.w = w;
+-  	n.t = t;
+-      }
+-      break;
+-    case ADD_EXP:
+-      if (t <= output_time) {
+-  	neighbor& n = vertices[v1][v2];
+-  	n.w += w*exp(-log(2.)*(output_time-t)/caracteristic_time);
+-  	n.t = t;
+-      }
+-      break;
+-    case ADD_LIN:
+-      if (t <= output_time && t >= output_time - caracteristic_time) {
+-  	neighbor& n = vertices[v1][v2];
+-  	n.w += w*(1.-(output_time-t)/caracteristic_time);
+-  	n.t = t;
+-      }
+-  }
+-}
+-
+-void Graph::add_edge(unsigned int v1, unsigned int v2, float w, float t) {  
+-  add_arc(v1,v2,w,t);
+-  if(v1 != v2) add_arc(v2,v1,w,t);
+-}
+-
+-ostream& operator<<(ostream& stream, Graph& G) {
+-
+-  int* new_number = 0;
+-  if(G.components && !G.output_real_name) {
+-    new_number = new int[G.nb_vertices];
+-    int n = 0;
+-    for(unsigned int i = 0; i < G.nb_vertices; i++)
+-      if(G.components[i] == 0) new_number[i] = n++;
+-      else new_number[i] = -1;
+-  }
+-  
+-  if(G.output_format == EDGE_LIST || G.output_format == WEIGHTED_EDGE_LIST || G.output_format == ARC_LIST || G.output_format == WEIGHTED_ARC_LIST || G.output_format == DYNAMIC_EDGE_LIST || G.output_format == DYNAMIC_WEIGHTED_EDGE_LIST || G.output_format == DYNAMIC_ARC_LIST || G.output_format == DYNAMIC_WEIGHTED_ARC_LIST)
+-    for(unsigned int i = 0; i < G.nb_vertices; ++i)
+-      if(!G.components || !G.components[i]) {
+-	neighbor* l = G.vertices[i].list();
+-	for(unsigned int j = 0; j < G.vertices[i].degree; ++j) 
+-	  if(G.output_format == ARC_LIST || G.output_format == WEIGHTED_ARC_LIST || G.output_format == DYNAMIC_ARC_LIST || G.output_format == DYNAMIC_WEIGHTED_ARC_LIST || l[j].v >= i) {
+-
+-  	    if(G.output_real_name)
+-	      stream << G.names.name(i) << G.delimiters[0] << G.names.name(l[j].v);
+-	    else {
+-	      if(new_number) stream << new_number[i] << G.delimiters[0] << new_number[l[j].v];
+-	      else stream << i << G.delimiters[0] << l[j].v;
+-	    }
+-
+-	    if(G.output_format == DYNAMIC_EDGE_LIST || G.output_format == DYNAMIC_WEIGHTED_EDGE_LIST || G.output_format == DYNAMIC_ARC_LIST || G.output_format == DYNAMIC_WEIGHTED_ARC_LIST)
+-	      stream << G.delimiters[0] << l[j].t;
+-	    
+-	    if(G.output_format == WEIGHTED_EDGE_LIST || G.output_format == WEIGHTED_ARC_LIST || G.output_format == DYNAMIC_WEIGHTED_EDGE_LIST || G.output_format == DYNAMIC_WEIGHTED_ARC_LIST)
+-	      stream << G.delimiters[0] << l[j].w;
+-	    
+-	    stream << endl;
+-	}
+-	delete[] l;
+-      }
+-    
+-  if(G.output_format == ADJACENCY_EDGE_LIST || G.output_format == ADJACENCY_ARC_LIST)
+-    for(unsigned int i = 0; i < G.nb_vertices; ++i) 
+-      if(!G.components || !G.components[i]) {
+-	if(G.output_real_name)
+-	  stream << G.names.name(i);
+-	else {
+-	  if(new_number) stream << new_number[i];
+-	  else stream << i;
+-	}
+-	neighbor* l = G.vertices[i].list();
+-	for(unsigned int j = 0; j < G.vertices[i].degree; ++j) {
+-	  if(G.output_real_name)
+-	      stream << G.delimiters[0] << G.names.name(l[j].v);
+-	    else {
+-	      if(new_number) stream << G.delimiters[0] << new_number[l[j].v];
+-	      else stream << G.delimiters[0] << l[j].v;
+-	    }
+-	}
+-	delete[] l;
+-	stream << endl;
+-      }
+-
+-  if(new_number) delete[] new_number;
+-
+-  return stream;
+-}
+-
+-ostream& operator<<(ostream& stream, Vertices_name& names) {
+-
+-  int* new_number = 0;
+-  if(names.G->components) {
+-    new_number = new int[names.G->nb_vertices];
+-    int n = 0;
+-    for(unsigned int i = 0; i < names.G->nb_vertices; i++)
+-      if(names.G->components[i] == 0) new_number[i] = n++;
+-      else new_number[i] = -1;
+-  }
+-
+-  for(unsigned int i = 0; i < names.nb_vertices; ++i)
+-    if(!names.G->components || !names.G->components[i]) {
+-      if(new_number)
+-    	stream << new_number[i] << " " << names.name(i) << endl;
+-      else
+-	stream << i << " " << names.name(i) << endl;
+-    }
+-
+-  if(new_number) delete[] new_number;
+-  return stream;
+-}
+-
+-istream& operator>>(istream& stream, Graph& G) {
+-  
+-  vector<unsigned int*> V;
+-  vector<float> W;
+-  vector<float> T;
+-  
+-  vector<string> line;
+-  unsigned long nb_line = 0;
+-  
+-  while (!stream.eof()) {	// loop for each line of the file
+-    nb_line++;
+-    string str;
+-    getline(stream, str);
+-//    if(str == ".") break;	// end of the graph
+-    if(str.length() == 0) continue; // an empty line
+-    if(str[0] == '#') continue;	    // a comment line
+-
+-    line.clear();    
+-    size_t pos = 0;
+-    while(pos < str.length()) {
+-      size_t next = str.find_first_of(G.delimiters, pos);
+-      if(next == string::npos) {
+-	line.push_back(str.substr(pos));
+-	pos = str.length();
+-      }
+-      else {
+-	if(next - pos > 0) line.push_back(str.substr(pos, next-pos));
+-	pos = next+1;
+-      }
+-    }
+-    if(line.size() == 0) continue;
+-    
+-// verify the input format
+-      if(line.size() == 1) {
+-    	if(!G.quiet) cerr << "Error -- line " << nb_line << " : only one vertex" << endl << str << endl;
+-	exit(0);
+-      }
+-    
+-    if(G.input_format == EDGE_LIST || G.input_format == ARC_LIST)
+-      if(line.size() > 2 && !G.quiet) cerr << "Warning -- line " << nb_line << " : more than two vertices (lasts vertices are ignored)" << endl << str << endl;
+-
+-    if(G.input_format == WEIGHTED_EDGE_LIST || G.input_format == WEIGHTED_ARC_LIST) {
+-      if(line.size() > 3 && !G.quiet) cerr << "Warning -- line " << nb_line << " : more than three items" << endl << str << endl;
+-
+-      float w; 
+-      if(line.size() == 2) {
+-	if(!G.quiet) cerr << "Warning -- line " << nb_line << " : no weight (default weight 1.0 is used)" << endl << str << endl;
+-	w = 1.;
+-      }
+-      else w = atof(line[2].c_str());
+-      if(w == 0.) {
+-	cerr << "Error -- line " << nb_line << " : invalid weight" << endl << str << endl;
+-	exit(0);
+-      }
+-      W.push_back(w);
+-    }
+-
+-    if(G.input_format == DYNAMIC_EDGE_LIST || G.input_format == DYNAMIC_ARC_LIST) {
+-      if(line.size() > 3 && !G.quiet) cerr << "Warning -- line " << nb_line << " : more than three items" << endl << str << endl;
+-
+-      float t; 
+-      if(line.size() == 2) {
+-	cerr << "Error -- line " << nb_line << " : no time" << endl << str << endl;
+-	exit(0);
+-      }
+-      t = atof(line[2].c_str());
+-      if(t <= 0.) {
+-	cerr << "Error -- line " << nb_line << " : invalid time" << endl << str << endl;
+-	exit(0);
+-      }
+-      T.push_back(t);
+-    }
+-
+-    if(G.input_format == DYNAMIC_WEIGHTED_EDGE_LIST || G.input_format == DYNAMIC_WEIGHTED_ARC_LIST) {
+-      if(line.size() > 4 && !G.quiet) cerr << "Warning -- line " << nb_line << " : more than three items" << endl << str << endl;
+-
+-      float w; 
+-      float t; 
+-      if(line.size() == 2) {
+-	  cerr << "Error -- line " << nb_line << " : no time" << endl << str << endl;
+-	  exit(0);
+-      }
+-      t = atof(line[2].c_str());      
+-      if(line.size() == 3) {
+-	if(!G.quiet) cerr << "Warning -- line " << nb_line << " : no weight (default weight 1.0 is used)" << endl << str << endl;
+-	w = 1.;
+-      }
+-      else w = atof(line[3].c_str());
+-      
+-      if(w == 0.) {
+-	cerr << "Error -- line " << nb_line << " : invalid weight" << endl << str << endl;
+-	exit(0);
+-      }
+-      if(t <= 0.) {
+-	cerr << "Error -- line " << nb_line << " : invalid time" << endl << str << endl;
+-	exit(0);
+-      }
+-
+-      T.push_back(t);
+-      W.push_back(w);
+-    }
+-       
+-    unsigned int* l;
+-    if(G.input_format == WEIGHTED_EDGE_LIST || G.input_format == EDGE_LIST || G.input_format == WEIGHTED_ARC_LIST || G.input_format == ARC_LIST || G.input_format == DYNAMIC_WEIGHTED_EDGE_LIST || G.input_format == DYNAMIC_EDGE_LIST || G.input_format == DYNAMIC_WEIGHTED_ARC_LIST || G.input_format == DYNAMIC_ARC_LIST) {
+-      l = new unsigned int[2];
+-      l[0] = G.names.number(line[0].c_str());
+-      l[1] = G.names.number(line[1].c_str());
+-    }
+-    else {
+-      l = new unsigned int[line.size()+1];
+-      l[0] = line.size();
+-      for(unsigned int i = 0; i < line.size(); ++i)
+-  	l[i+1] = G.names.number(line[i].c_str());
+-    }
+-    V.push_back(l);
+-  } 
+-
+-  if(G.output_time == 0.) {
+-    for(unsigned int i = 0; i < T.size(); i++)
+-      if(T[i] > G.output_time) G.output_time = T[i];
+-  }
+-  Vertex::output_time = G.output_time;
+-
+-  if(G.caracteristic_time == 0.) {
+-    for(unsigned int i = 0; i < T.size(); i++)
+-      if(T[i] > G.caracteristic_time) G.caracteristic_time = T[i];
+-  }
+-  Vertex::caracteristic_time = G.caracteristic_time;
+- 
+-  G.nb_vertices = G.names.nb_vertices;
+-  G.vertices = new Vertex[G.nb_vertices];
+-
+-  while(!V.empty()) {
+-    unsigned int* l = V.back();  
+-    switch(G.input_format) {
+-      case ADJACENCY_EDGE_LIST:
+-	for(unsigned int i = 2; i <= l[0]; ++i)
+-	  G.add_edge(l[1], l[i], 1., 0.);
+-	break;
+-      case ADJACENCY_ARC_LIST:
+-	for(unsigned int i = 2; i <= l[0]; ++i)
+-	  G.add_arc(l[1], l[i], 1., 0.);
+-	break;
+-      case EDGE_LIST:
+-	G.add_edge(l[0], l[1], 1., 0.);
+-	break;
+-      case ARC_LIST:
+-	G.add_arc(l[0], l[1], 1., 0.);
+-	break;
+-      case WEIGHTED_EDGE_LIST:
+-	G.add_edge(l[0], l[1], W.back(), 0.);
+-	W.pop_back();
+-	break;
+-      case WEIGHTED_ARC_LIST:
+-	G.add_arc(l[0], l[1], W.back(), 0.);
+-	W.pop_back();
+-	break;
+-      case DYNAMIC_EDGE_LIST:
+-	G.add_edge(l[0], l[1], 1., T.back());
+-	T.pop_back();
+-	break;
+-      case DYNAMIC_ARC_LIST:
+-	G.add_arc(l[0], l[1], 1., T.back());
+-	T.pop_back();
+-	break;
+-      case DYNAMIC_WEIGHTED_EDGE_LIST:
+-	G.add_edge(l[0], l[1], W.back(), T.back());
+-	W.pop_back();
+-	T.pop_back();
+-	break;
+-      case DYNAMIC_WEIGHTED_ARC_LIST:
+-	G.add_arc(l[0], l[1], W.back(), T.back());
+-	W.pop_back();
+-	T.pop_back();
+-	break;
+-      case CLIQUE:
+-	for(unsigned int i = 1; i < l[0]; ++i)
+-	  for(unsigned int j = i+1; j <= l[0]; ++j)
+-	    G.add_edge(l[i], l[j], 1., 0.);
+-	break;
+-      case WEIGHTED_CLIQUE:
+-	for(unsigned int i = 1; i < l[0]; ++i)
+-	  for(unsigned int j = i+1; j <= l[0]; ++j)
+-	    G.add_edge(l[i], l[j], 2./float(l[0] - 1), 0.);
+-    }
+-
+-    delete[] l;
+-    V.pop_back();
+-  }
+-  
+-  return stream;
+-}
+-
+-struct inf : public binary_function<const Graph*, const Graph*, bool>{
+-  bool operator()(const Graph* G1, const Graph* G2) {return G1->nb_vertices > G2->nb_vertices;}
+-};
+-
+-
+-inline unsigned long Vertices_name::hash(const char* s, unsigned int index) {
+-  unsigned long h = index; 
+-  for (; *s; ++s)
+-    h = 5*h + *s;
+-  return h;
+-}
+-
+-
+-const char* Vertices_name::name(unsigned int number) {
+-  if(number < nb_vertices)
+-  return name_of_number[number];
+-  else return "";
+-}
+-
+-unsigned int Vertices_name::number(const char* name) {
+-  for(unsigned int i = 0; ; i++) {
+-    unsigned long h = hash(name, i);
+-    unsigned int &v = number_of_name[h % hash_table_size];
+-    if(v != static_cast<unsigned int>(-1)) {
+-      if(strcmp(name, name_of_number[v])) continue;
+-      else return v;
+-    }
+-    else { // add a new vertex name
+-      if(nb_vertices == name_of_number_size) increase_name_of_number_size();
+-      char* c = new char[strlen(name)+1];
+-      strcpy(c, name);
+-      name_of_number[nb_vertices] = c;
+-      v = nb_vertices;
+-      nb_vertices++;
+-      if(2*nb_vertices > hash_table_size) increase_hash_table_size();
+-      return (nb_vertices-1);
+-    }
+-  }
+-}
+-
+-void Vertices_name::increase_hash_table_size() {
+-  delete[] number_of_name;
+-  hash_table_size *= 2;
+-  number_of_name = new unsigned int[hash_table_size];
+-  memset(number_of_name, -1, hash_table_size*sizeof(unsigned int));
+-
+-  for(unsigned int v = 0; v < nb_vertices; ++v)
+-    for(unsigned int i = 0;; ++i) {
+-      unsigned long h = hash(name_of_number[v], i);
+-      if(number_of_name[h % hash_table_size] == static_cast<unsigned int>(-1)) {
+-	number_of_name[h % hash_table_size] = v;
+-	break;
+-      }
+-    }
+-}
+-
+-void Vertices_name::increase_name_of_number_size() {
+-  char** tmp = new char*[2*name_of_number_size];
+-  memcpy(tmp, name_of_number, name_of_number_size*sizeof(char*));
+-  name_of_number_size *= 2;
+-  delete[] name_of_number;
+-  name_of_number = tmp;
+-}
+-
+-Graph* Vertices_name::G = 0;  
+-
+-Vertices_name::Vertices_name() {
+-  nb_vertices = 0;
+-  name_of_number_size = 2;
+-  name_of_number = new char*[name_of_number_size];
+-  hash_table_size = 2;
+-  number_of_name = new unsigned int[hash_table_size];
+-  memset(number_of_name, -1, hash_table_size*sizeof(unsigned int));
+-}
+-
+-Vertices_name::~Vertices_name() {
+-  delete[] number_of_name;
+-  for(unsigned int i = 0; i < nb_vertices; ++i)
+-    delete[] name_of_number[i];
+-  delete[] name_of_number;
+-}
+-
+-Multi_edge_policy Vertex::policy = ADD;
+-float Vertex::output_time = 0.;
+-float Vertex::caracteristic_time = 0.;
+-
+-
+-void Vertex::increase_size() { 
+-  unsigned int new_size = size + size/2;
+-  neighbor* tmp = new neighbor[new_size];
+-  for(unsigned int i = 0; i < new_size; ++i) {
+-    tmp[i].v = static_cast<unsigned int>(-1);
+-    tmp[i].w = 0.;
+-    tmp[i].t = 0.;
+-  }
+-  
+-  if(policy == MULTI)
+-    memcpy(tmp, H, degree*sizeof(neighbor));
+-  else {
+-    for(unsigned int i = 0; i < size; ++i)
+-      if(H[i].v != static_cast<unsigned int>(-1)) {
+-  	unsigned long h = H[i].v;
+-  	int j = 0;
+-  	while(tmp[h % new_size].v != static_cast<unsigned int>(-1))
+-  	  h = h*5 + H[i].v + (++j);
+-  	tmp[h % new_size].v = H[i].v;
+-  	tmp[h % new_size].w = H[i].w;
+-  	tmp[h % new_size].t = H[i].t;
+-      }
+-  }
+-  size = new_size;
+-  delete[] H;
+-  H = tmp;
+-}
+-
+-neighbor& Vertex::operator[](unsigned int n) {
+-  if((degree + degree/2) > size) increase_size();
+-  if(policy == MULTI) {
+-    H[degree].v = n;
+-    return H[degree++];
+-  }
+-  
+-  unsigned long h = n;
+-  int i = 0;
+-  while(H[h % size].v != static_cast<unsigned int>(-1) && H[h % size].v != n)
+-    h = h*5 + n + (++i);
+-
+-  if(H[h % size].v == static_cast<unsigned int>(-1)) {
+-    degree++;
+-    H[h % size].v = n;
+-  }
+-  return H[h % size];
+-}
+-
+-neighbor* Vertex::list() {
+-  neighbor* l = new neighbor[degree];
+-  unsigned int c = 0;
+-  for(unsigned int i = 0; i < size; ++i) 
+-    if(H[i].v != static_cast<unsigned int>(-1))
+-      l[c++] = H[i];
+-  return l;
+-}
+-
+-Vertex::Vertex() {
+-  size = 2;
+-  degree = 0;
+-  H = new neighbor[2];
+-  for(unsigned int i = 0; i < size; ++i) {
+-    H[i].v = static_cast<unsigned int>(-1);
+-    H[i].w = 0.;
+-    H[i].t = 0.;
+-  } 
+-}
+-
+-Vertex::~Vertex() {
+-  delete[] H;
+-}
+-
+-
+-
+-void Graph::merge_components(int v1, int v2) {
+-  int r1 = v1;
+-  while(components[r1] >= 0) r1 = components[r1];
+-
+-  int r2 = v2;
+-  while(components[r2] >= 0) r2 = components[r2];
+-
+-  if(r1 == r2) return;
+-  
+-  int r;
+-  if(components[r1] < components[r2]) {
+-    components[r1] += components[r2];
+-    components[r2] = r1;
+-    r = r1;
+-  }
+-  else {
+-    components[r2] += components[r1];
+-    components[r1] = r2;
+-    r = r2;
+-  }
+-
+-  int tmp;
+-  while(v1 != r1) {
+-    tmp = components[v1];
+-    components[v1] = r;
+-    v1 = tmp;
+-  }
+-  while(v2 != r2) {
+-    tmp = components[v2];
+-    components[v2] = r;
+-    v2 = tmp;
+-  }
+-  return;
+-}
+-
+-
+-void Graph::compute_components() {
+-  if(nb_vertices > 0x7fffffff) {
+-    cerr << "unable to compute connected components when the number of vertices is greater than " << 0x7fffffff << endl;
+-    return;
+-  }
+-
+-  if(components) delete[] components;
+-  components = new int[nb_vertices];
+-
+-  for(unsigned int i = 0; i < nb_vertices; i++)
+-    components[i] = -1;
+-
+-  for(unsigned int i = 0; i < nb_vertices; i++) 
+-    if(vertices[i].degree > 0) {
+-      neighbor* l = vertices[i].list();
+-      for(unsigned int j = 0; j < vertices[i].degree; j++)
+-  	merge_components(i,l[j].v);
+-      delete[] l;
+-    }
+-
+-  map<int, int> M;
+-  for(unsigned int i = 0; i < nb_vertices; i++) {
+-    int r = i;
+-    while(components[r] >= 0 && components[r] != r) r = components[r];
+-    components[i] = r;
+-    M[r]++;
+-  }
+-
+-  multimap<int, int> M2;
+-  for(map<int,int>::iterator it = M.begin(); it != M.end(); ++it)
+-    M2.insert(pair<int,int>(-it->second, it->first));
+-
+-  int n = 0;
+-  for(multimap<int,int>::iterator it = M2.begin(); it != M2.end(); ++it)
+-    M[it->second] = n++;
+-
+-
+-  for(unsigned int i = 0; i < nb_vertices; i++)
+-    components[i] = M[components[i]];
+-
+-  return;
+-}
++// File: graph.cpp
++//-----------------------------------------------------------------------------
++// Gconvert v0.2 -- A simple tool to convert different graph formats.
++// Copyright (C) 2004-2005 Pascal Pons.
++//
++// This program is free software; you can redistribute it and/or modify
++// it under the terms of the GNU General Public License as published by
++// the Free Software Foundation; either version 2 of the License, or
++// (at your option) any later version.
++//
++// This program is distributed in the hope that it will be useful,
++// but WITHOUT ANY WARRANTY; without even the implied warranty of
++// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++// GNU General Public License for more details.
++//
++// You should have received a copy of the GNU General Public License
++// along with this program; if not, write to the Free Software
++// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++//-----------------------------------------------------------------------------
++// Author   : Pascal Pons 
++// Email    : pons@liafa.jussieu.fr
++// Web page : http://liafa.jussieu.fr/~pons/
++// Location : Paris, France
++// Time	    : December 2005
++//-----------------------------------------------------------------------------
++// see readme.txt for more details
++
++#include "graph.h"
++#include <cmath>
++#include <vector>
++#include <map>
++#include <cstring>
++
++using namespace std;
++
++Graph::Graph(Format _input_format, Format _output_format, bool _output_real_name, Multi_edge_policy _multi_edge_policy, float _output_time, float _caracteristic_time, const char* _delimiters, bool _quiet):
++    input_format(_input_format),
++    output_format(_output_format),
++    output_real_name(_output_real_name),
++    multi_edge_policy(_multi_edge_policy), 
++    output_time(_output_time), 
++    caracteristic_time(_caracteristic_time),
++    delimiters(_delimiters),
++    quiet(_quiet),
++    components(0),
++    nb_vertices(0) {
++      
++  Vertices_name::G = this;
++  size_t pos = 0;
++  while(pos != string::npos) {
++    pos = delimiters.find("\\t", 0);
++    if(pos != string::npos) {
++      delimiters.erase(pos, 2);
++      delimiters.insert(pos, "\t");
++    }
++  }
++  Vertex::policy = multi_edge_policy;
++  Vertex::output_time = output_time;
++  Vertex::caracteristic_time = caracteristic_time;
++  
++  if((output_format == EDGE_LIST || output_format == WEIGHTED_EDGE_LIST || output_format == ADJACENCY_EDGE_LIST || output_format == DYNAMIC_EDGE_LIST || output_format == DYNAMIC_WEIGHTED_EDGE_LIST)) {
++    if (input_format == ARC_LIST) input_format = EDGE_LIST;
++    if (input_format == DYNAMIC_ARC_LIST) input_format = DYNAMIC_EDGE_LIST;
++    if (input_format == WEIGHTED_ARC_LIST) input_format = WEIGHTED_EDGE_LIST;
++    if (input_format == DYNAMIC_WEIGHTED_ARC_LIST) input_format = DYNAMIC_WEIGHTED_EDGE_LIST;
++    if (input_format == ADJACENCY_ARC_LIST) input_format = ADJACENCY_EDGE_LIST;
++  }  
++}
++
++Graph::~Graph() {
++  if(components) delete[] components;
++}
++
++void Graph::add_arc(unsigned int v1, unsigned int v2, float w, float t) {
++  switch(multi_edge_policy) {
++    case ADD:
++      if (t <= output_time && t >= output_time - caracteristic_time) {
++	neighbor& n = vertices[v1][v2];
++  	n.w += w;
++    	n.t = t;
++      }
++      break;
++    case MULTI:
++      if (t <= output_time && t >= output_time - caracteristic_time) {
++  	neighbor& n = vertices[v1][v2];
++  	n.w = w;
++  	n.t = t;
++      }
++      break;
++    case ADD_EXP:
++      if (t <= output_time) {
++  	neighbor& n = vertices[v1][v2];
++  	n.w += w*exp(-log(2.)*(output_time-t)/caracteristic_time);
++  	n.t = t;
++      }
++      break;
++    case ADD_LIN:
++      if (t <= output_time && t >= output_time - caracteristic_time) {
++  	neighbor& n = vertices[v1][v2];
++  	n.w += w*(1.-(output_time-t)/caracteristic_time);
++  	n.t = t;
++      }
++  }
++}
++
++void Graph::add_edge(unsigned int v1, unsigned int v2, float w, float t) {  
++  add_arc(v1,v2,w,t);
++  if(v1 != v2) add_arc(v2,v1,w,t);
++}
++
++ostream& operator<<(ostream& stream, Graph& G) {
++
++  int* new_number = 0;
++  if(G.components && !G.output_real_name) {
++    new_number = new int[G.nb_vertices];
++    int n = 0;
++    for(unsigned int i = 0; i < G.nb_vertices; i++)
++      if(G.components[i] == 0) new_number[i] = n++;
++      else new_number[i] = -1;
++  }
++  
++  if(G.output_format == EDGE_LIST || G.output_format == WEIGHTED_EDGE_LIST || G.output_format == ARC_LIST || G.output_format == WEIGHTED_ARC_LIST || G.output_format == DYNAMIC_EDGE_LIST || G.output_format == DYNAMIC_WEIGHTED_EDGE_LIST || G.output_format == DYNAMIC_ARC_LIST || G.output_format == DYNAMIC_WEIGHTED_ARC_LIST)
++    for(unsigned int i = 0; i < G.nb_vertices; ++i)
++      if(!G.components || !G.components[i]) {
++	neighbor* l = G.vertices[i].list();
++	for(unsigned int j = 0; j < G.vertices[i].degree; ++j) 
++	  if(G.output_format == ARC_LIST || G.output_format == WEIGHTED_ARC_LIST || G.output_format == DYNAMIC_ARC_LIST || G.output_format == DYNAMIC_WEIGHTED_ARC_LIST || l[j].v >= i) {
++
++  	    if(G.output_real_name)
++	      stream << G.names.name(i) << G.delimiters[0] << G.names.name(l[j].v);
++	    else {
++	      if(new_number) stream << new_number[i] << G.delimiters[0] << new_number[l[j].v];
++	      else stream << i << G.delimiters[0] << l[j].v;
++	    }
++
++	    if(G.output_format == DYNAMIC_EDGE_LIST || G.output_format == DYNAMIC_WEIGHTED_EDGE_LIST || G.output_format == DYNAMIC_ARC_LIST || G.output_format == DYNAMIC_WEIGHTED_ARC_LIST)
++	      stream << G.delimiters[0] << l[j].t;
++	    
++	    if(G.output_format == WEIGHTED_EDGE_LIST || G.output_format == WEIGHTED_ARC_LIST || G.output_format == DYNAMIC_WEIGHTED_EDGE_LIST || G.output_format == DYNAMIC_WEIGHTED_ARC_LIST)
++	      stream << G.delimiters[0] << l[j].w;
++	    
++	    stream << endl;
++	}
++	delete[] l;
++      }
++    
++  if(G.output_format == ADJACENCY_EDGE_LIST || G.output_format == ADJACENCY_ARC_LIST)
++    for(unsigned int i = 0; i < G.nb_vertices; ++i) 
++      if(!G.components || !G.components[i]) {
++	if(G.output_real_name)
++	  stream << G.names.name(i);
++	else {
++	  if(new_number) stream << new_number[i];
++	  else stream << i;
++	}
++	neighbor* l = G.vertices[i].list();
++	for(unsigned int j = 0; j < G.vertices[i].degree; ++j) {
++	  if(G.output_real_name)
++	      stream << G.delimiters[0] << G.names.name(l[j].v);
++	    else {
++	      if(new_number) stream << G.delimiters[0] << new_number[l[j].v];
++	      else stream << G.delimiters[0] << l[j].v;
++	    }
++	}
++	delete[] l;
++	stream << endl;
++      }
++
++  if(new_number) delete[] new_number;
++
++  return stream;
++}
++
++ostream& operator<<(ostream& stream, Vertices_name& names) {
++
++  int* new_number = 0;
++  if(names.G->components) {
++    new_number = new int[names.G->nb_vertices];
++    int n = 0;
++    for(unsigned int i = 0; i < names.G->nb_vertices; i++)
++      if(names.G->components[i] == 0) new_number[i] = n++;
++      else new_number[i] = -1;
++  }
++
++  for(unsigned int i = 0; i < names.nb_vertices; ++i)
++    if(!names.G->components || !names.G->components[i]) {
++      if(new_number)
++    	stream << new_number[i] << " " << names.name(i) << endl;
++      else
++	stream << i << " " << names.name(i) << endl;
++    }
++
++  if(new_number) delete[] new_number;
++  return stream;
++}
++
++istream& operator>>(istream& stream, Graph& G) {
++  
++  vector<unsigned int*> V;
++  vector<float> W;
++  vector<float> T;
++  
++  vector<string> line;
++  unsigned long nb_line = 0;
++  
++  while (!stream.eof()) {	// loop for each line of the file
++    nb_line++;
++    string str;
++    getline(stream, str);
++//    if(str == ".") break;	// end of the graph
++    if(str.length() == 0) continue; // an empty line
++    if(str[0] == '#') continue;	    // a comment line
++
++    line.clear();    
++    size_t pos = 0;
++    while(pos < str.length()) {
++      size_t next = str.find_first_of(G.delimiters, pos);
++      if(next == string::npos) {
++	line.push_back(str.substr(pos));
++	pos = str.length();
++      }
++      else {
++	if(next - pos > 0) line.push_back(str.substr(pos, next-pos));
++	pos = next+1;
++      }
++    }
++    if(line.size() == 0) continue;
++    
++// verify the input format
++      if(line.size() == 1) {
++    	if(!G.quiet) cerr << "Error -- line " << nb_line << " : only one vertex" << endl << str << endl;
++	exit(0);
++      }
++    
++    if(G.input_format == EDGE_LIST || G.input_format == ARC_LIST)
++      if(line.size() > 2 && !G.quiet) cerr << "Warning -- line " << nb_line << " : more than two vertices (lasts vertices are ignored)" << endl << str << endl;
++
++    if(G.input_format == WEIGHTED_EDGE_LIST || G.input_format == WEIGHTED_ARC_LIST) {
++      if(line.size() > 3 && !G.quiet) cerr << "Warning -- line " << nb_line << " : more than three items" << endl << str << endl;
++
++      float w; 
++      if(line.size() == 2) {
++	if(!G.quiet) cerr << "Warning -- line " << nb_line << " : no weight (default weight 1.0 is used)" << endl << str << endl;
++	w = 1.;
++      }
++      else w = atof(line[2].c_str());
++      if(w == 0.) {
++	cerr << "Error -- line " << nb_line << " : invalid weight" << endl << str << endl;
++	exit(0);
++      }
++      W.push_back(w);
++    }
++
++    if(G.input_format == DYNAMIC_EDGE_LIST || G.input_format == DYNAMIC_ARC_LIST) {
++      if(line.size() > 3 && !G.quiet) cerr << "Warning -- line " << nb_line << " : more than three items" << endl << str << endl;
++
++      float t; 
++      if(line.size() == 2) {
++	cerr << "Error -- line " << nb_line << " : no time" << endl << str << endl;
++	exit(0);
++      }
++      t = atof(line[2].c_str());
++      if(t <= 0.) {
++	cerr << "Error -- line " << nb_line << " : invalid time" << endl << str << endl;
++	exit(0);
++      }
++      T.push_back(t);
++    }
++
++    if(G.input_format == DYNAMIC_WEIGHTED_EDGE_LIST || G.input_format == DYNAMIC_WEIGHTED_ARC_LIST) {
++      if(line.size() > 4 && !G.quiet) cerr << "Warning -- line " << nb_line << " : more than three items" << endl << str << endl;
++
++      float w; 
++      float t; 
++      if(line.size() == 2) {
++	  cerr << "Error -- line " << nb_line << " : no time" << endl << str << endl;
++	  exit(0);
++      }
++      t = atof(line[2].c_str());      
++      if(line.size() == 3) {
++	if(!G.quiet) cerr << "Warning -- line " << nb_line << " : no weight (default weight 1.0 is used)" << endl << str << endl;
++	w = 1.;
++      }
++      else w = atof(line[3].c_str());
++      
++      if(w == 0.) {
++	cerr << "Error -- line " << nb_line << " : invalid weight" << endl << str << endl;
++	exit(0);
++      }
++      if(t <= 0.) {
++	cerr << "Error -- line " << nb_line << " : invalid time" << endl << str << endl;
++	exit(0);
++      }
++
++      T.push_back(t);
++      W.push_back(w);
++    }
++       
++    unsigned int* l;
++    if(G.input_format == WEIGHTED_EDGE_LIST || G.input_format == EDGE_LIST || G.input_format == WEIGHTED_ARC_LIST || G.input_format == ARC_LIST || G.input_format == DYNAMIC_WEIGHTED_EDGE_LIST || G.input_format == DYNAMIC_EDGE_LIST || G.input_format == DYNAMIC_WEIGHTED_ARC_LIST || G.input_format == DYNAMIC_ARC_LIST) {
++      l = new unsigned int[2];
++      l[0] = G.names.number(line[0].c_str());
++      l[1] = G.names.number(line[1].c_str());
++    }
++    else {
++      l = new unsigned int[line.size()+1];
++      l[0] = line.size();
++      for(unsigned int i = 0; i < line.size(); ++i)
++  	l[i+1] = G.names.number(line[i].c_str());
++    }
++    V.push_back(l);
++  } 
++
++  if(G.output_time == 0.) {
++    for(unsigned int i = 0; i < T.size(); i++)
++      if(T[i] > G.output_time) G.output_time = T[i];
++  }
++  Vertex::output_time = G.output_time;
++
++  if(G.caracteristic_time == 0.) {
++    for(unsigned int i = 0; i < T.size(); i++)
++      if(T[i] > G.caracteristic_time) G.caracteristic_time = T[i];
++  }
++  Vertex::caracteristic_time = G.caracteristic_time;
++ 
++  G.nb_vertices = G.names.nb_vertices;
++  G.vertices = new Vertex[G.nb_vertices];
++
++  while(!V.empty()) {
++    unsigned int* l = V.back();  
++    switch(G.input_format) {
++      case ADJACENCY_EDGE_LIST:
++	for(unsigned int i = 2; i <= l[0]; ++i)
++	  G.add_edge(l[1], l[i], 1., 0.);
++	break;
++      case ADJACENCY_ARC_LIST:
++	for(unsigned int i = 2; i <= l[0]; ++i)
++	  G.add_arc(l[1], l[i], 1., 0.);
++	break;
++      case EDGE_LIST:
++	G.add_edge(l[0], l[1], 1., 0.);
++	break;
++      case ARC_LIST:
++	G.add_arc(l[0], l[1], 1., 0.);
++	break;
++      case WEIGHTED_EDGE_LIST:
++	G.add_edge(l[0], l[1], W.back(), 0.);
++	W.pop_back();
++	break;
++      case WEIGHTED_ARC_LIST:
++	G.add_arc(l[0], l[1], W.back(), 0.);
++	W.pop_back();
++	break;
++      case DYNAMIC_EDGE_LIST:
++	G.add_edge(l[0], l[1], 1., T.back());
++	T.pop_back();
++	break;
++      case DYNAMIC_ARC_LIST:
++	G.add_arc(l[0], l[1], 1., T.back());
++	T.pop_back();
++	break;
++      case DYNAMIC_WEIGHTED_EDGE_LIST:
++	G.add_edge(l[0], l[1], W.back(), T.back());
++	W.pop_back();
++	T.pop_back();
++	break;
++      case DYNAMIC_WEIGHTED_ARC_LIST:
++	G.add_arc(l[0], l[1], W.back(), T.back());
++	W.pop_back();
++	T.pop_back();
++	break;
++      case CLIQUE:
++	for(unsigned int i = 1; i < l[0]; ++i)
++	  for(unsigned int j = i+1; j <= l[0]; ++j)
++	    G.add_edge(l[i], l[j], 1., 0.);
++	break;
++      case WEIGHTED_CLIQUE:
++	for(unsigned int i = 1; i < l[0]; ++i)
++	  for(unsigned int j = i+1; j <= l[0]; ++j)
++	    G.add_edge(l[i], l[j], 2./float(l[0] - 1), 0.);
++    }
++
++    delete[] l;
++    V.pop_back();
++  }
++  
++  return stream;
++}
++
++struct inf : public binary_function<const Graph*, const Graph*, bool>{
++  bool operator()(const Graph* G1, const Graph* G2) {return G1->nb_vertices > G2->nb_vertices;}
++};
++
++
++inline unsigned long Vertices_name::hash(const char* s, unsigned int index) {
++  unsigned long h = index; 
++  for (; *s; ++s)
++    h = 5*h + *s;
++  return h;
++}
++
++
++const char* Vertices_name::name(unsigned int number) {
++  if(number < nb_vertices)
++  return name_of_number[number];
++  else return "";
++}
++
++unsigned int Vertices_name::number(const char* name) {
++  for(unsigned int i = 0; ; i++) {
++    unsigned long h = hash(name, i);
++    unsigned int &v = number_of_name[h % hash_table_size];
++    if(v != static_cast<unsigned int>(-1)) {
++      if(strcmp(name, name_of_number[v])) continue;
++      else return v;
++    }
++    else { // add a new vertex name
++      if(nb_vertices == name_of_number_size) increase_name_of_number_size();
++      char* c = new char[strlen(name)+1];
++      strcpy(c, name);
++      name_of_number[nb_vertices] = c;
++      v = nb_vertices;
++      nb_vertices++;
++      if(2*nb_vertices > hash_table_size) increase_hash_table_size();
++      return (nb_vertices-1);
++    }
++  }
++}
++
++void Vertices_name::increase_hash_table_size() {
++  delete[] number_of_name;
++  hash_table_size *= 2;
++  number_of_name = new unsigned int[hash_table_size];
++  memset(number_of_name, -1, hash_table_size*sizeof(unsigned int));
++
++  for(unsigned int v = 0; v < nb_vertices; ++v)
++    for(unsigned int i = 0;; ++i) {
++      unsigned long h = hash(name_of_number[v], i);
++      if(number_of_name[h % hash_table_size] == static_cast<unsigned int>(-1)) {
++	number_of_name[h % hash_table_size] = v;
++	break;
++      }
++    }
++}
++
++void Vertices_name::increase_name_of_number_size() {
++  char** tmp = new char*[2*name_of_number_size];
++  memcpy(tmp, name_of_number, name_of_number_size*sizeof(char*));
++  name_of_number_size *= 2;
++  delete[] name_of_number;
++  name_of_number = tmp;
++}
++
++Graph* Vertices_name::G = 0;  
++
++Vertices_name::Vertices_name() {
++  nb_vertices = 0;
++  name_of_number_size = 2;
++  name_of_number = new char*[name_of_number_size];
++  hash_table_size = 2;
++  number_of_name = new unsigned int[hash_table_size];
++  memset(number_of_name, -1, hash_table_size*sizeof(unsigned int));
++}
++
++Vertices_name::~Vertices_name() {
++  delete[] number_of_name;
++  for(unsigned int i = 0; i < nb_vertices; ++i)
++    delete[] name_of_number[i];
++  delete[] name_of_number;
++}
++
++Multi_edge_policy Vertex::policy = ADD;
++float Vertex::output_time = 0.;
++float Vertex::caracteristic_time = 0.;
++
++
++void Vertex::increase_size() { 
++  unsigned int new_size = size + size/2;
++  neighbor* tmp = new neighbor[new_size];
++  for(unsigned int i = 0; i < new_size; ++i) {
++    tmp[i].v = static_cast<unsigned int>(-1);
++    tmp[i].w = 0.;
++    tmp[i].t = 0.;
++  }
++  
++  if(policy == MULTI)
++    memcpy(tmp, H, degree*sizeof(neighbor));
++  else {
++    for(unsigned int i = 0; i < size; ++i)
++      if(H[i].v != static_cast<unsigned int>(-1)) {
++  	unsigned long h = H[i].v;
++  	int j = 0;
++  	while(tmp[h % new_size].v != static_cast<unsigned int>(-1))
++  	  h = h*5 + H[i].v + (++j);
++  	tmp[h % new_size].v = H[i].v;
++  	tmp[h % new_size].w = H[i].w;
++  	tmp[h % new_size].t = H[i].t;
++      }
++  }
++  size = new_size;
++  delete[] H;
++  H = tmp;
++}
++
++neighbor& Vertex::operator[](unsigned int n) {
++  if((degree + degree/2) > size) increase_size();
++  if(policy == MULTI) {
++    H[degree].v = n;
++    return H[degree++];
++  }
++  
++  unsigned long h = n;
++  int i = 0;
++  while(H[h % size].v != static_cast<unsigned int>(-1) && H[h % size].v != n)
++    h = h*5 + n + (++i);
++
++  if(H[h % size].v == static_cast<unsigned int>(-1)) {
++    degree++;
++    H[h % size].v = n;
++  }
++  return H[h % size];
++}
++
++neighbor* Vertex::list() {
++  neighbor* l = new neighbor[degree];
++  unsigned int c = 0;
++  for(unsigned int i = 0; i < size; ++i) 
++    if(H[i].v != static_cast<unsigned int>(-1))
++      l[c++] = H[i];
++  return l;
++}
++
++Vertex::Vertex() {
++  size = 2;
++  degree = 0;
++  H = new neighbor[2];
++  for(unsigned int i = 0; i < size; ++i) {
++    H[i].v = static_cast<unsigned int>(-1);
++    H[i].w = 0.;
++    H[i].t = 0.;
++  } 
++}
++
++Vertex::~Vertex() {
++  delete[] H;
++}
++
++
++
++void Graph::merge_components(int v1, int v2) {
++  int r1 = v1;
++  while(components[r1] >= 0) r1 = components[r1];
++
++  int r2 = v2;
++  while(components[r2] >= 0) r2 = components[r2];
++
++  if(r1 == r2) return;
++  
++  int r;
++  if(components[r1] < components[r2]) {
++    components[r1] += components[r2];
++    components[r2] = r1;
++    r = r1;
++  }
++  else {
++    components[r2] += components[r1];
++    components[r1] = r2;
++    r = r2;
++  }
++
++  int tmp;
++  while(v1 != r1) {
++    tmp = components[v1];
++    components[v1] = r;
++    v1 = tmp;
++  }
++  while(v2 != r2) {
++    tmp = components[v2];
++    components[v2] = r;
++    v2 = tmp;
++  }
++  return;
++}
++
++
++void Graph::compute_components() {
++  if(nb_vertices > 0x7fffffff) {
++    cerr << "unable to compute connected components when the number of vertices is greater than " << 0x7fffffff << endl;
++    return;
++  }
++
++  if(components) delete[] components;
++  components = new int[nb_vertices];
++
++  for(unsigned int i = 0; i < nb_vertices; i++)
++    components[i] = -1;
++
++  for(unsigned int i = 0; i < nb_vertices; i++) 
++    if(vertices[i].degree > 0) {
++      neighbor* l = vertices[i].list();
++      for(unsigned int j = 0; j < vertices[i].degree; j++)
++  	merge_components(i,l[j].v);
++      delete[] l;
++    }
++
++  map<int, int> M;
++  for(unsigned int i = 0; i < nb_vertices; i++) {
++    int r = i;
++    while(components[r] >= 0 && components[r] != r) r = components[r];
++    components[i] = r;
++    M[r]++;
++  }
++
++  multimap<int, int> M2;
++  for(map<int,int>::iterator it = M.begin(); it != M.end(); ++it)
++    M2.insert(pair<int,int>(-it->second, it->first));
++
++  int n = 0;
++  for(multimap<int,int>::iterator it = M2.begin(); it != M2.end(); ++it)
++    M[it->second] = n++;
++
++
++  for(unsigned int i = 0; i < nb_vertices; i++)
++    components[i] = M[components[i]];
++
++  return;
++}
+diff -ur gconvert_clean/graph.h gconvert/graph.h
+--- gconvert_clean/graph.h	2005-11-30 16:41:08.000000000 +0100
++++ gconvert/graph.h	2009-12-03 16:33:06.000000000 +0100
+@@ -1,127 +1,129 @@
+-// File: graph.h
+-//-----------------------------------------------------------------------------
+-// Gconvert v0.2 -- A simple tool to convert different graph formats.
+-// Copyright (C) 2004-2005 Pascal Pons.
+-//
+-// This program is free software; you can redistribute it and/or modify
+-// it under the terms of the GNU General Public License as published by
+-// the Free Software Foundation; either version 2 of the License, or
+-// (at your option) any later version.
+-//
+-// This program is distributed in the hope that it will be useful,
+-// but WITHOUT ANY WARRANTY; without even the implied warranty of
+-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-// GNU General Public License for more details.
+-//
+-// You should have received a copy of the GNU General Public License
+-// along with this program; if not, write to the Free Software
+-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+-//-----------------------------------------------------------------------------
+-// Author   : Pascal Pons 
+-// Email    : pons@liafa.jussieu.fr
+-// Web page : http://liafa.jussieu.fr/~pons/
+-// Location : Paris, France
+-// Time	    : December 2005
+-//-----------------------------------------------------------------------------
+-// see readme.txt for more details
+-
+-
+-#ifndef GRAPH_H
+-#define GRAPH_H
+-
+-#include <iostream>
+-#include <string>
+-using namespace std;
+-
+-typedef enum{ADD, MULTI, ADD_EXP, ADD_LIN} Multi_edge_policy;
+-
+-typedef enum{ADJACENCY_EDGE_LIST, ADJACENCY_ARC_LIST, EDGE_LIST, DYNAMIC_EDGE_LIST, ARC_LIST, DYNAMIC_ARC_LIST, WEIGHTED_EDGE_LIST, DYNAMIC_WEIGHTED_EDGE_LIST, WEIGHTED_ARC_LIST, DYNAMIC_WEIGHTED_ARC_LIST, CLIQUE,WEIGHTED_CLIQUE} Format;	// + MATRIX, PAJEK ??
+-
+-class Graph;
+-
+-class Vertices_name {
+-private:
+-  void increase_hash_table_size();
+-  void increase_name_of_number_size();
+-  
+-  unsigned int name_of_number_size;
+-  char** name_of_number;    // array of the name of each vertices from 0 to nb_vertices-1
+-  
+-  unsigned int hash_table_size;
+-  unsigned int* number_of_name;	    // hash table in which the number of each name is stored
+-  inline unsigned long hash(const char* s, unsigned int index);
+-  
+-public: 
+-  static Graph* G;
+- 
+-  unsigned int nb_vertices;
+-  
+-  const char* name(unsigned int number);
+-  unsigned int number(const char* name);	// add the name if not yet stored
+-  
+-  Vertices_name();
+-  ~Vertices_name();
+-};
+-
+-
+-typedef struct{unsigned int v; float w; float t;} neighbor;
+-
+-class Vertex {
+-public:
+-  static Multi_edge_policy policy;  //
+-
+-  static float output_time;	    // the output time if policy ADD
+-  static float caracteristic_time;  // the caracteristic life time of edges
+-  
+-private:
+-  unsigned int size;	// size of the hash table
+-  neighbor* H;		// the hash table
+-
+-  void increase_size();
+-//  inline unsigned long hash(unsigned int n, int index);
+-public:
+-  unsigned int degree;
+-
+-  neighbor* list();
+-  neighbor& operator[](unsigned int n);
+-
+-  Vertex();
+-  ~Vertex();
+-};
+-
+-class Graph {
+-private:
+-  void merge_components(int i, int j);
+-public:
+-  Format input_format;
+-  Format output_format;
+-  bool output_real_name;
+-  Multi_edge_policy multi_edge_policy;	// policy to know the weight of a multi edge
+-  float output_time;
+-  float caracteristic_time;
+-  string delimiters;
+-  bool quiet;
+-
+-  int* components;
+-  
+-  void add_edge(unsigned int v1, unsigned int v2, float w, float t);
+-  void Graph::add_arc(unsigned int v1, unsigned int v2, float w, float t);
+-  
+-  unsigned int nb_vertices;	// the number of vertices  
+-  Vertex* vertices;	// array of the vertices, each vertex contains the neighbors vertices and the weight of the corresponding edge
+-
+-  Vertices_name names;
+-  
+-  Graph(Format input_format, Format output_format, bool output_real_name, Multi_edge_policy multi_edge_policy, float output_time, float caracteristic_time, const char* delimiters, bool quiet);	// create an empty graph
+-  ~Graph();
+-
+-  void compute_components();
+-};
+-
+-
+-
+-ostream& operator<<(ostream& out, Graph& G);	// print the graph
+-istream& operator>>(istream& in, Graph& G);	// get a graph from a stream
+-
+-ostream& operator<<(ostream& out, Vertices_name& names);    // print the index
+-#endif
++// File: graph.h
++//-----------------------------------------------------------------------------
++// Gconvert v0.2 -- A simple tool to convert different graph formats.
++// Copyright (C) 2004-2005 Pascal Pons.
++//
++// This program is free software; you can redistribute it and/or modify
++// it under the terms of the GNU General Public License as published by
++// the Free Software Foundation; either version 2 of the License, or
++// (at your option) any later version.
++//
++// This program is distributed in the hope that it will be useful,
++// but WITHOUT ANY WARRANTY; without even the implied warranty of
++// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++// GNU General Public License for more details.
++//
++// You should have received a copy of the GNU General Public License
++// along with this program; if not, write to the Free Software
++// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++//-----------------------------------------------------------------------------
++// Author   : Pascal Pons 
++// Email    : pons@liafa.jussieu.fr
++// Web page : http://liafa.jussieu.fr/~pons/
++// Location : Paris, France
++// Time	    : December 2005
++//-----------------------------------------------------------------------------
++// see readme.txt for more details
++
++
++#ifndef GRAPH_H
++#define GRAPH_H
++
++#include <iostream>
++#include <string>
++#include <cstdlib>
++
++using namespace std;
++
++typedef enum{ADD, MULTI, ADD_EXP, ADD_LIN} Multi_edge_policy;
++
++typedef enum{ADJACENCY_EDGE_LIST, ADJACENCY_ARC_LIST, EDGE_LIST, DYNAMIC_EDGE_LIST, ARC_LIST, DYNAMIC_ARC_LIST, WEIGHTED_EDGE_LIST, DYNAMIC_WEIGHTED_EDGE_LIST, WEIGHTED_ARC_LIST, DYNAMIC_WEIGHTED_ARC_LIST, CLIQUE,WEIGHTED_CLIQUE} Format;	// + MATRIX, PAJEK ??
++
++class Graph;
++
++class Vertices_name {
++private:
++  void increase_hash_table_size();
++  void increase_name_of_number_size();
++  
++  unsigned int name_of_number_size;
++  char** name_of_number;    // array of the name of each vertices from 0 to nb_vertices-1
++  
++  unsigned int hash_table_size;
++  unsigned int* number_of_name;	    // hash table in which the number of each name is stored
++  inline unsigned long hash(const char* s, unsigned int index);
++  
++public: 
++  static Graph* G;
++ 
++  unsigned int nb_vertices;
++  
++  const char* name(unsigned int number);
++  unsigned int number(const char* name);	// add the name if not yet stored
++  
++  Vertices_name();
++  ~Vertices_name();
++};
++
++
++typedef struct{unsigned int v; float w; float t;} neighbor;
++
++class Vertex {
++public:
++  static Multi_edge_policy policy;  //
++
++  static float output_time;	    // the output time if policy ADD
++  static float caracteristic_time;  // the caracteristic life time of edges
++  
++private:
++  unsigned int size;	// size of the hash table
++  neighbor* H;		// the hash table
++
++  void increase_size();
++//  inline unsigned long hash(unsigned int n, int index);
++public:
++  unsigned int degree;
++
++  neighbor* list();
++  neighbor& operator[](unsigned int n);
++
++  Vertex();
++  ~Vertex();
++};
++
++class Graph {
++private:
++  void merge_components(int i, int j);
++public:
++  Format input_format;
++  Format output_format;
++  bool output_real_name;
++  Multi_edge_policy multi_edge_policy;	// policy to know the weight of a multi edge
++  float output_time;
++  float caracteristic_time;
++  string delimiters;
++  bool quiet;
++
++  int* components;
++  
++  void add_edge(unsigned int v1, unsigned int v2, float w, float t);
++  void add_arc(unsigned int v1, unsigned int v2, float w, float t);
++  
++  unsigned int nb_vertices;	// the number of vertices  
++  Vertex* vertices;	// array of the vertices, each vertex contains the neighbors vertices and the weight of the corresponding edge
++
++  Vertices_name names;
++  
++  Graph(Format input_format, Format output_format, bool output_real_name, Multi_edge_policy multi_edge_policy, float output_time, float caracteristic_time, const char* delimiters, bool quiet);	// create an empty graph
++  ~Graph();
++
++  void compute_components();
++};
++
++
++
++ostream& operator<<(ostream& out, Graph& G);	// print the graph
++istream& operator>>(istream& in, Graph& G);	// get a graph from a stream
++
++ostream& operator<<(ostream& out, Vertices_name& names);    // print the index
++#endif
