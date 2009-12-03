@@ -39,7 +39,6 @@ type edge_list = sig_list_per_signee list with sexp
 type edgelist_per_vertex = string * (string list) with sexp
 type vertex = string with sexp
 
-
 let compare_esignature esig1 esig2 =
   let (i1, _) = esig1 in
   let (i2, _) = esig2 in

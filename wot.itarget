@@ -23,3 +23,4 @@ stats/dump_sql.native
 stats/simple_stats.native
 graph/export.native
 stats/db_scc_information.native
+stats/graph_snapshot.native
