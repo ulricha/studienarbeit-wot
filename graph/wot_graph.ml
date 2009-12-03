@@ -21,7 +21,15 @@ end
 
 module G = Imperative.Digraph.ConcreteBidirectional(V)
 
+(* undirected graph *)
+module GU = Imperative.Graph.Concrete(V)
+
 module Key_map = Map.Make(V)
+
+let directed_to_undirected g =
+  let gu = GU.create ~size:(G.nb_vertex g) () in
+    G.iter_edges (fun u v -> GU.add_edge gu u v) g;
+    gu
 
 let load_structinfo_from_files vertex_filename edge_filename =
   let vertices = List.map vertex_of_sexp (load_sexps vertex_filename) in
