@@ -1,5 +1,7 @@
 open Batteries
 
+let today = Unix.time ()
+
 let sig_creation_times dbh keyids =
   PGSQL(dbh) "select ctime from sigs where signee in $@keyids and signer in $@keyids"
 
@@ -38,3 +40,9 @@ let get_keys_per_period_all dbh interval_list =
       (interval_start, records)
   in
     List.map get interval_list
+
+let get_valid_sigs dbh =
+  PGSQL(dbh) "(select signer, signee from sigs inner join keys on sigs.signer = keys.keyid where keys.revoktime is null and (keys.exptime is null or keys.exptime > $today) and sigs.revoktime is null and (sigs.exptime is null or sigs.exptime > $today)) intersect (select signer, signee from sigs inner join keys on sigs.signee = keys.keyid where keys.revoktime is null and (keys.exptime is null or keys.exptime > $today) and sigs.revoktime is null and (sigs.exptime is null or sigs.exptime > $today))"
+
+let get_valid_signed_keys dbh =
+  PGSQL(dbh) "select keyid from keys inner join sigs on sigs.signer = keys.keyid or sigs.signee = keys.keyid where keys.revoktime is null and (keys.exptime is null or keys.exptime > $today) and sigs.revoktime is null and (sigs.revoktime is null or sigs.revoktime > $today)"
