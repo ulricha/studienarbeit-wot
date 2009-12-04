@@ -4,8 +4,7 @@ open Wot_graph
 open Misc
 
 let insert_component_id dbh (keyid, id) =
-  let keyid = keyid_to_string keyid in
-    PGSQL(dbh) "insert into component_ids (keyid, component_id) values ($keyid, $id)"
+  PGSQL(dbh) "insert into component_ids (keyid, component_id) values ($keyid, $id)"
 
 let _ =
   if Array.length Sys.argv <> 3 then (

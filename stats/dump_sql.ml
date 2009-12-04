@@ -109,7 +109,7 @@ let validate_string o =
 	  "unrepairable"
 
 let insert_epki dbh epki =
-  let keyid = keyid_to_string epki.key_keyid in
+  let keyid = epki.key_keyid in
   let puid = validate_string epki.key_puid in
   let ctime = epki.key_ctime in
   let exptime = epki.key_exptime in
@@ -120,7 +120,7 @@ let insert_epki dbh epki =
     values ($keyid, $puid, $ctime, $?exptime, $?revoktime, $key_alg, $key_len)"
 
 let insert_uid_list dbh epki =
-  let keyid = keyid_to_string epki.key_keyid in
+  let keyid = epki.key_keyid in
   let validated = List.map validate_string epki.key_all_uids in
   let unique = List.sort_unique compare validated in
   List.iter
@@ -131,8 +131,6 @@ let insert_uid_list dbh epki =
 let insert_sig_list dbh signee esig_list =
   let insert_esig esig =
     let (signer, info) = esig in
-    let signee = keyid_to_string signee in
-    let signer = keyid_to_string signer in
     let level = Int32.of_int info.sig_level in
     let exptime = info.sig_exptime in
     let revoktime = info.sig_revoktime in
@@ -149,13 +147,12 @@ let filter_duplicates ekeys =
   let rec filter l unique s =
     match l with
       | ekey :: tl ->
-	  let keyid = keyid_to_string ekey.pki.key_keyid in
-	    if StringSet.mem keyid s then (
-	      Printf.printf "dupe %s %s\n" keyid ekey.pki.key_puid;
-	      filter tl unique s
-	    ) else (
-	      filter tl (ekey :: unique) (StringSet.add keyid s)
-	    )
+	  if StringSet.mem ekey.pki.key_keyid s then (
+	    Printf.printf "dupe %s %s\n" ekey.pki.key_keyid ekey.pki.key_puid;
+	    filter tl unique s
+	  ) else (
+	    filter tl (ekey :: unique) (StringSet.add ekey.pki.key_keyid s)
+	  )
       | [] -> unique
   in
     filter ekeys [] StringSet.empty

@@ -6,7 +6,7 @@ open Misc
 let export_cfinder g fname =
   let write output =
     let write_edge u v =
-      IO.nwrite output (Printf.sprintf "%s %s\n" (keyid_to_string u) (keyid_to_string v))
+      IO.nwrite output (Printf.sprintf "%s %s\n" u v)
     in
       G.iter_edges write_edge g
   in
@@ -16,7 +16,7 @@ let export_cfinder_undirected g fname =
   let gu = directed_to_undirected g in
   let write output =
     let write_edge u v =
-      IO.nwrite output (Printf.sprintf "%s %s\n" (keyid_to_string u) (keyid_to_string v))
+      IO.nwrite output (Printf.sprintf "%s %s\n" u v)
     in
       GU.iter_edges write_edge gu
   in

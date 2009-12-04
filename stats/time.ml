@@ -69,7 +69,7 @@ let explode_maps stats_list =
     Int32Set.fold aggregate all_values []
 
 let keyids_from_graph g =
-  G.fold_vertex (fun v l -> (Misc.keyid_to_string v) :: l) g []
+  G.fold_vertex (fun v l -> v :: l) g []
 
 let fetch_keys_per_period dbh cid =
   let period_list = divide_period 665362800. (Unix.time ()) 2592000. in

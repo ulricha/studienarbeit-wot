@@ -18,7 +18,7 @@ let betweeness_centrality betweeness_function g name cnt =
   let betweeness_values = betweeness_function g cnt in
   let sorted = List.of_enum (B.H.enum betweeness_values) in
   let (keyid, value) = List.hd sorted in
-    printf "most central key in %s: %s (%f)\n" name (keyid_to_string keyid) value
+    printf "most central key in %s: %s (%f)\n" name keyid value
 
 (* mscc = maximum strongly connected component *)
 let () =

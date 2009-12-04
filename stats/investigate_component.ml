@@ -118,8 +118,7 @@ let main () =
       match l with
 	| hd :: tl when (List.length hd) > 30000 -> 
 	    loop tl
-	| hd :: tl when (List.length hd) > minsize -> 
-	    let keyids = List.map Misc.keyid_to_string hd in
+	| keyids :: tl when (List.length keyids) > minsize -> 
 	    let records = get_key_records dbh keyids in
 	    let sig_ctimes = sig_creation_times dbh keyids in
 	      assert (List.length records > 0);
