@@ -134,7 +134,7 @@ let extract_sigs keyid siglist pubkey_info =
 		    let (ignore_set, sig_option) = handle_foreign_sig keyid siginfo tl ignore_set in
 		      match sig_option with
 			| Some esiginfo ->
-			    let esigs = Signature_set.add (issuer_keyid, esiginfo) esigs in
+			    let esigs = Signature_set.add ((keyid_to_string issuer_keyid), esiginfo) esigs in
 			      handle (esigs, ignore_set, is_puid, valid_selfsig, keyexptime) tl
 			| None ->
 			    handle (esigs, ignore_set, is_puid, valid_selfsig, keyexptime) tl
@@ -206,7 +206,7 @@ let key_to_ekey key =
 	let keylen = pubkey_info.Packet.pk_keylen in
 	let ctime = Int64.to_float pubkey_info.Packet.pk_ctime in
 	let pki = 
-	  { key_keyid = keyid; 
+	  { key_keyid = (keyid_to_string keyid); 
 	    key_puid = puid; 
 	    key_alg = algo; 
 	    key_len = keylen;
