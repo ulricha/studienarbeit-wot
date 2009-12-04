@@ -132,7 +132,9 @@ let main () =
     print_endline "\nall keys:";
     all_keys_stats dbh;
     print_endline "\n mscc keys:";
-    mscc_keys_stats dbh
+    mscc_keys_stats dbh;
+    print_endline "\n all sigs:";
+    sig_stats_overall dbh
 
 let _ = 
   try main () with
