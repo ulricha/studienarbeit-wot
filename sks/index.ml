@@ -83,7 +83,7 @@ let sig_to_siginfo sign =
       | V4sig s ->
 	  begin
 	    siginfo.siginfo_hash_alg <- s.v4s_hash_alg;
-	    siginfo.siginfo_pk_alg <- s.v4s_hash_alg;
+	    siginfo.siginfo_pk_alg <- s.v4s_pk_alg;
 	    let update_siginfo ssp = 
 	      match ssp.ssp_type with
 
