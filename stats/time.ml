@@ -118,12 +118,12 @@ let algorithm_stats dbh keys_per_period graph_name =
     List.iter (write (graph_name ^ "-dsa_keylen_stats")) (explode_maps dsa_keylen_stats)
 
 let _ =
-  if Array.length Sys.argv <> 3 then (
-    print_endline "usage: vertex.sexp edge.sexp";
+  if Array.length Sys.argv <> 4 then (
+    print_endline "usage: db vertex.sexp edge.sexp";
     exit 1)
 
 let main () =
-  let dbh = PGOCaml.connect ~database:"wot-all" () in
+  let dbh = PGOCaml.connect ~database:Sys.argv.(1) () in
   let keys_g = fetch_keys_per_period_all dbh in
   let keys_mscc = fetch_keys_per_period dbh 0l in
     algorithm_stats dbh keys_mscc "mscc";

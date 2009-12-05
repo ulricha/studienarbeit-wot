@@ -127,8 +127,13 @@ let sig_stats_overall dbh =
     printf "total number of valid sigs with hash algorithm SHA512 (be cautious) %Ld\n" (extract_first sha512_sigs);
     printf "total number of valid sigs with hash algorithm SHA224 (be cautious) %Ld\n" (extract_first sha224_sigs)
 
+let _ =
+  if Array.length Sys.argv <> 2 then (
+    print_endline "usage: simple_stats db";
+    exit 1)
+
 let main () =
-  let dbh = PGOCaml.connect ~database:"wot-all" () in
+  let dbh = PGOCaml.connect ~database:Sys.argv.(1) () in
     print_endline "\nall keys:";
     all_keys_stats dbh;
     print_endline "\n mscc keys:";

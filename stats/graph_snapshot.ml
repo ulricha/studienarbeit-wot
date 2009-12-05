@@ -3,8 +3,8 @@ open Ekey
 
 let _ =
   let len = Array.length Sys.argv in
-    if len > 2 then (
-      print_endline "usage: graph_snapshot <time>";
+    if len > 3 then (
+      print_endline "usage: graph_snapshot db <time>";
       exit 1)
 
 let append_sig map (signer, signee) =
@@ -34,12 +34,12 @@ let write_keys_from_db basename keys =
     IO.close_out output
 
 let main () = 
-  let dbh = PGOCaml.connect ~database:"wot-all" () in
+  let dbh = PGOCaml.connect ~database:Sys.argv.(1) () in
   let (basename, timestamp) = 
-    if Array.length Sys.argv = 1 then
+    if Array.length Sys.argv = 2 then
       ("today", Unix.time ())
     else
-      let f = int_of_string Sys.argv.(1) in
+      let f = int_of_string Sys.argv.(2) in
 	(string_of_int f, float_of_int f)
   in
   let keys = Db_interface.get_valid_signed_keys dbh timestamp in
