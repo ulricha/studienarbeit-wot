@@ -82,6 +82,7 @@ struct
 
   let filter_sigs_to_missing_keys tbl =
     let bench = time_iterations "filter_sigs" 10000 in
+    let c = ref 0 in
     let filter_single_key ekey =
       bench ();
       let before = List.length ekey.signatures in
@@ -97,10 +98,13 @@ struct
       let filtered = loop ekey.signatures [] in
 	ekey.signatures <- filtered;
 	let after = List.length ekey.signatures in
-	  if before <> after then 
+	  if before <> after then (
+	    c := !c + (before - after);
 	    printf "filtered %d sigs\n" (before - after)
+	  )
     in
-      Enum.iter filter_single_key (Hashtbl.values tbl)
+      Enum.iter filter_single_key (Hashtbl.values tbl);
+      printf "filtered %d sigs altogether\n" !c
 
   let fetch_keys () =
     let key_cnt = ref 0 in
