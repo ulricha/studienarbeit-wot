@@ -104,7 +104,8 @@ struct
 	  )
     in
       Enum.iter filter_single_key (Hashtbl.values tbl);
-      printf "filtered %d sigs altogether\n" !c
+      printf "filtered %d sigs altogether\n" !c;
+      flush stdout
 
   let fetch_keys () =
     let key_cnt = ref 0 in
