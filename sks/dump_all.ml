@@ -113,7 +113,7 @@ struct
     let extract_key ~hash ~key =
       try 
 	let ekey = key_to_ekey key in
-	  display_iterations key_cnt "fetch_keys" 100;
+	  display_iterations key_cnt "fetch_keys" 10000;
 	  add_key_without_duplicate keys_so_far ekey
       with
 	| Skipped_key (reason, keyid) ->
