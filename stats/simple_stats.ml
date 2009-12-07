@@ -3,7 +3,10 @@ open Printf
 
 let today = Unix.time ()
 
-let extract_first l = Option.get (List.hd l)
+let extract_first l = 
+  match l with 
+    | hd :: tl -> Option.get hd
+    | [] -> 0L
 
 let all_keys_stats dbh =
   let overall = PGSQL(dbh) "select count(*) from keys where revoktime is null and (exptime is null or exptime > $today)" in
@@ -28,7 +31,7 @@ let all_keys_stats dbh =
   let keys_with_expire_date = PGSQL(dbh) "select count(*) from keys where revoktime is null and exptime is not null and exptime > $today" in
   let avg_uids = PGSQL(dbh) "select avg(total) from (select keyid, count(*) as total from uids group by keyid) as uids_per_key" in
   let revoked = PGSQL(dbh) "select count(*) from keys where revoktime is not null" in
-    printf "total number of keys %Ld\n (not expired and not revoked" (extract_first overall);
+    printf "total number of keys %Ld (not expired and not revoked)\n" (extract_first overall);
     printf "number of revoked keys %Ld\n" (extract_first revoked);
     printf "number of rsa keys %Ld\n" (extract_first rsa_keys);
     printf "number of dsa keys %Ld\n" (extract_first dsa_keys);
