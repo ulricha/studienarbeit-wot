@@ -132,6 +132,7 @@ let insert_sig_list dbh signee esig_list =
   let insert_esig esig =
     let (signer, info) = esig in
     let signer = keyid_to_string signer in
+    let signee = keyid_to_string signee in
     let level = Int32.of_int info.sig_level in
     let exptime = info.sig_exptime in
     let revoktime = info.sig_revoktime in
