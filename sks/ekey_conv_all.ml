@@ -88,6 +88,7 @@ let search_self_sig own_keyid siglist =
 	  else
 	    loop tl
       | [] -> 
+	  printf "%s siglist length %d\n" (keyid_to_string own_keyid) (List.length siglist);
 	  None
   in
     loop siglist
@@ -171,6 +172,7 @@ let handle_user_packet pkey pubkey_info result (uid_packet, siglist) =
 	let (sigs, puid, uids, valid_selfsig, exptime) = result in
 	let uid = uid_packet.Packet.packet_body in
  	let own_keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
+	let siglist = sort_reverse_siginfo_list siglist in
 	  ( match search_self_sig own_keyid siglist with
 	    | None -> result
 	    | Some (puid_flag_new, exptime_new) ->
@@ -195,6 +197,7 @@ let key_to_ekey key =
     let v3_expiry_date = v3_absolute_expire_date pubkey_info in
     let revocation_time = get_revocation_date sig_pkey.info_selfsigs in
     let start = (Signature_set.empty, None, [], false, None) in
+    let pk_version = pubkey_info.Packet.pk_version in
     let (sigs, puid_option, uids, valid_selfsig, exptime) = 
       List.fold_left handle_user_packet start sig_pkey.info_uids 
     in
@@ -208,7 +211,7 @@ let key_to_ekey key =
 		uid
 	in
 	let exptime =
-	  match pubkey_info.Packet.pk_version with
+	  match pk_version with
 	    | 4 -> exptime
 	    | 2 | 3 -> v3_expiry_date
 	    | _ -> raise (Skip_key (Unparseable, "Unparseable: unknown version"))
@@ -219,6 +222,7 @@ let key_to_ekey key =
 	let ctime = Int64.to_float pubkey_info.Packet.pk_ctime in
 	let pki = 
 	  { key_keyid = keyid; 
+	    key_version = pk_version;
 	    key_puid = puid; 
 	    key_alg = algo; 
 	    key_len = keylen;
@@ -230,9 +234,11 @@ let key_to_ekey key =
 	in
 	  { pki = pki; signatures = siglist }
       else
-	raise (Skip_key (No_valid_selfsig, "key_to_ekey: found no valid selfsignature -> skip key"))
+	let msg = sprintf "key_to_ekey: found no valid selfsignature -> skip key (version %d)" pk_version in
+	  raise (Skip_key (No_valid_selfsig, msg))
   with
     | Skip_key (reason, s) ->
+	print_endline s;
 	let keyid = Fingerprint.keyid_from_packet (List.hd key) in
 	  raise (Skipped_key (reason, keyid))
     | ParsePGP.Overlong_mpi 

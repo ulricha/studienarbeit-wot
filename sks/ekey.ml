@@ -20,6 +20,7 @@ type esiginfo = { mutable sig_puid_signed: bool;
 type esignature = (string * esiginfo) with sexp
 
 type epki = { key_keyid: string;
+	      key_version: int;
 	      key_puid: string;
 	      key_all_uids: string list;
 	      key_ctime: float;
