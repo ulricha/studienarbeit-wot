@@ -51,7 +51,7 @@ let all_keys_stats dbh =
     printf "number of 4096-bit dsa keys %Ld\n" (extract_first dsa_4096);
     printf "number of dsa keys with unusual key lengths %Ld\n" (extract_first dsa_unusual);
     printf "keys with expire dates %Ld\n" (extract_first keys_with_expire_date);
-    printf "average number of uids per key %f\n" (Option.get (List.hd avg_uids))
+    printf "average number of uids per key %f (unreliable)\n" (Option.get (List.hd avg_uids))
 
 let mscc_keys_stats dbh =
   let overall = PGSQL(dbh) "select count(*) from keys inner join component_ids on keys.keyid = component_ids.keyid where component_id = 0 and revoktime is null and  (exptime is null or exptime > $today)" in
@@ -96,7 +96,7 @@ let mscc_keys_stats dbh =
     printf "number of dsa keys with unusual key lengths %Ld\n" (extract_first dsa_unusual);
 
     printf "keys with expire dates %Ld\n" (extract_first keys_with_expire_date);
-    printf "average number of uids per key %f\n" (Option.get (List.hd avg_uids))
+    printf "average number of uids per key %f (unreliable)\n" (Option.get (List.hd avg_uids))
 
 let sig_stats_overall dbh =
   let overall_sigs = PGSQL(dbh) "SELECT COUNT(*) FROM sigs" in
