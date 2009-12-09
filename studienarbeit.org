@@ -97,9 +97,9 @@ Schlüsseln/Signaturen zerfallen sind.
     - State "DONE"       [2009-11-30 Mon 17:24]
     - State "TODO"       [2009-11-12 Thu 12:07]
 *** TODO Einen Algorithmus auswählen und implementieren
-** TODO Besseres Zentralitätsmass
 ** TODO Zeitlichen Verlauf der ZKs untersuchen
 
+** TODO Daten analysieren und interpretieren
 * Lablog
 ** Notizen <2009-11-05 Thu> 
 *** Frage: Woher stammen die Signaturen?
@@ -236,6 +236,21 @@ Schlüsseln/Signaturen zerfallen sind.
     ca. 42000 Keys zu liegen.
 
     Möglichkeit: Noch mal einen neuen Dump ziehen und vergleichen.
+** Notizen <2009-12-08 Tue>
+*** Resolution-Limit bei Modularity
+    Modularity hat anscheinend eine Auflösungsgrenze (resolution
+    limit), die es schwierig oder sogar unmöglich macht, Communities
+    unterhalb einer gewissen Mindestgrösse zu finden. (Siehe Good2009,
+    Leung2009).
+*** Near-linear paralleisierbarer Algorithmus
+    Siehe Leung2009, dort auch interessante Aspekte über Modularity,
+    Performance-Vergleich mit Modularity-Methoden.
+*** Giant component
+    Die Komponentenstruktur und insbesondere ihre Grössenverteilung
+    müsste mit der Literatur verglichen werden. Insbesondere scheint
+    es in random graphs normal zu sein, dass eine giant component
+    entsteht und der Rest der Komponenten sehr viel kleiner ist
+    (Newman2001).
 * org-mode configuration
 #+STARTUP: overview
 #+STARTUP: hidestars
