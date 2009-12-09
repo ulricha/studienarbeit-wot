@@ -35,7 +35,7 @@ type sig_status =
   | Irrelevant_sigtype
 
 (* return true if this is the puid, false otherwise *)
-let get_self_sig_status siginfo keyid =
+let get_self_sig_status siginfo own_keyid =
   match siginfo.Index.sigtype with
     | 0x30 ->
 	(* uid is revoked *)
@@ -50,7 +50,7 @@ let get_self_sig_status siginfo keyid =
 	(* subkeys -> ignore *)
 	Irrelevant_sigtype
     | _ as t -> 
-	printf "handle_self_sig: unexpected signature type 0x%x\n" t;
+	printf "handle_self_sig: %s unexpected signature type 0x%x\n" (keyid_to_string own_keyid) t;
 	Irrelevant_sigtype
 
 (* return Some esig if this signature is valid, None otherwise *)
@@ -68,6 +68,29 @@ let get_foreign_sig_status siginfo =
     | t ->
 	(* skip unexpected/irrelevant sig type *)
 	Irrelevant_sigtype
+
+let search_self_sig own_keyid siglist =
+  let rec loop siglist =
+    match siglist with
+      | signature :: tl ->
+	  if is_signature_valid signature then
+	    let issuer_keyid = Option.get signature.Index.keyid in
+	      if own_keyid = issuer_keyid then
+		(* this is a selfsig *)
+		match get_self_sig_status signature own_keyid with
+		  | Revoked revoktime -> None
+		  | Valid_selfsig (puid_flag, exptime) -> Some (puid_flag, exptime)
+		  | Irrelevant_sigtype -> loop tl
+		  | Valid_foreignsig _ -> failwith (sprintf "%s encountered foreign sig with own keyid" (keyid_to_string own_keyid))
+	      else
+		(* not a selfsig *)
+		loop tl
+	  else
+	    loop tl
+      | [] -> 
+	  None
+  in
+    loop siglist
 
 (* if we encounter a cert revocation, search for the revoked sig and include it
    together with the revoke time. *)
@@ -105,72 +128,61 @@ let handle_foreign_sig own_keyid current_sig remaining_sigs ignore_set =
       | Valid_selfsig _ -> 
 	  failwith "encountered Valid_selfsig in foreign sig -> WTF?"
 
-let extract_sigs keyid siglist pubkey_info =
-  let rec handle results l =
-    let (esigs, ignore_set, is_puid, valid_selfsig, keyexptime) = results in
-      match l with
-	| siginfo :: tl -> 
-	    if is_signature_valid siginfo then
-	      let issuer_keyid = 
-		try 
-		  Option.get siginfo.Index.keyid 
-		with Option.No_value -> 
-		  failwith "handle_foreign_sig: sig without keyid"
-	      in
-		if Keyid_set.mem issuer_keyid ignore_set then
-		  handle (esigs, ignore_set, is_puid, valid_selfsig, keyexptime) tl
-		else
-		  if keyid = issuer_keyid then
-		    match get_self_sig_status siginfo keyid with
-		      | Revoked _ -> raise (Skip_uid "uid revoked")
-		      | Irrelevant_sigtype -> 
-			  handle results tl
-		      | Valid_foreignsig _ ->
-			  failwith "encountered Valid_foreignsig in foreign sig -> WTF?"
-		      | Valid_selfsig (is_puid, keyexptime) ->
-			  let ignore_set = Keyid_set.add keyid ignore_set in
-			    handle (esigs, ignore_set, is_puid, true, keyexptime) tl
-		  else
-		    let (ignore_set, sig_option) = handle_foreign_sig keyid siginfo tl ignore_set in
-		      match sig_option with
-			| Some esiginfo ->
-			    let esigs = Signature_set.add (issuer_keyid, esiginfo) esigs in
-			      handle (esigs, ignore_set, is_puid, valid_selfsig, keyexptime) tl
-			| None ->
-			    handle (esigs, ignore_set, is_puid, valid_selfsig, keyexptime) tl
-			    
-	    else
-	      handle (esigs, ignore_set, is_puid, valid_selfsig, keyexptime) tl
-	| [] -> (esigs, is_puid, valid_selfsig, keyexptime)
+let collect_foreign_sigs own_keyid siglist =
+  let rec loop raw_siglist collected_sigs ignore_set =
+    match raw_siglist with
+      | signature :: tl ->
+	  if is_signature_valid signature then
+	    (* sigs without keyid are excluded via is_signature_valid *)
+	    let issuer_keyid = Option.get signature.Index.keyid in
+	      if Keyid_set.mem issuer_keyid ignore_set || issuer_keyid = own_keyid then
+		loop tl collected_sigs ignore_set
+	      else
+		(match handle_foreign_sig own_keyid signature tl ignore_set with
+		   | (updated_ignore_set, Some esig) ->
+		       (* found a foreign sig *)
+		       loop tl (Signature_set.add (issuer_keyid, esig) collected_sigs) updated_ignore_set
+		   | (updated_ignore_set, None) ->
+		       (* found no useable foreign sig *)
+		       loop tl collected_sigs updated_ignore_set)
+	  else
+	    loop tl collected_sigs ignore_set
+      | [] ->
+	  collected_sigs
   in
-  let siglist_reverse = sort_reverse_siginfo_list siglist in
-  let start = (Signature_set.empty, Keyid_set.empty, false, false, None) in
-  let (esigs, is_puid, valid_selfsig, keyexptime) = handle start siglist_reverse in
-    (esigs, is_puid, valid_selfsig, keyexptime)
+    loop siglist Signature_set.empty Keyid_set.empty
 
-let handle_uid pkey pubkey_info (sigs, puid, uids, valid_selfsig, exptime) (uid_packet, siglist) =
+let update_puid puid_old_option uid puid_flag =
+    match (puid_old_option, puid_flag) with
+      |	((Some puid_old) as old, _)  -> old
+      | (None, true) -> Some uid
+      | (None, false) -> None
+
+let update_exptime exptime_old exptime_new =
+  match (exptime_old, exptime_new) with
+    | (Some e1, Some e2) -> Some e2
+    | (None, None) -> None
+    | (Some e, None) -> Some e
+    | (None, Some e) -> Some e
+
+let handle_user_packet pkey pubkey_info result (uid_packet, siglist) =
   match uid_packet.Packet.packet_type with
     | Packet.User_ID_Packet ->
-	(try 
-	  let uid = uid_packet.Packet.packet_body in
-	  let keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
-	  let (new_sigs, puid_flag, valid_selfsig, keyexptime) = 
-	    extract_sigs keyid siglist pubkey_info in
-	  let sigs = Signature_set.union sigs new_sigs in
-	  let uids = uid :: uids in
-	  let puid = 
-	    if puid_flag then
-	      match puid with
-		| Some puid -> Some uid
-		| None -> Some uid
-	    else
-	      puid
-	  in
-	    (sigs, puid, uids, valid_selfsig, keyexptime)
-	with Skip_uid s -> (sigs, puid, uids, valid_selfsig, None))
+	let (sigs, puid, uids, valid_selfsig, exptime) = result in
+	let uid = uid_packet.Packet.packet_body in
+ 	let own_keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
+	  ( match search_self_sig own_keyid siglist with
+	    | None -> result
+	    | Some (puid_flag_new, exptime_new) ->
+		let puid = update_puid puid uid puid_flag_new in
+		let exptime = update_exptime exptime exptime_new in
+		let new_sigs = collect_foreign_sigs own_keyid siglist in
+		let total_sigs = Signature_set.union sigs new_sigs in
+		let total_uids = uid :: uids in
+		  (total_sigs, puid, total_uids, true, exptime) )
     | Packet.User_Attribute_Packet ->
-	(sigs, puid, uids, valid_selfsig, exptime)
-    | _ ->
+	result
+   | _ ->
 	failwith "key_to_ekey: unexpected packet type in uid list"
 
 let key_to_ekey key =
@@ -178,13 +190,13 @@ let key_to_ekey key =
     let pkey = KeyMerge.parse_keystr (KeyMerge.key_to_stream key) in
     let keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
     let pubkey_info = ParsePGP.parse_pubkey_info pkey.KeyMerge.key in
-    let handle_uid = handle_uid pkey pubkey_info in
+    let handle_user_packet = handle_user_packet pkey pubkey_info in
     let sig_pkey = pkey_to_pkey_siginfo pkey in
     let v3_expiry_date = v3_absolute_expire_date pubkey_info in
     let revocation_time = get_revocation_date sig_pkey.info_selfsigs in
     let start = (Signature_set.empty, None, [], false, None) in
     let (sigs, puid_option, uids, valid_selfsig, exptime) = 
-      List.fold_left handle_uid start sig_pkey.info_uids 
+      List.fold_left handle_user_packet start sig_pkey.info_uids 
     in
       if valid_selfsig then
 	let puid = 
