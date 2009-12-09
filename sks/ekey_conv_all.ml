@@ -234,7 +234,7 @@ let key_to_ekey key =
 	in
 	  { pki = pki; signatures = siglist }
       else
-	let msg = sprintf "key_to_ekey: found no valid selfsignature -> skip key (version %d)" pk_version in
+	let msg = sprintf "key_to_ekey: no valid selfsignature -> skip key (version %d) %s" pk_version (keyid_to_string keyid) in
 	  raise (Skip_key (No_valid_selfsig, msg))
   with
     | Skip_key (reason, s) ->
