@@ -110,14 +110,15 @@ let validate_string o =
 
 let insert_epki dbh epki =
   let keyid = keyid_to_string epki.key_keyid in
+  let version = Int32.of_int epki.key_version in
   let puid = validate_string epki.key_puid in
   let ctime = epki.key_ctime in
   let exptime = epki.key_exptime in
   let revoktime = epki.key_revoktime in
   let key_alg = Int32.of_int epki.key_alg in
   let key_len = Int32.of_int epki.key_len in
-    PGSQL(dbh) "INSERT into keys (keyid, puid, ctime, exptime, revoktime, alg, keylen)
-    values ($keyid, $puid, $ctime, $?exptime, $?revoktime, $key_alg, $key_len)"
+    PGSQL(dbh) "INSERT into keys (keyid, version, puid, ctime, exptime, revoktime, alg, keylen)
+    values ($keyid, $version, $puid, $ctime, $?exptime, $?revoktime, $key_alg, $key_len)"
 
 let insert_uid_list dbh epki =
   let keyid = keyid_to_string epki.key_keyid in
