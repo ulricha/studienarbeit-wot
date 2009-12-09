@@ -1,7 +1,7 @@
-create table keys (keyid char(16) primary key, puid text not null, ctime float not null, exptime float, revoktime float, alg int not null, keylen int not null);
+create table keys (keyid char(16) primary key, version int not null, puid text not null, ctime float not null, exptime float, revoktime float, alg int not null, keylen int not null);
 
-create table uids (keyid char(16) references keys(keyid), uid text, primary key(keyid, uid));
+create table uids (keyid char(16), uid text, primary key(keyid, uid));
 
-create table sigs (signer char(16) references keys(keyid), signee char(16) references keys(keyid), level int not null check (level >= 16 and level <= 19), exptime float, ctime float not null, revoktime float, hash_alg int not null, pk_alg int not null);
+create table sigs (signer char(16), signee char(16), level int not null check (level >= 16 and level <= 19), exptime float, ctime float not null, revoktime float, hash_alg int not null, pk_alg int not null) primary key (signer, signee);
 
-create table component_ids (keyid char(16) primary key references keys(keyid), component_id int not null);
+create table component_ids (keyid char(16) primary_key, component_id int not null);
