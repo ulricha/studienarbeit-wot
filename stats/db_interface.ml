@@ -12,7 +12,7 @@ let get_keys_per_period dbh interval_list keyids =
   print_endline "get_keys_per_period";
   let get (interval_start, interval_end) =
     let records = 
-      PGSQL(dbh) "SELECT * FROM keys where ctime >= $interval_start AND ctime <= $interval_end AND keyid in $@keyids"
+      PGSQL(dbh) "SELECT * FROM keys where ctime >= $interval_start AND ctime <= $interval_end AND (exptime IS NULL OR exptime > $interval_end) AND (revoktime IS NULL OR revoktime > $interval_end) AND keyid in $@keyids"
     in
       print_endline (Printf.sprintf "get interval %f keys %d" interval_start (List.length records));
       (interval_start, records)
@@ -23,7 +23,7 @@ let get_keys_per_period_cid dbh interval_list cid =
   print_endline "get_keys_per_period";
   let get (interval_start, interval_end) =
     let records = 
-      PGSQL(dbh) "SELECT keys.keyid, keys.puid, keys.ctime, keys.exptime, keys.revoktime, keys.alg, keys.keylen FROM keys inner join component_ids on keys.keyid = component_ids.keyid where component_id = $cid AND ctime >= $interval_start AND ctime <= $interval_end AND (revoktime IS NULL OR revoktime > $interval_end)"
+      PGSQL(dbh) "SELECT keys.keyid, keys.version, keys.puid, keys.ctime, keys.exptime, keys.revoktime, keys.alg, keys.keylen FROM keys inner join component_ids on keys.keyid = component_ids.keyid where component_id = $cid AND ctime >= $interval_start AND ctime <= $interval_end AND (revoktime IS NULL OR revoktime > $interval_end)"
     in
       print_endline (Printf.sprintf "get interval %f keys %d" interval_start (List.length records));
       (interval_start, records)
