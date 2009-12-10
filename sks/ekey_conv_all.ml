@@ -195,6 +195,7 @@ let get_subkey_sig_status siginfo own_keyid =
 	printf "handle_self_sig: %s unexpected signature type 0x%x\n" (keyid_to_string own_keyid) t;
 	Irrelevant_sigtype
 
+(* how to handle revoked subkeys and signatures made by revoked subkeys *)
 let handle_subkey pkey pubkey_info result (subkey_packet, siglist) =
   match subkey_packet.Packet.packet_type with
     | Packet.Public_Subkey_Packet ->
