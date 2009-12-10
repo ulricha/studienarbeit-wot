@@ -187,13 +187,23 @@ let handle_uid pkey pubkey_info result (uid_packet, siglist) =
    | _ ->
 	failwith "key_to_ekey: unexpected packet type in uid list"
 
-let handle_subkey pkey pubkey_info foreign_sigs (subkey_packet, siglist) =
+let get_subkey_sig_status siginfo own_keyid =
+  match siginfo.Index.sigtype with
+    | 0x18 -> Valid_selfsig (true, None)
+    | 0x28 -> Revoked (Option.get (i64_to_float_option siginfo.Index.sig_creation_time))
+    | _ as t -> 
+	printf "handle_self_sig: %s unexpected signature type 0x%x\n" (keyid_to_string own_keyid) t;
+	Irrelevant_sigtype
+
+let handle_subkey pkey pubkey_info result (subkey_packet, siglist) =
   match subkey_packet.Packet.packet_type with
     | Packet.Public_Subkey_Packet ->
+	let (subkey_ids, foreign_sigs) = result in
 	let own_keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
+	let subkey_keyid = Fingerprint.keyid_from_packet subkey_packet in
 	let siglist = sort_reverse_siginfo_list siglist in
 	let new_sigs = collect_foreign_sigs own_keyid siglist in
-	  Signature_set.union new_sigs foreign_sigs
+	  (subkey_keyid :: subkey_ids, (Signature_set.union new_sigs foreign_sigs))
     | _ ->
 	failwith "key_to_ekey: unexpected packet type in subkey list"
 
@@ -212,7 +222,9 @@ let key_to_ekey key =
     let (sigs, puid_option, uids, valid_selfsig, exptime) = 
       List.fold_left handle_uid start sig_pkey.info_uids
     in
-    let subkey_sigs = List.fold_left handle_subkey Signature_set.empty sig_pkey.info_subkeys in
+    let (subkey_keyids, subkey_sigs) = 
+      List.fold_left handle_subkey ([], Signature_set.empty) sig_pkey.info_subkeys 
+    in
       if valid_selfsig then
 	let puid = 
 	  match puid_option with
@@ -245,7 +257,7 @@ let key_to_ekey key =
 	    key_revoktime = revocation_time;
 	  }
 	in
-	  { pki = pki; signatures = siglist }
+	  (subkey_keyids, { pki = pki; signatures = siglist })
       else
 	let msg = sprintf "key_to_ekey: no valid selfsignature -> skip key (version %d) %s" pk_version (keyid_to_string keyid) in
 	  raise (Skip_key (No_valid_selfsig, msg))

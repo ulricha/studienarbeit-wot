@@ -106,14 +106,33 @@ struct
       Enum.iter filter_single_key (Hashtbl.values tbl);
       printf "filtered %d sigs altogether\n" !c;
       flush stdout
+	
+  let replace_subkeyids_in_sigs ekey_tbl subkey_tbl =
+    let replace ekey =
+      let replaced = ref 0 in
+      let replace_subkeyid (signer, esiginfo) =
+	try 
+	  let new_signer = Hashtbl.find subkey_tbl signer in
+	    incr replaced;
+	    (new_signer, esiginfo)
+	with Not_found -> (signer, esiginfo)
+      in
+      let replaced_sigs = List.map replace_subkeyid ekey.signatures in
+	ekey.signatures <- replaced_sigs;
+	if !replaced <> 0 then
+	  printf "replaced %d subkeyids in signatures\n" !replaced
+    in
+      Enum.iter replace (Hashtbl.values ekey_tbl)
 
   let fetch_keys () =
     let key_cnt = ref 0 in
     let skipped_cnt = ref 0 in
     let keys_so_far = Hashtbl.create 3000000 in
+    let subkeyids = Hashtbl.create 3000000 in
     let extract_key ~hash ~key =
       try 
-	let ekey = key_to_ekey key in
+	let (subkey_ids, ekey) = key_to_ekey key in
+	  List.iter (fun sk_id -> Hashtbl.add subkeyids sk_id ekey.pki.key_keyid) subkey_ids;
 	  display_iterations key_cnt "fetch_keys" 10000;
 	  add_key_without_duplicate keys_so_far ekey
       with
@@ -129,11 +148,12 @@ struct
     in
       Keydb.iter ~f:extract_key;
       print_endline (sprintf "keys altogether %d skipped %d" !key_cnt !skipped_cnt);
-      keys_so_far
+      (keys_so_far, subkeyids)
 	  
   let run () =
     Keydb.open_dbs settings;
-    let keys = time_eval fetch_keys "fetch_keys" in
+    let (keys, subkeyids) = time_eval fetch_keys "fetch_keys" in
       filter_sigs_to_missing_keys keys;
+      replace_subkeyids_in_sigs keys subkeyids;
       dump_ekeys_to_file (Hashtbl.values keys) "ekeys_all.sexp"
 end
