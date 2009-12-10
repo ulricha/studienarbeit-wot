@@ -159,6 +159,7 @@ struct
     Keydb.open_dbs settings;
     let (keys, subkeyids) = time_eval fetch_keys "fetch_keys" in
       printf "number of bindings in subkeyids %d\n" (Hashtbl.length subkeyids);
+      flush stdout;
       filter_sigs_to_missing_keys keys;
       replace_subkeyids_in_sigs keys subkeyids;
       dump_ekeys_to_file (Hashtbl.values keys) "ekeys_all.sexp"
