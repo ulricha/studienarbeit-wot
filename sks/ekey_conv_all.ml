@@ -231,9 +231,10 @@ let key_to_ekey key =
     let (subkey_keyids, subkey_sigs) = 
       List.fold_left handle_subkey ([], Signature_set.empty) sig_pkey.info_subkeys 
     in
-      if List.length sig_pkey.info_subkeys <> 0  then
+      if List.length subkey_keyids <> 0  then
 	begin
-	  printf "length of subkey list %d\n" (List.length sig_pkey.info_subkeys)
+	  printf "%s length of subkeyid list %d\n" (keyid_to_string keyid) (List.length sig_pkey.info_subkeys);
+	  flush stdout
 	end;
       if valid_selfsig then
 	let puid = 

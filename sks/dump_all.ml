@@ -134,11 +134,6 @@ struct
       try 
 	let (subkey_ids, ekey) = key_to_ekey key in
 	  List.iter (fun sk_id -> Hashtbl.add subkeyids sk_id ekey.pki.key_keyid) subkey_ids;
-	  if List.length subkey_ids <> 0 then 
-	    begin
-	      printf "key has %d subkeyids\n" (List.length subkey_ids);
-	      flush stdout
-	    end;
 	  display_iterations key_cnt "fetch_keys" 10000;
 	  add_key_without_duplicate keys_so_far ekey
       with
