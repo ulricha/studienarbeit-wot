@@ -121,7 +121,10 @@ struct
       let replaced_sigs = List.map replace_subkeyid ekey.signatures in
 	ekey.signatures <- replaced_sigs;
 	if !replaced <> 0 then
-	  printf "replaced %d subkeyids in signatures\n" !replaced
+	  begin
+	    printf "replaced %d subkeyids in signatures\n" !replaced;
+	    flush stdout
+	  end;
     in
       Enum.iter replace (Hashtbl.values ekey_tbl)
 
