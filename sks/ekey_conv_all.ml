@@ -206,7 +206,7 @@ let handle_subkey pkey pubkey_info result (subkey_packet, siglist) =
 	let new_sigs = collect_foreign_sigs own_keyid siglist in
 	let pubkey_info = ParsePGP.parse_pubkey_info subkey_packet in
 	let alg = pubkey_info.Packet.pk_alg in
-	  if alg = 16 && alg = 2 then
+	  if alg = 16 || alg = 2 then
 	    (subkey_ids, (Signature_set.union new_sigs foreign_sigs))
 	  else
 	    (subkey_keyid :: subkey_ids, (Signature_set.union new_sigs foreign_sigs))
