@@ -166,7 +166,7 @@ let update_exptime exptime_old exptime_new =
     | (Some e, None) -> Some e
     | (None, Some e) -> Some e
 
-let handle_user_packet pkey pubkey_info result (uid_packet, siglist) =
+let handle_uid pkey pubkey_info result (uid_packet, siglist) =
   match uid_packet.Packet.packet_type with
     | Packet.User_ID_Packet ->
 	let (sigs, puid, uids, valid_selfsig, exptime) = result in
@@ -187,20 +187,32 @@ let handle_user_packet pkey pubkey_info result (uid_packet, siglist) =
    | _ ->
 	failwith "key_to_ekey: unexpected packet type in uid list"
 
+let handle_subkey pkey pubkey_info foreign_sigs (subkey_packet, siglist) =
+  match subkey_packet.Packet.packet_type with
+    | Packet.Public_Subkey_Packet ->
+	let own_keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
+	let siglist = sort_reverse_siginfo_list siglist in
+	let new_sigs = collect_foreign_sigs own_keyid siglist in
+	  Signature_set.union new_sigs foreign_sigs
+    | _ ->
+	failwith "key_to_ekey: unexpected packet type in subkey list"
+
 let key_to_ekey key =
   try
     let pkey = KeyMerge.parse_keystr (KeyMerge.key_to_stream key) in
     let keyid = Fingerprint.keyid_from_packet pkey.KeyMerge.key in
     let pubkey_info = ParsePGP.parse_pubkey_info pkey.KeyMerge.key in
-    let handle_user_packet = handle_user_packet pkey pubkey_info in
+    let handle_uid = handle_uid pkey pubkey_info in
+    let handle_subkey = handle_subkey pkey pubkey_info in
     let sig_pkey = pkey_to_pkey_siginfo pkey in
     let v3_expiry_date = v3_absolute_expire_date pubkey_info in
     let revocation_time = get_revocation_date sig_pkey.info_selfsigs in
     let start = (Signature_set.empty, None, [], false, None) in
     let pk_version = pubkey_info.Packet.pk_version in
     let (sigs, puid_option, uids, valid_selfsig, exptime) = 
-      List.fold_left handle_user_packet start sig_pkey.info_uids 
+      List.fold_left handle_uid start sig_pkey.info_uids
     in
+    let subkey_sigs = List.fold_left handle_subkey Signature_set.empty sig_pkey.info_subkeys in
       if valid_selfsig then
 	let puid = 
 	  match puid_option with
@@ -216,10 +228,11 @@ let key_to_ekey key =
 	    | 2 | 3 -> v3_expiry_date
 	    | _ -> raise (Skip_key (Unparseable, "Unparseable: unknown version"))
 	in
-	let siglist = Signature_set.elements sigs in
 	let algo = pubkey_info.Packet.pk_alg in
 	let keylen = pubkey_info.Packet.pk_keylen in
 	let ctime = Int64.to_float pubkey_info.Packet.pk_ctime in
+	let foreign_sigs = Signature_set.union sigs subkey_sigs in
+	let siglist = Signature_set.elements foreign_sigs in
 	let pki = 
 	  { key_keyid = keyid; 
 	    key_version = pk_version;

@@ -21,7 +21,8 @@ type sigpair_siginfo = Packet.packet * Index.siginfo list
 
 type pkey_siginfo = { info_key : Packet.packet;
 		      info_selfsigs: Index.siginfo list;
-		      info_uids: sigpair_siginfo list
+		      info_uids: sigpair_siginfo list;
+		      info_subkeys: sigpair_siginfo list
 		    }
 
 let pkey_to_pkey_siginfo k = 
@@ -33,7 +34,13 @@ let pkey_to_pkey_siginfo k =
 	   (fst pair, List.map Index.sig_to_siginfo (snd pair)))
 	k.KeyMerge.uids
     in
-      { info_key = k.KeyMerge.key; info_selfsigs = s; info_uids = uids }
+    let subkeys = 
+      List.map
+	(fun pair ->
+	   (fst pair, List.map Index.sig_to_siginfo (snd pair)))
+	k.KeyMerge.subkeys
+    in
+      { info_key = k.KeyMerge.key; info_selfsigs = s; info_uids = uids; info_subkeys = subkeys }
   with
     | _ -> raise Unparseable_signature_packet
 
