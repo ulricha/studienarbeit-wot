@@ -39,8 +39,7 @@ let main () =
     if Array.length Sys.argv = 2 then
       ("today", Unix.time ())
     else
-      let f = int_of_string Sys.argv.(2) in
-	(string_of_int f, float_of_int f)
+      (Sys.argv.(2), float_of_string Sys.argv.(2))
   in
   let keys = Db_interface.get_valid_signed_keys dbh timestamp in
   let sigs = Db_interface.get_valid_sigs dbh timestamp in
