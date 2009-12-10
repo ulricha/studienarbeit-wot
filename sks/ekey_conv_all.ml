@@ -226,6 +226,7 @@ let key_to_ekey key =
     let (subkey_keyids, subkey_sigs) = 
       List.fold_left handle_subkey ([], Signature_set.empty) sig_pkey.info_subkeys 
     in
+      
       if valid_selfsig then
 	let puid = 
 	  match puid_option with
@@ -258,7 +259,7 @@ let key_to_ekey key =
 	    key_revoktime = revocation_time;
 	  }
 	in
-	  (subkey_keyids, { pki = pki; signatures = siglist })
+	    (subkey_keyids, { pki = pki; signatures = siglist })
       else
 	let msg = sprintf "key_to_ekey: no valid selfsignature -> skip key (version %d) %s" pk_version (keyid_to_string keyid) in
 	  raise (Skip_key (No_valid_selfsig, msg))

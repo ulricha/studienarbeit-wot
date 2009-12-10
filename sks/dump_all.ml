@@ -108,6 +108,7 @@ struct
       flush stdout
 	
   let replace_subkeyids_in_sigs ekey_tbl subkey_tbl =
+    print_endline "replace_subkeyids_in_sigs";
     let replace ekey =
       let replaced = ref 0 in
       let replace_subkeyid (signer, esiginfo) =
@@ -133,6 +134,11 @@ struct
       try 
 	let (subkey_ids, ekey) = key_to_ekey key in
 	  List.iter (fun sk_id -> Hashtbl.add subkeyids sk_id ekey.pki.key_keyid) subkey_ids;
+	  if List.length subkey_ids <> 0 then 
+	    begin
+	      printf "key has %d subkeyids\n" (List.length subkey_ids);
+	      flush stdout
+	    end;
 	  display_iterations key_cnt "fetch_keys" 10000;
 	  add_key_without_duplicate keys_so_far ekey
       with
@@ -142,8 +148,7 @@ struct
 	    match reason with
 	      | Unparseable ->
 		  print_endline (sprintf "skipped unparseable key %s" (keyid_to_string keyid))
-	      | No_valid_selfsig ->
-		  print_endline (sprintf "skipped key without selfsig %s" (keyid_to_string keyid))
+	      | No_valid_selfsig -> ()
 	      | _ -> failwith "Expired and revoked keys should be ok"
     in
       Keydb.iter ~f:extract_key;
