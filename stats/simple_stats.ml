@@ -179,8 +179,10 @@ let main () =
     all_keys_stats dbh;
     print_endline "\n mscc keys:";
     mscc_keys_stats dbh;
-    print_endline "\n all sigs:";
-    sig_stats_overall dbh
+    print_endline "\nall sigs:";
+    sig_stats_overall dbh;
+    print_endline "\nmscc sigs:";
+    sig_stats_mscc dbh
 
 let _ = 
   try main () with
