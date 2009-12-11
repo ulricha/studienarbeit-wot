@@ -56,8 +56,7 @@ end
 module C = Make(G)
 
 let load_scc_list v_fname e_fname =
-  let storeable_g = load_structinfo_from_files v_fname e_fname in
-  let g = graph_from_structinfo storeable_g in
+  let g = load_graph_from_file e_fname in
   let scc_list = C.scc_list g in
   let scc_list_sorted = list_list_sort_reverse scc_list in
     (g, scc_list_sorted)
