@@ -5,3 +5,7 @@ create table uids (keyid char(16), uid text, primary key (keyid, uid));
 create table sigs (signer char(16), signee char(16), level int not null check (level >= 16 and level <= 19), exptime float, ctime float not null, revoktime float, hash_alg int not null, pk_alg int not null, primary key (signer, signee));
 
 create table component_ids (keyid char(16) primary key, component_id int not null);
+
+create view mscc_keys as select keys.keyid, version, puid, ctime, exptime, revoktime, alg, keylen from keys inner join component_ids on keys.keyid = component_ids.keyid and component_ids.component_id = 0;
+
+create view mscc_sigs as (select signer, signee, level, exptime, ctime, revoktime, hash_alg, pk_alg from sigs inner join component_ids on component_ids.keyid = sigs.signer where component_ids.component_id = 0) intersect (select signer, signee, level, exptime, ctime, revoktime, hash_alg, pk_alg from sigs inner join component_ids on component_ids.keyid = sigs.signee where component_ids.component_id = 0);
