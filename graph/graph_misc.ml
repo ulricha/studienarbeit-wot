@@ -80,6 +80,14 @@ module type G = sig
   val iter_vertex : (V.t -> unit) -> t -> unit
 end
 
+let apply_lines input f = 
+  try
+    while true do
+      let line = IO.read_line input in
+	f line
+    done;
+  with IO.No_more_input -> ()
+
 module Graph_helpers(G : G) = struct
 
   exception Abort
@@ -96,3 +104,4 @@ module Graph_helpers(G : G) = struct
       with Abort -> !v
 
 end
+

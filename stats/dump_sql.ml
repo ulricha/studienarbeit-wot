@@ -187,10 +187,7 @@ let apply_lines input f =
   try
     while true do
       let line = IO.read_line input in
-	try
-	  f line
-	with PGOCaml.PostgreSQL_Error (s, _) ->
-	  Printf.printf "caught pg backend exception: %s\n" s
+	f line
     done;
   with Overflow s -> ()
     | IO.No_more_input -> ()
@@ -199,12 +196,18 @@ let insert_records_from_file dbh fname =
   let open_file () = IO.input_channel (Pervasives.open_in fname) in
   let insert_keys_uids_from_string s =
     let epki = epki_from_sexp_string s in
-      insert_epki dbh epki;
-      insert_uid_list dbh epki
+      try
+	insert_epki dbh epki;
+	insert_uid_list dbh epki
+      with PGOCaml.PostgreSQL_Error (s, _) ->
+	Printf.printf "caught pg backend exception: %s\n" s
   in
   let insert_sigs_from_string s =
     let (signee, esigs) = esigs_from_sexp_string s in
-      insert_sig_list dbh signee esigs
+      try
+	insert_sig_list dbh signee esigs
+      with PGOCaml.PostgreSQL_Error (s, _) ->
+	Printf.printf "caught pg backend exception: %s\n" s
   in
   let input = open_file () in
     apply_lines input insert_keys_uids_from_string;
