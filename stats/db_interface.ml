@@ -42,7 +42,7 @@ let get_keys_per_period_all dbh interval_list =
     List.map get interval_list
 
 let get_valid_sigs dbh timestamp =
-  PGSQL(dbh) "(SELECT signer, signee FROM sigs INNER JOIN keys on sigs.signer = keys.keyid WHERE (keys.revoktime IS NULL OR keys.revoktime > $timestamp) AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp)) intersect (SELECT signer, signee FROM sigs INNER JOIN keys on sigs.signee = keys.keyid WHERE (keys.revoktime IS NULL OR keys.revoktime > $timestamp) AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp))"
+  PGSQL(dbh) "(SELECT signer, signee FROM sigs INNER JOIN keys on sigs.signer = keys.keyid WHERE (keys.revoktime IS NULL OR keys.revoktime > $timestamp) AND (keys.exptime IS NULL OR keys.exptime > $timestamp) AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp)) intersect (SELECT signer, signee FROM sigs INNER JOIN keys on sigs.signee = keys.keyid WHERE (keys.revoktime IS NULL OR keys.revoktime > $timestamp) AND (keys.exptime IS NULL OR keys.exptime > $timestamp) AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp))"
 
 let get_valid_signed_keys dbh timestamp =
   PGSQL(dbh) "SELECT distinct keyid FROM keys INNER JOIN sigs on sigs.signer = keys.keyid OR sigs.signee = keys.keyid WHERE (keys.revoktime IS NULL OR keys.revoktime > $timestamp) AND (keys.exptime IS NULL OR keys.exptime > $timestamp) AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp)"
