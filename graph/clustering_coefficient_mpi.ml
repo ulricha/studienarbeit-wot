@@ -14,13 +14,13 @@ module Mpi_cc = Mpi_framework.Make(CC.Clustering_coefficient_job)
 
 (* mscc = maximum strongly connected component *)
 let _ =
-  if (Array.length Sys.argv) <> 3 then
-      print_endline "usage: basic_properties vertex.sexp edge.sexp";
+  if (Array.length Sys.argv) <> 2 then
+      print_endline "usage: basic_properties edge_file";
       exit (-1)
 
 let main () =
   let rank = Mpi.comm_rank Mpi.comm_world in
-  let (g, scc_list_sorted) = Component_helpers.load_scc_list Sys.argv.(1) Sys.argv.(2) in
+  let (g, scc_list_sorted) = Component_helpers.load_scc_list Sys.argv.(1) in
   let mscc_nodelist = List.hd scc_list_sorted in
   let smaller_components_nodelists = List.tl scc_list_sorted in
   let mscc = C.graph_from_node_list mscc_nodelist g in

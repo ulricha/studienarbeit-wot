@@ -15,12 +15,12 @@ module Mpi_betweeness = Mpi_framework.Make(B.Betweeness_job)
 (* mscc = maximum strongly connected component *)
 let _ =
   if (Array.length Sys.argv) <> 3 then
-    print_endline "usage: betweeness_mpi vertex.sexp edge.sexp";
+    print_endline "usage: betweeness_mpi edge_filename";
   exit (-1)
 
 let main () =
   let rank = Mpi.comm_rank Mpi.comm_world in
-  let (g, scc_list_sorted) = Component_helpers.load_scc_list Sys.argv.(1) Sys.argv.(2) in
+  let (g, scc_list_sorted) = Component_helpers.load_scc_list Sys.argv.(1) in
   let mscc_nodelist = List.hd scc_list_sorted in
   let smaller_components_nodelists = List.tl scc_list_sorted in
   let mscc = C.graph_from_node_list mscc_nodelist g in

@@ -48,18 +48,18 @@ let export_igraph_index g fname =
       File.with_file_out fname write_index
 
 let _ = 
-  if Array.length Sys.argv <> 6 then (
-    print_endline "usage: simple_stats vertex.sexp edge.sexp output_file output_file_undirected igraph_directed";
+  if Array.length Sys.argv <> 5 then (
+    print_endline "usage: simple_stats edge_file output_file output_file_undirected igraph_directed";
     exit 1)
 
 module Components = Component_helpers.Make(G)
 
 let main () =
-  let (g, mscc) = Component_helpers.load_mscc Sys.argv.(1) Sys.argv.(2) in
+  let (g, mscc) = Component_helpers.load_mscc Sys.argv.(1) in
   let mscc_g = Components.graph_from_node_list mscc g in
-    export_cfinder mscc_g Sys.argv.(3);
-    export_cfinder_undirected mscc_g Sys.argv.(4);
-    export_igraph_index g Sys.argv.(5)
+    export_cfinder mscc_g Sys.argv.(2);
+    export_cfinder_undirected mscc_g Sys.argv.(3);
+    export_igraph_index g Sys.argv.(4)
 
 let _ = 
   try main () with

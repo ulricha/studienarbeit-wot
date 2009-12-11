@@ -20,15 +20,15 @@ let print_basic_values (nr_vertex, nr_edges, indeg_map, outdeg_map, avg_indeg) g
 
 (* mscc = maximum strongly connected component *)
 let () =
-  if (Array.length Sys.argv) <> 3 then
+  if (Array.length Sys.argv) <> 2 then
     begin
-      print_endline "usage: basic_properties vertex.sexp edges.sexp";
+      print_endline "usage: basic_properties edge_file";
       exit (-1)
     end
   else
     begin
       print_endline "compute basic properties of wot graph";
-      let (g, scc_list_sorted) = Component_helpers.load_scc_list Sys.argv.(1) Sys.argv.(2) in
+      let (g, scc_list_sorted) = Component_helpers.load_scc_list Sys.argv.(1)  in
       let bench = time_iterations "distance_statistics" 1000 in
 	C.overall_component_properties scc_list_sorted;
 	let basic_res = Statistics.basic_network_statistics g in

@@ -105,15 +105,15 @@ let print_statistics key_records sig_ctimes =
     domain_distribution slds 1
 
 let _ =
-  if Array.length Sys.argv <> 5 then (
-    print_endline "investigate_components db vertex.sexp edge.sexp min_size";
+  if Array.length Sys.argv <> 4 then (
+    print_endline "investigate_components db edge_file min_size";
     exit 1)
 
 let main () =
-  let minsize = int_of_string Sys.argv.(4) in
-    print_endline ("investigate smaller components down to size " ^ Sys.argv.(4));
+  let minsize = int_of_string Sys.argv.(3) in
+    print_endline ("investigate smaller components down to size " ^ Sys.argv.(3));
     let dbh = PGOCaml.connect ~database:Sys.argv.(1) () in
-    let (g, scc_list_sorted) = Component_helpers.load_scc_list Sys.argv.(2) Sys.argv.(3) in
+    let (g, scc_list_sorted) = Component_helpers.load_scc_list Sys.argv.(2) in
     let rec loop l =
       match l with
 	| hd :: tl when (List.length hd) > 30000 -> 

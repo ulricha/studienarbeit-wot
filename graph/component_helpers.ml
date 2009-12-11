@@ -55,14 +55,14 @@ end
 
 module C = Make(G)
 
-let load_scc_list v_fname e_fname =
+let load_scc_list e_fname =
   let g = load_graph_from_file e_fname in
   let scc_list = C.scc_list g in
   let scc_list_sorted = list_list_sort_reverse scc_list in
     (g, scc_list_sorted)
 
-let load_mscc v_fname e_fname =
-  let (g, scc_list_sorted) = load_scc_list v_fname e_fname in
+let load_mscc e_fname =
+  let (g, scc_list_sorted) = load_scc_list e_fname in
     (g, List.hd scc_list_sorted)
 
 let component_ids scc_list =
