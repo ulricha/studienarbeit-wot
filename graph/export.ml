@@ -59,7 +59,7 @@ let main () =
   let mscc_g = Components.graph_from_node_list mscc g in
     export_cfinder mscc_g Sys.argv.(2);
     export_cfinder_undirected mscc_g Sys.argv.(3);
-    export_igraph_index g Sys.argv.(4)
+    export_igraph_index mscc_g Sys.argv.(4)
 
 let _ = 
   try main () with
