@@ -1,5 +1,4 @@
-open ExtList;;
-open ExtString;;
+open Batteries
 
 type section = Names | Readme | Keys | Signatures | Debug | None | Version;;
 type cert_level = Generic | Persona | Casual | Positive;;
@@ -60,7 +59,7 @@ let parse_section_header input =
 let read_names input names size =
   let s = IO.really_nread input size in
   let name_list = Str.split (Str.regexp "\n") s in 
-    List.iter (fun name -> DynArray.add names name) name_list
+    List.iter (fun name -> Dyn_array.add names name) name_list
 
 let read_keys input keys size =
   let rec loop remaining =
@@ -68,7 +67,7 @@ let read_keys input keys size =
       ()
     else
       let keyid = IO.BigEndian.read_real_i32 input in
-	DynArray.add keys keyid;
+	Dyn_array.add keys keyid;
 	loop (remaining - 4);
   in
     loop size
@@ -82,7 +81,7 @@ let read_signatures inp signatures num =
       let number_of_sigs = Int32.to_int num_i32 in
       let rec loop_sigs count sig_list =
         if count = 0 then
-          DynArray.add signatures sig_list
+          Dyn_array.add signatures sig_list
         else
           let binsig = IO.BigEndian.read_real_i32 inp in
             loop_sigs (count - 1) ((parse_signature binsig) :: sig_list)
@@ -92,8 +91,12 @@ let read_signatures inp signatures num =
   in
     loop num
 
-let read_wotsap_file inc names keys signatures =
-  let input = IO.input_channel inc in
+let read_wotsap_file fname =
+  let names = Dyn_array.make 42000 in
+  let keyids = Dyn_array.make 42000 in
+  let signatures = Dyn_array.make 42000 in
+  let inc = Pervasives.open_in fname in
+  let input = File.open_in fname in
     if (IO.read_line input) = "!<arch>" then
       try
 	while true do
@@ -104,27 +107,21 @@ let read_wotsap_file inc names keys signatures =
 	      | Names -> 
 		  read_names input names size
 	      | Keys -> 
-		  read_keys input keys size
+		  read_keys input keyids size
 	      | Signatures -> 
-		  read_signatures input signatures (DynArray.length names)
+		  read_signatures input signatures (Dyn_array.length names)
 	      | Version -> 
 		  ignore (IO.really_nread input size);
 	      | Debug -> 
 		  seek_in inc ((pos_in inc) + size)
 	      | None -> raise (Wotsap_parse_error "no valid section header")
-	done
+	done;
+	(names, keyids, signatures)
       with IO.No_more_input -> 
-	assert ((DynArray.length names) = (DynArray.length keys));
-	assert ((DynArray.length names) = (DynArray.length signatures));
-	IO.close_in input
+	assert ((Dyn_array.length names) = (Dyn_array.length keyids));
+	assert ((Dyn_array.length names) = (Dyn_array.length signatures));
+	IO.close_in input;
+	(names, keyids, signatures)
     else
       raise (Wotsap_parse_error "no header found")
 
-let _ =
-  let inc = open_in (Sys.argv.(1)) in
-  let names = DynArray.make 41000 in
-  let keyids = DynArray.make 41000 in
-  let signatures = DynArray.make 41000 in
-    read_wotsap_file inc names keyids signatures;
-    close_in inc;
-    print_endline "foobar"

@@ -46,3 +46,6 @@ let get_valid_sigs dbh timestamp =
 
 let get_valid_signed_keys dbh timestamp =
   PGSQL(dbh) "SELECT distinct keyid FROM keys INNER JOIN sigs on sigs.signer = keys.keyid OR sigs.signee = keys.keyid WHERE (keys.revoktime IS NULL OR keys.revoktime > $timestamp) AND (keys.exptime IS NULL OR keys.exptime > $timestamp) AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp)"
+
+let get_mscc_keys dbh =
+  PGSQL(dbh) "SELECT keys.keyid FROM keys INNER JOIN component_ids ON keys.keyid = component_ids.keyid WHERE component_ids.component_id = 0"
