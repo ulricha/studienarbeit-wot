@@ -113,7 +113,7 @@ let read_wotsap_file fname =
   let keyids = Dyn_array.make 42000 in
   let signatures = Dyn_array.make 42000 in
   let inc = Pervasives.open_in fname in
-  let input = File.open_in fname in
+  let input = IO.input_channel inc in
     if (IO.read_line input) = "!<arch>" then
       try
 	while true do
