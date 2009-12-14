@@ -47,37 +47,24 @@ let strip_trailing_space s =
   with Not_found -> s
 
 let parse_section_header input =
-  print_endline "parse_section_header";
   let s = IO.really_nread input 16 in
-    print_endline s;
   let section_type = section_of_string (s) in
-    print_endline "section_type";
   let s = IO.really_nread input 12 in
-    print_endline s;
-
   let mtime = Int32.of_string (strip_trailing_space (s)) in
-    print_endline "mtime";
   let s = IO.really_nread input 6 in
-    print_endline s;
   let uid = int_of_string (strip_trailing_space (s)) in
-    print_endline "uid";
   let gid = int_of_string (strip_trailing_space (IO.really_nread input 6)) in
-    print_endline "gid";
   let mode = int_of_string (strip_trailing_space (IO.really_nread input 8)) in
-    print_endline "mode";
   let size = int_of_string  (strip_trailing_space (IO.really_nread input 10)) in
-    print_endline "size";
   let trailer = (strip_trailing_space (IO.really_nread input 2)) in
     section_type, mtime, uid, gid, mode, size, trailer
 
 let read_names input names size =
-  print_endline "read_names";
   let s = IO.really_nread input size in
   let name_list = Str.split (Str.regexp "\n") s in 
     List.iter (fun name -> Dyn_array.add names name) name_list
 
 let read_keys input keys size =
-  print_endline "read_keys";
   let rec loop remaining =
     if remaining = 0 then
       ()
@@ -89,7 +76,6 @@ let read_keys input keys size =
     loop size
 
 let read_signatures inp signatures num =
-  print_endline "read_signatures";
   let rec loop remaining =
     if remaining = 0 then
       ()
