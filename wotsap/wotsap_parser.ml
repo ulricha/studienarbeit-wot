@@ -57,11 +57,13 @@ let parse_section_header input =
     section_type, mtime, uid, gid, mode, size, trailer
 
 let read_names input names size =
+  print_endline "read_names";
   let s = IO.really_nread input size in
   let name_list = Str.split (Str.regexp "\n") s in 
     List.iter (fun name -> Dyn_array.add names name) name_list
 
 let read_keys input keys size =
+  print_endline "read_keys";
   let rec loop remaining =
     if remaining = 0 then
       ()
@@ -73,6 +75,7 @@ let read_keys input keys size =
     loop size
 
 let read_signatures inp signatures num =
+  print_endline "read_signatures";
   let rec loop remaining =
     if remaining = 0 then
       ()
