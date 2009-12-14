@@ -25,4 +25,4 @@ graph/export.native
 stats/db_scc_information.native
 stats/graph_snapshot.native
 stats/investigate_wotsap.native
-stats/investivate_wotsap.d.byte
+stats/investigate_wotsap.d.byte

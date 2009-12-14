@@ -51,9 +51,13 @@ let parse_section_header input =
   let section_type = section_of_string (IO.really_nread input 16) in
   let mtime = Int32.of_string (strip_trailing_space (IO.really_nread input 12)) in
   let uid = int_of_string (strip_trailing_space (IO.really_nread input 6)) in
+    print_endline "uid";
   let gid = int_of_string (strip_trailing_space (IO.really_nread input 6)) in
+    print_endline "gid";
   let mode = int_of_string (strip_trailing_space (IO.really_nread input 8)) in
+    print_endline "mode";
   let size = int_of_string  (strip_trailing_space (IO.really_nread input 10)) in
+    print_endline "size";
   let trailer = (strip_trailing_space (IO.really_nread input 2)) in
     section_type, mtime, uid, gid, mode, size, trailer
 
