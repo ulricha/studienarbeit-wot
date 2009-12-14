@@ -52,7 +52,7 @@ let parse_section_header input =
     print_endline s;
   let section_type = section_of_string (s) in
     print_endline "section_type";
-  let s = IO.really_nread input 16 in
+  let s = IO.really_nread input 12 in
     print_endline s;
 
   let mtime = Int32.of_string (strip_trailing_space (s)) in
