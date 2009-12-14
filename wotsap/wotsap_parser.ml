@@ -47,6 +47,7 @@ let strip_trailing_space s =
   with Not_found -> s
 
 let parse_section_header input =
+  print_endline "parse_section_header";
   let section_type = section_of_string (IO.really_nread input 16) in
   let mtime = Int32.of_string (strip_trailing_space (IO.really_nread input 12)) in
   let uid = int_of_string (strip_trailing_space (IO.really_nread input 6)) in
