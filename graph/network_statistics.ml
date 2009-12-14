@@ -51,18 +51,25 @@ module Make(G : Sig.G) = struct
       (* number of nodes in the 2-neighbourhood and 3-neighbourhood respectively *)
     let neigh_2 = ref 0 in
     let neigh_3 = ref 0 in
+    let neigh_4 = ref 0 in
+    let neigh_5 = ref 0 in
     let visit v d =
       if d <= 2 then 
 	incr neigh_2;
       if d <= 3 then 
 	incr neigh_3;
+      if d <= 4 then
+	incr neigh_4;
+      if d <= 5 then
+	incr neigh_5;
       if d > !ecc then 
 	ecc := d;
       accum_dist := !accum_dist + d
     in
       iter_component visit g u;
       let avg_dist = !accum_dist / (n-1) in
-      (!ecc, !accum_dist, avg_dist, !neigh_2, !neigh_3)
+      let neighbourhoods = (!neigh_2, !neigh_3, !neigh_4, !neigh_5) in
+      (!ecc, !accum_dist, avg_dist, neighbourhoods)
 
   let distance_statistics_vertex_subset g vlist bench =
     let compute_vertex l v =
@@ -103,21 +110,24 @@ module Make(G : Sig.G) = struct
 *)
 
   let distance_statistics g bench =
-    let compute_vertex v (dist_sum, ecc_map, dist_avg_map, n2_map, n3_map) =
-      let (ecc, dist_sum_v, dist_avg, neigh2_size, neigh3_size) =
+    let compute_vertex v (dist_sum, ecc_map, dist_avg_map, neigh_map) =
+      let (ecc, dist_sum_v, dist_avg, neighbourhoods) =
 	single_vertex_distance_statistics g v
       in
       let new_ecc_map = M.add v ecc ecc_map in
       let new_dist_avg_map = M.add v dist_avg dist_avg_map in
-      let new_n2_map = M.add v neigh2_size n2_map in
-      let new_n3_map = M.add v neigh3_size n3_map in
-	(dist_sum + dist_sum_v, new_ecc_map, new_dist_avg_map, new_n2_map, new_n3_map)
+      let neigh_map = M.add v neighbourhoods neigh_map in
+	(dist_sum + dist_sum_v, new_ecc_map, new_dist_avg_map, neigh_map)
     in
-    let init = (0, M.empty, M.empty, M.empty, M.empty) in
+    let init = (0, M.empty, M.empty, M.empty) in
       G.fold_vertex compute_vertex g init
 
+  let project_neigh5 m =
+    let p (n2, n3, n4, n5) = n5 in
+      M.map p m
+
   let analyze_and_print_results v_number graph_name results =
-    let (dist_sum, ecc_map, dist_avg_map, n2_map, n3_map) = results in
+    let (dist_sum, ecc_map, dist_avg_map, neigh_map) = results in
     let nr_pairs = float_of_int ((v_number * (v_number-1)) / 2) in
     let connected_avg_distance = (float_of_int dist_sum) /. nr_pairs in
     let (max_ecc, min_ecc) = enum_max_min (M.values ecc_map) in
@@ -125,27 +135,22 @@ module Make(G : Sig.G) = struct
     let median_avg_dist_per_node = median (Array.of_enum (M.values dist_avg_map)) in
     let ecc_dist = values_to_distribution (M.values ecc_map) in
     let avg_distance_dist = values_to_distribution (M.values dist_avg_map) in
-    let n2_dist = values_to_distribution (M.values n2_map) in
-    let n3_dist = values_to_distribution (M.values n3_map) in
-    let (max_2, min_2) = enum_max_min (M.values n2_map) in
-    let (max_3, min_3) = enum_max_min (M.values n3_map) in
+    let n5_map = project_neigh5 neigh_map in
+    let n5_dist = values_to_distribution (M.values n5_map) in
+    let (max_5, min_5) = enum_max_min (M.values n5_map) in
       print_endline ("complete_statistics " ^ graph_name);
       printf "eccentricity median %d max %d min %d\n" 
 	median_ecc max_ecc min_ecc;
       printf "(connected) average distance %f\n" connected_avg_distance;
       printf "median average distance per node %d\n" median_avg_dist_per_node;
-      printf "2-neighbourhood max %d min %d\n" max_2 min_2;
-      printf "3-neighbourhood max %d min %d\n" max_3 min_3;
+      printf "5-neighbourhood max %d min %d\n" max_5 min_5;
       write_distribution_to_file "%d %d\n"(Map.IntMap.enum avg_distance_dist) 
 	(graph_name ^ "-avg_distance_per_node_dist.plot");
       write_distribution_to_file "%d %d\n" (Map.IntMap.enum ecc_dist) 
 	(graph_name ^ "_ecc_dist.plot");
-      write_distribution_to_file "%d %d\n" (Map.IntMap.enum n2_dist)
-	(graph_name ^ "_neigh_2_dist.plot");
-      write_distribution_to_file "%d %d\n" (Map.IntMap.enum n3_dist) 
-	(graph_name ^ "_neigh_3_dist.plot");
-      write_int_values_to_file (M.values n2_map) (graph_name ^ "_n2.values");
-      write_int_values_to_file (M.values n3_map) (graph_name ^ "_n3.values");
+      write_distribution_to_file "%d %d\n" (Map.IntMap.enum n5_dist) 
+	(graph_name ^ "_neigh_5_dist.plot");
+      write_int_values_to_file (M.values n5_map) (graph_name ^ "_n5.values");
       write_int_values_to_file (M.values ecc_map) (graph_name ^ "_ecc.values");
       write_int_values_to_file (M.values dist_avg_map) (graph_name ^ "_avg_dist.values");
       
@@ -181,25 +186,24 @@ module Make(G : Sig.G) = struct
     let n = G.nb_vertex graph in
       analyze_and_print_results n graph_name results
 
-  let add_result_to_maps (dist_sum, ecc_map, dist_avg_map, n2_map, n3_map) (v, result) =
-    let (ecc, dist_sum_v, avg_dist, neigh2_size, neigh3_size) = result in
+  let add_result_to_maps (dist_sum, ecc_map, dist_avg_map, neigh_map) (v, result) =
+    let (ecc, dist_sum_v, avg_dist, neighbourhoods) = result in
     let new_ecc_map = M.add v ecc ecc_map in
     let new_dist_avg_map = M.add v avg_dist dist_avg_map in
-    let new_n2_map = M.add v neigh2_size n2_map in
-    let new_n3_map = M.add v neigh3_size n3_map in
-      (dist_sum + dist_sum_v, new_ecc_map, new_dist_avg_map, new_n2_map, new_n3_map)
+    let neigh_map = M.add v neighbourhoods neigh_map in
+      (dist_sum + dist_sum_v, new_ecc_map, new_dist_avg_map, neigh_map)
 
-  let combine_distance_results (dist_sum, ecc_map, dist_avg_map, n2_map, n3_map) alist =
-    let init = (0, M.empty, M.empty, M.empty, M.empty) in
+  let combine_distance_results (dist_sum, ecc_map, dist_avg_map, neigh_map) alist =
+    let init = (0, M.empty, M.empty, M.empty) in
       List.fold_left add_result_to_maps init alist
 
   module Distance_statistics_job = struct
     include G
       (* ecc, dist_sum_v, avg_dist, n2_size, n3_size *)
-    type worker_result = (G.V.t * (int * int * int * int * int)) list
+    type worker_result = (G.V.t * (int * int * int * (int * int * int * int))) list
     let worker_function = distance_statistics_vertex_subset
-    type combine_type = int * int M.t * int M.t * int M.t * int M.t
-    let combine_start = (0, M.empty, M.empty, M.empty, M.empty)
+    type combine_type = int * int M.t * int M.t * (int * int * int * int) M.t
+    let combine_start = (0, M.empty, M.empty, M.empty)
     let combine_results = combine_distance_results
     let jobname = "distance_statistics"
   end
