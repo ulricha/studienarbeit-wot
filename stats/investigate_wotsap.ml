@@ -24,6 +24,7 @@ let search_in_keyids l short_keyid =
 let main () =
   let dbh = PGOCaml.connect ~database:Sys.argv.(1) () in
   let keyids = Db_interface.get_mscc_keys dbh in
+    print_endline "fetched keyids from db";
   let (_, wotsap_keyids, _) = Wotsap_parser.read_wotsap_file Sys.argv.(2)  in
     Printf.printf "%d %d\n" (List.length keyids) (Dyn_array.length wotsap_keyids);
     Dyn_array.iter (search_in_keyids keyids) wotsap_keyids
