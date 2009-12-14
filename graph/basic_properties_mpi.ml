@@ -29,7 +29,9 @@ let _ =
   exit (-1)
 
 let main () =
+  print_endline "basic_properties";
   let rank = Mpi.comm_rank Mpi.comm_world in
+    printf "rank %d\n" rank; flush stdout;
   let (g, scc_list_sorted) = Component_helpers.load_scc_list Sys.argv.(1) in
   let mscc_nodelist = List.hd scc_list_sorted in
   let smaller_components_nodelists = List.tl scc_list_sorted in
