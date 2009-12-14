@@ -25,8 +25,10 @@ let print_basic_values (nr_vertex, nr_edges, indeg_map, outdeg_map, avg_indeg) g
 
 let _ =
   if (Array.length Sys.argv) <> 2 then
-    print_endline "usage: basic_properties edge_file";
-  exit (-1)
+    begin
+      print_endline "usage: basic_properties edge_file";
+      exit (-1)
+    end
 
 let main () =
   print_endline "basic_properties";
