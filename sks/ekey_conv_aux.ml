@@ -68,12 +68,31 @@ let is_signature_valid siginfo =
     | Some keyid -> true
     | None -> false
 
+(* v4 keys specify expiration time as the number of seconds after creation time
+   for which the key is valid *)
+let v4_absolute_expire_date exptime ctime =
+  match exptime with
+    | Some t when t = 0L -> None
+    | Some t -> Some (Int64.to_float (Int64.add (Option.get ctime) t))
+    | None -> None
+
+(* v3 keys specify expiration time as number of days relative to the creation time *)
+let v3_absolute_expire_date pubkeyinfo =
+  match pubkeyinfo.Packet.pk_expiration with
+    | Some d ->
+	let ctime = Int64.to_float pubkeyinfo.Packet.pk_ctime in
+	let valid = (float_of_int d) *. 24. *. 3600. in
+	  Some (ctime +. valid)
+    | None -> None
+
 let siginfo_to_esiginfo siginfo =
-  { sig_puid_signed = false; 
-    sig_level = siginfo.Index.sigtype; 
-    sig_hash_alg = siginfo.Index.siginfo_hash_alg;
-    sig_pk_alg = siginfo.Index.siginfo_pk_alg;
-    sig_ctime = i64_to_float_option siginfo.Index.sig_creation_time;
-    sig_exptime = i64_to_float_option siginfo.Index.sig_expiration_time;
-    sig_revoktime = None;
-  }
+  (* according to RFC 4880 v3 sigs don't contain a expiration time so this should be safe. *)
+  let exptime = v4_absolute_expire_date siginfo.Index.sig_expiration_time siginfo.Index.sig_creation_time in
+    { sig_puid_signed = false; 
+      sig_level = siginfo.Index.sigtype; 
+      sig_hash_alg = siginfo.Index.siginfo_hash_alg;
+      sig_pk_alg = siginfo.Index.siginfo_pk_alg;
+      sig_ctime = i64_to_float_option siginfo.Index.sig_creation_time;
+      sig_exptime = exptime;
+      sig_revoktime = None;
+    }

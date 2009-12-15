@@ -9,15 +9,6 @@ open Misc
 open Ekey_conv_aux
 open Ekey
 
-(* v3 keys specify expiration time as number of days relative to the creation time *)
-let v3_absolute_expire_date pubkeyinfo =
-  match pubkeyinfo.Packet.pk_expiration with
-    | Some d ->
-	let ctime = Int64.to_float pubkeyinfo.Packet.pk_ctime in
-	let valid = (float_of_int d) *. 24. *. 3600. in
-	  Some (ctime +. valid)
-    | None -> None
-
 let get_revocation_date selfsigs =
   let selfsigs = sort_reverse_siginfo_list selfsigs in
   let pred siginfo =
@@ -44,7 +35,7 @@ let get_self_sig_status siginfo own_keyid =
 	with Option.No_value ->
 	  failwith "get_self_sig_status: sig without creation time")
     | 0x10 | 0x11 | 0x12 | 0x13 ->
-	let key_exptime = i64_to_float_option siginfo.Index.key_expiration_time in
+	let key_exptime = v4_absolute_expire_date siginfo.Index.key_expiration_time siginfo.Index.sig_creation_time in
 	  Valid_selfsig ((siginfo.Index.is_primary_uid, key_exptime))
     | 0x18 | 0x28 ->
 	(* subkeys -> ignore *)
