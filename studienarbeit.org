@@ -88,15 +88,24 @@ Schlüsseln/Signaturen zerfallen sind.
 ** TODO Analyse der Community-Struktur
 *** DONE Kann der Graph ohne (wesentlichen) Informationsverlust in einen ungerichteten Graphen umgewandelt werden?
     CLOSED: [2009-11-05 Thu 18:17]
-*** TODO Was passiert, wenn in der MSCC (iterativ) Knoten vom Grad 1 entfernt werden? (outdegree/indegree)?
-    - State "TODO"       [2009-11-12 Thu 18:49]
-*** TODO Wie entwickelt sich der Graph, wenn (iterativ) Knoten mit Grad 1 entfernt werden?
-*** TODO Literatur über Community-Algorithmen sichten
+*** DONE Literatur über Community-Algorithmen sichten
+    CLOSED: [2009-12-15 Tue 14:40]
+    - State "DONE"       [2009-12-15 Tue 14:38]
 *** DONE Literaturrecherche: gibt es jemand der schon die Community-Struktur des WoT analysiert hat?
     CLOSED: [2009-11-30 Mon 17:25]
     - State "DONE"       [2009-11-30 Mon 17:24]
     - State "TODO"       [2009-11-12 Thu 12:07]
 *** TODO Einen Algorithmus auswählen und implementieren
+*** TODO Versuchen, mit igraph Ergebnisse zu erhalten
+**** TODO Berechnung mit fastgreedy/walktrap/eigenvector für ungerichtete Graphen
+***** TODO Vergleich der Ergebnisgüte -> Modularity, "Draufschauen". Wichtig: Resolution limit beachten
+**** TODO Versuchen, ein Ergebnis mit igraph.community_edgebetweeness zu erhalten
+**** TODO Falls nötig edge betweenness auf Basis von MPI und Vertex betweeness implementieren, auf HPC-BW laufen lassen.
+**** TODO Ergebnisse von ungerichteten und gerichteten Algorithmen vergleichen i.B. auf Modularity
+**** TODO Ergebnisse quantitativ analysieren: Verteilung der Community-Grössen + ?
+**** TODO Ergebnisse inhaltlich analysieren
+***** TODO Macht die Einteilung intuitiv Sinn?
+***** TODO Können die Communities inhaltlich zugeordnet werden? (Benutze investigate_component)
 ** TODO Zeitlichen Verlauf der ZKs untersuchen
 
 ** TODO Daten analysieren und interpretieren
@@ -251,6 +260,30 @@ Schlüsseln/Signaturen zerfallen sind.
     es in random graphs normal zu sein, dass eine giant component
     entsteht und der Rest der Komponenten sehr viel kleiner ist
     (Newman2001).
+** Notizen <2009-12-15 Tue>
+*** Walktrap (igraph)
+    Die Walktrap-Implementierung aus igraph (aber wahrscheinlich auch
+    der Algorithmus an sich) ist auf der vorhandenen Hardware nicht
+    benutzbar. Der Prozess wächst innerhalb von 20 Minuten auf ~2.4 GB
+    Speicher an.
+*** Fastgreedy
+    Der Fastgreedy-Algorithmus in der Igraph-Implementierung liefert
+    auf roadw innerhalb von ca. 10 Minuten ein Ergebnis. Es entstehen
+    665 Communities. Auffällig ist, dass einige (5-6) sehr grosse (ca
+    4000-5000 Knoten) dabei sind. Ansonsten gibt es einige (15-20) von
+    mittlerer Grösse (100-500). Die grosse Mehrzahl (fast der gesamte
+    Rest) liegt zwischen 5 und 20 Knoten.
+*** Vergleich von Ergebnissen
+    Die jeweiligen Methoden für ungerichtete und gerichtete Graphen
+    können einfach verglichen werden, indem Modularity als Gütemass
+    verwendet wird (Modularity für gerichtete Graphen siehe
+    Arenas2007, Leicht/Newmann2008).
+
+    Das funktioniert allerdings auf den ersten Blick nicht zwischen
+    gerichteten und ungerichteten Graphen, weil es sich um
+    unterschiedliche Masse bzw. um eine andere Struktur
+    handelt. Können die Masse trotzdem verglichen werden? Wie machen
+    das die Autoren, die gerichtete Algorithmen vorschlagen?
 * org-mode configuration
 #+STARTUP: overview
 #+STARTUP: hidestars
