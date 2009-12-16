@@ -79,7 +79,6 @@ let search_self_sig own_keyid siglist =
 	  else
 	    loop tl
       | [] -> 
-	  printf "%s siglist length %d\n" (keyid_to_string own_keyid) (List.length siglist);
 	  None
   in
     loop siglist
@@ -222,11 +221,6 @@ let key_to_ekey key =
     let (subkey_keyids, subkey_sigs) = 
       List.fold_left handle_subkey ([], Signature_set.empty) sig_pkey.info_subkeys 
     in
-      if List.length subkey_keyids <> 0  then
-	begin
-	  printf "%s length of subkeyid list %d\n" (keyid_to_string keyid) (List.length sig_pkey.info_subkeys);
-	  flush stdout
-	end;
       if valid_selfsig then
 	let puid = 
 	  match puid_option with
@@ -261,7 +255,7 @@ let key_to_ekey key =
 	in
 	    (subkey_keyids, { pki = pki; signatures = siglist })
       else
-	let msg = sprintf "key_to_ekey: no valid selfsignature -> skip key (version %d) %s" pk_version (keyid_to_string keyid) in
+	let msg = sprintf "no valid selfsignature (version %d)" pk_version in
 	  raise (Skip_key (No_valid_selfsig, msg))
   with
     | Skip_key (reason, s) -> (
