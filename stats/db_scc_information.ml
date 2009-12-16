@@ -7,7 +7,7 @@ let insert_component_id dbh (keyid, id) =
   PGSQL(dbh) "insert into component_ids (keyid, component_id) values ($keyid, $id)"
 
 let _ =
-  if Array.length Sys.argv <> 4 then (
+  if Array.length Sys.argv <> 3 then (
     print_endline "usage: db_scc_information db edge_file";
     exit 1)
 
