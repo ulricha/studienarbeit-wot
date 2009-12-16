@@ -25,24 +25,33 @@ type pkey_siginfo = { info_key : Packet.packet;
 		      info_subkeys: sigpair_siginfo list
 		    }
 
+(* transform list of packets to a list of siginfos and skip unparseable 
+   signatures *)
+let parse_sigs siglist =
+  let parse l sig_packet =
+    try
+      let siginfo = Index.sig_to_siginfo sig_packet in
+	siginfo :: l
+    with
+	_ -> l
+  in
+    List.fold_left parse [] siglist
+      
 let pkey_to_pkey_siginfo k = 
-  try
-    let s = List.map Index.sig_to_siginfo k.KeyMerge.selfsigs in
-    let uids = 
-      List.map 
-	(fun pair -> 
-	   (fst pair, List.map Index.sig_to_siginfo (snd pair)))
-	k.KeyMerge.uids
-    in
-    let subkeys = 
-      List.map
-	(fun pair ->
-	   (fst pair, List.map Index.sig_to_siginfo (snd pair)))
-	k.KeyMerge.subkeys
-    in
-      { info_key = k.KeyMerge.key; info_selfsigs = s; info_uids = uids; info_subkeys = subkeys }
-  with
-    | _ -> raise Unparseable_signature_packet
+  let s = List.map Index.sig_to_siginfo k.KeyMerge.selfsigs in
+  let uids = 
+    List.map 
+      (fun pair -> 
+	 (fst pair, parse_sigs (snd pair)))
+      k.KeyMerge.uids
+  in
+  let subkeys = 
+    List.map
+      (fun pair ->
+	 (fst pair, parse_sigs (snd pair)))
+      k.KeyMerge.subkeys
+  in
+    { info_key = k.KeyMerge.key; info_selfsigs = s; info_uids = uids; info_subkeys = subkeys }
 
 let key_to_pkey key =
   let stream = KeyMerge.key_to_stream key in
