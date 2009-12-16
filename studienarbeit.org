@@ -289,6 +289,9 @@ Schlüsseln/Signaturen zerfallen sind.
 **** Interne Vernetzung der Communities (Gradverteilung, Durchschnittsgrad etc)
 **** Semantische Zuordnung (Sozial, zeitlich (KSP) -> siehe investigate_component).
 *** Starke Zusammenhangskomponenten sind letztendlich auch Extremfälle von Communities
+*** Verwendung von Expire times auf Signaturen
+    Werden die hauptsächlich von CA's eingesetzt? (CA Cert Signing
+    Autority..., PGP directory verification...)
 * org-mode configuration
 #+STARTUP: overview
 #+STARTUP: hidestars
