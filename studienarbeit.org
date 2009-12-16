@@ -284,6 +284,11 @@ Schlüsseln/Signaturen zerfallen sind.
     unterschiedliche Masse bzw. um eine andere Struktur
     handelt. Können die Masse trotzdem verglichen werden? Wie machen
     das die Autoren, die gerichtete Algorithmen vorschlagen?
+** Notizen <2009-12-16 Wed>
+*** Fragestellung bei Communities
+**** Interne Vernetzung der Communities (Gradverteilung, Durchschnittsgrad etc)
+**** Semantische Zuordnung (Sozial, zeitlich (KSP) -> siehe investigate_component).
+*** Starke Zusammenhangskomponenten sind letztendlich auch Extremfälle von Communities
 * org-mode configuration
 #+STARTUP: overview
 #+STARTUP: hidestars
