@@ -100,7 +100,7 @@ struct
 	let after = List.length ekey.signatures in
 	  if before <> after then (
 	    c := !c + (before - after);
-	    printf "filtered %d sigs\n" (before - after)
+	    printf "%s filtered %d sigs\n" (keyid_to_string ekey.pki.key_keyid) (before - after)
 	  )
     in
       Enum.iter filter_single_key (Hashtbl.values tbl);
