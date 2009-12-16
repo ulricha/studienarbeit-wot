@@ -240,7 +240,7 @@ let key_to_ekey key =
 	  match pk_version with
 	    | 4 -> exptime
 	    | 2 | 3 -> v3_expiry_date
-	    | _ -> raise (Skip_key (Unparseable, "Unparseable: unknown version"))
+	    | _ -> raise (Skip_key (Unknown_key_version, "Unparseable: unknown version"))
 	in
 	let algo = pubkey_info.Packet.pk_alg in
 	let keylen = pubkey_info.Packet.pk_keylen in
@@ -264,12 +264,26 @@ let key_to_ekey key =
 	let msg = sprintf "key_to_ekey: no valid selfsignature -> skip key (version %d) %s" pk_version (keyid_to_string keyid) in
 	  raise (Skip_key (No_valid_selfsig, msg))
   with
-    | Skip_key (reason, s) ->
-	print_endline s;
-	let keyid = Fingerprint.keyid_from_packet (List.hd key) in
-	  raise (Skipped_key (reason, keyid))
-    | ParsePGP.Overlong_mpi 
-    | Unparseable_signature_packet 
+    | Skip_key (reason, s) -> (
+	match reason with
+	  | Unknown_key_version ->
+	      let keyid = keyid_to_string (Fingerprint.keyid_from_packet (List.hd key)) in
+	      let msg = sprintf "skipped key %s: %s (%s)" keyid (string_of_skip_reason reason) s in
+		raise (Skipped_key (Unparseable, msg))
+	  | _ ->
+	      print_endline s;
+	      let keyid = keyid_to_string (Fingerprint.keyid_from_packet (List.hd key)) in
+	      let msg = sprintf "skipped key %s: %s (%s)" keyid (string_of_skip_reason reason) s in
+		raise (Skipped_key (reason, msg)))
+    | ParsePGP.Overlong_mpi ->
+	let keyid = keyid_to_string (Fingerprint.keyid_from_packet (List.hd key)) in
+	let msg = sprintf "skipped key %s: ParsePGP.Overlong_mpi" keyid in
+	  raise (Skipped_key (Unparseable, msg))
+    | Unparseable_signature_packet ->
+	let keyid = keyid_to_string (Fingerprint.keyid_from_packet (List.hd key)) in
+	let msg = sprintf "skipped key %s: Unparseable_signature_packet" keyid in
+	  raise (Skipped_key (Unparseable, msg))
     | Signature_without_creation_time ->
-	let keyid = Fingerprint.keyid_from_packet (List.hd key) in
-	  raise (Skipped_key (Unparseable, keyid))
+	let keyid = keyid_to_string (Fingerprint.keyid_from_packet (List.hd key)) in
+	let msg = sprintf "skipped key %s: Signature_without_creation_time" keyid in
+	  raise (Skipped_key (Unparseable, msg))

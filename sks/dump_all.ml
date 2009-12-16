@@ -140,13 +140,13 @@ struct
 	  display_iterations key_cnt "fetch_keys" 10000;
 	  add_key_without_duplicate keys_so_far ekey
       with
-	| Skipped_key (reason, keyid) ->
+	| Skipped_key (reason, msg) ->
 	    display_iterations skipped_cnt "skipped" 10000;
 	    display_iterations key_cnt "fetch_keys" 10000;
 	    match reason with
-	      | Unparseable ->
-		  print_endline (sprintf "skipped unparseable key %s" (keyid_to_string keyid))
-	      | No_valid_selfsig -> ()
+	      | Unparseable
+	      | No_valid_selfsig -> 
+		  print_endline msg
 	      | _ -> failwith "Expired and revoked keys should be ok"
     in
       Keydb.iter ~f:extract_key;

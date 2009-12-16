@@ -9,7 +9,14 @@ module Signature_set = Set.Make(struct
 				  let compare = compare_esignature
 				end)
 
-type skip_reason = Expired | Revoked | No_valid_selfsig | Unparseable
+type skip_reason = Expired | Revoked | No_valid_selfsig | Unknown_key_version | Unparseable
+
+let string_of_skip_reason = function
+  | Expired -> "Expired"
+  | Revoked -> "Revoked"
+  | No_valid_selfsig -> "No_valid_selfsig"
+  | Unparseable -> "Unparseable"
+  | Unknown_key_version -> "Unknown_key_version"
 
 exception Unparseable_signature_packet
 exception Signature_without_creation_time
@@ -33,7 +40,9 @@ let parse_sigs siglist =
       let siginfo = Index.sig_to_siginfo sig_packet in
 	siginfo :: l
     with
-	_ -> l
+	_ -> 
+	  print_endline "skip unparseable signature";
+	  l
   in
     List.fold_left parse [] siglist
       
