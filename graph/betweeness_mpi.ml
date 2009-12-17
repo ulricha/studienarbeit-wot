@@ -14,7 +14,7 @@ module Mpi_betweeness = Mpi_framework.Make(B.Betweeness_job)
 
 (* mscc = maximum strongly connected component *)
 let _ =
-  if (Array.length Sys.argv) <> 3 then
+  if (Array.length Sys.argv) <> 2 then
     print_endline "usage: betweeness_mpi edge_filename";
   exit (-1)
 
