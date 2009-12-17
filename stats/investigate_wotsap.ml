@@ -21,17 +21,11 @@ let search_in_keyids names l i short_keyid =
   in
     loop l
 
-let search_in_array warray keyid =
-  let keyid_lower_part = String.sub keyid 8 8 in
-  let compare short_keyid =
-    let short_keyid_hex = Printf.sprintf "%08lX" short_keyid in
-      keyid_lower_part = short_keyid_hex
-  in
-    try
-      ignore (Dyn_array.index_of compare warray)
-    with
-	Not_found -> Printf.printf "%s\n" keyid
-
+let print_if_not_there s keyid =
+  if Set.StringSet.mem keyid s then
+    ()
+  else
+    Printf.printf "%s\n" keyid
       
 let main () =
   let dbh = PGOCaml.connect ~database:Sys.argv.(1) () in
@@ -41,7 +35,13 @@ let main () =
     Printf.printf "%d %d\n" (List.length keyids) (Dyn_array.length wotsap_keyids);
     Dyn_array.iteri (search_in_keyids names keyids) wotsap_keyids;
     print_endline ">>> other way round";
-    List.iter (search_in_array wotsap_keyids) keyids
+    let keyids = List.map (fun s -> String.sub s 8 8) keyids in
+    let s = Dyn_array.fold_left 
+      (fun m k -> Set.StringSet.add (Printf.sprintf "%08lX" k) m) 
+      Set.StringSet.empty
+      wotsap_keyids 
+    in
+      List.iter (print_if_not_there s) keyids
 
 let _ =
     try main () with e -> prerr_endline (Printexc.to_string e)
