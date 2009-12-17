@@ -4,6 +4,7 @@
 #PBS -m abe
 #PBS -N wot-cc-mpi
 #PBS -l nodes=4:ppn=4,pvmem=2000mb,walltime=01:00:00
+source ~/.bashrc
 PATH=$PATH:$HOME/wot/godi/bin:$HOME/wot/godi/sbin:/opt/bwgrid/mpi/openmpi/1.2.8-gcc/bin/
 export PATH
 LD_LIBRARY_PATH=/opt/bwgrid/mpi/openmpi/1.2.8-gcc/lib:$LD_LIBRARY_PATH
