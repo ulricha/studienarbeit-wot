@@ -24,16 +24,19 @@ let main () =
   let g = load_graph_from_file Sys.argv.(1) in
     Printf.printf "nb_vertex %d nb_edge %d\n" (G.nb_vertex g) (G.nb_edges g);
     Printf.printf "%s -> %s\n" source target;
-    try
-      let (path, length) = D.shortest_path g source target in
-	Printf.printf "found shortest path of length %d\n" length;
-	let print_edge e = 
-	  let t = (G.E.dst e) in
-	    Printf.printf "%s %s\n" t (String.sub t 8 8) 
-	in
-	  List.iter print_edge path
-    with Not_found -> print_endline "no path";
-      Printf.printf "\n%s -> %s\n" target source;
+    begin
+      try
+	let (path, length) = D.shortest_path g source target in
+	  Printf.printf "found shortest path of length %d\n" length;
+	  let print_edge e = 
+	    let t = (G.E.dst e) in
+	      Printf.printf "%s %s\n" t (String.sub t 8 8) 
+	  in
+	    List.iter print_edge path
+      with Not_found -> print_endline "no path"
+    end;
+    Printf.printf "\n%s -> %s\n" target source;
+    begin
       try
 	let (path, length) = D.shortest_path g target source in
 	  Printf.printf "found shortest path of length %d\n" length;
@@ -43,6 +46,7 @@ let main () =
 	  in
 	    List.iter print_edge path
       with Not_found -> print_endline "no path"
+    end
 
 
 let _ =
