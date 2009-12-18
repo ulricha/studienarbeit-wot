@@ -34,7 +34,9 @@ let main () =
 	  print_endline "server finished";
 	  let fname = sprintf "scc-%d_%d_bet.values" (G.nb_vertex mscc) 0 in
 	    (* write_float_values_to_file (Map.StringMap.values res) fname *)
-	    write_distribution_to_file "%s %f\n" (Map.StringMap.enum res) fname
+	  let l = List.of_enum (Map.StringMap.enum res) in
+	  let l = List.sort ~cmp:(fun (_, b1) (_, b2) -> compare b1 b2) l in
+	    write_distribution_to_file "%s %f\n" (List.enum l) fname
       end
     else
       begin
@@ -53,7 +55,9 @@ let main () =
 	    let bench = time_iterations "betweeness_it" 20 in
 	    let res = B.betweeness_centrality_iterative component bench in
 	    let fname = sprintf "scc-%d_%d_bet.values" (G.nb_vertex component) (Random.int 20) in
-	      write_distribution_to_file "%s %f\n" (B.H.enum res) fname;
+	    let l = List.of_enum (B.H.enum res) in
+	    let l = List.sort ~cmp:(fun (_, b1) (_, b2) -> compare b1 b2) l in
+	      write_distribution_to_file "%s %f\n" (List.enum l) fname;
 	      loop tl
 	| _ -> ()
     in
