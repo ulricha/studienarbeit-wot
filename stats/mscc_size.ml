@@ -1,6 +1,8 @@
 open Batteries
 open Ekey
 open Unix
+open Wot_graph
+open Graph_misc
 
 module C = Component_helpers.Make(G)
 
@@ -12,15 +14,16 @@ let _ =
 
 let today = Unix.time ()
 
-let compute_size dbh start interval =
+let compute_sizes dbh start interval =
   let fname = "mscc-size" in
   let rec loop time interval_counter map =
-    if time + interval > today then
+    if time +. interval > today then
       write_distribution_to_file "%d %d\n" (Map.IntMap.enum map) fname
     else
       let gm = Unix.gmtime time in
-	Printf.printf "compute mscc size for %d-%d\n" (gm.tm_month + 1) (gm.tm_year + 1900);
-	let edges = get_valid_sigs dbh time in
+	Printf.printf "compute mscc size for %d-%d\n" (gm.tm_mon + 1) (gm.tm_year + 1900);
+	let edges = Db_interface.get_valid_sigs dbh time in
+	let edges = List.map (fun (u, v) -> (Option.get u, Option.get v)) edges in
 	let g = graph_from_edgelist edges in
 	let scc_list = C.scc_list g in
 	let size = List.length (List.hd (list_list_sort_reverse scc_list)) in
