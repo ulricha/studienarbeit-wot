@@ -51,7 +51,7 @@ let main () =
 	    flush stdout;
 	    let component = C.graph_from_node_list component_nodelist g in
 	    let bench = time_iterations "betweeness_it" 20 in
-	    let res = B.betweeness_centrality_iterative g bench in
+	    let res = B.betweeness_centrality_iterative component bench in
 	    let fname = sprintf "scc-%d_%d_bet.values" (G.nb_vertex component) (Random.int 20) in
 	      write_distribution_to_file "%s %f\n" (B.H.enum res) fname;
 	      loop tl
