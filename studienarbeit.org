@@ -292,6 +292,15 @@ Schlüsseln/Signaturen zerfallen sind.
 *** Verwendung von Expire times auf Signaturen
     Werden die hauptsächlich von CA's eingesetzt? (CA Cert Signing
     Autority..., PGP directory verification...)
+** Notizen <2009-12-17 Thu>
+*** Idee
+    Wie sind die Auswirkungen, wenn MD5-Signaturen entfernt werden?
+    Zerfällt die MSCC in mehrere Teile? Das könnte relevant werden,
+    wenn es effiziente preimage-Angriffe gegen MD5 gibt.
+
+    Gleiches könnte man sich auch für die Knoten mit höchstem Grad,
+    Knoten mit höchster Betweeness-Centrality und CA-Knoten (Heise,
+    CACert) anschauen.
 * org-mode configuration
 #+STARTUP: overview
 #+STARTUP: hidestars

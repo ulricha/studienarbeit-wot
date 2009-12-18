@@ -1,0 +1,89 @@
+* Studienarbeit Web of Trust
+** Abstract
+** Einleitung
+** Grundlagen und Theorie
+*** Grundproblem: Authentifizierung? (authentication) von public keys
+**** zentrale PKI
+**** dezentral -> WOT
+*** PGP im Allgemeinen
+**** Kurze Darstellung der PGP-Geschichte + GnuPG
+**** Kurz: Eigenschaften von PGP/GnuPG
+**** Trust-Algorithmus (GnuPG)
+***** Wann ist ein Schlüssel valide?
+***** Unterschied: Signaturen und Introducer trust
+***** Wichtig: Introducer trust vollständig lokal und individuell
+***** Keine "trust inference"
+*** OpenPGP als Standard
+**** Wie ist ein Key aufgebaut?
+**** Unterschied v3/v4
+*** Graphentheorie allgemein
+*** Netzwerkstatistiken
+**** Clustering coefficient
+**** Betweeness Centrality
+*** Communities - Definition, Algorithmen
+** Related Work
+*** Web of Trust im Allgemeinen
+**** Analyse von WoT-Communities: Duch2005, Boguna2004
+**** Wotsap + Webseiten (
+**** Netzwerkstatistiken: Capkun2002
+*** Analyse von Netzwerken allgemein
+*** Analyse von Community-Strukturen
+** Methoden und Materialien -> Beschreibung der Software, der Datenextraktion etc.
+*** SKS Software
+*** Keyserver-Netzwerk
+*** Warum eigene Extraktion? Warum nicht die wotsap-Daten benutzt?
+**** Untersuchung der Struktur abseits der MSCC
+**** Komplette Geschichte liegt vor, Zustand zu einem beliebigen Zeitpunkt
+**** Vollständigere Informationen über Schlüssel und Signaturen
+**** Wotsap nicht korrekt
+***** Wodurch Fehler verursacht
+***** Unterschiede zwischen Datensätzen
+*** eigene Software - Methode
+**** Iteration über Datenbank, Reduzierung auf interessante Daten
+**** Speicherung in SQL-DB, vielfältige Abfragemöglichkeiten
+***** Tabellenstruktur
+*** MPI
+**** Warum
+**** Methode
+***** Distance_statistics trivial
+***** Betweeness nach Brandes
+** Ergebnisse
+*** Kennzahlen Graph insgesamt
+**** Wie viele Knoten, Kanten, etc.
+*** Komponentenstruktur insgesamt
+**** Zahl der Komponenten, Grössenverteilung (scale-free?)
+**** Struktur der Komponenten -> wie sind diese untereinander vernetzt ("metagraph" -> Graphik)
+*** Kleine Komponenten (einige wenige herausgreifen + Gesamtbild)
+**** Interne Struktur (Grade, Pfadlängen etc)
+**** Zusammensetzung der Keys
+***** Einteilung der Komponenten nach Nation, Institution, Zeit
+***** Aktivität? Ist die Komponente über die Zeit entstanden oder auf einmal (KSP) (Ad-Hoc-Mass)
+
+
+*** MSCC
+**** Netzwerkstatistiken
+***** Gradverteilung in/out
+***** Andere Eigenschaften: (durschnittliche Pfadlängen, Durchmesser, Radius, Eccentricity)
+***** Fragestellung: Small-World? Scale-free?
+****** Auch wenn die Gradverteilung nicht scale-free im strikten Sinn ist, hat sie doch wahrscheinlich qualitativ die Eigenschaten, die davon erwartet werden
+
+*** Communities
+**** Liefern Algorithmen erkennbar sinnvolle Einteilung?
+**** lassen sich soziale Gruppen und KSPs unterscheiden?
+
+*** Statistiken
+**** Verwendung von Algorithmen (Pubkey und Sig)
+**** Zeitliche Entwicklung
+***** Zeitliche Interpretation (Einführung von GnuPG, Änderung von Algorithmen-Defaults, SHA1-Problem...)
+***** Wie entwickelt sich das Wachstum? Stagniert die Grössenentwicklung?
+***** Wie ist das Alter der im Moment aktiven Schlüssel verteilt?
+**** Verwendung von Cert leveln
+** Diskussion
+*** MSCC ist die einzige Komponente, die ein aktives WoT mit globalem Anspruch(!) darstellt
+*** Geringe Grösse der MSCC in Relation zur Gesamtzahl der Schlüssel und zum Internet
+*** überwiegender Teil der PGP-Benutzer legt keinen Wert auf Authentication (oder macht das privat, ist aber unwahrscheinlich)
+*** Aus Gradverteilung: Selbst in der MSCC ist die grosse Mehrzahl (Grad 1, 2) kaum angebunden, dadurch kaum Chance auf redundante Trust-Pfade, kaum Robustheit
+
+** Conclusion
+*** "Toolbox" (naja) für Extraktion und Analyse von PGP-WoT-Daten
+*** Analyseergebnisse
