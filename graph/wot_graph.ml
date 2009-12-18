@@ -57,3 +57,8 @@ let graph_from_structinfo structinfo =
   let g = G.create ~size:300000 () in
     add_edges g edges;
     g
+
+let graph_from_edgelist l =
+  let g = G.create ~size:(List.length l) () in
+    List.iter (fun (signer, signee) -> G.add_edge g signer signee) l;
+    g

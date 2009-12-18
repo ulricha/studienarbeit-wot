@@ -27,3 +27,4 @@ stats/graph_snapshot.native
 stats/investigate_wotsap.native
 stats/investigate_wotsap.d.byte
 graph/print_path.native
+stats/mscc_size.ml
