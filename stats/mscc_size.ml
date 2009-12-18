@@ -8,7 +8,7 @@ module C = Component_helpers.Make(G)
 
 let _ =
   let len = Array.length Sys.argv in
-    if len > 2 then (
+    if len <> 2 then (
       print_endline "usage: graph_snapshot db";
       exit 1)
 
