@@ -21,6 +21,7 @@ let _ =
     end
 
 let main () =
+  Random.init 2;
   let rank = Mpi.comm_rank Mpi.comm_world in
   let (g, scc_list_sorted) = Component_helpers.load_scc_list Sys.argv.(1) in
   let mscc_nodelist = List.hd scc_list_sorted in
@@ -31,8 +32,9 @@ let main () =
 	print_endline "server started";
 	let res = Mpi_betweeness.server 0 mscc in
 	  print_endline "server finished";
-	  let fname = sprintf "scc-%d_bet.values" (G.nb_vertex mscc) in
-	    write_float_values_to_file (Map.StringMap.values res) fname
+	  let fname = sprintf "scc-%d_%d_bet.values" (G.nb_vertex mscc) 0 in
+	    (* write_float_values_to_file (Map.StringMap.values res) fname *)
+	    write_distribution_to_file "%s %f\n" (Map.StringMap.enum res) fname
       end
     else
       begin
@@ -45,10 +47,12 @@ let main () =
     let rec loop component_list =
       match component_list with
 	| component_nodelist :: tl when (List.length component_nodelist) > 30 ->
+	    printf "compute betweeness for scc %d\n" (List.length component_nodelist);
+	    flush stdout;
 	    let component = C.graph_from_node_list component_nodelist g in
 	    let res = B.betweeness_centrality_iterative g (fun () -> ()) in
-	    let fname = sprintf "scc-%d_bet.values" (G.nb_vertex component) in
-	      write_float_values_to_file (B.H.values res) fname;
+	    let fname = sprintf "scc-%d_%d_bet.values" (G.nb_vertex component) (Random.int 20) in
+	      write_distribution_to_file "%s %f\n" (B.H.enum res) fname;
 	      loop tl
 	| _ -> ()
     in
