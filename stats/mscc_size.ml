@@ -34,7 +34,7 @@ let compute_sizes dbh start interval =
 
 let main () = 
   let dbh = PGOCaml.connect ~database:Sys.argv.(1) () in
-    compute_sizes dbh 1259751600. 2592000.
+    compute_sizes dbh 665362800. 2592000.
 
 let _ = 
   try
