@@ -126,6 +126,18 @@ module Make(G : Sig.G) = struct
     let p (n2, n3, n4, n5) = n5 in
       M.map p m
 
+  let project_neigh4 m =
+    let p (n2, n3, n4, n5) = n4 in
+      M.map p m
+
+  let project_neigh3 m =
+    let p (n2, n3, n4, n5) = n3 in
+      M.map p m
+
+  let project_neigh2 m =
+    let p (n2, n3, n4, n5) = n2 in
+      M.map p m
+
   let analyze_and_print_results v_number graph_name results =
     let (dist_sum, ecc_map, dist_avg_map, neigh_map) = results in
     let nr_pairs = float_of_int ((v_number * (v_number-1)) / 2) in
@@ -138,6 +150,9 @@ module Make(G : Sig.G) = struct
     let n5_map = project_neigh5 neigh_map in
     let n5_dist = values_to_distribution (M.values n5_map) in
     let (max_5, min_5) = enum_max_min (M.values n5_map) in
+    let n4_map = project_neigh4 neigh_map in
+    let n3_map = project_neigh3 neigh_map in
+    let n2_map = project_neigh2 neigh_map in
       print_endline ("complete_statistics " ^ graph_name);
       printf "eccentricity median %d max %d min %d\n" 
 	median_ecc max_ecc min_ecc;
@@ -151,6 +166,9 @@ module Make(G : Sig.G) = struct
       write_distribution_to_file "%d %d\n" (Map.IntMap.enum n5_dist) 
 	(graph_name ^ "_neigh_5_dist.plot");
       write_int_values_to_file (M.values n5_map) (graph_name ^ "_n5.values");
+      write_int_values_to_file (M.values n4_map) (graph_name ^ "_n4.values");
+      write_int_values_to_file (M.values n3_map) (graph_name ^ "_n3.values");
+      write_int_values_to_file (M.values n2_map) (graph_name ^ "_n2.values");
       write_int_values_to_file (M.values ecc_map) (graph_name ^ "_ecc.values");
       write_int_values_to_file (M.values dist_avg_map) (graph_name ^ "_avg_dist.values");
       
