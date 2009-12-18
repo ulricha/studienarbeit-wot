@@ -22,7 +22,7 @@ let compute_sizes dbh start interval =
     else
       let gm = Unix.gmtime time in
 	Printf.printf "compute mscc size for %d-%d\n" (gm.tm_mon + 1) (gm.tm_year + 1900);
-	flush stdout;
+	flush IO.stdout;
 	let edges = Db_interface.get_valid_sigs dbh time in
 	let edges = List.map (fun (u, v) -> (Option.get u, Option.get v)) edges in
 	let g = graph_from_edgelist edges in
