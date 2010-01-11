@@ -31,3 +31,9 @@ results-*
 *.out
 *.opt
 *.dot
+*.html
+*.pdf
+*.graph
+*.orig
+*.cfinder
+*.log
