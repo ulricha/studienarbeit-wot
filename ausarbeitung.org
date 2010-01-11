@@ -23,6 +23,15 @@
 **** Geschichte von PGP/PGP.com und GnuPG
 **** Eigenschaften/Fähigkeiten der Implementierungen allgemein
 **** Trust-Modell beschreiben (ausführlich)
+**** Was drückt eine Signatur aus?
+**** Die soziale Komponente
+***** Wie kommen grundsätzlich Zertifizierungen zustande?
+****** Keysigning-Parties
+****** Face-to-face
+***** Gruppen, die bekanntermassen stark auf das WoT bauen
+****** Debian
+****** andere Distributionen?
+
 *** Der OpenPGP-Standard
 **** Paketformat v4
 **** Unterschiede v3
