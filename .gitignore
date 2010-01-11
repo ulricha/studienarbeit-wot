@@ -37,3 +37,8 @@ results-*
 *.orig
 *.cfinder
 *.log
+*.aux
+*.bbl
+*.blg
+*.idx
+*.toc
