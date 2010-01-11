@@ -10,12 +10,14 @@
 ***** Web of Trust
 *** PGP/GnuPG
 **** Geschichte von PGP/PGP.com und GnuPG
-**** Eigenschaften/Fähigkeiten der Implementierungen
+**** Eigenschaften/Fähigkeiten der Implementierungen allgemein
+**** Trust-Modell beschreiben (ausführlich)
 *** Der OpenPGP-Standard
 **** Paketformat v4
 **** Unterschiede v3
 *** Keyserver-Netzwerk
 **** Prinzip: Öffentliche Keyserver (auch private denkbar) stellen OpenPGP-Keys für PGP-Benutzer bereit
+**** Web of Trust kann natürlich auch ohne Keyserver betrieben werden, Veröffentlichung ist nicht notwendig. Dann aber privat, keine öffentliche Infrastruktur.
 **** Keyserver gleichen ihren Datenbestand untereinander ab
 **** Beim WoT (Signaturen...) macht der Keyserver die gesamte Vernetzungsstruktur öffentlich. Das bedeutet ein Privacy-Problem (Signaturen sind Abbild von soz. Beziehungen/Vertrauen), das wahrscheinlich (Beleg?) vielen Benutzern nicht bewusst ist. D.h. Keyserver stellen das soziale Netzwerk zur Verfügung.
 **** Das öffentliche PGP-Netzwerk
@@ -37,7 +39,6 @@
 *** Analyse von Netzwerken allgemein
 *** Analyse von Community-Strukturen
 ** Methoden und Materialien -> Beschreibung der Software, der Datenextraktion etc.
-***** Warum toll?
 *** SKS Software
 **** Löst veraltetes PKS ab
 ***** Austausch über Emails
@@ -48,26 +49,32 @@
 **** DB: Berkeley-Datenbank
 **** Algorithmus zum Abgleich der Datenbanken (Set reconciliation) kurz anreissen
 
-*** Warum eigene Extraktion? Warum nicht die wotsap-Daten benutzt?
-**** Untersuchung der Struktur abseits der MSCC
-**** Komplette Geschichte liegt vor, Zustand zu einem beliebigen Zeitpunkt
-**** Vollständigere Informationen über Schlüssel und Signaturen
-**** Wotsap nicht korrekt
-***** Wodurch Fehler verursacht
-***** Unterschiede zwischen Datensätzen
 *** eigene Software - Methode
 **** Extraktionsteil ist Patch gegen SKS -> ebenfalls in Ocaml
-**** Iteration über Datenbank, Reduzierung auf interessante Daten (Welche?)
-**** Speicherung in SQL-DB, vielfältige Abfragemöglichkeiten
+**** Iteration über Datenbank, Reduzierung auf interessante Daten (Welche?), Speicherung in sexp (einfach)
+**** Nur Parsen der Paketstruktur, keine kryptographische Verifizierung.
+***** Problem: Jeder kann Signatur-Pakete auf fremden Schlüsseln anbringen, auch wenn die Signatur nicht gültig ist
+***** Alternative: Jeden Key in GnuPG werfen (nicht nur parsen sondern verifizieren!): dauert zu lange (siehe Wotsap, wobei Hardware unbekannt)
+***** Argumentieren, warum das kein Problem ist: Es interessiert die Struktur und Statistik, nicht einzelne Schlüssel. Es sind sicherlich kaputte/falsche Signaturen vorhanden. Es müssen aber schon ziemlich viele sein, um die Struktur wirklich zu stören/verändern. Das ist wiederum unwahrscheinlich. Ist auch unrealistisches Angriffsszenario, da Signaturen für die Trustberechnung ja kryptographisch verifiziert werden.
+**** Speicherung in SQL-DB, vielfältige Abfragemöglichkeiten (muss keine eigene Abfragemöglichkeit von Hand schreiben, Ausnutzung von Indizes etc)
 ***** Tabellenstruktur
 **** Trennung von Extraktion und DB: Sinnvoll, weil Extraktion zeitaufwendig und nur einmal (reicht für diese Arbeit aus)
 **** Könnte genauso neue Daten live in Datenbank kippen -> Service, der immer die aktuellen Daten anbietet
 
-*** MPI
-**** Warum
-**** Methode
-***** Distance_statistics trivial
-***** Betweeness nach Brandes
+**** Ausblick: Weiterentwicklung zu "Messdatenservice" und automatische Generierung von Analysen
+**** MPI
+***** Warum: Graph zu gross, Algorithmen zu komplex...
+***** Methode: Abwandlungen von BFS...
+****** Distance_statistics trivial
+****** Betweeness nach Brandes
+*** Warum eigene Extraktion? Warum nicht die wotsap-Daten benutzt?
+**** Untersuchung der Struktur abseits der MSCC
+**** Komplette Geschichte liegt vor, Zustand zu einem beliebigen Zeitpunkt -> Statistiken, kann strukturelle Entwicklung nachvollziehen
+**** Vollständigere Informationen über Schlüssel und Signaturen
+**** Wotsap nicht korrekt
+***** Wodurch Fehler verursacht
+***** Unterschiede zwischen Datensätzen
+
 ** Ergebnisse
 *** Kennzahlen Graph insgesamt
 **** Wie viele Knoten, Kanten, etc.
