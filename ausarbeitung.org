@@ -2,20 +2,18 @@
 ** Abstract
 ** Einleitung
 ** Grundlagen und Theorie
-*** Grundproblem: Authentifizierung? (authentication) von public keys
-**** zentrale PKI
-**** dezentral -> WOT
-*** PGP im Allgemeinen
-**** Kurze Darstellung der PGP-Geschichte + GnuPG
-**** Kurz: Eigenschaften von PGP/GnuPG
-**** Trust-Algorithmus (GnuPG)
-***** Wann ist ein Schlüssel valide?
-***** Unterschied: Signaturen und Introducer trust
-***** Wichtig: Introducer trust vollständig lokal und individuell -> a priori
-****** Keine Trust inference, Kontrastierung mit Trust inference Ansätzen
-*** OpenPGP als Standard
-**** Wie ist ein Key aufgebaut?
-**** Unterschied v3/v4
+*** Kryptographie mit öffentlichen Schlüsseln
+**** Funktionsprinzip
+**** Authentisierung von Schlüsseln
+***** Grundproblem
+***** Zentrale PKI
+***** Web of Trust
+*** PGP/GnuPG
+**** Geschichte von PGP/PGP.com und GnuPG
+**** Eigenschaften/Fähigkeiten der Implementierungen
+*** Der OpenPGP-Standard
+**** Paketformat v4
+**** Unterschiede v3
 *** Keyserver-Netzwerk
 **** Prinzip: Öffentliche Keyserver (auch private denkbar) stellen OpenPGP-Keys für PGP-Benutzer bereit
 **** Keyserver gleichen ihren Datenbestand untereinander ab
@@ -26,10 +24,11 @@
 ****** Warum gut? Warum schlecht? (WP)
 **** Andere Ansätze: PGP Global Directory
 *** Graphentheorie allgemein
-*** Netzwerkstatistiken
-**** Clustering coefficient
-**** Betweeness Centrality
-*** Communities - Definition, Algorithmen
+*** Netzwerkanalyse
+**** Netzwerkstatistiken
+***** Clustering coefficient
+***** Betweeness Centrality
+**** Communities - Definition, Algorithmen
 ** Related Work
 *** Web of Trust im Allgemeinen
 **** Analyse von WoT-Communities: Duch2005, Boguna2004
