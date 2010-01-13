@@ -3,14 +3,17 @@
 ** Einleitung
 *** Allgemeines Blabla
 *** Zielsetzung (aus Exposee, bzw. alles rein was tatsächlich gemacht wurde)
+**** Software zur Erstellung der Datenbasis und Analyse derselben -> Grundlage für weitere Arbeiten
+**** Herausfinden: wie stark wird das WoT benutzt (aus Graph), von wem wird das WoT benutzt
 **** Allgemein: Strukturelle Untersuchung des gesamten Graphen. 
 **** Vergleich mit Arbeiten, die ältere oder unvollständigere Daten benutzt haben.
-**** Grösse der MSCC in Relation zu Gesamtzahl der Knoten sehr klein: Wie ist der Rest strukturiert?
+**** Grösse der MSCC in Relation zu Gesamtzahl der Knoten sehr klein: Wie ist der Rest strukturiert? -> "unerforschte Bereiche" der MSCC
 **** Communities
 ***** Small-World/Scale-Free/Clustering Coefficient deutet auf modulare Struktur hin. 
 ***** Lässt sich mit vorhandenen Algorithmen und akzetablem Aufwand die MSCC in eine Community-Struktur zerlegen?
 ***** Lassen sich die erhaltenen Communities sinnvoll zuordnen? (Soziale Gruppen/KSPs)
 **** Statistiken: Verwendung von Algorithmen und Schlüssellängen, best. Features (Cert level), zeitliche Entwicklung...
+**** Abgrenzung: Arbeit hat nichts mit der zugrundeliegenden Kryptographie im eigtl. Sinne zu tun, beschäftigt sich mit sozialen Aspekten (?) und der tatsächlichen Verwendung.
 *** Gliederung
 ** Grundlagen und Theorie
 *** Kryptographie mit öffentlichen Schlüsseln
@@ -60,43 +63,45 @@
 *** Analyse von Netzwerken allgemein
 *** Analyse von Community-Strukturen
 ** Methoden und Materialien -> Beschreibung der Software, der Datenextraktion etc.
-*** SKS Software
-**** Löst veraltetes PKS ab
-***** Austausch über Emails
-***** Probleme mit OpenPGP-Features: Welche? (Subkeys? KeyIDs?...)
-**** Hat PKS fast vollständig abgelöst (alle wichtigen Keyserver umgestellt)
-**** Geschrieben in Ocaml
-**** Design: Zwei Prozesse (db und recon)
-**** DB: Berkeley-Datenbank
-**** Algorithmus zum Abgleich der Datenbanken (Set reconciliation) kurz anreissen
-
-*** eigene Software - Methode
-**** Extraktionsteil ist Patch gegen SKS -> ebenfalls in Ocaml
-**** Iteration über Datenbank, Reduzierung auf interessante Daten (Welche?), Speicherung in sexp (einfach)
-**** Nur Parsen der Paketstruktur, keine kryptographische Verifizierung.
-***** Problem: Jeder kann Signatur-Pakete auf fremden Schlüsseln anbringen, auch wenn die Signatur nicht gültig ist. (Keyserver verifizieren nicht...)
-***** Alternative: Jeden Key in GnuPG werfen (nicht nur parsen sondern verifizieren!): dauert zu lange (siehe Wotsap, wobei Hardware unbekannt)
-***** Argumentieren, warum das kein Problem ist: Es interessiert die Struktur und Statistik, nicht einzelne Schlüssel. Es sind sicherlich kaputte/falsche Signaturen vorhanden. Es müssen aber schon ziemlich viele sein, um die Struktur wirklich zu stören/verändern. Das ist wiederum unwahrscheinlich. Ist auch unrealistisches Angriffsszenario, da Signaturen für die Trustberechnung ja kryptographisch verifiziert werden.
-**** Grundsatz: Keys nur dann komplett wegwerfen, wenn es gar nicht anders geht (z.B. Public-Key-Packet nicht parsebar, semantisch unsinnig (Beispiel?)). Dadurch möglichst vollständiger Datensatz vorhanden. Der für diese Arbeit interessante Teil davon (valide Keys, Graph) kann durch SQL etc gewonnen werden -> Flexibilität.
-**** Speicherung in SQL-DB, vielfältige Abfragemöglichkeiten (muss keine eigene Abfragemöglichkeit von Hand schreiben, Ausnutzung von Indizes etc)
-***** Tabellenstruktur
-**** Trennung von Extraktion und DB: Sinnvoll, weil Extraktion zeitaufwendig und nur einmal (reicht für diese Arbeit aus)
-**** Könnte genauso neue Daten live in Datenbank kippen -> Service, der immer die aktuellen Daten anbietet
-
-**** Ausblick: Weiterentwicklung zu "Messdatenservice" und automatische Generierung von Analysen
-**** MPI
-***** Warum: Graph zu gross, Algorithmen zu komplex...
-***** Methode: Abwandlungen von BFS...
-****** Distance_statistics trivial
-****** Betweeness nach Brandes
 *** Warum eigene Extraktion? Warum nicht die wotsap-Daten benutzt?
 **** Untersuchung der Struktur abseits der MSCC
 **** Komplette Geschichte liegt vor, Zustand zu einem beliebigen Zeitpunkt -> Statistiken, kann strukturelle Entwicklung nachvollziehen
 **** Vollständigere Informationen über Schlüssel und Signaturen
+**** wotsap läuft auf veraltetem PKS -> wird nirgends benutzt, nicht gewartete Software...
 **** Wotsap nicht korrekt
 ***** Wodurch Fehler verursacht
 ***** Unterschiede zwischen Datensätzen
 
+*** Design
+**** SKS Software
+***** Löst veraltetes PKS ab
+****** Austausch über Emails
+****** Probleme mit OpenPGP-Features: Welche? (Subkeys? KeyIDs?...)
+***** Hat PKS fast vollständig abgelöst (alle wichtigen Keyserver umgestellt)
+***** Geschrieben in Ocaml
+***** Design: Zwei Prozesse (db und recon)
+***** DB: Berkeley-Datenbank
+***** Algorithmus zum Abgleich der Datenbanken (Set reconciliation) kurz anreissen
+
+**** eigene Software - Methode
+***** Extraktionsteil ist Patch gegen SKS -> ebenfalls in Ocaml
+***** Iteration über Datenbank, Reduzierung auf interessante Daten (Welche?), Speicherung in sexp (einfach)
+***** Nur Parsen der Paketstruktur, keine kryptographische Verifizierung.
+****** Problem: Jeder kann Signatur-Pakete auf fremden Schlüsseln anbringen, auch wenn die Signatur nicht gültig ist. (Keyserver verifizieren nicht...)
+****** Alternative: Jeden Key in GnuPG werfen (nicht nur parsen sondern verifizieren!): dauert zu lange (siehe Wotsap, wobei Hardware unbekannt)
+****** Argumentieren, warum das kein Problem ist: Es interessiert die Struktur und Statistik, nicht einzelne Schlüssel. Es sind sicherlich kaputte/falsche Signaturen vorhanden. Es müssen aber schon ziemlich viele sein, um die Struktur wirklich zu stören/verändern. Das ist wiederum unwahrscheinlich. Ist auch unrealistisches Angriffsszenario, da Signaturen für die Trustberechnung ja kryptographisch verifiziert werden.
+***** Grundsatz: Keys nur dann komplett wegwerfen, wenn es gar nicht anders geht (z.B. Public-Key-Packet nicht parsebar, semantisch unsinnig (Beispiel?)). Dadurch möglichst vollständiger Datensatz vorhanden. Der für diese Arbeit interessante Teil davon (valide Keys, Graph) kann durch SQL etc gewonnen werden -> Flexibilität.
+***** Speicherung in SQL-DB, vielfältige Abfragemöglichkeiten (muss keine eigene Abfragemöglichkeit von Hand schreiben, Ausnutzung von Indizes etc)
+****** Tabellenstruktur
+***** Trennung von Extraktion und DB: Sinnvoll, weil Extraktion zeitaufwendig und nur einmal (reicht für diese Arbeit aus)
+***** Könnte genauso neue Daten live in Datenbank kippen -> Service, der immer die aktuellen Daten anbietet
+
+***** Ausblick: Weiterentwicklung zu "Messdatenservice" und automatische Generierung von Analysen
+***** MPI
+****** Warum: Graph zu gross, Algorithmen zu komplex...
+****** Methode: Abwandlungen von BFS...
+******* Distance_statistics trivial
+******* Betweeness nach Brandes
 ** Ergebnisse
 *** Kennzahlen Graph insgesamt
 **** Wie viele Knoten, Kanten, etc.
@@ -149,6 +154,8 @@
 *** Communities: (falls nicht gemacht) eigentlich wären Overlapping Communities sinnvoll
 *** Communities: Vergleich mit Literatur, insb. Paper zu WoT-Communities
 
+*** Falls begründbar: WoT stellt ein Abbild sozialer Beziehungen dar und damit ein Tool für Traffic Analysis (Überwacher kann Punkte/Personen bestimmen, an denen weitere Überwachungsmassnahmen ansetzen können). Aus den Daten lassen sich ohne zusätzliche Informationen Erkenntnisse gewinnen, die einiges über Einzelpersonen und Projekte aussagen. Damit ergibt sich ein Privacy-Problem. Ist das den Leuten bewusst? Gibt es Alternativen, die ohne komplette Offenlegung der Beziehungen funktionieren?
+*** WoT setzt Vertrauensbeziehungen vorraus, löst nicht das Problem vertraulicher Kommunikation mit Personen, zu denen (noch) keine Vertrauensbeziehung besteht.
 ** Conclusion
 *** "Toolbox" (naja) für Extraktion und Analyse von PGP-WoT-Daten
 *** Analyseergebnisse
