@@ -1,22 +1,133 @@
 %% methoden.tex
 
 \chapter{Methoden und Materialien FIXME}
-\label{ch:Grundlagen}
+\label{ch:Methoden}
 %% ==============================
-Die Grundlagen müssen soweit beschrieben
-werden, dass ein Leser das Problem und
-die Problemlösung  versteht.Um nicht zuviel 
-zu beschreiben, kann man das auch erst gegen 
-Ende der Arbeit schreiben.
-
-Bla fasel\ldots
 
 %% ==============================
-\section{Abschnitt 1}
+\section{Warum eigene Software?}
 %% ==============================
-\label{ch:Grundlagen:sec:Abschnitt1}
+\label{ch:Grundlagen:sec:WarumEigene}
+Das bereits in Abschnitt \ref{ch:Grundlagen:sec:RelatedWork} erwähnte
+\emph{wotsap}-Projekt berechnet täglich die Struktur des Web of
+Trust. Die Daten werden für eine Web-Applikation benutzt, die
+grundlegende Statistiken über Schlüssel berechnet und Pfade zwischen
+Schlüsseln graphisch darstellt. Zusätzlich werden die Daten aber auch
+für weitere Analysen zur Verfügung gestellt. In diesem Abschnitt wird
+begründet, warum für die vorliegende Arbeit nicht auf diese Daten
+zurückgegriffen wurde, sondern die Datenextraktion selbst vorgenommen
+wurde.
 
-Bla fasel\ldots
+Ein Ziel dieser Arbeit ist es, die Struktur des Web of Trust abseits
+der grössten starken Zusammenhangskomponente zu
+untersuchen. \emph{wotsap} berechnet allerdings nur die Struktur eben
+dieser Zusammenhangskomponente. Schlüssel, die nicht in dieser
+Komponente enthalten sind, werden nicht beachtet. \emph{wotsap}
+beginnt bei mehreren sehr gut vernetzten Schlüsseln, die sicher in der
+MSCC liegen. Von diesen ausgehend werden die Signaturen in der Art
+einer Breitensuche (rückwärts) verfolgt. Aufgrund dieser Methode
+scheint es mit vertretbarem Aufwand nicht möglich, die Extraktion auf
+alle Schlüssel auszudehnen.
+
+Der Anwendungszweck der \emph{wotsap}-Daten ist ausschliesslich die
+strukturelle Analyses des Netzes. Die über die reine Struktur
+hinausgehenden Daten, die über Schlüssel und Signaturen gespeichert
+werden, sind dabei auf ein Minimum reduziert: Für Schlüssel werden
+ausschliesslich die KeyID und die primäre UserID gespeichert, für
+Signaturen der Cert level und die Schlüssel. Diese Reduktion erlaubt
+zwar eine sehr kompakte Speicherung der Daten, macht es aber für eine
+Auswertung weiterer Eigenschaften von Schlüsseln und Signaturen
+unbrauchbar. Das verwendete Dateiformat ist ausserdem recht unflexibel
+und lässt eine Speicherung weiterer Daten nur mit grösserem Aufwand
+zu.
+
+Die \emph{wotsap}-Daten beinhalten nur die zum jeweiligen Zeitpunkt
+gültigen Schlüssel und Signaturen. Dieser "`Schnappschuss"' reicht für
+die strukturelle Analyse des Graphen aus. Zeitliche Entwicklungen,
+beispielsweise die Grösse des Datenbestandes, die Verwendung
+bestimmter Verschlüsselungs- und Signaturalgorithmen und die Entwicklung
+einzelner Komponenten können damit aber nicht nachvollzogen werden.
+
+Die \emph{wotsap}-Methode liefert also nicht die im Rahmen dieser
+Arbeit benötigten Daten. Eine Anpassung der Software würde auf eine
+komplette Neuimplementierung hinauslaufen. Ausserdem beruht die
+Extraktion der Daten bei \emph{wotsap} auf der veralteten und kaum
+mehr benutzten \emph{PKS}-Keyserver-Implementierung (siehe Abschnitt
+\ref{ch:Grundlagen:sec:Design:subsec:der-sks-keyserver}).
+
+Darüber hinaus ist allerdings der \emph{wotsap}-Datensatz
+fehlerhaft. Diese Fehler werden sowohl durch Fehler in der
+Implementierung als auch durch einen fehlerhaften Datenbestand auf dem
+verwendeten Keyserver verursacht: Die grösste starke
+Zusammenhangskomponente die durch XXX berechnet %FIXME
+wurde (MSCC-1), enthält mit dem Stand vom 02.12.2009 ca. 45100
+Schlüssel, während der \emph{wotsap}-Datensatz (MSCC-2) vom gleichen
+Tag nur ca. 42130 Schlüssel enthält. Die Differenz zwischen den
+Datensätzen ergibt einerseits, dass ca. 1000 Schlüssel in MSCC-1
+fehlen, die in MSCC-2 vorhanden sind. Eine stichprobenartige Analyse
+von 20 Schlüsseln zeigt, dass diese Schlüssel überwiegend durch
+Signaturketten an die MSCC angebunden sind, die aufgrund von
+widerrufenen Schlüsseln oder Schlüsselteilen unterbrochen sind. Dabei
+treten u.a. Signaturen auf komplett widerrufenen Schlüsseln und
+Signaturen auf widerrufenen UserIDs auf. \emph{wotsap} benutzt GnuPG,
+um die OpenPGP-Pakete eines Schlüssels zu parsen. Der Code zum Parsen
+der GnuPG-Ausgabe ist fehlerhaft und führt dazu, dass \emph{wotsap}
+Widerrufssignaturen fäschlicherweise nicht beachtet.
+
+Auf der anderen Seite sind ca. 3980 Schlüssel zwar in MSCC-1
+vorhanden, nicht aber in MSCC-2. Um den Grund dafür zu finden, wurde
+für 10 zufällig ausgewählte Schlüssel aus dieser Menge eine
+Signaturkette (d.h. ein Pfad) zu einem Schlüssel gesucht, der sowohl
+in MSCC-1 als auch in MSCC-2 vorhanden ist. Ebenfalls wurde eine Kette
+in der anderen Richtung gesucht. Die Signaturen dieser Ketten wurden
+mittels GnuPG kryptographisch verifiziert, um sicherzustellen, dass
+sie gültig sind. Kann für beide Richtungen jeweils eine Kette
+erfolgreich verifiziert werden, so ist der betreffende Schlüssel per
+definitionem in der MSCC. Im vorliegenden Fall konnte das für alle
+Schlüssel der Stichprobe gezeigt werden. Der Fehler liegt also
+wiederrum bei \emph{wotsap}, dass diese Schlüssel fälschlicherweise
+ausschliesst. Als Ursache dafür ergab sich in allen betrachteten
+Fällen der fehlerhafte Bestand des Keyservers
+\emph{wwwkeys.ch.pgp.net}, der von \emph{wotsap} verwendet wird. Die
+Schlüssel wurden von \emph{wotsap} nicht in die MSCC-2 übernommen,
+weil Teile der dazu notwendigen Signaturketten (komplette Schlüssel
+oder einzelne Signaturen) auf dem Keyserver nicht vorhanden
+sind. Diese fehlenden Teile sind aber auf allen Keyservern des
+\emph{SKS}-Verbundes %FIXME
+vorhanden. Als Ursache kommen eine mangelhafte Synchronisation
+zwischen \emph{wwwkeys.ch.pgp.net} und dem \emph{SKS}-Netzwerk sowie
+Fehler in der auf \emph{wwwkeys.ch.pgp.net} verwendeten
+\emph{PKS}-Version in Frage.
+
+Die Natur der Fehler legt nahe, dass hauptsächlich solche Schlüssel
+fehlen bzw. fälschlich einbezogen wurden, die nur über eine sehr
+geringe Anzahl von redundanten Pfaden zur bzw. von der MSCC
+verfügen. Gäbe es mehr redundante Pfade, so hätten einzelne
+fehlerhafte Informationen (fehlende bzw. fäschlicherweise als gültig
+betrachtete Schlüssel oder Signaturen) einen geringeren Einfluss.
+
+Die Anzahl fehlender bzw. fälschlich einbezoger Schlüssel (ca. 9\%
+fehlend, ca. 2\% fälschlich einbezogen relativ zu MSCC-1) ist so
+gross, dass qualitative Fehler in der Graphenstruktur zu erwarten
+sind. Insbesondere Aussagen über die Verteilung von Knotengraden und
+ähnliche Aussagen anhand dieser Daten sind mit Vorsicht zu
+geniessen. Eine Reihe von Arbeiten verwendet die \emph{wotsap}-Daten
+als Beispiel für ein empirisches soziales bzw. Small-World-Netzwerk
+\cite{Brondsema2006} \cite{Heikkila2009} \cite{Dell'Amico2007}. Sofern
+die Ergebnisse dieser Arbeit auf experimentellen Resultaten aufbauen,
+die mit diesen Daten gewonnen wurden, sollten sie daher mit korrekten
+Daten überprüft werden.
+
+
+
+\section{Design und Implementierung}
+\label{ch:Grundlagen:sec:Design}
+
+\subsection{Der SKS Keyserver}
+\label{ch:Grundlagen:sec:Design:subsec:der-sks-keyserver}
+
+
+
 
 %%% Local Variables: 
 %%% mode: latex
