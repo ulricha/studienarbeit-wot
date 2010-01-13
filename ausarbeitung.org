@@ -155,6 +155,8 @@
 *** Communities: Vergleich mit Literatur, insb. Paper zu WoT-Communities
 
 *** Falls begründbar: WoT stellt ein Abbild sozialer Beziehungen dar und damit ein Tool für Traffic Analysis (Überwacher kann Punkte/Personen bestimmen, an denen weitere Überwachungsmassnahmen ansetzen können). Aus den Daten lassen sich ohne zusätzliche Informationen Erkenntnisse gewinnen, die einiges über Einzelpersonen und Projekte aussagen. Damit ergibt sich ein Privacy-Problem. Ist das den Leuten bewusst? Gibt es Alternativen, die ohne komplette Offenlegung der Beziehungen funktionieren?
+*** Letzter Punkt muss abgeschwächt werden: Relevant ist der Mechanismus, mit dem Signaturen erzeugt werden: private signings _können_ Informationen preisgeben, KSPs tragen nichts wesentliches bei, weil zwischen den Teilnehmern im Allgemeinen keine Vertrauensbeziehung besteht. (Welcher Mechanismus stellt die Mehrheit dar?)
+*** Nochmals abschwächen: Die eigentliche Vertrauensbeziehung im Sinne von introducer trust wird nicht offengelegt.
 *** WoT setzt Vertrauensbeziehungen vorraus, löst nicht das Problem vertraulicher Kommunikation mit Personen, zu denen (noch) keine Vertrauensbeziehung besteht.
 ** Conclusion
 *** "Toolbox" (naja) für Extraktion und Analyse von PGP-WoT-Daten
