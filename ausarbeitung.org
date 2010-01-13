@@ -11,8 +11,9 @@
 **** Communities
 ***** Small-World/Scale-Free/Clustering Coefficient deutet auf modulare Struktur hin. 
 ***** Lässt sich mit vorhandenen Algorithmen und akzetablem Aufwand die MSCC in eine Community-Struktur zerlegen?
-***** Lassen sich die erhaltenen Communities sinnvoll zuordnen? (Soziale Gruppen/KSPs)
+***** Lassen sich die erhaltenen Communities sinnvoll zuordnen? (Soziale Gruppen/KSPs) -> Lassen sich Schlüsse ziehen, wie das Netz zustande kommt?
 **** Statistiken: Verwendung von Algorithmen und Schlüssellängen, best. Features (Cert level), zeitliche Entwicklung...
+***** Warum ist das relevant: ernsthafte Angriffe gegen RSA mit kurzen Schlüssellängen (<= 1024 bit,  siehe Paper über 768-bit Faktorisiriung), ernsthafte Angriffe gegen MD5 (total am Arsch) und SHA1 (schwer gebeutelt)
 **** Abgrenzung: Arbeit hat nichts mit der zugrundeliegenden Kryptographie im eigtl. Sinne zu tun, beschäftigt sich mit sozialen Aspekten (?) und der tatsächlichen Verwendung.
 *** Gliederung
 ** Grundlagen und Theorie
@@ -143,6 +144,8 @@
 ***** Wie ist das Alter der im Moment aktiven Schlüssel verteilt?
 **** Verwendung von Cert levels
 ** Diskussion
+*** Komponentenstruktur
+**** SCCs sind auch Communities, die nicht vernetzt sind.
 *** MSCC ist die einzige Komponente, die ein aktives WoT mit globalem Anspruch(!) darstellt
 *** Geringe Grösse der MSCC in Relation zur Gesamtzahl der Schlüssel und zum Internet
 *** überwiegender Teil der PGP-Benutzer legt keinen Wert auf Authentication (oder macht das privat, ist aber unwahrscheinlich)
