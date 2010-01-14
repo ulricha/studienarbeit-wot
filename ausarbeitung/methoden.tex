@@ -1,6 +1,6 @@
 %% methoden.tex
 
-\chapter{Methoden und Materialien FIXME}
+\chapter{Methoden und Materialien}
 \label{ch:Methoden}
 %% ==============================
 
@@ -62,7 +62,7 @@ verwendeten Keyserver verursacht: Die grösste starke
 Zusammenhangskomponente die durch XXX berechnet %FIXME
 wurde (MSCC-1), enthält mit dem Stand vom 02.12.2009 ca. 45100
 Schlüssel, während der \emph{wotsap}-Datensatz (MSCC-2) vom gleichen
-Tag nur ca. 42130 Schlüssel enthält. Die Differenz zwischen den
+Tag nur ca. 42130 Schlüssel enthält. Diep Differenz zwischen den
 Datensätzen ergibt einerseits, dass ca. 1000 Schlüssel in MSCC-1
 fehlen, die in MSCC-2 vorhanden sind. Eine stichprobenartige Analyse
 von 20 Schlüsseln zeigt, dass diese Schlüssel überwiegend durch
@@ -106,7 +106,7 @@ verfügen. Gäbe es mehr redundante Pfade, so hätten einzelne
 fehlerhafte Informationen (fehlende bzw. fäschlicherweise als gültig
 betrachtete Schlüssel oder Signaturen) einen geringeren Einfluss.
 
-Die Anzahl fehlender bzw. fälschlich einbezoger Schlüssel (ca. 9\%
+Die Anzahl fehlender bzw. fälschlich einbezogener Schlüssel (ca. 9\%
 fehlend, ca. 2\% fälschlich einbezogen relativ zu MSCC-1) ist so
 gross, dass qualitative Fehler in der Graphenstruktur zu erwarten
 sind. Insbesondere Aussagen über die Verteilung von Knotengraden und
@@ -116,17 +116,179 @@ als Beispiel für ein empirisches soziales bzw. Small-World-Netzwerk
 \cite{Brondsema2006} \cite{Heikkila2009} \cite{Dell'Amico2007}. Sofern
 die Ergebnisse dieser Arbeit auf experimentellen Resultaten aufbauen,
 die mit diesen Daten gewonnen wurden, sollten sie daher mit korrekten
-Daten überprüft werden.
-
-
+Daten überprüft werden. Der Keyserver \emph{wwwkeys.ch.pgp.net} sollte
+von Anwendern nicht mehr benutzt werden.
 
 \section{Design und Implementierung}
 \label{ch:Grundlagen:sec:Design}
 
+Dieser Abschnitt beschreibt die im Rahmen dieser Arbeit erstellte
+Software zur Extraktion und Analyse des Web of Trust. Abschnitt
+\ref{ch:Grundlagen:sec:Design:subsec:der-sks-keyserver} beschreibt
+zunächst die Keyserver-Software \emph{SKS}, auf die %FIXME
+der Extraktionsteil aufbaut. Abschnitt
+\ref{ch:Grundlagen:sec:Design:subsec:der-sks-keyserver} beschreibt
+dann die entwickelte Software selbst und begründet das Design.
+
 \subsection{Der SKS Keyserver}
 \label{ch:Grundlagen:sec:Design:subsec:der-sks-keyserver}
 
+SKS (Synchronizing Key Server) löst die bis dahin verbreitetste
+Keyserver-Software PKS (Public Key Server) ab und wird inzwischen auf
+so gut wie allen Keyservern benutzt. Mit \emph{pgp.mit.edu} wurde im
+Juli 2009 der letzte grosse Keyserver auf SKS umgestellt. PKS benutzt
+ein auf E-Mails basierendes Protokoll zur Synchronisation zwischen
+Keyservern, das ausgesprochen ineffizient ist. Ausserdem kommt es mit
+einigen Bestandteilen des aktuellen OpenPGP-Standards wie
+z.B. \emph{PhotoIDs} und mehreren Unterschlüsseln nicht
+zurecht. PKS-Keyserver können über ein Webinterface, ein
+E-Mail-Interface und das auf HTTP basierende
+HKP-Protokoll\footnote{http://tools.ietf.org/html/draft-shaw-openpgp-hkp-00}
+abgefragt werden.
 
+Im Unterschied dazu kommunizieren SKS-Keyserver zur Synchronisation
+direkt (ohne Umwege über Mailserver) miteinander.  Dazu wird ein
+binäres "`Gossip"'-Protokoll benutzt, dass auf einem effizienten
+Algorithmus zum Abgleich von Datensätzen beruht
+\cite{Minsky2003}. SKS unterstützt alle Bestandteile des
+OpenPGP-Standards.
+
+SKS ist in der Sprache Objective Caml (OCaml) implementiert und
+benutzt die Datenbank Berkeley DB als Datenablage. Ein
+Datenbankeintrag besteht dabei aus einem kompletten OpenPGP-Key,
+d.h. einer Reihe von OpenPGP-Paketen. SKS ist in zwei Prozesse
+aufgeteilt: der \emph{db}-Prozess beantwortet Datenbank-Abfragen für
+die verschiedenen Abfragemöglichkeiten (Webinterface, HKP) während der
+\emph{recon}-Prozess für den Abgleich der Datenbank mit anderen
+Keyservern zuständig ist.
+
+\subsection{Eigene Software}
+\label{ch:Grundlagen:sec:Design:subsec:eigene-software}
+
+Die im Rahmen dieser Arbeit entwickelte Software besteht aus zwei
+Teilen: Der Extraktionsteil liesst Schlüssel aus der Datenbank eines
+Keyservers aus, parst sie, reduziert sie dabei auf die benötigten
+Daten und speichert sie in einer Datei ab. Die reduzierten Daten
+werden in einer SQL-Datenbank (PostgreSQL FIXME cite) abgelegt und
+können dort abgefragt werden. Der zweite Teil besteht aus einer Reihe
+von Werkzeugen zur Analyse dieser Daten entsprechend der Zielsetzung
+dieser Arbeit.
+
+Die Extraktion der Daten ist recht zeitaufwendig. Auf der zur
+Verfügung stehenden Hardware (FIXME Poolrechner Hardware) werden
+ca. XX Stunden benötigt. Durch die Aufteilung kann die Extraktion der
+Daten einmalig auf dem Keyserver vorgenommen werden, während die Daten
+anschliessend auf beliebigen Rechnern zur Verfügung stehen.
+
+Der Extraktionsteil wurde direkt in die SKS-Software
+integriert. Dadurch ergeben sich mehrere Vorteile: 
+
+\begin{itemize}
+\item Das Interface von SKS für den Datenbankzugriff kann
+  wiederverwendet werden
+\item SKS enthält einen rudimentären OpenPGP-Parser, d.h. eine Reihe
+  von Funktionen, die die Byte-Struktur einzelner OpenPGP-Pakete sowie
+  die Paket-Struktur des Schlüssels parsen und die darin enhaltenen
+  Informationen in Datenstrukturen zugänglich machen. Durch die
+  Verwendung dieser Funktionen kann auf eine eigene Implementierung
+  eines OpenPGP-Parsers verzichtet werden.
+\item Die in SKS definierten Datenstrukturen für die Auswertung von
+  OpenPGP-Paketen und weitere Hilfsfunktionen, beispielsweise für den
+  Umgang mit OpenPGP-Fingerprints, können verwendet und erweitert werden
+\end{itemize}
+
+Derzeit läuft der Extraktionsteil in Form eines eigenen Prozesses, der
+einmalig den kompletten Datenbestand ausliest. Dieser Teil könnte aber
+auch direkt in den \emph{db}-Prozess integriert werden, so dass der
+laufende Keyserver konstant neue oder geänderte Schlüssel reduziert
+und in der SQL-Datenbank ablegt. Auf diese Weise könnte ein ständig
+aktueller Datenbestand ohne den Aufwand des vollständigen Auslesens
+realisiert werden. Diese Möglichkeit wurde im Rahmen dieser Arbeit
+nicht verfolgt, kann aber mit geringem Aufwand realisiert werden.
+
+Da der Extraktionsprozess nur lesend auf die SKS-Datenbank zugreift,
+kann er die Daten auslesen, während die \emph{recon}- und
+\emph{db}-Prozesse laufen. Eine Unterbrechung des SKS-Betriebes ist
+nicht notwendig.
+
+Als Sprache für die Implementierung wurde OCaml ausgewählt. Im
+Extraktionsteil bestand dafür aufgrund der Integration in SKS keine
+Wahl. Der Analyseteil wurde ebenfalls in OCaml implementiert. Da die
+dort verwendeten Daten ausschliesslich aus der SQL-Datenbank stammen
+und dort nur primitive Datentypen (Strings, Ganz- und
+Fliesskommazahlen) gespeichert werden, können aber für diesen Teil
+auch problemlos andere Sprachen verwendet werden.
+
+Der Extraktionsteil iteriert über alle in der SKS-Datenbank
+enthaltenen Schlüssel. Jeder Schlüssel wird durch die in SKS
+enthaltenen Funktionen geparst. Der Extraktionsteil FIXME muss dann
+noch
+\begin{itemize}
+\item Entscheiden, ob der Schlüssel zurückgezogen oder abgelaufen
+  ist. Dazu werden die Selbstsignaturen auf den einzelnen UserIDs
+  betrachtet. Falls zu einer UserID mehrere Selbstsignaturen
+  vorliegen, wird entsprechend der Empfehlung im OpenPGP-Standard nur
+  die aktuellste verwendet. Liegt ein Rückrufzertifikat vor oder ist
+  der Schlüssel abgelaufen, wird das Ablauf- bzw. Rückzugsdatum
+  gespeichert.
+\item Fremdsignaturen sammeln. Dazu wird jede UserID betrachtet und
+  die darauf angebrachten Signaturen ohne Duplikate gespeichert. Hier
+  wird ebenfalls nur die neueste Signatur verwendet. Handelt es sich
+  bei der neuesten Signatur um eine Rückrufsignatur, wird das Datum
+  des Rückrufs gespeichert und zusätzlich die nächstältere Signatur
+  gesucht, auf die sich der Rückruf bezieht.
+\item Den Schlüssel und jede Fremdsignatur auf die benötigten Daten
+  reduzieren. Für den Schlüssel sind dies (falls vorhanden) Rückzugs-
+  und Ablaufdatum, die KeyID, die Liste aller UserIDs und die
+  Information, welche davon die primäre UserID ist, das
+  Erstellungsdatum des Schlüssels und der verwendete
+  Public-Key-Algorithmus sowie dessen Schlüssellänge.
+
+  Eine Fremdsignatur wird reduziert auf die KeyID des Unterzeichners
+  FIXME, den Zertifizierungslevel, das Erstellungsdatum der Signatur,
+  falls vorhanden Ablauf- und Rückzugsdatum, der verwendete
+  Signaturalgorithmus und der verwendete Public-Key-Algorithmus.
+\end{itemize}
+
+Grundsätzlich werden Schlüssel nur dann verworfen, wenn sie nicht
+parsebar, d.h. keine Abfolge gültiger OpenPGP-Pakete sind. Schlüssel,
+die zurückgezogen oder abgelaufen sind, werden unter Angabe des
+jeweiligen Datums trotzdem gespeichert. Auf diese Weise ist
+sichergestellt, dass der Datensatz möglichst vollständig ist. Für
+einen beliebigen Zeitpunkt stehen alle dann gültigen Schlüssel und
+Signaturen zur Verfügung. Es kann also gewissermassen ein
+"`Snapshot"' des Web of Trust zu einem beliebigen Zeitpunkt
+analysiert werden.
+
+Erwähnt werden muss, dass der Parse-Vorgang nur prüft, ob die
+Paketfolge eines Schlüssels dem OpenPGP-Standard entspricht. Es wird
+keinerlei kryptographische Verifizierung der Selbst- und
+Fremdsignaturen eines Schlüssels vorgenommen. Grundsätzlich können
+ohne Probleme Signaturpakete auf einem Schlüssel angebracht und diese
+auf einem Keyserver veröffentlicht werden, auch wenn der Ersteller
+nicht über das private Schlüsselmaterial für die kryptographische
+Signatur verfügt. Keyserver verifizieren keine Signaturen, so dass der
+Signaturteil des Pakets mit beliebigem Inhalt gefüllt werden
+kann. GnuPG und PGP verifizieren natürlich Signaturen, so dass eine
+solches Signaturpaket dort nicht verwendet wird und damit kein
+wirkliches Angriffspotential bietet. Eine Möglichkeit für den
+Extraktionsteil bestünde darin, die Signaturen jedes
+OpenPGP-Schlüssels mit GnuPG verifizieren zu lassen. Dagegen sprechen
+zwei Gründe: Einerseits wäre der Aufruf von GnuPG sehr
+zeitaufwendig. Für jeden Schlüssel müssten der Schlüssel in einen
+GnuPG-Schlüsselring eingefügt werden. Zusätzlich müssten noch alle
+Schlüssel, die den jeweiligen Schlüssel signiert haben, einzeln in der
+SKS-Datenbank gesucht und in den Schlüsselring eingefügt werden, um
+die Signaturen verifizieren zu können. Letztendlich kostet der Aufruf
+von GnuPG selbst Zeit. Für die Anzahl der hier verarbeiteten Schlüssel
+(2,6 Millionen) scheint dieser Ansatz daher ungeeignet. Sicherlich
+sind Schlüssel mit defekten Signaturpaketen auf den Keyservern
+vorhanden. Allerdings müsste deren Anzahl sehr gross sein, um
+signifikante Änderungen in der Struktur des Graphen und den
+statistischen Auswertungen der Schlüsseleigenschaften zu
+erreichen. Eine grosse Zahl solcher Pakete scheint aber
+unwahrscheinlich, da zumindest unter Sicherheitsaspekten ein Angreifer
+damit keinen offensichtlichen Gewinn erreichen kann.
 
 
 %%% Local Variables: 
