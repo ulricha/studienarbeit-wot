@@ -123,10 +123,10 @@ module Statistics = Network_statistics.Make(MG)
 exception Invalid_arg
 
 (* assume component list sorted reverse by size *)
-let remove_small_components g component_list =
+let remove_small_components min_size g component_list =
   let rec loop cl large_components =
     match cl with
-      | c :: tl when List.length c >= 6 ->
+      | c :: tl when List.length c >= min_size ->
 	  loop tl (c :: large_components)
       | c :: tl ->
 	  (tl, large_components)
@@ -169,23 +169,28 @@ let string_of_intpair (id, size) = sprintf "%d.%d" id size
 
 let export_cfinder g fname =
   let write output =
-    let write_edge u v =
-      IO.nwrite output (Printf.sprintf "%s %s\n" (string_of_intpair u) (string_of_intpair v))
+    let write_edge e =
+      let (u_name, u_size) = MG.E.src e in
+      let (v_name, v_size) = MG.E.dst e in
+      let label = MG.E.label e in
+      let line = Printf.sprintf "%d %d %d %d %d\n" u_name v_name u_size v_size !label in
+	IO.nwrite output line
     in
-      MG.iter_edges write_edge g
+      MG.iter_edges_e write_edge g
   in
     File.with_file_out fname write
 
 let _ =
-  if (Array.length Sys.argv) <> 2 then (
-      print_endline "usage: basic_properties edge_file";
+  if (Array.length Sys.argv) <> 3 then (
+      print_endline "usage: basic_properties edge_file min_size";
       exit (-1))
 
 let main () =
   print_endline "construct metagraph";
   let edge_fname = Sys.argv.(1) in
   let (g, scc_list) = Component_helpers.load_scc_list edge_fname in
-  let large_components = remove_small_components g scc_list in
+  let min_size = int_of_string Sys.argv.(2) in
+  let large_components = remove_small_components min_size g scc_list in
   let c = filter g large_components in
     printf "filtered %d keys - WTF?" c;
     let metagraph = (time_eval (fun () -> M.metagraph g large_components) "metagraph") in
