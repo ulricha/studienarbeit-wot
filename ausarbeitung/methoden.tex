@@ -174,6 +174,9 @@ können dort abgefragt werden. Der zweite Teil besteht aus einer Reihe
 von Werkzeugen zur Analyse dieser Daten entsprechend der Zielsetzung
 dieser Arbeit.
 
+\subsubsection{Datenextraktion}
+\label{sec:datenextraktion}
+
 Die Extraktion der Daten ist recht zeitaufwendig. Auf der zur
 Verfügung stehenden Hardware (FIXME Poolrechner Hardware) werden
 ca. XX Stunden benötigt. Durch die Aufteilung kann die Extraktion der
@@ -260,6 +263,14 @@ Signaturen zur Verfügung. Es kann also gewissermassen ein
 "`Snapshot"' des Web of Trust zu einem beliebigen Zeitpunkt
 analysiert werden.
 
+Sind alle Schlüssel extrahiert, werden noch solche Signaturen
+entfernt, deren erstellender Schlüssel im Datenbestand nicht vorhanden
+ist. Ausserdem werden für Signaturen, die von einem Unterschlüssel
+erstellt wurden, die KeyID des signierenden Schlüssels auf die des
+"`Oberschlüssels"' geändert. Dies ist notwendig, weil das hier
+verwendete Datenmodell keine Informationen über Unterschlüssel
+enthält.
+
 Erwähnt werden muss, dass der Parse-Vorgang nur prüft, ob die
 Paketfolge eines Schlüssels dem OpenPGP-Standard entspricht. Es wird
 keinerlei kryptographische Verifizierung der Selbst- und
@@ -289,6 +300,66 @@ statistischen Auswertungen der Schlüsseleigenschaften zu
 erreichen. Eine grosse Zahl solcher Pakete scheint aber
 unwahrscheinlich, da zumindest unter Sicherheitsaspekten ein Angreifer
 damit keinen offensichtlichen Gewinn erreichen kann.
+
+Die so extrahierten Daten werden auf einem beliebigen Recher in einer
+SQL-Datenbank (PostgresQL) abgelegt. Auf diese Weise kann darauf
+verzichtet werden, eigene Selektionsmechanismen zu
+implementieren. Stattdessen kann die gewünschte Datenmenge einfach als
+SQL-Abfrage formuliert werden. Auf diese Weise ergibt sich eine
+deutlich flexiblere Abfragemöglichkeit. Die Ablage in der Datenbank
+ist zwar etwas langsamer als die Daten im Speicher zu
+halten. Andererseits müssen die Daten aber nicht jedesmal komplett in
+den Speicher geladen und dort gehalten werden. Ausserdem werden
+effiziente Indexstrukturen der Datenbank genutzt und müssen nicht
+selbst implementiert werden.
+
+Die Tabellen sind wie folgt strukturiert: TODO
+
+Die Zuordnung einzelner Schlüssel zu ihren starken
+Zusammenhangskomponenten erfolgt über die Tabelle
+\emph{component\_ids}. Diese wird erst in einem separaten Schritt
+befüllt, nachdem die Komponentenstruktur berechnet wurde.
+
+\begin{figure}[h]
+\centering
+
+\begin{lstlisting}[language=SQL]
+(SELECT signer, signee
+   FROM sigs INNER JOIN keys on sigs.signer = keys.keyid 
+   WHERE 
+     (keys.revoktime IS NULL OR keys.revoktime > $timestamp) 
+     AND (keys.exptime IS NULL OR keys.exptime > $timestamp)
+     AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) 
+     AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp)) 
+INTERSECT 
+(SELECT signer, signee 
+   FROM sigs INNER JOIN keys on sigs.signee = keys.keyid
+   WHERE 
+   (keys.revoktime IS NULL OR keys.revoktime > $timestamp) 
+   AND (keys.exptime IS NULL OR keys.exptime > $timestamp) 
+   AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) 
+   AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp))"
+\end{lstlisting}
+\caption{Abfrage aller zum Zeitpunkt \$timestamp gültigen Signaturen}
+  \label{fig:all-valid-keys}
+\end{figure}
+
+Als Beispiel gibt Abb. \ref{fig:all-valid-keys} ein SQL-Statement an,
+mit dem alle gültigen (d.h. nicht zurückgezogenen oder abgelaufenen)
+Signaturen zu einem bestimmten Zeitpunkt abgerufen werden können.
+
+Wie beschrieben wird in einem Durchlauf der gesamte Datenbestand
+extrahiert. Aufgrund der Integration in SKS wäre es auch problemlos
+möglich, den Extraktionsteil nicht als eigenständigen Prozess zu
+implementieren, sondern den \emph{db}-Prozess entsprechend zu
+erweitern, so dass jeder neue oder geänderte Schlüssel direkt in der
+SQL-Datenbank abgelegt wird. Auf diese Weise könnte ein jederzeit
+aktueller Datenbestand erhalten werden, ohne dass er ständig komplett
+neu berechnet werden muss.
+
+\subsubsection{Datenauswertung}
+\label{sec:datenauswertung}
+
 
 
 %%% Local Variables: 
