@@ -1,4 +1,4 @@
-open Batteries
+ open Batteries
 open Graph
 open Wot_graph
 open Misc
@@ -177,9 +177,9 @@ let export_cfinder g fname =
     File.with_file_out fname write
 
 let _ =
-  if (Array.length Sys.argv) <> 2 then
+  if (Array.length Sys.argv) <> 2 then (
       print_endline "usage: basic_properties edge_file";
-      exit (-1)
+      exit (-1))
 
 let main () =
   print_endline "construct metagraph";
