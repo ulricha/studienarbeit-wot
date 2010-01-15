@@ -165,6 +165,17 @@ let remove_singletons mg =
   in
     MG.iter_vertex f mg
 
+let string_of_intpair (id, size) = sprintf "%d.%d" id size
+
+let export_cfinder g fname =
+  let write output =
+    let write_edge u v =
+      IO.nwrite output (Printf.sprintf "%s %s\n" (string_of_intpair u) (string_of_intpair v))
+    in
+      MG.iter_edges write_edge g
+  in
+    File.with_file_out fname write
+
 let _ =
   if (Array.length Sys.argv) <> 2 then
       print_endline "usage: basic_properties edge_file";
@@ -183,6 +194,7 @@ let main () =
       remove_singletons metagraph;
       print_endline (sprintf "vertices %d edges %d" (MG.nb_vertex metagraph) (MG.nb_edges metagraph));
       Dot.output_graph oc metagraph;
+      export_cfinder metagraph "metagraph.cfinder";
       Pervasives.close_out oc
 
 let _ = 
