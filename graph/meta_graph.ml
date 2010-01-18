@@ -209,9 +209,10 @@ let main () =
       remove_singletons metagraph;
       print_endline (sprintf "vertices %d edges %d" (MG.nb_vertex metagraph) (MG.nb_edges metagraph));
       Dot.output_graph oc metagraph;
-      export_cfinder metagraph "metagraph.cyto";
-      export_attributes metagraph "metagraph_attriburtes.cyto";
-      Pervasives.close_out oc
+      let basename = Printf.sprintf "metagraph-%d" min_size in
+	export_cfinder metagraph (basename ^ ".cyto");
+	export_attributes metagraph (basename ^ "_attributes.cyto");
+	Pervasives.close_out oc
 
 let _ = 
   try main () with
