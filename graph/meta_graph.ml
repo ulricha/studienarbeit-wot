@@ -173,10 +173,20 @@ let export_cfinder g fname =
       let (u_name, u_size) = MG.E.src e in
       let (v_name, v_size) = MG.E.dst e in
       let label = MG.E.label e in
-      let line = Printf.sprintf "%d %d %d %d %d\n" u_name v_name u_size v_size !label in
+      let line = Printf.sprintf "%d %d %d\n" u_name v_name !label in
 	IO.nwrite output line
     in
       MG.iter_edges_e write_edge g
+  in
+    File.with_file_out fname write
+
+let export_attributes g fname =
+  let write output =
+    let write_vertex (name, size) =
+      let line = Printf.sprintf "%d %d\n" name size in
+	IO.nwrite output line
+    in
+      MG.iter_vertex write_vertex g
   in
     File.with_file_out fname write
 
@@ -192,14 +202,15 @@ let main () =
   let min_size = int_of_string Sys.argv.(2) in
   let large_components = remove_small_components min_size g scc_list in
   let c = filter g large_components in
-    printf "filtered %d keys - WTF?" c;
+    printf "filtered %d keys - WTF?\n" c;
     let metagraph = (time_eval (fun () -> M.metagraph g large_components) "metagraph") in
     let oc = Pervasives.open_out "metagraph.dot" in 
       print_endline (sprintf "vertices %d edges %d" (MG.nb_vertex metagraph) (MG.nb_edges metagraph));
       remove_singletons metagraph;
       print_endline (sprintf "vertices %d edges %d" (MG.nb_vertex metagraph) (MG.nb_edges metagraph));
       Dot.output_graph oc metagraph;
-      export_cfinder metagraph "metagraph.cfinder";
+      export_cfinder metagraph "metagraph.cyto";
+      export_attributes metagraph "metagraph_attriburtes.cyto";
       Pervasives.close_out oc
 
 let _ = 
