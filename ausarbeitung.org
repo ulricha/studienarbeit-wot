@@ -18,25 +18,56 @@
 *** Gliederung
 ** Grundlagen und Theorie
 *** Kryptographie mit öffentlichen Schlüsseln
+**** Terminologie: Hier meint Schlüssel einen Schlüssel im Allgemeinen, später ein OpenPGP-Schlüsselpaar.
 **** Funktionsprinzip
+***** symmetrische Krypto: Alice und Bob verfügen über ein shared secret. Der gleiche Key wird für Ver- und Entschlüsselung benutzt.
+****** Symmetrische Krypto hat Schlüsselverteilungsproblem: braucht sicheren Kanal, um das PSK zu verteilen.
+***** asymmetrische Krypto: Ein Schlüsselpaar mit öffentlicher und geheimer Komponente
+****** Schlüssel, mit dem verschlüsselt wird, ist nicht der Schlüssel, mit dem entschlüsselt wird
+****** public und private keys sind zusammenhängend, aber der private key kann nicht aus dem public key abgeleitet werden (computationally infeasible)
+****** public key kann beliebig verteilt werden (Damit verbundene Probleme: nächstes Kapitel)
+****** Authentizität: Signatur (Hash + Verschlüsselung mit private key). Jeder der im Besitz des public key ist, kann die Signatur überprüfen. Signierer beweist, dass er Zugang zum zugehörigen private key hat.
+****** Vertraulichkeit: Verschlüsselung mit Public key, Entschlüsselung nur mit Private key
+
+***** Beispiele von Algorithmen
 **** Authentisierung von Schlüsseln
+***** public key crypto löst zwar das schlüsselverteilungsproblem insofern, als kein sicherer/vertraulicher kanal mehr vorrausgesetzt wird. dafür aber neues Problem: Sicherstellen, dass der public key authentisch ist.
+***** Beispiel: Man in the middle attack/impersonation attack am Beispiel von PGP
 ***** Grundproblem
+****** Muss sicherstellen
+******* Schlüssel wurde nicht verändert
+******* Schlüssel gehört der Person/Entität, die angegeben ist
 ***** Zentrale PKI
 ***** Web of Trust
+
 *** PGP/GnuPG
 **** Geschichte von PGP/PGP.com und GnuPG
 **** Eigenschaften/Fähigkeiten der Implementierungen allgemein
+***** Verwendete Algorithmen
+****** RSA encrypt/sign
+****** RSA sign only
+****** dsa+el gamal
+****** weitere?
 **** Trust-Modell beschreiben (ausführlich)
+***** Wichtiger Begriff: introducer trust. Drückt aus, wie sehr man 
+***** Web of trust: Begriff missverständlich: Trust bezieht sich nicht auf die  öffentlichen Zertifizierungen, die im Netz sichtbar sind, sondern auf das Vertrauen, dass der Benutzer in verschiedene Aussteller von Zertifikaten von vorheraus hat.
+***** Das komplette System beruht auf bereits vorhandenem Vertrauen. Die Zertifizierungen, die das Netz ausmachen, stellen nur Zusicherungen der Zertifikatsaussteller über die überprüfung des Identity-Key-bindings dar. Ob diesen Zusicherungen vertraut wird, ist vom jeweiligen Benutzer abhängig.
+***** D.h.: Anhand des Netzes als solches kann ohne Hinzunahme einer Trust-Database nichts über die Validität eines Keys ausgesagt werden.
+***** _Vertrauen_ kann nicht aus dem Netz gelesen werden
+***** Informationsgehalt von Signaturen 
+****** Klar: die Zertifizierung (Zusicherung über Binding) an sich
+****** Und: Idealerweise steht eine Signatur für persönlichen Kontakt mit Verifikation der Identität
+******* Aber: Oft (KSPs u.ä.) stehen die Zertifizierungspartner (signer/signee) die dort auftreten nicht in einem tatsächlichen direkten sozialen Verhältnis (sind vielleicht Teilnehmer der gleichen Konferenz, gehören der gleichen Uni an), müssen sich aber nicht wirklich _kennen_ im eigentlichen Sinn. Hier sind auch verschiedene Grade möglich: sich gar nicht kennen und zufällig über eine KSP übereinander stolpern (Verbindung nur über gleiches Event, siehe vorne), enge bekannte, die regelmässig kommunizieren und sich schon länger persönlich kennen, dazwischen: Mitglieder einer Organisation/Gruppe (Debian, Uni), die keinen persönlichen Kontakt haben und deren Verbindung sich im wesentlichen über diese Mitgliedschaft definiert.
 **** Was drückt eine Signatur aus?
 **** Die soziale Komponente
 ***** Wie kommen grundsätzlich Zertifizierungen zustande?
-****** Keysigning-Parties
+****** Keysigning-Parties: ad-hoc und gross/formalisiert auf Konferenzen
 ****** Face-to-face
 ***** Gruppen, die bekanntermassen stark auf das WoT bauen
 ****** Debian
 ****** andere Distributionen?
 
-*** Der OpenPGP-Standard
+*** Der OpenPGP-Standard (unwichtig)
 **** Paketformat v4
 **** Unterschiede v3
 *** Keyserver-Netzwerk
@@ -50,6 +81,8 @@
 ****** Warum gut? Warum schlecht? (WP)
 **** Andere Ansätze: PGP Global Directory
 *** Graphentheorie allgemein
+**** Gerichteter Graph
+**** Pfad
 *** Netzwerkanalyse
 **** Netzwerkstatistiken
 ***** Clustering coefficient
@@ -183,3 +216,5 @@
 *** Spekulation über Ursachen geringer Verwendung: Insgesamt zu komplex? Doku zu schlecht? Werkzeuge zu schlect?
 *** Basis für Vergleich mit hierarchischer PKI?
 
+
+** Gibt es eine Korrelation zwischen Mass der Vernetzung (Grad) und Verwendung von cert levels? Personen welcher Art benutzen Cert levels? (pro Grad/Grad-bin: wie hoch ist der Anteil der leute, die level != 0x10 verwenden?
