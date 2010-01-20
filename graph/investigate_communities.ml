@@ -40,7 +40,7 @@ let write_community_size_values m out_fname =
     IO.close_out output
 
 let _ =
-  if (Array.length Sys.argv) <> 3 then (
+  if (Array.length Sys.argv) <> 4 then (
     print_endline "usage: investigate_communities edge-file index-file community-file";
     exit (-1))
 
