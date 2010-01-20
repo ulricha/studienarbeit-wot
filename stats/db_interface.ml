@@ -64,5 +64,5 @@ let divide list =
 
 let divide_et_impera query arguments =
   let workunits = divide arguments in
-  let results = List.map query workunits in
+  let results = List.map (fun work -> print_endline "workunit"; query work) workunits in
     List.flatten results
