@@ -28,3 +28,4 @@ stats/investigate_wotsap.native
 stats/investigate_wotsap.d.byte
 graph/print_path.native
 stats/mscc_size.native
+stats/investigate_communities.native

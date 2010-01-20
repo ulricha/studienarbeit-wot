@@ -1,5 +1,14 @@
 open Batteries
 open Graph
+open Investigate_component
+
+(* 
+1. Groessenverteilung
+2. Inhaltsanalyse a la investigate_components
+3. Zeichnen a la metagraph
+4. 
+*)
+
 
 let read_index index_fname =
   let h = Hashtbl.create 45000 in
