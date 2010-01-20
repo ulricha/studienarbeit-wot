@@ -35,7 +35,43 @@
 \subsection{Das GnuPG-Vertrauensmodell}
 \label{sec:das-gnupg-vertrauensmodell}
 
-bla bla bla
+Öffentliche PGP-Schlüssel werden oft nicht in einer Weise übergeben,
+die die sofortige Verifikation des Schlüssels zulässt, beispielsweise
+bei einem persönlichen Treffen. Stattdessen werden Schlüssel häufig
+per E-Mail, über einen Keyserver oder andere elektronische Wege
+ausgetauscht.  Überprüfung der Authentizität eines Schlüssels ist
+deswegen von grosser Bedeutung.
+
+
+Ein Schlüssel wird von GnuPG genau dann als gültig (\emph{valid})
+betrachtet, wenn er die folgenden Bedingungen erfüllt:
+
+\begin{enumerate}
+\item Der Schlüssel wurde von ausreichend vielen \emph{gültigen} Schlüsseln
+  unterschrieben, d.h. er wurde mindestens entweder von
+  \begin{itemize}
+  \item dem Besitzer des Schlüsselrings selbst (d.h. von einem
+    Schlüssel mit \emph{ultimate trust})
+  \item mindestens $N$ gültigen Schlüsseln, denen voll vertraut wird
+  \item mindestens $M$ gültigen Schlüsseln, denen geringfügig
+    vertraut wird
+  \end{itemize}
+  unterschrieben.
+\item Eine Signaturkette wird nur verwendet, wenn sie ausgehend vom
+  Besitzer des Schlüsselrings maximal die Länge $L$ hat.
+\end{enumerate}
+
+Ein Schlüssel, der von weniger voll bzw. geringfügig
+vertrauenswürdigen Schlüsseln als notwendig unterschrieben wurde, wird
+als eingeschränkt gültig (\emph{marginally valid})
+angesehen. Allerdings werden Schlüssel dieser Kategorie von GnuPG
+genauso wie nicht gültige Schlüssel behandelt.
+
+GnuPG erlaubt es einem Anwender, die Parameter $N, M$ und $L$ selbst
+zu setzen und damit seine Sicherheitsanforderungen umzusetzen. Je
+höher beispielsweise die notwendige Anzahl von Signaturen, um so
+grösser ist auch die Wahrscheinlichkeit, dass der Schlüssel
+tatsächlich authentisch ist.
 
 \begin{figure}[t]
   \centering
@@ -44,7 +80,26 @@ bla bla bla
   \label{fig:trust-beispiel}
 \end{figure}
 
-bla bla bla
+Abbildung \ref{fig:trust-beispiel} gibt ein Beispiel für die
+Berechnung der Schlüsselgültigkeit. Die Schlüssel $B, H$ und $K$
+wurden direkt von $A$, dem Besitzer des Schlüsselrings, unterschrieben
+und sind deshalb voll gültig. Da $L, M,$ und $N$ von $K$
+unterschrieben wurden und dieser über volles Vertrauen verfügt, sind
+sie ebenfalls voll gültig. $O$ sowie $J$ sind voll gültig, da sie
+jeweils von drei Schlüsseln mit geringfügigem Vertrauen unterschrieben
+wurden. $I$ und $P$ wurden dagegen jeweils nur von zwei Schlüsseln mit
+geringfügigem Vertrauen unterschrieben und sind deshalb nicht voll
+sondern nur eingeschränkt gültig. $G$ wurde zwar von einem voll
+gültigen Schlüssel mit vollem Vertrauen unterschrieben. Allerdings
+überschreitet die Signaturkette zu $A$ die maximale Länge von 5 und
+wird deshalb nicht betrachtet.
+
+
+
+Ein öffentlicher Schlüssel, der anhand dieser Regeln nicht als
+authentisch verifiziert werden kann, kann trotzdem zur Verschlüsselung
+und zur Verifizierung von Signaturen verwendet werden. Allerdings
+warnt GnuPG in diesem Fall vor der Verwendung.
 
 \subsection{Soziale Komponente des Web of Trust}
 \label{sec:sozi-komp-des}
