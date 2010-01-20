@@ -51,12 +51,11 @@ betrachtet, wenn er die folgenden Bedingungen erfüllt:
   unterschrieben, d.h. er wurde mindestens entweder von
   \begin{itemize}
   \item dem Besitzer des Schlüsselrings selbst (d.h. von einem
-    Schlüssel mit \emph{ultimate trust})
-  \item mindestens $N$ gültigen Schlüsseln, denen voll vertraut wird
+    Schlüssel mit \emph{ultimate trust}) unterschrieben
+  \item mindestens $N$ gültigen Schlüsseln, denen voll vertraut wird, unterschrieben
   \item mindestens $M$ gültigen Schlüsseln, denen geringfügig
-    vertraut wird
+    vertraut wird, unterschrieben
   \end{itemize}
-  unterschrieben.
 \item Eine Signaturkette wird nur verwendet, wenn sie ausgehend vom
   Besitzer des Schlüsselrings maximal die Länge $L$ hat.
 \end{enumerate}
@@ -70,8 +69,15 @@ genauso wie nicht gültige Schlüssel behandelt.
 GnuPG erlaubt es einem Anwender, die Parameter $N, M$ und $L$ selbst
 zu setzen und damit seine Sicherheitsanforderungen umzusetzen. Je
 höher beispielsweise die notwendige Anzahl von Signaturen, um so
-grösser ist auch die Wahrscheinlichkeit, dass der Schlüssel
-tatsächlich authentisch ist.
+kleiner ist der Schaden, den eine einzelne fehlerhafte Signatur
+anrichten kann. Ist die maximale Pfadlänge auf einen kleinen Wert
+begrenzt, so ist auch die maximale Anzahl der Signaturen auf dem Pfad
+kleiner, die potentiell fehlerhaft sein können. Andererseits
+verringert sich damit die Anzahl der Signaturen (Pfade im Web of
+Trust), die für die Verifizierung benutzt werden können, und damit die
+Anzahl verifizierbarer Schlüssel. Es muss also eine Abwägung zwischen
+dem Sicherheitsbedürfnis des Nutzers und der praktischen Benutzbarkeit
+getroffen werden.
 
 \begin{figure}[t]
   \centering
