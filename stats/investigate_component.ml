@@ -104,7 +104,7 @@ let print_statistics key_records sig_ctimes =
     print_endline "\nDistribution of Second-Level-Domains:";
     domain_distribution slds 1
 
-let _ =
+let check_args () =
   if Array.length Sys.argv <> 4 then (
     print_endline "investigate_components db edge_file min_size";
     exit 1)
@@ -133,5 +133,5 @@ let main () =
       loop scc_list_sorted
       
 let _ =
-  try main () with
+  try check_args (); main () with
     | e -> prerr_endline (Printexc.to_string e)
