@@ -21,7 +21,11 @@
 **** Terminologie: Hier meint Schlüssel einen Schlüssel im Allgemeinen, später ein OpenPGP-Schlüsselpaar.
 **** Funktionsprinzip
 ***** symmetrische Krypto: Alice und Bob verfügen über ein shared secret. Der gleiche Key wird für Ver- und Entschlüsselung benutzt.
-****** Symmetrische Krypto hat Schlüsselverteilungsproblem: braucht sicheren Kanal, um das PSK zu verteilen.
+****** Symmetrische Krypto hat Schlüsselverteilungsproblem: 
+******* muss sicherstellen, dass kein dritter den schlüssel bei der verteilung erhalten kann
+******* Im internet: Abhören ist immer auf mehreren Protokollebenen und an mehreren Stellen möglich
+******* Beispiel: Email kann vom Transporteur der IP-Pakete (ISP), den Betreibern der Mailserver und staatlichen Stellen/Kriminellen abgehört werden
+******* also: braucht sicheren Kanal, um das PSK zu verteilen. Problem, wenn es sich um die erste Kommunikation zwischen bis dato unbekannten handelt
 ***** asymmetrische Krypto: Ein Schlüsselpaar mit öffentlicher und geheimer Komponente
 ****** Schlüssel, mit dem verschlüsselt wird, ist nicht der Schlüssel, mit dem entschlüsselt wird
 ****** public und private keys sind zusammenhängend, aber der private key kann nicht aus dem public key abgeleitet werden (computationally infeasible)
@@ -49,15 +53,45 @@
 ****** dsa+el gamal
 ****** weitere?
 **** Trust-Modell beschreiben (ausführlich)
-***** Wichtiger Begriff: introducer trust. Drückt aus, wie sehr man 
-***** Web of trust: Begriff missverständlich: Trust bezieht sich nicht auf die  öffentlichen Zertifizierungen, die im Netz sichtbar sind, sondern auf das Vertrauen, dass der Benutzer in verschiedene Aussteller von Zertifikaten von vorheraus hat.
-***** Das komplette System beruht auf bereits vorhandenem Vertrauen. Die Zertifizierungen, die das Netz ausmachen, stellen nur Zusicherungen der Zertifikatsaussteller über die überprüfung des Identity-Key-bindings dar. Ob diesen Zusicherungen vertraut wird, ist vom jeweiligen Benutzer abhängig.
-***** D.h.: Anhand des Netzes als solches kann ohne Hinzunahme einer Trust-Database nichts über die Validität eines Keys ausgesagt werden.
-***** _Vertrauen_ kann nicht aus dem Netz gelesen werden
+***** PGP-Keys werden oft benutzt, um Kommunikation zwischen räumlich entfernten Partnern abzusichern.
+***** Schlüssel werden in dem Fall nicht persönlich übergeben, können also nicht direkt verifiziert werden. 
+***** Algorithmus, der bestimmt, welche Keys GnuPG als "valide" betrachtet.
+***** im PGP-WoT: Unterschreiben entspricht dem Ausstellen eines Zertifikats.
+***** Valide: Die Zuordnung von Schlüssel zu UserID wird von GnuPG als gültig betrachtet.
+***** Anmerkung: nicht-valide Keys können trotzdem benutzt werden, werden aber bei Verwendung mit einer Warnung versehen
+***** Wichtiger Begriff: introducer trust (Vertrauen)
+****** Bedeutet nicht: Vertrauen in die Gültigkeit eines Schlüssels oder sonst was
+****** Sondern: Vertrauen in den Besitzer des Schlüssels, gültige Zertifikate, d.h. Zusicherungen über die Bindung von Schlüssel an Identität abzugeben. Das bedeutet, dass der introducer korrekt die Identität des Schlüsselbesitzers verifiziert. (Eigentlich müsste an dieser Stelle auch verifiziert haben, dass der angebliche Eigentümer auch die Kontrolle über den privaten Schlüsselteil hat. Das wird normalerweise aber nicht gemacht. (?))
+****** Mögliche trust-Werte
+******* unknown (Kein Wert gesetzt)
+******* complete trust (
+******* marginal trust
+******* no trust
+******* (ultimate trust, nur für den Benutzer selbst)
+****** Es gibt keine präzise Angabe der Semantik dieser Trust-Level, nur vage Beschreibungen und Intuition
+***** Wann ist ein Key valide
+****** Muss entweder unterschrieben sein von
+******* Benutzer selbst (ultimate trust)
+******* mind. 1 Schlüssel mit full trust
+******* mind. 3 Schlüssel mit marginal trust
+****** Ausserdem: Die Signaturkette hat maximal die Länge 5
+***** 
+***** Keine direkte Verbindung zwischen Validität eines Schlüssels und Vertrauen in den Besitzer
+***** Es können nur solche Signaturen im WoT (= Kanten im Graphen) benutzt werden, deren Aussteller (= Quelle) über introducer trust verfügt. (d.h. marginal oder full
+***** Trust-Algorithmus kann nicht direkt über kantendisjunkte Pfade ausgedrückt werden (hat eigentlich genau nichts damit zu tun)
+***** Beispiel: Graph (
+****** introducer trust: none (rund) , marginal (Quadrat), full (diamant)
+****** Validität: none (weiss), marginal (grau), full (schwarz)
+****** 
 ***** Informationsgehalt von Signaturen 
 ****** Klar: die Zertifizierung (Zusicherung über Binding) an sich
 ****** Und: Idealerweise steht eine Signatur für persönlichen Kontakt mit Verifikation der Identität
 ******* Aber: Oft (KSPs u.ä.) stehen die Zertifizierungspartner (signer/signee) die dort auftreten nicht in einem tatsächlichen direkten sozialen Verhältnis (sind vielleicht Teilnehmer der gleichen Konferenz, gehören der gleichen Uni an), müssen sich aber nicht wirklich _kennen_ im eigentlichen Sinn. Hier sind auch verschiedene Grade möglich: sich gar nicht kennen und zufällig über eine KSP übereinander stolpern (Verbindung nur über gleiches Event, siehe vorne), enge bekannte, die regelmässig kommunizieren und sich schon länger persönlich kennen, dazwischen: Mitglieder einer Organisation/Gruppe (Debian, Uni), die keinen persönlichen Kontakt haben und deren Verbindung sich im wesentlichen über diese Mitgliedschaft definiert.
+****** Web of trust: Begriff missverständlich: Trust bezieht sich nicht auf die  öffentlichen Zertifizierungen, die im Netz sichtbar sind, sondern auf das Vertrauen, dass der Benutzer in verschiedene Aussteller von Zertifikaten von vorheraus hat.
+****** Das komplette System beruht auf bereits vorhandenem Vertrauen. Die Zertifizierungen, die das Netz ausmachen, stellen nur Zusicherungen der Zertifikatsaussteller über die überprüfung des Identity-Key-bindings dar. Ob diesen Zusicherungen vertraut wird, ist vom jeweiligen Benutzer abhängig.
+****** D.h.: Anhand des Netzes als solches kann ohne Hinzunahme einer Trust-Database nichts über die Validität eines Keys ausgesagt werden.
+****** _Vertrauen_ kann nicht aus dem Netz gelesen werden
+
 **** Was drückt eine Signatur aus?
 **** Die soziale Komponente
 ***** Wie kommen grundsätzlich Zertifizierungen zustande?
