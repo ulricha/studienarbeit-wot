@@ -52,3 +52,17 @@ let get_mscc_keys dbh =
 
 let get_uids_per_key dbh keyids =
   PGSQL(dbh) "SELECT uid FROM uids WHERE keyid IN $@keyids"
+
+let divide list =
+  let rec loop l ll =
+    try
+      let first, rest = List.split_at 50 l in
+	loop rest (first :: ll)
+    with List.Invalid_index _ -> l :: ll
+  in
+    loop list []
+
+let divide_et_impera query arguments =
+  let workunits = divide arguments in
+  let results = List.map query workunits in
+    List.flatten results
