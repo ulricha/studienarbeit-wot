@@ -70,7 +70,7 @@ let print_statistics key_records uids sig_ctimes =
     domain_distribution slds 1
 
 let community_statistics db m =
-  let minsize = int_of_string Sys.argv.(4) in
+  let minsize = int_of_string Sys.argv.(5) in
   let dbh = PGOCaml.connect ~database:db () in
   let community_list = Map.IntMap.fold (fun _ c l -> c :: l) m [] in
   let community_list = Graph_misc.list_list_sort_reverse community_list in
@@ -98,7 +98,7 @@ let _ =
 
 let main () =
   print_endline "investigate_communities";
-  let cid_map = import_igraph_communities Sys.argv.(2) Sys.argv.(3) in
+  let cid_map = import_igraph_communities Sys.argv.(3) Sys.argv.(4) in
     write_community_size_values cid_map "community_sizes.dat";
     community_statistics Sys.argv.(1) cid_map
 
