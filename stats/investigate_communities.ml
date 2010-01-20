@@ -69,9 +69,9 @@ let print_statistics key_records uids sig_ctimes =
     print_endline "\nDistribution of Second-Level-Domains:";
     domain_distribution slds 1
 
-let community_statistics m =
+let community_statistics db m =
   let minsize = int_of_string Sys.argv.(4) in
-  let dbh = PGOCaml.connect ~database:Sys.argv.(1) () in
+  let dbh = PGOCaml.connect ~database:db () in
   let community_list = Map.IntMap.fold (fun _ c l -> c :: l) m [] in
   let community_list = Graph_misc.list_list_sort_reverse community_list in
   let rec loop l =
@@ -92,15 +92,15 @@ let community_statistics m =
     loop community_list
 
 let _ =
-  if (Array.length Sys.argv) <> 5 then (
-    print_endline "usage: investigate_communities edge-file index-file community-file minsize";
+  if (Array.length Sys.argv) <> 6 then (
+    print_endline "usage: investigate_communities db edge-file index-file community-file minsize";
     exit (-1))
 
 let main () =
   print_endline "investigate_communities";
   let cid_map = import_igraph_communities Sys.argv.(2) Sys.argv.(3) in
     write_community_size_values cid_map "community_sizes.dat";
-    community_statistics cid_map
+    community_statistics Sys.argv.(1) cid_map
 
 let _ =
   try main () with
