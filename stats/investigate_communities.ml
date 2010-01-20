@@ -1,7 +1,7 @@
 open Batteries
 open Graph
-open Investigate_component
 open Db_interface
+open Domain_time_statistics
 
 (* 
 1. Groessenverteilung
