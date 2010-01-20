@@ -50,5 +50,5 @@ let get_valid_signed_keys dbh timestamp =
 let get_mscc_keys dbh =
   PGSQL(dbh) "SELECT keys.keyid FROM keys INNER JOIN component_ids ON keys.keyid = component_ids.keyid WHERE component_ids.component_id = 0"
 
-let get_uids_per_key dbh keyid =
-  PGSQL(dbh) "SELECT uid FROM uids WHERE keyid = $keyid"
+let get_uids_per_key dbh keyids =
+  PGSQL(dbh) "SELECT uid FROM uids WHERE keyid IN $@keyids"

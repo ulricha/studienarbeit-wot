@@ -1,14 +1,15 @@
 open Batteries
 open Graph
 open Investigate_component
+open Db_interface
 
 (* 
 1. Groessenverteilung
-2. Inhaltsanalyse a la investigate_components
+2. Inhaltsanalyse a la investigate_components: domains (puids), erstellungszeit, domainverteilung
+   ctimes auf keys und signaturen
 3. Zeichnen a la metagraph
 4. 
 *)
-
 
 let read_index index_fname =
   let h = Hashtbl.create 45000 in
@@ -48,15 +49,58 @@ let write_community_size_values m out_fname =
     Map.IntMap.iter write_size m;
     IO.close_out output
 
+let print_statistics key_records uids sig_ctimes =
+  let key_ctimes = List.map (fun (_, _, ctime, _) -> ctime) key_records in
+  (* let puids = List.map (fun (_, uid, _, _) -> uid) key_records in *)
+  let adresses = extract_regexp_group regexp_email uids in
+  let tlds = extract_regexp_group regexp_tld adresses in
+  let slds = extract_slds adresses in
+  let (median, oldest, newest) = characterize_times key_ctimes in
+  let (median, oldest, newest) = (format_time median, format_time oldest, format_time newest) in
+  let (median_sig, oldest_sig, newest_sig) = characterize_times sig_ctimes in
+  let (median_sig, oldest_sig, newest_sig) = 
+    (format_time median_sig, format_time oldest_sig, format_time newest_sig) in
+    print_endline "\nCreation times of keys:";
+    Printf.printf "median %s oldest %s newest %s\n" median oldest newest;
+    print_endline "\nCreation times of signatures:";
+    Printf.printf "median %s oldest %s newest %s\n" median_sig oldest_sig newest_sig;
+    print_endline "\nDistribution of Top-Level-Domains:";
+    domain_distribution tlds 1;
+    print_endline "\nDistribution of Second-Level-Domains:";
+    domain_distribution slds 1
+
+let community_statistics m =
+  let minsize = int_of_string Sys.argv.(4) in
+  let dbh = PGOCaml.connect ~database:Sys.argv.(1) () in
+  let community_list = Map.IntMap.fold (fun _ c l -> c :: l) m [] in
+  let community_list = Graph_misc.list_list_sort_reverse community_list in
+  let rec loop l =
+    match l with
+      | keyids :: tl when (List.length keyids) > minsize ->
+	  let records = get_key_records dbh keyids in
+	  let sig_ctimes = sig_creation_times dbh keyids in
+	  let uids = get_uids_per_key dbh keyids in
+	    assert (List.length records > 0);
+	    Printf.printf "\nmembers of community %d\n" (List.length keyids);
+	    print_statistics records uids sig_ctimes;
+	    print_key_records records;
+	    print_endline "";
+	    loop tl
+      | hd :: tl -> ()
+      | [] -> ()
+  in
+    loop community_list
+
 let _ =
-  if (Array.length Sys.argv) <> 4 then (
-    print_endline "usage: investigate_communities edge-file index-file community-file";
+  if (Array.length Sys.argv) <> 5 then (
+    print_endline "usage: investigate_communities edge-file index-file community-file minsize";
     exit (-1))
 
 let main () =
   print_endline "investigate_communities";
   let cid_map = import_igraph_communities Sys.argv.(2) Sys.argv.(3) in
-    write_community_size_values cid_map "community_sizes.dat"
+    write_community_size_values cid_map "community_sizes.dat";
+    community_statistics cid_map
 
 let _ =
   try main () with
