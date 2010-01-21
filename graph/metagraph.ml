@@ -124,7 +124,7 @@ let directed_to_undirected g_dir =
 	 let src = MG.E.src e in
 	 let dst = MG.E.dst e in
 	 let label = MG.E.label e in
-	   if MGU.mem_edge g_undir src dst then
+	   if not (MGU.mem_edge g_undir src dst) then
 	     let eu = MGU.E.create src label dst in
 	       MGU.add_edge_e g_undir eu
 	   else
