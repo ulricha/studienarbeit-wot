@@ -23,7 +23,7 @@ let component_metagraph g cid_map =
 
 let main () =
   print_endline "construct communities metagraph";
-  let cid_map = import_igraph_communities Sys.argv.(3) Sys.argv.(4) in
+  let cid_map = import_igraph_communities Sys.argv.(2) Sys.argv.(3) in
   let edge_fname = Sys.argv.(1) in
   let g = load_graph_from_file edge_fname in 
     write_community_size_values cid_map "community_sizes.dat";
