@@ -1,13 +1,8 @@
 graph/basic_properties.native
-graph/basic_properties.p.native
-graph/basic_properties.d.byte
-graph/meta_graph.native
-graph/meta_graph.p.native
-graph/meta_graph.d.byte
+graph/component_structure.native
 graph/betweeness_ser.native
 graph/clustering_coefficient_ser.native
-graph/clustering_coefficient_ser.p.native
-graph/clustering_coefficient_ser.d.byte
 graph/export.native
 graph/print_path.native
+graph/community_structure.native
 
