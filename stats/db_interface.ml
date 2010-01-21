@@ -66,8 +66,6 @@ let divide_et_impera query arguments =
   let workunits = divide arguments in
   let results = List.mapi
     (fun i work -> 
-       Printf.printf "workunit %d\n" i;
-       flush stdout;
        query work) 
     workunits 
   in
