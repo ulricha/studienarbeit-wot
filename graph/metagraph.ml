@@ -202,3 +202,26 @@ let export_metagraph_attributes g fname =
       MG.iter_vertex write_vertex g
   in
     File.with_file_out fname write
+
+let export_umetagraph_cfinder g fname =
+  let write output =
+    let write_edge e =
+      let (u_name, u_size) = MGU.E.src e in
+      let (v_name, v_size) = MGU.E.dst e in
+      let label = MGU.E.label e in
+      let line = Printf.sprintf "%d %d %d\n" u_name v_name !label in
+	IO.nwrite output line
+    in
+      MGU.iter_edges_e write_edge g
+  in
+    File.with_file_out fname write
+
+let export_umetagraph_attributes g fname =
+  let write output =
+    let write_vertex (name, size) =
+      let line = Printf.sprintf "%d %d\n" name size in
+	IO.nwrite output line
+    in
+      MGU.iter_vertex write_vertex g
+  in
+    File.with_file_out fname write
