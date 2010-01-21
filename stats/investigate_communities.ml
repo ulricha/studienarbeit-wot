@@ -41,18 +41,16 @@ let community_statistics db m =
   let community_list = Graph_misc.list_list_sort_reverse community_list in
   let rec loop l =
     match l with
-      | keyids :: tl when (List.length keyids) > minsize ->
+      | keyids :: tl when (List.length keyids) > minsize && (List.length keyids) > 100 ->
 	  let records = divide_et_impera (get_key_records dbh) keyids in
 	  let sig_ctimes = divide_et_impera (sig_creation_times dbh) keyids in
-	  (* let uids = divide_et_impera (get_uids_per_key_flat dbh) keyids in *)
 	  let uids = get_uids_per_key dbh keyids in
 	    assert (List.length records > 0);
 	    Printf.printf "\nmembers of community %d\n" (List.length keyids);
 	    print_statistics records uids sig_ctimes;
-	    print_key_records records;
 	    print_endline "";
 	    loop tl
-      | keyids :: tl when (List.length keyids) > minsize && (List.length keyids) < 100 ->
+      | keyids :: tl when (List.length keyids) > minsize ->
 	  let records = get_key_records dbh keyids in
 	  let sig_ctimes = sig_creation_times dbh keyids in
 	  let uids = get_uids_per_key dbh keyids in
