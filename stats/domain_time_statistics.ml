@@ -38,6 +38,11 @@ let extract_slds strings =
     with _ -> l
   in List.fold_left extract [] strings
 
+let normalize_domain_list domains_nested extract_function =
+  let extracted = List.map extract_function domains_nested in
+  let unique = List.map (List.sort_unique Standard.compare) extracted in
+    List.concat unique
+
 let domain_distribution domains threshold =
   let increment_by_one = Graph_misc.stringmap_add_or_create 1 in
   let map = List.fold_left increment_by_one Map.StringMap.empty domains in
@@ -83,3 +88,5 @@ let characterize_times ctimes =
     let newest = Array.get a (l - 1) in
     let oldest = Array.get a 0 in
       (median, oldest, newest)
+
+

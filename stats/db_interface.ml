@@ -50,8 +50,19 @@ let get_valid_signed_keys dbh timestamp =
 let get_mscc_keys dbh =
   PGSQL(dbh) "SELECT keys.keyid FROM keys INNER JOIN component_ids ON keys.keyid = component_ids.keyid WHERE component_ids.component_id = 0"
 
-let get_uids_per_key dbh keyids =
+let get_uids_per_key_flat dbh keyids =
   PGSQL(dbh) "SELECT uid FROM uids WHERE keyid IN $@keyids"
+
+let get_uids_per_key dbh keyids =
+  let rec loop rem res =
+    match rem with
+      | keyid :: tl ->
+	  let uids = PGSQL(dbh) "SELECT uid FROM uids WHERE keyid = $keyid" in
+	    loop tl (uids :: res)
+      | [] ->
+	  res
+  in
+    loop keyids []
 
 let divide list =
   let rec loop l ll =

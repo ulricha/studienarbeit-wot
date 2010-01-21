@@ -49,12 +49,13 @@ let write_community_size_values m out_fname =
     Map.IntMap.iter write_size m;
     IO.close_out output
 
-let print_statistics key_records uids sig_ctimes =
+let print_statistics key_records uids_nested sig_ctimes =
   let key_ctimes = List.map (fun (_, _, ctime, _) -> ctime) key_records in
   (* let puids = List.map (fun (_, uid, _, _) -> uid) key_records in *)
-  let adresses = extract_regexp_group regexp_email uids in
-  let tlds = extract_regexp_group regexp_tld adresses in
-  let slds = extract_slds adresses in
+  let adresses = List.map (extract_regexp_group regexp_email) uids_nested in
+  let normalize = normalize_domain_list adresses in
+  let tlds = normalize (extract_regexp_group regexp_tld) in
+  let slds = normalize extract_slds in
   let (median, oldest, newest) = characterize_times key_ctimes in
   let (median, oldest, newest) = (format_time median, format_time oldest, format_time newest) in
   let (median_sig, oldest_sig, newest_sig) = characterize_times sig_ctimes in
@@ -79,7 +80,8 @@ let community_statistics db m =
       | keyids :: tl when (List.length keyids) > minsize ->
 	  let records = divide_et_impera (get_key_records dbh) keyids in
 	  let sig_ctimes = divide_et_impera (sig_creation_times dbh) keyids in
-	  let uids = divide_et_impera (get_uids_per_key dbh) keyids in
+	  (* let uids = divide_et_impera (get_uids_per_key_flat dbh) keyids in *)
+	  let uids = get_uids_per_key dbh keyids in
 	    assert (List.length records > 0);
 	    Printf.printf "\nmembers of community %d\n" (List.length keyids);
 	    print_statistics records uids sig_ctimes;
