@@ -1,5 +1,6 @@
 open Batteries
 open Unix
+open Misc
 
 let regexp_email = Str.regexp ".*<\\(.*\\)>.*"
 let regexp_tld = Str.regexp ".*@.+\\.\\([^\\.]+\\)$"
@@ -40,13 +41,16 @@ let extract_slds strings =
 let domain_distribution domains threshold =
   let increment_by_one = Graph_misc.stringmap_add_or_create 1 in
   let map = List.fold_left increment_by_one Map.StringMap.empty domains in
-    Enum.iter 
+  let alist = List.of_enum (Map.StringMap.enum map) in
+  let compare (a1, b1) (a2, b2) = compare b1 b2 in
+  let alist = List.sort ~cmp:(compare_reverse compare) alist in
+    List.iter 
       (fun (k, v) -> 
 	 if v < threshold then 
 	   ()
 	 else
 	   Printf.printf "%s %d\n" k v) 
-      (Map.StringMap.enum map)
+      alist
 
 let format_time_option = function
   | Some t -> 
