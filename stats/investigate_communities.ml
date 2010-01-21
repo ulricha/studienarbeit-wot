@@ -57,7 +57,6 @@ let community_statistics db m =
 	    assert (List.length records > 0);
 	    Printf.printf "\nmembers of community %d\n" (List.length keyids);
 	    print_statistics records uids sig_ctimes;
-	    print_key_records records;
 	    print_endline "";
 	    loop tl
       | hd :: tl -> ()
