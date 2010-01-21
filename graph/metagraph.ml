@@ -160,7 +160,7 @@ let remove_singletons mg =
 
 let string_of_intpair (id, size) = sprintf "%d.%d" id size
 
-let export_cfinder g fname =
+let export_metagraph_cfinder g fname =
   let write output =
     let write_edge e =
       let (u_name, u_size) = MG.E.src e in
@@ -173,7 +173,7 @@ let export_cfinder g fname =
   in
     File.with_file_out fname write
 
-let export_attributes g fname =
+let export_metagraph_attributes g fname =
   let write output =
     let write_vertex (name, size) =
       let line = Printf.sprintf "%d %d\n" name size in

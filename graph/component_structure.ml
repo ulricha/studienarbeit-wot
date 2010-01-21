@@ -16,7 +16,7 @@ let _ =
       exit (-1))
 
 let main () =
-  print_endline "construct metagraph";
+  print_endline "construct components metagraph";
   let edge_fname = Sys.argv.(1) in
   let (g, scc_list) = Component_helpers.load_scc_list edge_fname in
   let min_size = int_of_string Sys.argv.(2) in
@@ -29,9 +29,9 @@ let main () =
       remove_singletons metagraph;
       print_endline (sprintf "vertices %d edges %d" (MG.nb_vertex metagraph) (MG.nb_edges metagraph));
       Dot.output_graph oc metagraph;
-      let basename = Printf.sprintf "metagraph-%d" min_size in
-	export_cfinder metagraph (basename ^ ".cyto");
-	export_attributes metagraph (basename ^ "_attributes.cyto");
+      let basename = Printf.sprintf "metagraph-components-%d" min_size in
+	export_metagraph_cfinder metagraph (basename ^ ".cyto");
+	export_metagraph_attributes metagraph (basename ^ "_attributes.cyto");
 	Pervasives.close_out oc
 
 let _ = 
