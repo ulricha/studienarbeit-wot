@@ -88,7 +88,7 @@ let apply_lines input f =
     done;
   with IO.No_more_input -> ()
 
-module Graph_helpers(G : G) = struct
+module Graph_helpers(G : Sig.I) = struct
 
   exception Abort
   let take_some_vertex g =
@@ -102,6 +102,19 @@ module Graph_helpers(G : G) = struct
 	G.iter_vertex f g;
 	None
       with Abort -> !v
+
+  let induced_subgraph g vertices =
+    let subg = G.create ~size:(List.length vertices) () in
+      List.iter (fun v -> G.add_vertex subg v) vertices;
+      G.iter_edges_e
+	(fun e ->
+	   let src = G.E.src e in
+	   let dst = G.E.dst e in
+	     if G.mem_edge subg src dst then
+	       G.add_edge_e subg e;
+	)
+	g;
+      subg
 
 end
 
