@@ -7,8 +7,8 @@ open Community_helpers
 module MG_make = Metagraph.Make(G)
 
 let _ =
-  if (Array.length Sys.argv) <> 6 then (
-    print_endline "usage: investigate_communities db edge-file index-file community-file minsize";
+  if (Array.length Sys.argv) <> 4 then (
+    print_endline "usage: investigate_communities edge-file index-file community-file";
     exit (-1))
 
 let component_metagraph g cid_map =
