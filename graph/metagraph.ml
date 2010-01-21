@@ -18,10 +18,11 @@ end
 module ME = struct
   type t = int ref
   let compare = fun e1 e2 -> compare !e1 !e2
-  let default = ref 0
+  let default = ref 1
 end
 
 module MG = Imperative.Digraph.ConcreteLabeled(MV)(ME)
+module MGU = Imperative.Graph.ConcreteLabeled(MV)(ME)
 
 module Display = struct
   include MG
@@ -114,6 +115,25 @@ module Make(G : Sig.G) = struct
       construct_edges metagraph cid_mv_tbl graph component_list vertex_to_component_id;
       metagraph
 end
+
+let directed_to_undirected g_dir =
+  let g_undir = MGU.create ~size:(MG.nb_vertex g_dir) () in
+    MG.iter_vertex (fun v -> MGU.add_vertex g_undir v) g_dir;
+    MG.iter_edges_e
+      (fun e ->
+	 let src = MG.E.src e in
+	 let dst = MG.E.dst e in
+	 let label = MG.E.label e in
+	   if MGU.mem_edge g_undir src dst then
+	     let eu = MGU.E.create src label dst in
+	       MGU.add_edge_e g_undir eu
+	   else
+	     let eu = MGU.find_edge g_undir src dst in
+	     let label_orig = MGU.E.label eu in
+	       label_orig := !label_orig + !label
+      )
+      g_dir;
+    g_undir
 
 (* assume component list sorted reverse by size *)
 let remove_small_components min_size g component_list =
