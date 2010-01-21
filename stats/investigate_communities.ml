@@ -65,7 +65,7 @@ let print_statistics key_records uids sig_ctimes =
     print_endline "\nCreation times of signatures:";
     Printf.printf "median %s oldest %s newest %s\n" median_sig oldest_sig newest_sig;
     print_endline "\nDistribution of Top-Level-Domains:";
-    domain_distribution tlds 3;
+    domain_distribution tlds 2;
     print_endline "\nDistribution of Second-Level-Domains:";
     domain_distribution slds 3
 
