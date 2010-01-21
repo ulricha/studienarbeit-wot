@@ -20,10 +20,11 @@ let component_metagraph g cid_map =
       let c = Metagraph.filter g communities in
 	printf "filtered %d keys\n" c;
 	let metagraph = (time_eval (fun () -> MG_make.metagraph g communities) "metagraph") in
+	let metagraph = Metagraph.directed_to_undirected metagraph in
 	  print_endline (sprintf "vertices %d edges %d" (Metagraph.MG.nb_vertex metagraph) (Metagraph.MG.nb_edges metagraph));
 	  let basename = sprintf "metagraph-communities-%d" minsize in
-	    Metagraph.export_metagraph_cfinder metagraph (basename ^ ".cyto");
-	    Metagraph.export_metagraph_attributes metagraph (basename ^ "_attributes.cyto")
+	    Metagraph.export_umetagraph_cfinder metagraph (basename ^ ".cyto");
+	    Metagraph.export_umetagraph_attributes metagraph (basename ^ "_attributes.cyto")
 
 let main () =
   print_endline "construct communities metagraph";
