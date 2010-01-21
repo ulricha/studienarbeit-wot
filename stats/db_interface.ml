@@ -58,7 +58,8 @@ let divide list =
     try
       let first, rest = List.split_at 50 l in
 	loop rest (first :: ll)
-    with List.Invalid_index _ -> l :: ll
+    with List.Invalid_index _ -> 
+      if List.length l > 0 then l :: ll else ll
   in
     loop list []
 
