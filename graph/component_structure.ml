@@ -10,6 +10,25 @@ module C = Component_helpers.Make(G)
 module M = Make(G)
 module Statistics = Network_statistics.Make(MG)
 
+let export_community_subgraphs g node_lists basename =
+  let node_lists = Graph_misc.list_list_sort_reverse node_lists in
+    let rec loop l =
+      match l with
+	| nodes :: tl when let l = List.length nodes in l <= 90 ->
+	    ()
+	| nodes :: tl when let l = List.length nodes in (l > 1300 && l < 1800) || (l > 50 && l < 110) ->
+	    let l = List.length nodes in
+	    let g_induced = C.graph_from_node_list nodes g in
+	    let fname = sprintf "%s-%d.igraph" basename l in
+	      Export_helpers.export_igraph_index g_induced fname;
+	      loop tl
+	| nodes :: tl ->
+	    loop tl
+	| [] -> 
+	    ()
+    in
+      loop node_lists
+
 let _ =
   if (Array.length Sys.argv) <> 3 then (
       print_endline "usage: basic_properties edge_file min_size";
@@ -33,7 +52,7 @@ let main () =
 	export_metagraph_cfinder metagraph (basename ^ ".cyto");
 	export_metagraph_attributes metagraph (basename ^ "_attributes.cyto");
 	Pervasives.close_out oc;
-	Community_structure.export_community_subgraphs g large_components "component_subgraph"
+	export_community_subgraphs g large_components "component_subgraph"
 
 let _ = 
   try main () with
