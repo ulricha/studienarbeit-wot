@@ -32,7 +32,8 @@ let main () =
       let basename = Printf.sprintf "metagraph-components-%d" min_size in
 	export_metagraph_cfinder metagraph (basename ^ ".cyto");
 	export_metagraph_attributes metagraph (basename ^ "_attributes.cyto");
-	Pervasives.close_out oc
+	Pervasives.close_out oc;
+	Community_structure.export_community_subgraphs g large_components "component_subgraph"
 
 let _ = 
   try main () with

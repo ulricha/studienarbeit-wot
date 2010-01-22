@@ -6,9 +6,7 @@ open Wot_graph
 
 module Make(G : Sig.I) = struct
   module C = Components.Make(G)
-  
-  (* creating a new siginfo table for the new graph from the original one 
-     is not necesarry because the original one can still be used *)
+
   let graph_from_node_list nodes original_graph =
     let g = G.create () in
       List.iter (fun v -> G.add_vertex g v) nodes;
