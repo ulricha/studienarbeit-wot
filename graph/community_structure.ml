@@ -17,7 +17,7 @@ let export_community_subgraphs g node_lists basename =
 	    let l = List.length nodes in
 	    let g_induced = C.graph_from_node_list nodes g in
 	    let fname = sprintf "%s-%d.igraph" basename l in
-	      Export.export_igraph_index g_induced fname;
+	      Export_helpers.export_igraph_index g_induced fname;
 	      loop tl
 	| nodes :: tl ->
 	    loop tl
@@ -41,7 +41,7 @@ let component_metagraph g communities =
 
 let _ =
   if (Array.length Sys.argv) <> 5 then (
-    print_endline "usage: investigate_communities edge-file index-file community-file minsize";
+    print_endline "usage: community_structure edge-file index-file community-file minsize";
     exit (-1))
 
 let main () =
