@@ -31,7 +31,7 @@ let export_community_subgraphs g node_lists basename =
 
 let _ =
   if (Array.length Sys.argv) <> 3 then (
-      print_endline "usage: basic_properties edge_file min_size";
+      print_endline "usage: component_structure edge_file min_size";
       exit (-1))
 
 let main () =
