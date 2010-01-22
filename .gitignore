@@ -40,3 +40,6 @@ results-*
 *.blg
 *.idx
 *.toc
+*.igraph
+*.igraph_index
+*.cyto
