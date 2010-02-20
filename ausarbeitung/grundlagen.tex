@@ -14,6 +14,10 @@
 \subsection{Prinzip}
 \label{ch:Grundlagen:sec:PublicKeyCrypto:subsec:Prinzip}
 
+Klassische Kryptographie basiert auf einem \emph{Geheimnis} oder
+\emph{privaten Schl\"ussel}, der beiden Kommunikationspartnern bekannt
+ist. 
+
 \subsection{Authentisierung von Schlüsseln}
 \label{ch:Grundlagen:sec:PublicKeyCrypto:subsec:KeyAuth}
 
@@ -42,7 +46,6 @@ per E-Mail, über einen Keyserver oder andere elektronische Wege
 ausgetauscht.  Überprüfung der Authentizität eines Schlüssels ist
 deswegen von grosser Bedeutung.
 
-
 Ein Schlüssel wird von GnuPG genau dann als gültig (\emph{valid})
 betrachtet, wenn er die folgenden Bedingungen erfüllt:
 
@@ -66,6 +69,13 @@ als eingeschränkt gültig (\emph{marginally valid})
 angesehen. Allerdings werden Schlüssel dieser Kategorie von GnuPG
 genauso wie nicht gültige Schlüssel behandelt.
 
+GnuPG verwendet in der Standardeinstellung die Werte $N=1$, $M=3$ und
+$L=5$. Damit wird \emph{ein} Zertifikat, dass von einem Schl\"ussel
+mit vollem Vertrauen ausgestellt wurde, als ausreichend
+betrachtet. F\"ur Schl\"ussel, denen nur geringf\"ugig vertraut wird,
+ist ein einzelnes Zertifikat nicht ausreichend. Dieses muss noch durch
+2 weitere solche Zertifikate best\"atigt werden. 
+
 GnuPG erlaubt es einem Anwender, die Parameter $N, M$ und $L$ selbst
 zu setzen und damit seine Sicherheitsanforderungen umzusetzen. Je
 höher beispielsweise die notwendige Anzahl von Signaturen, um so
@@ -87,11 +97,12 @@ getroffen werden.
 \end{figure}
 
 Abbildung \ref{fig:trust-beispiel} gibt ein Beispiel für die
-Berechnung der Schlüsselgültigkeit. Die Schlüssel $B, H$ und $K$
-wurden direkt von $A$, dem Besitzer des Schlüsselrings, unterschrieben
-und sind deshalb voll gültig. Da $L, M,$ und $N$ von $K$
-unterschrieben wurden und dieser über volles Vertrauen verfügt, sind
-sie ebenfalls voll gültig. $O$ sowie $J$ sind voll gültig, da sie
+Berechnung der Schlüsselgültigkeit unter Verwendung der
+Standard-Parameter $N=1$, $M=3$ und $L=5$. Die Schlüssel $B, H$ und
+$K$ wurden direkt von $A$, dem Besitzer des Schlüsselrings,
+unterschrieben und sind deshalb voll gültig. Da $L, M,$ und $N$ von
+$K$ unterschrieben wurden und dieser über volles Vertrauen verfügt,
+sind sie ebenfalls voll gültig. $O$ sowie $J$ sind voll gültig, da sie
 jeweils von drei Schlüsseln mit geringfügigem Vertrauen unterschrieben
 wurden. $I$ und $P$ wurden dagegen jeweils nur von zwei Schlüsseln mit
 geringfügigem Vertrauen unterschrieben und sind deshalb nicht voll
