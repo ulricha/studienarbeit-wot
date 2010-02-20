@@ -35,7 +35,7 @@ let print_statistics key_records uids_nested sig_ctimes =
     domain_distribution slds 3
 
 let community_statistics db m =
-  let minsize = int_of_string Sys.argv.(5) in
+  let minsize = int_of_string Sys.argv.(6) in
   let dbh = PGOCaml.connect ~database:db () in
   let community_list = Map.IntMap.fold (fun _ c l -> c :: l) m [] in
   let community_list = Graph_misc.list_list_sort_reverse community_list in
@@ -68,13 +68,20 @@ let community_statistics db m =
 *)
 
 let _ =
-  if (Array.length Sys.argv) <> 6 then (
-    print_endline "usage: investigate_communities db edge-file index-file community-file minsize";
+  if (Array.length Sys.argv) <> 7 then (
+    print_endline "usage: investigate_communities db edge-file format index-file community-file minsize";
     exit (-1))
 
 let main () =
   print_endline "investigate_communities";
-  let cid_map = import_igraph_communities Sys.argv.(3) Sys.argv.(4) in
+  let cid_map = 
+    if Sys.argv.(3) = "copra" then
+      import_copra_communities Sys.argv.(5)
+    else if Sys.argv.(3) = "igraph" then
+      import_igraph_communities Sys.argv.(4) Sys.argv.(5)
+    else
+      failwith "format = copra / igraph"
+  in
     community_statistics Sys.argv.(1) cid_map
 
 let _ =
