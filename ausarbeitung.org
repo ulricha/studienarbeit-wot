@@ -18,8 +18,12 @@
 *** Gliederung
 ** Grundlagen und Theorie
 *** Kryptographie mit öffentlichen Schlüsseln
+**** Ziele
+***** Vertraulichkeit
+***** Authentizitaet
+***** 
 **** Terminologie: Hier meint Schlüssel einen Schlüssel im Allgemeinen, später ein OpenPGP-Schlüsselpaar.
-**** Funktionsprinzip
+n**** Funktionsprinzip
 ***** symmetrische Krypto: Alice und Bob verfügen über ein shared secret. Der gleiche Key wird für Ver- und Entschlüsselung benutzt.
 ****** Symmetrische Krypto hat Schlüsselverteilungsproblem: 
 ******* muss sicherstellen, dass kein dritter den schlüssel bei der verteilung erhalten kann
@@ -36,6 +40,8 @@
 ***** Beispiele von Algorithmen
 **** Authentisierung von Schlüsseln
 ***** public key crypto löst zwar das schlüsselverteilungsproblem insofern, als kein sicherer/vertraulicher kanal mehr vorrausgesetzt wird. dafür aber neues Problem: Sicherstellen, dass der public key authentisch ist.
+***** Bei Kommunikationspartnern, die sich bereits kennen und die sich raeumlich treffen koennen: kein Problem
+***** Aber: Charakteristikum im Internet: raeumlich verteilt
 ***** Beispiel: Man in the middle attack/impersonation attack am Beispiel von PGP
 ***** Grundproblem
 ****** Muss sicherstellen
@@ -92,6 +98,7 @@
 ****** D.h.: Anhand des Netzes als solches kann ohne Hinzunahme einer Trust-Database nichts über die Validität eines Keys ausgesagt werden.
 ****** _Vertrauen_ kann nicht aus dem Netz gelesen werden
 
+****** 
 **** Was drückt eine Signatur aus?
 **** Die soziale Komponente
 ***** Wie kommen grundsätzlich Zertifizierungen zustande?
@@ -224,6 +231,7 @@
 ***** Wie ist das Alter der im Moment aktiven Schlüssel verteilt?
 **** Verwendung von Cert levels
 ** Diskussion
+*** Communities, die durch Fast-modularity gefunden wurden, haben wieder modulare Struktur: Ersichtlich aus Zeichnung mit Force-directed layout (cytoscape): Es ergeben sich dichte teilbereiche, die nach aussen schach vernetzt sind. Hinweis auf feinere Community-Struktur. (siehe paper: modularity-based clustering is force-directed layout).
 *** Komponentenstruktur
 **** SCCs sind auch Communities, die nicht vernetzt sind.
 *** MSCC ist die einzige Komponente, die ein aktives WoT mit globalem Anspruch(!) darstellt
@@ -252,3 +260,5 @@
 
 
 ** Gibt es eine Korrelation zwischen Mass der Vernetzung (Grad) und Verwendung von cert levels? Personen welcher Art benutzen Cert levels? (pro Grad/Grad-bin: wie hoch ist der Anteil der leute, die level != 0x10 verwenden?
+** PGP-Network aus Arenas et al (models of social networks based on...) wird in mehreren papers u.a. bei gregory (cliquemod-paper) als benchmark fuer community-algorithmen benutzt. daraus zusaetzliche motivation/nutzen ableiten: vollstaendiger, aktueller datensatz fuer benchmarks, insbesondere als gerichtetes netzwerk. analyse von communities mit direction-informationen kommt gerade erst auf und pgp ist inhaerent gerichtet.
+** Wie viele User insgesamt/pro community stammen aus bekannten os-projekten (debian, ubuntu, ...) und wie viele sind akademiker (*.edu, uni-*.de, ...)
