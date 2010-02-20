@@ -28,6 +28,16 @@ let import_igraph_communities index_fname communities_fname =
   in
     File.with_file_in communities_fname fold_lines
 
+let import_copra_communities communities_fname =
+  let add_line i line m =
+    let members = String.nsplit line " " in
+      Map.IntMap.add i members m
+  in
+  let fold_lines input =
+    Enum.foldi add_line Map.IntMap.empty (IO.lines_of input)
+  in
+    File.with_file_in communities_fname fold_lines
+
 let write_community_size_values m out_fname =
   let output = File.open_out out_fname in
   let write_size cid l =
