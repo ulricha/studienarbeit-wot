@@ -1,7 +1,9 @@
 open Batteries
 open Printf
 open Graph
-open SExpr
+open Sexplib
+open Sexp
+open Conv
 
 open Ekey
 open Misc
@@ -9,7 +11,7 @@ open Graph_misc
 
 module V = struct
   type t = vertex
-  let compare = Standard.compare
+  let compare = Pervasives.compare
   let hash = (fun k1 -> hash_keyid k1)
   let equal = (=)
 end

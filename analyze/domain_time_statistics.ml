@@ -40,7 +40,7 @@ let extract_slds strings =
 
 let normalize_domain_list domains_nested extract_function =
   let extracted = List.map extract_function domains_nested in
-  let unique = List.map (List.sort_unique Standard.compare) extracted in
+  let unique = List.map (List.sort_unique Pervasives.compare) extracted in
     List.map lowercase (List.concat unique)
 
 let domain_distribution domains threshold =

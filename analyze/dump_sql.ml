@@ -1,3 +1,4 @@
+open Batteries
 open IO
 open Ekey
 open Misc
@@ -69,9 +70,6 @@ let validate s =
     try
       main 0
     with Invalid_argument x as e -> print_endline s; raise e
-
-let load_ekey_list fname = 
-  List.map ekey_of_sexp (SExpr.load_sexps fname)
 
 let replace_chars s =
   for i = 0 to ((String.length s) - 1) do

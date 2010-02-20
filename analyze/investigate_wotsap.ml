@@ -17,7 +17,7 @@ let search_in_keyids names l i short_keyid =
 	  else
 	    loop tl
       | [] ->
-	  Printf.printf "%s (%s)\n" short_keyid_hex (Dyn_array.get names i)
+	  Printf.printf "%s (%s)\n" short_keyid_hex (DynArray.get names i)
   in
     loop l
 
@@ -32,11 +32,11 @@ let main () =
   let keyids = Db_interface.get_mscc_keys dbh in
     print_endline "fetched keyids from db";
   let (names, wotsap_keyids, _) = Wotsap_parser.read_wotsap_file Sys.argv.(2)  in
-    Printf.printf "%d %d\n" (List.length keyids) (Dyn_array.length wotsap_keyids);
-    Dyn_array.iteri (search_in_keyids names keyids) wotsap_keyids;
+    Printf.printf "%d %d\n" (List.length keyids) (DynArray.length wotsap_keyids);
+    DynArray.iteri (search_in_keyids names keyids) wotsap_keyids;
     print_endline ">>> other way round";
     let keyids = List.map (fun s -> String.sub s 8 8) keyids in
-    let s = Dyn_array.fold_left 
+    let s = DynArray.fold_left 
       (fun m k -> Set.StringSet.add (Printf.sprintf "%08lX" k) m) 
       Set.StringSet.empty
       wotsap_keyids 

@@ -10,7 +10,7 @@ module Make(G : Sig.G) = struct
   type vertex_info = {
     mutable d : int;
     mutable sigma : float;
-    mutable pred : G.V.t Ref_list.t;
+    mutable pred : G.V.t RefList.t;
     mutable delta : float
   }
 
@@ -18,7 +18,7 @@ module Make(G : Sig.G) = struct
     try
       H.find tbl v
     with Not_found ->
-      let i = { d = (-1); sigma = 0.0; pred = Ref_list.empty (); delta = 0.0 } in
+      let i = { d = (-1); sigma = 0.0; pred = RefList.empty (); delta = 0.0 } in
 	H.add tbl v i;
 	i
 
@@ -35,7 +35,7 @@ module Make(G : Sig.G) = struct
 	let t = v_info.delta +. div *. (1.0 +. w_info.delta) in
 	  v_info.delta <- t
       in
-	Enum.iter compute_delta (Ref_list.backwards w_info.pred);
+	Enum.iter compute_delta (RefList.backwards w_info.pred);
 	if not (w = s) then
 	  let tbl_add_or_create key increment =
 	    if H.mem b_tbl key then
@@ -73,7 +73,7 @@ module Make(G : Sig.G) = struct
 	    if w_info.d = v_info.d + 1 then
 	      begin
 		w_info.sigma <- w_info.sigma +. v_info.sigma;
-		Ref_list.push w_info.pred v
+		RefList.push w_info.pred v
 	      end
 	in
 	  Stack.push v stack;
