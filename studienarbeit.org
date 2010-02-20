@@ -301,6 +301,12 @@ Schlüsseln/Signaturen zerfallen sind.
     Gleiches könnte man sich auch für die Knoten mit höchstem Grad,
     Knoten mit höchster Betweeness-Centrality und CA-Knoten (Heise,
     CACert) anschauen.
+** Notizen <2010-02-08 Mon>
+*** Neue Methoden
+**** Clique-Mod (Gregory) basiert auf dem mergen von Cliquen. Funktioniert fuer ungerichtete Netze. Ist konsistent schneller und hat hoerere max. Modularity als Fast-Modularity. Gibt an, dass weniger Monster-Comm. entstehen als bei FastMod.
+**** COPRA (Gregory): overlapping communities basiert auf label propagation.
+**** Methoden fuer Overlapping: CONGA/CONGO/Peacock (Gregory)
+
 * org-mode configuration
 #+STARTUP: overview
 #+STARTUP: hidestars
