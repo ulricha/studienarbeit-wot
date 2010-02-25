@@ -6,6 +6,7 @@ open Domain_time_statistics
 
 let print_statistics key_records sig_ctimes =
   let uids = List.map (fun (_, uid, _, _) -> uid) key_records in
+  let size = List.length key_records in
   let ctimes = List.map (fun (_, _, ctime, _) -> ctime ) key_records in
   let adresses = extract_regexp_group regexp_email uids in
   let tlds = extract_regexp_group regexp_tld adresses in
@@ -22,9 +23,9 @@ let print_statistics key_records sig_ctimes =
     print_endline "\nCreation times of signatures:";
     Printf.printf "median %s oldest %s newest %s\n" median_sig oldest_sig newest_sig;
     print_endline "\nDistribution of Top-Level-Domains:";
-    domain_distribution tlds 1;
+    domain_distribution size tlds 0.1 0.3 "DOM_TLD";
     print_endline "\nDistribution of Second-Level-Domains:";
-    domain_distribution slds 1
+    domain_distribution size slds 0.5 0.3 "DOM_SLD"
 
 let check_args () =
   if Array.length Sys.argv <> 4 then (

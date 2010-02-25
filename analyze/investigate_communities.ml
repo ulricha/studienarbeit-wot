@@ -15,6 +15,7 @@ open Community_helpers
 
 let print_statistics key_records uids_nested sig_ctimes =
   let key_ctimes = List.map (fun (_, _, ctime, _) -> ctime) key_records in
+  let size = List.length key_records in
   (* let puids = List.map (fun (_, uid, _, _) -> uid) key_records in *)
   let adresses = List.map (extract_regexp_group regexp_email) uids_nested in
   let normalize = normalize_domain_list adresses in
@@ -30,9 +31,9 @@ let print_statistics key_records uids_nested sig_ctimes =
     print_endline "\nCreation times of signatures:";
     Printf.printf "median %s oldest %s newest %s\n" median_sig oldest_sig newest_sig;
     print_endline "\nDistribution of Top-Level-Domains:";
-    domain_distribution tlds 2;
+    domain_distribution size tlds 0.1 0.3 "DOM_TLD";
     print_endline "\nDistribution of Second-Level-Domains:";
-    domain_distribution slds 3
+    domain_distribution size slds 0.5 0.3 "DOM_SLD"
 
 let community_statistics db m =
   let minsize = int_of_string Sys.argv.(6) in
@@ -42,6 +43,7 @@ let community_statistics db m =
   let rec loop l =
     match l with
       | keyids :: tl when (List.length keyids) > minsize && (List.length keyids) > 100 ->
+	  Printf.printf "stats community size %d\n" (List.length keyids); flush stdout;
 	  let records = divide_et_impera (get_key_records dbh) keyids in
 	  let sig_ctimes = divide_et_impera (sig_creation_times dbh) keyids in
 	  let uids = get_uids_per_key dbh keyids in
@@ -82,6 +84,7 @@ let main () =
     else
       failwith "format = copra / igraph"
   in
+    print_endline "imported communities";
     community_statistics Sys.argv.(1) cid_map
 
 let _ =

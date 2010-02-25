@@ -6,6 +6,8 @@ let regexp_email = Str.regexp ".*<\\(.*\\)>.*"
 let regexp_tld = Str.regexp ".*@.+\\.\\([^\\.]+\\)$"
 let regexp_sld = Str.regexp "[^\\.]+\\.[^\\.]+$"
 
+let percentage p o = ((float_of_int p) /. (float_of_int o)) *. 100.
+
 let extract_regexp_group regexp strings =
   let extract l a =
     if Str.string_match regexp a 0 then
@@ -43,19 +45,23 @@ let normalize_domain_list domains_nested extract_function =
   let unique = List.map (List.sort_unique Pervasives.compare) extracted in
     List.map lowercase (List.concat unique)
 
-let domain_distribution domains threshold =
+let domain_distribution members domains min_threshold dominate_threshold dominate_string =
   let increment_by_one = Graph_misc.stringmap_add_or_create 1 in
   let map = List.fold_left increment_by_one Map.StringMap.empty domains in
   let alist = List.of_enum (Map.StringMap.enum map) in
   let compare (a1, b1) (a2, b2) = compare b1 b2 in
   let alist = List.sort ~cmp:(compare_reverse compare) alist in
-    List.iter 
-      (fun (k, v) -> 
-	 if v < threshold then 
-	   ()
-	 else
-	   Printf.printf "%s %d\n" k v) 
-      alist
+  let alist = List.map (fun (k, v) -> (k, v), (percentage v members)) alist in
+    let ((domain, abs), p) = List.hd alist in
+      if p >= dominate_threshold then
+	Printf.printf "\n%s %s\n\n" dominate_string domain;
+      List.iter 
+	(fun ((k, v), p) -> 
+	   if p < min_threshold then 
+	     ()
+	   else
+	     Printf.printf "%s %d (%.2f %%)\n" k v p)
+	alist
 
 let format_time_option = function
   | Some t -> 
@@ -84,9 +90,10 @@ let characterize_times ctimes =
   let ctimes = List.sort ctimes in
   let a = Array.of_list ctimes in
   let l = Array.length a in
-    let median = Array.get a (l / 2) in
-    let newest = Array.get a (l - 1) in
-    let oldest = Array.get a 0 in
-      (median, oldest, newest)
+  let median = Array.get a (l / 2) in
+  let newest = Array.get a (l - 1) in
+  let oldest = Array.get a 0 in
+    (median, oldest, newest)
+
 
 
