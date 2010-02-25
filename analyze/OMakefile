@@ -130,11 +130,32 @@ OCamlProgram(community_structure, community_structure $(AUXFILES))
 OCamlProgram(component_structure, component_structure $(AUXFILES))
 OCamlProgram(investigate_communities, investigate_communities $(AUXFILES))
 OCamlProgram(investigate_component, investigate_component $(AUXFILES))
+OCamlProgram(basic_properties, basic_properties $(AUXFILES))
+OCamlProgram(betweeness_ser, betweeness_ser $(AUXFILES))
+OCamlProgram(clustering_coefficient_ser, clustering_coefficient_ser $(AUXFILES))
+OCamlProgram(export, export $(AUXFILES))
+OCamlProgram(mscc_size, mscc_size $(AUXFILES))
+OCamlProgram(simple_stats, simple_stats $(AUXFILES))
+OCamlProgram(time, time $(AUXFILES))
 
-.DEFAULT: dump_sql \
-	db_scc_information \
-	graph_snapshot \
-	community_structure \
-	component_structure \
-	investigate_component \
+EXE[] = 
+	dump_sql
+	db_scc_information
+	graph_snapshot
+	community_structure
+	component_structure
+	investigate_component
 	investigate_communities
+	basic_properties
+	betweeness_ser
+	clustering_coefficient_ser
+	export
+	mscc_size
+	simple_stats
+	time
+
+.DEFAULT: $(EXE)
+
+.PHONY: clean
+clean:
+  rm -f *.cmx *.cmi *.o *.opt
