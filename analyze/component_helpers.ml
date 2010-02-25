@@ -67,3 +67,8 @@ let load_mscc e_fname =
 let component_ids scc_list =
   let scc_list = List.filter (fun c -> (List.length c) > 1) scc_list in
     List.mapi (fun i c -> (c, i)) scc_list
+
+let canonical_component_name keyids =
+  let sorted = List.sort ~cmp:Pervasives.compare keyids in
+    Digest.to_hex (Digest.string (String.concat "" sorted))
+    

@@ -1,5 +1,4 @@
 open Batteries
-open Unix
 open Wot_graph
 open Db_interface
 open Domain_time_statistics
@@ -15,17 +14,18 @@ let print_statistics key_records sig_ctimes =
   let (median, oldest, newest) = 
     (format_time median, format_time oldest, format_time newest) in
   let (median_sig, oldest_sig, newest_sig) = characterize_times sig_ctimes in
-  let (median_sig, oldest_sig, newest_sig) = 
-    (format_time median_sig, format_time oldest_sig, format_time newest_sig)
-  in
-    print_endline "\nCreation times of keys:";
-    Printf.printf "median %s oldest %s newest %s\n" median oldest newest;
-    print_endline "\nCreation times of signatures:";
-    Printf.printf "median %s oldest %s newest %s\n" median_sig oldest_sig newest_sig;
-    print_endline "\nDistribution of Top-Level-Domains:";
-    domain_distribution size tlds 0.1 0.3 "DOM_TLD";
-    print_endline "\nDistribution of Second-Level-Domains:";
-    domain_distribution size slds 0.5 0.3 "DOM_SLD"
+    check_time_correlation median_sig oldest_sig newest_sig;
+    let (median_sig, oldest_sig, newest_sig) = 
+      (format_time median_sig, format_time oldest_sig, format_time newest_sig)
+    in
+      print_endline "\nCreation times of keys:";
+      Printf.printf "median %s oldest %s newest %s\n" median oldest newest;
+      print_endline "\nCreation times of signatures:";
+      Printf.printf "median %s oldest %s newest %s\n" median_sig oldest_sig newest_sig;
+      print_endline "\nDistribution of Top-Level-Domains:";
+      domain_distribution size tlds 0.1 0.3 "DOM_TLD" false;
+      print_endline "\nDistribution of Second-Level-Domains:";
+      domain_distribution size slds 0.5 0.3 "DOM_SLD" true
 
 let check_args () =
   if Array.length Sys.argv <> 4 then (
@@ -42,10 +42,11 @@ let main () =
 	| hd :: tl when (List.length hd) > 30000 -> 
 	    loop tl
 	| keyids :: tl when (List.length keyids) > minsize -> 
+	    let id = Component_helpers.canonical_component_name keyids in
 	    let records = get_key_records dbh keyids in
 	    let sig_ctimes = sig_creation_times dbh keyids in
 	      assert (List.length records > 0);
-	      Printf.printf "\nmembers of scc %d\n" (List.length keyids);
+	      Printf.printf "stats component %s size %d\n" id (List.length keyids); flush stdout;
 	      print_statistics records sig_ctimes;
 	      print_key_records records;
 	      print_endline "";
