@@ -109,5 +109,50 @@ let check_time_correlation median oldest newest =
       print_endline "IS_KSP_CANDIDATE"
     else
       print_endline "NO_KSP_CANDIDATE"
-      
 
+let sigs_per_day ctimes =
+  let interval = 3600. *. 24. in
+  let offset = 665362800. in
+  let len = ((Unix.time ()) -. offset) /. interval in
+  let len = (int_of_float len) + 1 in
+  let t = Array.create len 0 in
+  let incr i = t.(i) <- (t.(i) + 1) in
+    List.iter
+      (fun ctime ->
+	 let i = int_of_float ((ctime -. offset) /. interval) in
+	   if i > 0 then
+	     incr i)
+      ctimes;
+    t
+
+let check_cumulation a ctimes =
+  let interval = 3600. *. 24. in
+  let offset = 665362800. in
+  let count_sigs start =
+    let count = ref 0 in
+    let max = 
+      if (Array.length a) < start + 32 then
+	(Array.length a) - 1
+      else
+	start + 31
+    in
+      for i = start to max do
+	count := !count + a.(i)
+      done;
+      !count
+  in
+    let overall = List.length ctimes in
+    let rec loop i =
+      if i <= (Array.length a) - 32 then
+	let c = count_sigs i in
+	let f = ((float_of_int c) /. (float_of_int overall)) in
+	  if f > 0.7 then
+	    Some (f, (((float_of_int i) *. interval)) +. offset)
+	  else
+	    loop (i + 1)
+      else
+	None
+    in
+      loop 0
+	
+  

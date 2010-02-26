@@ -14,18 +14,24 @@ let print_statistics key_records sig_ctimes =
   let (median, oldest, newest) = 
     (format_time median, format_time oldest, format_time newest) in
   let (median_sig, oldest_sig, newest_sig) = characterize_times sig_ctimes in
-    check_time_correlation median_sig oldest_sig newest_sig;
-    let (median_sig, oldest_sig, newest_sig) = 
-      (format_time median_sig, format_time oldest_sig, format_time newest_sig)
-    in
-      print_endline "\nCreation times of keys:";
-      Printf.printf "median %s oldest %s newest %s\n" median oldest newest;
-      print_endline "\nCreation times of signatures:";
-      Printf.printf "median %s oldest %s newest %s\n" median_sig oldest_sig newest_sig;
-      print_endline "\nDistribution of Top-Level-Domains:";
-      domain_distribution size tlds 0.1 (60., 10.) "TLD";
-      print_endline "\nDistribution of Second-Level-Domains:";
-      domain_distribution size slds 0.5 (60., 10.) "SLD"
+  let (median_sig, oldest_sig, newest_sig) = 
+    (format_time median_sig, format_time oldest_sig, format_time newest_sig)
+  in
+    (match check_cumulation (sigs_per_day sig_ctimes) sig_ctimes with
+       | Some (p, start) ->
+	   let r = Unix.gmtime start in
+	   let s = Printf.sprintf "%d.%d.%d" r.Unix.tm_mday (r.Unix.tm_mon + 1) (r.Unix.tm_year + 1900) in
+	     Printf.printf "HAS_SIG_TIME_CORR %f (%s) %f" start s p
+       | None ->
+	   print_endline "NO_SIG_TIME_CORR");
+    print_endline "\nCreation times of keys:";
+    Printf.printf "median %s oldest %s newest %s\n" median oldest newest;
+    print_endline "\nCreation times of signatures:";
+    Printf.printf "median %s oldest %s newest %s\n" median_sig oldest_sig newest_sig;
+    print_endline "\nDistribution of Top-Level-Domains:";
+    domain_distribution size tlds 0.1 (60., 10.) "TLD";
+    print_endline "\nDistribution of Second-Level-Domains:";
+    domain_distribution size slds 0.5 (60., 10.) "SLD"
 
 let check_args () =
   if Array.length Sys.argv <> 4 then (
