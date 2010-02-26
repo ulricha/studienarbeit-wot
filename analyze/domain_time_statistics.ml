@@ -120,7 +120,7 @@ let sigs_per_day ctimes =
     List.iter
       (fun ctime ->
 	 let i = int_of_float ((ctime -. offset) /. interval) in
-	   if i > 0 then
+	   if i > 0 && i < len then
 	     incr i)
       ctimes;
     t
@@ -131,7 +131,7 @@ let check_cumulation a ctimes =
   let count_sigs start =
     let count = ref 0 in
     let max = 
-      if (Array.length a) < start + 32 then
+      if (Array.length a) < start + 33 then
 	(Array.length a) - 1
       else
 	start + 31
