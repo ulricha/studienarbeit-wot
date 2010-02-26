@@ -37,33 +37,30 @@ let normalize_domain_list domains_nested extract_function =
   let unique = List.map (List.sort_unique Pervasives.compare) extracted in
     List.map lowercase (List.concat unique)
 
-let check_social_assignment p =
-  if p >= 80. then
-    print_endline "SURE_ASS"
-  else if p >= 50. then
-    print_endline "MAYBE_ASS"
+let check_social_assignment prefix p (sure_thresh, maybe_thresh) =
+  if p >= sure_thresh then
+    Printf.printf "%s_SURE_ASS" prefix
+  else if p >= maybe_thresh then
+    Printf.printf "%s_MAYBE_ASS" prefix
   else
-    print_endline "NOT_ASS"
+    Printf.printf "%s_NOT_ASS" prefix
 
-let domain_distribution members domains min_threshold dominate_threshold dominate_string sld =
+let domain_distribution members domains min_threshold (sure_thresh, maybe_thresh) dominate_prefix =
   let increment_by_one = Graph_misc.stringmap_add_or_create 1 in
   let map = List.fold_left increment_by_one Map.StringMap.empty domains in
   let alist = List.of_enum (Map.StringMap.enum map) in
   let compare (a1, b1) (a2, b2) = compare b1 b2 in
   let alist = List.sort ~cmp:(compare_reverse compare) alist in
   let alist = List.map (fun (k, v) -> (k, v), (percentage v members)) alist in
-  let candidates = List.filter (fun (_, p) -> p >= dominate_threshold) alist in
+  let candidates = List.filter (fun (_, p) -> p >= maybe_thresh) alist in
   let candidates_strings = List.map (fun ((domain, _), _) -> domain) candidates in
     if (List.length alist) > 0 then
       begin
 	if (List.length candidates) > 0 then
 	  begin
-	    if sld then
-	      begin
-		let (_, max_p) = List.hd candidates in
-		  check_social_assignment max_p
-	      end;
-	      Printf.printf "\n%s %s\n\n" dominate_string (String.concat " " candidates_strings);
+	    let (_, max_p) = List.hd candidates in
+	      check_social_assignment dominate_prefix max_p (sure_thresh, maybe_thresh);
+	      Printf.printf "\n%s_DOM_CAND %s\n\n" dominate_prefix (String.concat " " candidates_strings);
 	  end;
 	List.iter 
 	  (fun ((k, v), p) -> 

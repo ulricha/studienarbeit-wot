@@ -23,9 +23,9 @@ let print_statistics key_records sig_ctimes =
       print_endline "\nCreation times of signatures:";
       Printf.printf "median %s oldest %s newest %s\n" median_sig oldest_sig newest_sig;
       print_endline "\nDistribution of Top-Level-Domains:";
-      domain_distribution size tlds 0.1 0.3 "DOM_TLD" false;
+      domain_distribution size tlds 0.1 (60., 10.) "TLD";
       print_endline "\nDistribution of Second-Level-Domains:";
-      domain_distribution size slds 0.5 0.3 "DOM_SLD" true
+      domain_distribution size slds 0.5 (60., 10.) "SLD"
 
 let check_args () =
   if Array.length Sys.argv <> 4 then (

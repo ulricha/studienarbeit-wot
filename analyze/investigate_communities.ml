@@ -32,9 +32,9 @@ let print_statistics key_records uids_nested sig_ctimes =
       print_endline "\nCreation times of signatures:";
       Printf.printf "median %s oldest %s newest %s\n" median_sig oldest_sig newest_sig;
       print_endline "\nDistribution of Top-Level-Domains:";
-      domain_distribution size tlds 0.1 20. "DOM_CAND_TLD" false;
+      domain_distribution size tlds 0.1 (60., 20.) "TLD";
       print_endline "\nDistribution of Second-Level-Domains:";
-      domain_distribution size slds 0.5 10. "DOM_CAND_SLD" true
+      domain_distribution size slds 0.5 (60., 10.) "SLD"
 
 let community_statistics db m =
   let minsize = int_of_string Sys.argv.(6) in
