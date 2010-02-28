@@ -1,5 +1,6 @@
 open Batteries
 open Graph
+open Graph_misc
 open Db_interface
 open Domain_time_statistics
 open Community_helpers
@@ -30,17 +31,17 @@ let print_statistics key_records uids_nested sig_ctimes =
        | Some (p, start) ->
 	   let r = Unix.gmtime start in
 	   let s = Printf.sprintf "%d.%d.%d" r.Unix.tm_mday (r.Unix.tm_mon + 1) (r.Unix.tm_year + 1900) in
-	     Printf.printf "HAS_SIG_TIME_CORR %.0f (%s) %.0f %%" start s (p *. 100.)
+	     Printf.printf "HAS_SIG_TIME_CORR %.0f (%s) %.0f %% %d\n" start s (p *. 100.) size
        | None ->
-	   print_endline "NO_SIG_TIME_CORR");
+	   Printf.printf "NO_SIG_TIME_CORR %d\n" size);
     print_endline "\nCreation times of keys:";
     Printf.printf "median %s oldest %s newest %s\n" median oldest newest;
     print_endline "\nCreation times of signatures:";
     Printf.printf "median %s oldest %s newest %s\n" median_sig oldest_sig newest_sig;
     print_endline "\nDistribution of Top-Level-Domains:";
-    domain_distribution size tlds 0.1 (80., 20.) "TLD";
+    domain_distribution size tlds 1.0 (80., 40.) "TLD" size;
     print_endline "\nDistribution of Second-Level-Domains:";
-    domain_distribution size slds 0.5 (80., 10.) "SLD"
+    domain_distribution size slds 1.0 (80., 40.) "SLD" size
 
 let community_statistics db m =
   let minsize = int_of_string Sys.argv.(6) in
@@ -93,7 +94,10 @@ let main () =
       failwith "format = copra / igraph"
   in
     print_endline "imported communities";
-    community_statistics Sys.argv.(1) cid_map
+    community_statistics Sys.argv.(1) cid_map;
+    let sizes = community_size_values cid_map in
+      write_int_values_to_file (List.enum sizes) "community_size_values.dat";
+      write_distribution_to_file "%d %d\n" (Map.IntMap.enum (values_to_distribution (List.enum sizes))) "community_size_dist.dat"
 
 let _ =
   try main () with

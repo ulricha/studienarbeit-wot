@@ -37,15 +37,44 @@ let normalize_domain_list domains_nested extract_function =
   let unique = List.map (List.sort_unique Pervasives.compare) extracted in
     List.map lowercase (List.concat unique)
 
-let check_social_assignment prefix p (sure_thresh, maybe_thresh) =
-  if p >= sure_thresh then
-    Printf.printf "%s_SURE_ASS" prefix
-  else if p >= maybe_thresh then
-    Printf.printf "%s_MAYBE_ASS" prefix
-  else
-    Printf.printf "%s_NOT_ASS" prefix
+let check_social_assignment prefix p (sure_thresh, maybe_thresh) dom size =
+  let large_freemail = [
+    "hotmail.com";
+    "gmx.de";
+    "gmx.net";
+    "web.de";
+    "t-online.de";
+    "gmail.com";
+    "gmx.at";
+    "googlemail.com";
+    "free.fr";
+    "hotmail.fr";
+    "o2.pl";
+    "laposte.net";
+    "yahoo.com";
+    "aol.com";
+    "gmx.ch";
+    "libero.it";
+    "email.it";
+    "online.ie";
+    "bluewin.ch";
+  ]
+  in
+  let freemail = List.fold_left (fun s dom -> Set.StringSet.add dom s) Set.StringSet.empty large_freemail in
+    if p >= sure_thresh then
+      if Set.StringSet.mem dom freemail then
+	Printf.printf "%s_FREEMAIL_ASS %s %d\n" prefix dom size
+      else
+	Printf.printf "%s_SURE_ASS %s %d\n" prefix dom size
+    else if p >= maybe_thresh then
+      if Set.StringSet.mem dom freemail then
+	Printf.printf "%s_FREEMAIL_ASS %s %d\n" prefix dom size
+      else
+	Printf.printf "%s_MAYBE_ASS %s %d\n" prefix dom size
+    else
+      Printf.printf "%s_NOT_ASS %s %d\n" prefix dom size
 
-let domain_distribution members domains min_threshold (sure_thresh, maybe_thresh) dominate_prefix =
+let domain_distribution members domains min_threshold (sure_thresh, maybe_thresh) dominate_prefix size =
   let increment_by_one = Graph_misc.stringmap_add_or_create 1 in
   let map = List.fold_left increment_by_one Map.StringMap.empty domains in
   let alist = List.of_enum (Map.StringMap.enum map) in
@@ -58,8 +87,8 @@ let domain_distribution members domains min_threshold (sure_thresh, maybe_thresh
       begin
 	if (List.length candidates) > 0 then
 	  begin
-	    let (_, max_p) = List.hd candidates in
-	      check_social_assignment dominate_prefix max_p (sure_thresh, maybe_thresh);
+	    let ((dom, _), max_p) = List.hd candidates in
+	      check_social_assignment dominate_prefix max_p (sure_thresh, maybe_thresh) dom size;
 	      Printf.printf "\n%s_DOM_CAND %s\n\n" dominate_prefix (String.concat " " candidates_strings);
 	  end;
 	List.iter 
@@ -70,6 +99,8 @@ let domain_distribution members domains min_threshold (sure_thresh, maybe_thresh
 	       Printf.printf "%s %d (%.2f %%)\n" k v p)
 	  alist
       end
+    else
+      Printf.printf "%s_NOT_ASS %d\n" dominate_prefix size
 
 let format_time_option = function
   | Some t -> 

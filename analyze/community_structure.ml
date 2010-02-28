@@ -16,7 +16,8 @@ let export_community_subgraphs g node_lists basename =
 	| nodes :: tl when let l = List.length nodes in (l > 4000) || (l > 1300 && l < 1800) || (l > 50 && l < 110) ->
 	    let l = List.length nodes in
 	    let g_induced = C.graph_from_node_list nodes g in
-	    let fname = sprintf "%s-%d.igraph" basename l in
+	    let id = Component_helpers.canonical_component_name nodes in
+	    let fname = sprintf "%s-%s-%d.igraph" basename id l in
 	      Export_helpers.export_igraph_index g_induced fname;
 	      loop tl
 	| nodes :: tl ->

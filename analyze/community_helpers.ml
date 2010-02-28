@@ -47,3 +47,10 @@ let write_community_size_values m out_fname =
   in
     Map.IntMap.iter write_size m;
     IO.close_out output
+
+let community_size_values c_map =
+  List.of_enum
+    (Enum.map
+       (fun (_id, mem) -> List.length mem)
+       (Map.IntMap.enum c_map))
+    
