@@ -1,0 +1,4 @@
+shodan:cliquemod ulricha$ java -Xmx4096m -cp ~/Downloads/CM.jar CM ../mscc-undir.cfinder -m BK -c 5000
+CM-BK Result
+Modularity is 0.6640785849826665
+

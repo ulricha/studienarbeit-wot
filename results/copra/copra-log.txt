@@ -1,0 +1,64 @@
+eap111081:trash ulricha$ java -Xmx2048m -cp copra.jar COPRA ~/dev/studienarbeit-wot/mscc-undir.cfinder -w -v 3 -repeat 20 -mo -nosimplify
+Invalid edge (ignored): DCF785B48A1D9A1F/DCF785B48A1D9A1F
+***************************************
+* COPRA v1.21  (c) Steve Gregory 2009 *
+***************************************
+  Network file = /Users/ulricha/dev/studienarbeit-wot/mscc-undir.cfinder
+  Network is weighted, unipartite
+  44952 vertices, 295425 edges
+  Warning: network in /Users/ulricha/dev/studienarbeit-wot/mscc-undir.cfinder is unweighted
+  v = 3.0
+  Repeat 20 times and show averages
+  Do not simplify communities
+  Compute modularity wrt /Users/ulricha/dev/studienarbeit-wot/mscc-undir.cfinder
+------------------------------------------------------------------------
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+5707 (2024) communities, 83 iterations, 50833ms, overlap=1.070, mod=0.763
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+5682 (2266) communities, 80 iterations, 50006ms, overlap=1.081, mod=0.760
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+5620 (2249) communities, 80 iterations, 47000ms, overlap=1.084, mod=0.770
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+5794 (2286) communities, 66 iterations, 39424ms, overlap=1.085, mod=0.768
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+4780 (2065) communities, 104 iterations, 73637ms, overlap=1.082, mod=0.774
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+4798 (2088) communities, 116 iterations, 66494ms, overlap=1.084, mod=0.786
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+5582 (2212) communities, 82 iterations, 49925ms, overlap=1.079, mod=0.767
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+5509 (2011) communities, 81 iterations, 49889ms, overlap=1.069, mod=0.769
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+5898 (2334) communities, 112 iterations, 65483ms, overlap=1.082, mod=0.757
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+5584 (2010) communities, 103 iterations, 60450ms, overlap=1.069, mod=0.766
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+5704 (2082) communities, 79 iterations, 48347ms, overlap=1.071, mod=0.767
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+6983 (2394) communities, 73 iterations, 44221ms, overlap=1.084, mod=0.753
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+5944 (2368) communities, 68 iterations, 2134668ms, overlap=1.085, mod=0.764
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+5635 (2285) communities, 76 iterations, 46166ms, overlap=1.083, mod=0.763
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+5985 (2379) communities, 72 iterations, 43103ms, overlap=1.086, mod=0.767
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+5541 (1983) communities, 87 iterations, 51878ms, overlap=1.068, mod=0.744
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+5307 (1969) communities, 107 iterations, 59795ms, overlap=1.068, mod=0.745
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+5200 (1928) communities, 105 iterations, 61911ms, overlap=1.066, mod=0.750
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+5554 (2035) communities, 77 iterations, 51428ms, overlap=1.071, mod=0.764
+Ignoring self edge: DCF785B48A1D9A1F/DCF785B48A1D9A1F
+5795 (2110) communities, 85 iterations, 51146ms, overlap=1.073, mod=0.763
+------------------------------------------------------------------------
+v=3.0
+Modularity: best = 0.786, average = 0.763+-0.009
+Overlap: 1.077
+Communities: 5630.100
+Non-singleton communities: 2153.900
+Iterations: 86.800
+Total time: 157290.200
+Termination check time (included in total): 4090.600
+Simplification time (extra): 0.050
