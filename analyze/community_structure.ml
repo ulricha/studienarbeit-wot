@@ -11,17 +11,13 @@ let export_community_subgraphs g node_lists basename =
   let node_lists = Graph_misc.list_list_sort_reverse node_lists in
     let rec loop l =
       match l with
-	| nodes :: tl when let l = List.length nodes in l <= 50 ->
-	    ()
-	| nodes :: tl when let l = List.length nodes in (l > 4000) || (l > 1300 && l < 1800) || (l > 50 && l < 110) ->
+	| nodes :: tl ->
 	    let l = List.length nodes in
 	    let g_induced = C.graph_from_node_list nodes g in
 	    let id = Component_helpers.canonical_component_name nodes in
 	    let fname = sprintf "%s-%s-%d.igraph" basename id l in
 	      Export_helpers.export_igraph_index g_induced fname;
 	      loop tl
-	| nodes :: tl ->
-	    loop tl
 	| [] -> 
 	    ()
     in
