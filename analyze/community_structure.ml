@@ -28,7 +28,7 @@ let export_community_subgraphs g node_lists basename =
       loop node_lists
 
 let component_metagraph g communities =
-  let minsize = int_of_string Sys.argv.(5) in
+  let minsize = int_of_string Sys.argv.(4) in
     printf "len communities %d\n" (List.length communities);
     printf "len communities %d\n" (List.length communities);
     let c = Metagraph.filter g communities in
@@ -41,24 +41,17 @@ let component_metagraph g communities =
 	  Metagraph.export_umetagraph_attributes metagraph (basename ^ "_attributes.cyto")
 
 let _ =
-  if (Array.length Sys.argv) <> 6 then (
-    print_endline "usage: community_structure format edge-file index-file community-file minsize";
+  if (Array.length Sys.argv) <> 5 then (
+    print_endline "usage: community_structure edge-file index-file community-file minsize";
     exit (-1))
 
 let main () =
   print_endline "construct communities metagraph";
-  let minsize = int_of_string Sys.argv.(5) in
-  let cid_map = 
-    if Sys.argv.(1) = "igraph" then
-      import_igraph_communities Sys.argv.(3) Sys.argv.(4)
-    else if Sys.argv.(1) = "copra" then
-      import_copra_communities Sys.argv.(3)
-    else
-      failwith "format = copra/igraph"
-  in
+  let minsize = int_of_string Sys.argv.(4) in
+  let cid_map = import_igraph_communities Sys.argv.(2) Sys.argv.(3) in
   let communities = Map.IntMap.fold (fun i c l -> c :: l) cid_map [] in
   let communities = List.filter (fun l -> List.length l >= minsize) communities in
-  let edge_fname = Sys.argv.(2) in
+  let edge_fname = Sys.argv.(1) in
   let g = load_graph_from_file edge_fname in 
     write_community_size_values cid_map "community_sizes.dat";
     component_metagraph g communities;
