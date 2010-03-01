@@ -94,7 +94,10 @@ weil Teile der dazu notwendigen Signaturketten (komplette Schlüssel
 oder einzelne Signaturen) auf dem Keyserver nicht vorhanden
 sind. Diese fehlenden Teile sind aber auf allen Keyservern des
 \emph{SKS}-Verbundes %FIXME
-vorhanden. Als Ursache kommen eine mangelhafte Synchronisation
+vorhanden. Da die Ursache in allen untersuchten F\"allen die gleiche
+war, kann angenommen werden, dass der Fehler systematisch ist und
+diesen Teil der Diskrepanz zwischen den Datens\"atzen vollst\"andig
+erkl\"art. Als Ursache kommen eine mangelhafte Synchronisation
 zwischen \emph{wwwkeys.ch.pgp.net} und dem \emph{SKS}-Netzwerk sowie
 Fehler in der auf \emph{wwwkeys.ch.pgp.net} verwendeten
 \emph{PKS}-Version in Frage.
@@ -322,7 +325,7 @@ befüllt, nachdem die Komponentenstruktur berechnet wurde.
 
 \begin{figure}[h]
 \centering
-
+{\footnotesize
 \begin{lstlisting}[language=SQL]
 (SELECT signer, signee
    FROM sigs INNER JOIN keys on sigs.signer = keys.keyid 
@@ -340,6 +343,7 @@ INTERSECT
    AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) 
    AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp))"
 \end{lstlisting}
+}
 \caption{Abfrage aller zum Zeitpunkt \$timestamp gültigen Signaturen}
   \label{fig:all-valid-keys}
 \end{figure}
@@ -409,6 +413,10 @@ aufgeführt.
   \caption{Foobar}
   \label{tab:tools}
 \end{table}
+
+\section{Community-Analyse}
+\label{sec:community-analyse}
+
 
 %%% Local Variables: 
 %%% mode: latex

@@ -43,3 +43,6 @@ results-*
 *.igraph
 *.igraph_index
 *.cyto
+.omakedb*
+*.
+*.omc
