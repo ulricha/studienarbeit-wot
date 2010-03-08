@@ -1,13 +1,16 @@
 %% ergebnisse.tex
 
-\chapter{Ergebnisse}
+\chapter{Ergebnisse und Diskussion}
 \label{ch:Ergebnisse}
 
 \section{Allgemeine Merkmale des Netzwerkes}
-\label{sec:allg-merkm-des}
+\label{sec:result-allg-merkm-des}
+
+\section{Eigenschaften einzelner Schl\"ussel}
+\label{sec:result-key-properties}
 
 \section{Struktur der starken Zusammenhangskomponenten}
-\label{sec:komponentenstruktur}
+\label{sec:result-komponentenstruktur}
 
 \begin{figure}[h]
   \centering
@@ -19,7 +22,7 @@
 \end{figure}
 
 \section{Zusammenhangskomponenten und Communities}
-\label{sec:zusamm-und-comm}
+\label{sec:result-zusamm-und-comm}
 
 \begin{figure}[h]
   \centering
@@ -71,13 +74,34 @@
 \end{table}
 }
 
-\begin{figure}[h]
+\begin{figure}[t]
   \centering
   \includegraphics[scale=1.7]{images/fastmod-subgraph-large-modular-6525064ccab580a0b304a3620b197d7a.pdf}
-  \caption{Grosse Community mit modularer Struktur (fastmod,
-    force-directed layout)}
+  \caption{Grosse Community mit modularer Struktur (Berechnet mit
+    Fast-Modularity, Force-directed layout)}
   \label{fig:large-community-modular}
 \end{figure}
+
+Communities k\"onnen sich nicht nur \"uberlappen. Genauso k\"onnen
+einzelne Communities intern wieder eine modulare Struktur haben, so
+dass sie sich in mehrere Communities zerlegen lassen.
+Abb. \ref{fig:large-community-modular} illustriert, dass die
+Verwendung von Methoden zur Berechnung \"uberlappender Communities
+sinnvoll sein kann. In der Zeichnung des induzierten Teilgraphen einer
+grossen Community (4767 Knoten) aus der
+Fast-Modularity-Partitionierung sind etliche dicht gezeichnete
+Zusammenballungen von Knoten zu sehen, die nur wenige Kanten nach
+aussen haben. Diese k\"onnen als Community-artige Strukturen
+interpretiert werden. Zwar kann argumentiert werden, dass die
+Zeichnung die Struktur des Teilgraphen nicht notwendigerweise sinnvoll
+wiedergibt, dass also die dichten Teilbereiche in der Zeichnung nur
+Artefakte der Zeichenmethode darstellen. Allerdings zeigt Noack, dass
+starke \"Ubereinstimmungen zwischen einer energieoptimalen Einbettung
+eines Graphen in die Ebene nach der Force-directed-Methode und einer
+Partitionierung eines Graphen mit optimaler Modularity bestehen
+\cite{Noack2009}. Es scheint daher gerechtfertigt, eine Zeichnung
+eines Graphen (Force-directed) mit markanten dichten Bereichen als
+Indiz f\"ur eine modulare Struktur dieses Graphen zu betrachten.
 \begin{figure}[h]
   \centering
   \includegraphics[scale=1.5]{images/label-prop-metagraph-20-narrow-cut.pdf}
@@ -87,14 +111,10 @@
   \label{fig:metagraph-com-label}
 \end{figure}
 
-
-
-
-Modularity ist auf ung
 \begin{figure}[h]
   \centering
   \includegraphics[scale=1.0]{images/fastmod-metagraph-20.pdf}
-  \caption{Struktu der Communities (Fast Modularity) (Farbkodierung
+  \caption{Struktur der Communities (Fast Modularity) (Knotenf\"arbung
     wie in Abb.\ref{fig:metagraph-com-label})}
   \label{fig:metagraph-com-fastmod}
 \end{figure}

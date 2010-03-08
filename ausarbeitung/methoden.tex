@@ -92,7 +92,11 @@ Fällen der fehlerhafte Bestand des Keyservers
 Schlüssel wurden von \emph{wotsap} nicht in die MSCC-2 übernommen,
 weil Teile der dazu notwendigen Signaturketten (komplette Schlüssel
 oder einzelne Signaturen) auf dem Keyserver nicht vorhanden
-sind. Diese fehlenden Teile sind aber auf allen Keyservern des
+sind. Besonders h\"aufig traten dabei Schl\"ussel auf, deren
+Ablaufdatum durch eine neue Selbstsignatur verl\"angert wurde. Dieses
+Signaturpaket fehlte auf \emph{wwwkeys.ch.pgp.net}, wodurch der
+betreffende Schl\"ussel f\"alschlicherweise als abgelaufen betrachtet
+wurde. Diese fehlenden Teile sind aber auf allen Keyservern des
 \emph{SKS}-Verbundes %FIXME
 vorhanden. Da die Ursache in allen untersuchten F\"allen die gleiche
 war, kann angenommen werden, dass der Fehler systematisch ist und
