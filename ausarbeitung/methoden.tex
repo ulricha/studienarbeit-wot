@@ -421,6 +421,161 @@ aufgeführt.
 \section{Community-Analyse}
 \label{sec:community-analyse}
 
+In Abschnitt \ref{sec:sozi-komp-des} wurden Mechanismen beschrieben,
+die zur Entstehung des Web of Trust beitragen. Ausgehend davon kann
+die Annahme getroffen werden, dass die Vernetzung wesentlich von zwei
+Faktoren beeinflusst wird: Teilnehmer vernetzen sich einerseits
+aufgrund ihrer Zugeh\"origkeit zu einer \emph{sozialen Gruppe}. Dabei
+kann es sich um Open-Source-Projekte wie z.B. Debian, akademische
+Einrichtungen und Firmen handeln, aber auch um eine Gruppe von
+Freunden oder Bekannten. Andererseits vernetzen sich Teilnehmer auf
+Keysigning-Parties mit einer relativ grossen Anzahl Benutzer, die
+ihnen nicht unbedingt bekannt sind und mit denen sie keine starke
+Gruppenzugeh\"origkeit verbindet. Offensichtlich ist allerdings, dass
+diese Mechanismen sich nicht gegenseitig ausschliessen. Die bereits in
+\ref{sec:sozi-komp-des} beschriebene Bandbreite von Keysigning-Parties
+reicht von Ad-hoc-Veranstaltungen mit wenigen Teilnehmern, die
+durchaus der selben Institution angeh\"orig sein k\"onnen, bis zu
+grossen, formalisierten Veranstaltungen auf Konferenzen und Messen mit
+etlichen Teilnehmern.
+
+Es soll nun untersucht werden, inwiefern sich diese postulierten
+Entstehungsmechanismen in der Struktur des Web of Trust
+wiederfinden. Angenommen wird, dass sich ein hoher Anteil der
+Teilnehmer prim\"ar anhand dieser beiden Mechanismen vernetzen und der
+Anteil an Signaturen zwischen Teilnehmern, die nicht durch eine
+Keysigning-Party oder eine soziale Gruppe entstanden ist, deutlich
+geringer ist. In diesem Fall ist zu erwarten, dass sich soziale
+Gruppen und die Ergebnisse von Keysigning-Parties als Gruppen von
+Knoten im Netzwerk wiederfinden, die untereinander eine hohe Anzahl
+von Kanten hat, d.h. \emph{dicht} vernetzt ist, w\"arend sich zu
+Knoten ausserhalb der Gruppe nur relativ wenige Kanten finden. Diese
+Eigenschaft entspricht exakt der in Abschnitt
+\ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities}
+beschriebenen Definition von \emph{Communities}. Es erscheint als
+Methode deshalb sinnvoll, mit vorhandenen Methoden zur
+Community-Erkennung eine Zerlegung des Graphen zu berechnen und dann
+zu untersuchen, inwiefern sich die einzelnen so berechneten
+Communities entsprechend der Annahme auf soziale Gruppen
+bzw. Keysigning-Parties abbilden lassen.
+
+Dazu sind Kriterien n\"otig, um eine berechnete Community einer
+sozialen Gruppe, einer Keysigning-Party oder beidem zuzuordnen. F\"ur
+Keysigning-Parties ist anzunehmen, dass die Signaturvorg\"ange
+zwischen den Teilnehmern einer KSP innerhalb eines eng begrenzten
+Zeitraums nach Stattfinden der KSP vorgenommen werden. Als einfaches
+Kriterium f\"ur die Erkennung einer Keysigning-Party kann also eine
+starke zeitliche Korrelation der Signaturvorg\"ange zwischen der
+Mehrzahl der Community-Mitglieder verwendet werden. Konkret wird hier
+eine Community als Produkt einer KSP betrachtet, wenn 80\% der
+Signaturen zwischen den Mitgliedern innerhalb eines Monats vorgenommen
+wurden.
+
+Die Zuordnung zu sozialen Gruppen wird dadurch erschwert, dass --
+abgesehen von den Schl\"usseln und Signaturen selbst -- keine
+empirischen Daten \"uber die Gruppenzugeh\"origkeit vorliegen. Die
+einzigen Daten, die eine (primitive) Zuordnung erlauben, sind die in
+den UserIDs enthaltenen E-Mail-Adressen. \"Uber die Top-Level-Domain
+(TLD) kann ein User einem Land zugeordnet werden, sofern es sich nicht
+um eine der generischen TLDs (com, org, net) handelt. \"Uber die
+Second-Level-Domain kann versucht werden, einen Nutzer einer
+Institution zuzuordnen. Ein User, der beispielsweise \"uber eine
+E-Mail-Adresse mit der Domain debian.org verf\"ugt, ist sicherlich ein
+Mitglied des Debian-Projekts. Hilfreich dabei ist, dass Teilnehmer
+dazu tendieren, alle ihre Adressen auf ihren Schl\"usseln zu
+vermerken, so dass viele Schl\"ussel mehrere UserIDs und
+E-Mail-Adressen haben (siehe Abschnitt
+\ref{sec:result-key-properties}). Dadurch werden die verf\"ugbaren
+Informationen \"uber Gruppenzugeh\"origkeiten erh\"oht. Adressen
+verbreiteter ``Freemail''-Anbieter wie Gmail, GMX und Yahoo sowie
+Adressen von Internet Service Providern d\"urfen dabei nat\"urlich
+nicht verwendet werden, weil ihre Verwendung nichts \"uber eine
+Gruppenzugeh\"origkeit aussagt.
+
+\"Ahnlich wie f\"ur Keysigning-Parties werden wieder einfache
+Schwellwerte verwendet, um eine Community einer sozialen Gruppe, also
+einer Domain, zuzuordnen: Eine Community kann einer Domain
+\emph{zugeordnet} werden, wenn mindestens 80\% der Mitglieder
+eine UserID mit dieser Domain haben. Ausserdem wird eine Community von
+einer Domain \emph{dominiert}, wenn ein erheblicher Anteil -- konkret
+mindestens 40\% -- der Mitglieder eine UserID mit dieser Domain haben.
+
+Die Schwellwerte wurden nicht anhand empirischer Daten festgelegt
+sondern dr\"ucken nur ein intuitives Verst\"andnis f\"ur die
+\"uberwiegende Mehrzahl der Mitglieder einer Gruppe bzw. einen
+erheblichen Anteil der Mitglieder einer Gruppe aus.
+
+Wie bereits in Abschnitt
+\ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities}
+beschrieben, existiert eine Vielzahl von Methoden zur Zerlegung eines
+Graphen in Communities. Dabei hat sich bislang kein ``bester''
+Algorithmus herauskristallisiert, auch wenn einige Algorithmen f\"ur
+eine Reihe von Benchmark-Graphen bessere Ergebnisse liefern als andere
+\cite{Lancichinetti2009}. Um zu vermeiden, dass eine vergleichsweise
+schlechte Einteilung durch einen Algorithmus die Ergebnisse
+verf\"alscht, wurden mehrere Algorithmen zur Community-Erkennung auf
+ungerichteten Graphen verwendet, um ihre Ergebnisse vergleichen zu
+k\"onnen. Das \"ubliche G\"utemass zum Vergleich von
+Community-Zerlegungen eines Graphen ist der Modularity-Wert (siehe
+Abschnitt \ref{sec:community-analyse}).
+
+W\"ahrend Modularity also die G\"ute einer Zerlegung nur bezogen auf
+die Struktur des Graphen misst, dr\"ucken die Zuordnungszahlen die
+G\"ute einer Partitionierung in Bezug auf die oben formulierte
+Hypothese \"uber die Entstehung des Netzwerks aus. Wenn diese
+Hypothese zutrifft, ist eine Zerlegung in Bezug darauf ``besser'',
+wenn eine gr\"ossere Anzahl von Communities einer sozialen Gruppe oder
+Keysigning-Party zugeordnet werden kann. Es kann nicht vorrausgesetzt
+werden, dass eine Zerlegung mit hoher Modularity automatisch auch eine
+Zerlegung mit hohen Zuordnungszahlen ist.
+
+Eine Zuordnung von einer Person zu genau einer sozialen Gruppe scheint
+unrealistisch. Statt dessen ist davon auszugehen, dass eine Person im
+Allgemeinen zu mehreren Institutionen oder Gruppen zugeh\"orig
+ist. Ebenso ist es m\"oglich, dass sie sich einerseits im Kontext
+einer sozialen Gruppe vernetzt, andererseits aber auch an
+Keysigning-Parties teilnimmt. Eine solche multiple Zugeh\"origkeit
+sollte sich im Netzwerk durch eine Mitgliedschaft eines Knotens in
+mehreren Communities ausdr\"ucken. Wie in
+\ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities} erw\"ahnt,
+existiert eine Klasse von Algorithmen, die ein Netzwerk in
+\emph{\"uberlappende} Communities zerlegt. Um zu untersuchen,
+inwiefern dieser \"Uberlappungseffekt die Zuordnung von Knoten zu
+sozialen Gruppen und KSPs beeinflusst, wurde zus\"atzlich noch eine
+\"uberlappende Zerlegung mit dem Algorithmus COPRA \cite{Gregory2010}
+berechnet.
+
+\subsection{Communities in gerichteten Graphen}
+\label{sec:comm-gericht-graph}
+Der Graph des Web of Trust ist inh\"arent gerichtet, da eine Signatur
+nur in eine Richtung gilt. Die meisten verf\"ugbaren Methoden zur
+Community-Erkennung setzen im Gegensatz dazu einen ungerichteten
+Graphen vorraus. Methoden, die auf gerichteten Graphen arbeiten, sind
+erst in j\"ungster Zeit vorgestellt worden \cite{Leicht2008}. Der bis
+jetzt am h\"aufigsten verwendete Ansatz f\"ur die Community-Erkennung
+in gerichteten Netzwerken ist es, die Richtung der Kanten zu
+ignorieren und den Graphen als ungerichteten Graphen zu
+behandeln. Auch die Arbeiten, die den Web of Trust-Graphen unter
+Community-Gesichtspunkten analysieren oder ihn als Benchmark f\"ur den
+Vergleich von Algorithmen verwenden, gehen so vor \cite{Boguna2004}. Auch
+wenn dieses Vorgehen akzeptable Resultate liefern kann, ist doch klar,
+dass durch das Ignorieren der Richtung ein Informationsverlust
+stattfindet, der die Ergebnisse negativ beeinflussen kann. In der
+vorliegenden Arbeit wurde dieser \"ubliche Ansatz des Ignorierens der
+Kantenrichtung verwendet, da die Methoden f\"ur ungerichtete Netzwerke
+besser etabliert und Implementationen dieser Algorithmen einfacher
+zug\"anglich sind. Im Fall des Web of Trust ist allerdings ein
+erheblicher Anteil der verbundenen Knotenpaare nur in eine Richtung
+verbunden, d.h. es existiert keine ``Gegenkante'' (siehe Abschnitt
+\ref{sec:result-allg-merkm-des}). Damit ist auch der
+Informationsverlust durch die Reduzierung erheblich. Es ist daher
+naheliegend, dass eine Community-Zerlegung des Graphen unter
+Ber\"ucksichtigung der Richtungsinformationen eine Zerlegung berechnen
+k\"onnte, die die Struktur des Graphen besser wiedergibt und auch
+unter dem Gesichtspunkt der Zuteilung zu sozialen Gruppen und
+Keysigning-Parties bessere Resultate liefert. Dieser Ansatz konnte im
+Rahmen dieser Arbeit nicht verfolgt werden, scheint aber
+vielversprechend.
 
 %%% Local Variables: 
 %%% mode: latex

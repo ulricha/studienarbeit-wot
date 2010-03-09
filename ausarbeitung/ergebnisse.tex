@@ -34,45 +34,49 @@
 
 \begin{table}[h]
   \centering
-  \begin{tabular}{l|c|p{4cm}|p{4cm}}
-    Algorithmus & Modularity & Anzahl Communities (Gr\"osse $> 3$) &
-    Anzahl enthaltener Knoten \\
+  \footnotesize
+  \begin{tabular}{l|c|c|c}
+    Algorithmus & Modularity & Communities &
+    Enthaltene Knoten \\
     \hline
-    fastmod & 0,596 & 552 & foo \\
-    labelprop & 0,658 & 1834 & foo \\
-    cliquemod-3000 & 0,670 & 811 & foo \\
-    cliquemod-500 & 0,677 & 451 & foo \\
-    copra & --- & 1354 & foo
+    FM & 0,596 & 552 & foo \\
+    LP & 0,658 & 1834 & foo \\
+    CM ($c=3000$) & 0,670 & 811 & foo \\
+    CM ($c=500$) & 0,677 & 451 & foo \\
+    COPRA & --- & 1354 & foo
   \end{tabular}
-  \caption{Modulairty, Anzahl communities, Menge enthaltener Knoten (> 3)}
+  \caption{Modularity-Werte, Anzahl der Communities mit mehr als 3
+    Knoten sowie die Anzahl insgesamt in den Communities enthaltener
+    Knoten 
+    f\"ur die Algorithmen Fast-Modularity (FM), Label-Propagation
+    (LP), Cliquemod (CM) mit $c=3000$ bzw. $c=500$ und COPRA}
   \label{tab:foo}
 \end{table}
 
-{\footnotesize
 \begin{table}[h]
   \centering
-  \begin{tabular}{l|c|c|c|c|c|c}
-    Algo & TLD-S & TLD-M & SLD-S & SLD-M & SIG \\
+  \footnotesize
+  \begin{tabular}{l|c|c|c|c|c}
+    Algorithmus & TLD-S & TLD-M & SLD-S & SLD-M & SIG \\
     \hline
-    fastmod & 293 (53\%) & 247 (44\%) & 66 (11\%) & 194 (35\%) & 128
+    FM & 293 (53\%) & 247 (44\%) & 66 (11\%) & 194 (35\%) & 128
     (23\%) \\
     \hline
-    labelprop & 1048 (57\%) & 755 (41\%) & 277 (15\%) & 720 (39\%) &
+    LP & 1048 (57\%) & 755 (41\%) & 277 (15\%) & 720 (39\%) &
     553 (30\%) \\
     \hline
-    cliquemod-3000 & 460 (56\%) & 332 (40\%) & 104 (12\%) & 300 (36\%)
+    CM ($c=3000$) & 460 (56\%) & 332 (40\%) & 104 (12\%) & 300 (36\%)
     & 230 (28\%) \\
     \hline
-    cliquemod-500 & 230 (50\%) & 209 (46\%) & 65 (14\%) & 141 (31\%) &
+    CM ($c=500$) & 230 (50\%) & 209 (46\%) & 65 (14\%) & 141 (31\%) &
     116 (25\%) \\
     \hline
-    copra & 792 (58\%) & 525 (38\%) & 259 (19\%) & 533 (39\%) & 555 (40\%)
+    COPRA & 792 (58\%) & 525 (38\%) & 259 (19\%) & 533 (39\%) & 555 (40\%)
 
   \end{tabular}
   \caption{SLD-TLD-Zuweisung, TIME-CORR}
   \label{tab:assign}
 \end{table}
-}
 
 \begin{figure}[t]
   \centering
@@ -121,7 +125,7 @@ Indiz f\"ur eine modulare Struktur dieses Graphen zu betrachten.
 
 \begin{figure}[h]
   \centering
-  \includegraphics[scale=1.0]{images/subgraph-label-time-1077361cfa4161f22a2e4abb5ca89b8c1ad.pdf}
+  \includegraphics[scale=1.5]{images/subgraph-label-time-1077361cfa4161f22a2e4abb5ca89b8c1ad.pdf}
   \caption{foo}
   \label{fig:time-corr-com-normal}
 \end{figure}
@@ -170,8 +174,6 @@ Indiz f\"ur eine modulare Struktur dieses Graphen zu betrachten.
 \end{figure}
 
 
-\subsection{Communities in gerichteten Graphen}
-\label{sec:comm-gericht-graph}
 erichteten Graphen definiert. Ebenso 
 
 %%% Local Variables: 
