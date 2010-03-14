@@ -53,9 +53,10 @@ let community_statistics db m =
       | keyids :: tl when (List.length keyids) > minsize && (List.length keyids) > 100 ->
 	  let id = Component_helpers.canonical_component_name keyids in
 	  let records = divide_et_impera (get_key_records dbh) keyids in
-	  let sig_ctimes = divide_et_impera (sig_creation_times dbh) keyids in
+	    assert ((List.length records) = (List.length keyids));
+	  let sig_ctimes = sig_creation_times dbh keyids in
 	  let uids = get_uids_per_key dbh keyids in
-	    Printf.printf "stats community %s size %d\n" id (List.length keyids); flush stdout;
+	    Printf.printf "stats community %s size %d edges %d\n" id (List.length keyids) (List.length sig_ctimes); flush stdout;
 	    assert (List.length records > 0);
 	    print_statistics records uids sig_ctimes;
 	    print_endline "";
@@ -63,10 +64,11 @@ let community_statistics db m =
       | keyids :: tl when (List.length keyids) > minsize ->
 	  let id = Component_helpers.canonical_component_name keyids in
 	  let records = get_key_records dbh keyids in
+	    assert ((List.length records) = (List.length keyids));
 	  let sig_ctimes = sig_creation_times dbh keyids in
 	  let uids = get_uids_per_key dbh keyids in
 	    assert (List.length records > 0);
-	    Printf.printf "stats community %s size %d\n" id (List.length keyids); flush stdout;
+	    Printf.printf "stats community %s size %d edges %d\n" id (List.length keyids) (List.length sig_ctimes); flush stdout;
 	    print_statistics records uids sig_ctimes;
 	    print_endline "";
 	    loop tl
@@ -90,8 +92,10 @@ let main () =
       import_copra_communities Sys.argv.(5)
     else if Sys.argv.(3) = "igraph" then
       import_igraph_communities Sys.argv.(4) Sys.argv.(5)
+    else if Sys.argv.(3) = "infomap" then
+      import_infomap_communities Sys.argv.(5)
     else
-      failwith "format = copra / igraph"
+      failwith "format = copra / igraph / infomap"
   in
     print_endline "imported communities";
     community_statistics Sys.argv.(1) cid_map;

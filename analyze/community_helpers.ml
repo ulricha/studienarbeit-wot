@@ -28,6 +28,20 @@ let import_igraph_communities index_fname communities_fname =
   in
     File.with_file_in communities_fname fold_lines
 
+let import_infomap_communities communities_fname =
+  let add_line m l =
+    if l.[0] = '#' then
+      m
+    else
+      let cid = int_of_string (fst (String.split l ":")) in
+      let keyid = String.slice ~last:(-1) (snd (String.split l "\"")) in
+	add_map m cid keyid
+  in
+  let fold_lines input =
+    Enum.fold add_line Map.IntMap.empty (IO.lines_of input)
+  in
+    File.with_file_in communities_fname fold_lines
+
 let import_copra_communities communities_fname =
   let add_line i line m =
     let members = String.nsplit line " " in
