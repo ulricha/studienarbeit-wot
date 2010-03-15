@@ -25,7 +25,7 @@ let extract_slds strings =
       let len = List.length domain_parts in
 	if len = 2 then
 	  (String.concat "." domain_parts) :: l
-	else if len >= 3 then
+	else if len >= 3 && ((String.exists domain ".uk") || (String.exists domain ".au")) then
 	  (String.concat "." (List.drop (len - 3) domain_parts)) :: l
 	else
 	  l
@@ -126,13 +126,16 @@ let print_key_records l =
     List.iter print l
 
 let characterize_times ctimes =
-  let ctimes = List.sort ctimes in
-  let a = Array.of_list ctimes in
-  let l = Array.length a in
-  let median = Array.get a (l / 2) in
-  let newest = Array.get a (l - 1) in
-  let oldest = Array.get a 0 in
-    (median, oldest, newest)
+  if (List.length ctimes) > 2 then
+    let ctimes = List.sort ctimes in
+    let a = Array.of_list ctimes in
+    let l = Array.length a in
+    let median = Array.get a (l / 2) in
+    let newest = Array.get a (l - 1) in
+    let oldest = Array.get a 0 in
+      (median, oldest, newest)
+  else
+    (0.0, 0.0, 0.0)
 
 let check_time_correlation median oldest newest =
   let month = (60. *. 60. *. 24. *. 30.) in
@@ -185,5 +188,8 @@ let check_cumulation a ctimes =
 	None
     in
       loop 0
-	
   
+let filter_community_sigs keyids sigs =
+  let keyids = Set.StringSet.of_enum (List.enum keyids) in
+  let sigs = List.filter (fun (u, v, ctime) -> Set.StringSet.mem u keyids && Set.StringSet.mem v keyids) sigs in
+    List.map (fun (_, _, ctime) -> ctime) sigs

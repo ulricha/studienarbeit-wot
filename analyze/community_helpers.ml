@@ -28,6 +28,18 @@ let import_igraph_communities index_fname communities_fname =
   in
     File.with_file_in communities_fname fold_lines
 
+let import_blondel_communities index_fname communities_fname =
+  let numid_to_keyid = read_index index_fname in
+  let add_line i l m =
+    let (keyid, cid) = String.split l " " in
+    let (keyid, cid) = (numid_to_keyid (int_of_string keyid), int_of_string cid) in
+      add_map m cid keyid
+  in
+  let fold_lines input =
+    Enum.foldi add_line Map.IntMap.empty (IO.lines_of input)
+  in
+    File.with_file_in communities_fname fold_lines
+
 let import_infomap_communities communities_fname =
   let add_line m l =
     if l.[0] = '#' then
@@ -35,6 +47,8 @@ let import_infomap_communities communities_fname =
     else
       let cid = int_of_string (fst (String.split l ":")) in
       let keyid = String.slice ~last:(-1) (snd (String.split l "\"")) in
+	assert ((String.length keyid) = 16);
+	Printf.printf "%d %s\n" cid keyid;
 	add_map m cid keyid
   in
   let fold_lines input =

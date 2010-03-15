@@ -2,8 +2,8 @@ open Batteries
 
 let today = Unix.time ()
 
-let sig_creation_times dbh keyids =
-  PGSQL(dbh) "SELECT ctime FROM sigs where signee in $@keyids AND signer in $@keyids"
+let all_sigs dbh =
+  PGSQL(dbh) "SELECT signer, signee, ctime FROM sigs"
 
 let get_key_records dbh keyids =
   PGSQL(dbh) "SELECT keyid, puid, ctime, exptime FROM keys where keyid in $@keyids"

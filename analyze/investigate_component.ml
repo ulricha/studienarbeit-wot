@@ -43,6 +43,7 @@ let main () =
     print_endline ("investigate smaller components down to size " ^ Sys.argv.(3));
     let dbh = PGOCaml.connect ~database:Sys.argv.(1) () in
     let (g, scc_list_sorted) = Component_helpers.load_scc_list Sys.argv.(2) in
+    let sigs = all_sigs dbh in
     let rec loop l =
       match l with
 	| hd :: tl when (List.length hd) > 30000 -> 
@@ -50,7 +51,7 @@ let main () =
 	| keyids :: tl when (List.length keyids) > minsize -> 
 	    let id = Component_helpers.canonical_component_name keyids in
 	    let records = get_key_records dbh keyids in
-	    let sig_ctimes = sig_creation_times dbh keyids in
+	    let sig_ctimes = filter_community_sigs keyids sigs in
 	      assert (List.length records > 0);
 	      Printf.printf "stats component %s size %d\n" id (List.length keyids); flush stdout;
 	      print_statistics records sig_ctimes;
