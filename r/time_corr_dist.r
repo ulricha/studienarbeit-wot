@@ -1,11 +1,24 @@
 fdir <- "~/dev/studienarbeit-wot/results/fastmod/"
 ldir <- "~/dev/studienarbeit-wot/results/label-prop/"
 cdir <- "~/dev/studienarbeit-wot/results/copra/"
-fastmod <- scan(paste(fdir, "TIME_CORR_sizes.dat", sep=""))
+bl2dir <- "~/dev/studienarbeit-wot/results/blondel-l2/"
+bl5dir <- "~/dev/studienarbeit-wot/results/blondel-l5/"
 label <- scan(paste(ldir, "TIME_CORR_sizes.dat", sep=""))
 copra <- scan(paste(cdir, "TIME_CORR_sizes.dat", sep=""))
-plot(table(fastmod), log="x", type="p", pch=0, xlim=range(fastmod, label, copra), ylim=range(table(fastmod), table(label), table(copra)), col="red", xlab="Grösse", ylab="Anzahl")
-points(table(label), type="p", pch=1, col="green")
-points(table(copra), type="p", pch=2, col="blue")
-legend(x="topright", legend=c("FM", "LP", "COPRA"), col=c("red", "green", "blue"), pch=c(0,1,2))
-quartz.save("dev/studienarbeit-wot/ausarbeitung/images/time_corr_dist.pdf", type="pdf")
+bl2 <- scan(paste(bl2dir, "TIME_CORR_sizes.dat", sep=""))
+bl5 <- scan(paste(bl5dir, "TIME_CORR_sizes.dat", sep=""))
+xl <- c(3, max(max(copra), max(label), max(bl2), max(bl5)))
+yl <- c(1, max(max(table(fastmod), table(copra), table(label), table(bl2), table(bl5))))
+
+plot(table(copra), log="xy", col="blue", xlab="Grösse", ylab="Anzahl", cex=0.8, pch=2, xlim=xl, ylim=yl, type="p")
+legend(x="topright", legend="COPRA", col="blue", pch=2)
+quartz.save("dev/studienarbeit-wot/ausarbeitung/images/time-corr_copra.pdf", type="pdf")
+plot(table(label), log="xy", col="blue", xlab="Grösse", ylab="Anzahl", cex=0.8, pch=2, xlim=xl, ylim=yl, type="p")
+legend(x="topright", legend="LP", col="blue", pch=2)
+quartz.save("dev/studienarbeit-wot/ausarbeitung/images/time-corr_label.pdf", type="pdf")
+plot(table(bl2), log="xy", col="blue", xlab="Grösse", ylab="Anzahl", cex=0.8, pch=2, xlim=xl, ylim=yl, type="p")
+legend(x="topright", legend="BL l=2", col="blue", pch=2)
+quartz.save("dev/studienarbeit-wot/ausarbeitung/images/time-corr_bl2.pdf", type="pdf")
+plot(table(bl5), log="xy", col="blue", xlab="Grösse", ylab="Anzahl", cex=0.8, pch=2, xlim=xl, ylim=yl, type="p")
+legend(x="topright", legend="BL l=5", col="blue", pch=2)
+quartz.save("dev/studienarbeit-wot/ausarbeitung/images/time-corr_bl5.pdf", type="pdf")

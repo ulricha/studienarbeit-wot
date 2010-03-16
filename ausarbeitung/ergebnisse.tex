@@ -63,12 +63,11 @@ Modularity-Werte hatten eine geringe Standardabweichung von 0,003.
 
 \begin{figure}[t]
   \centering
-  \subfloat[]{\label{fig:comsize-fm} \includegraphics[scale=0.65]{images/community-size-dist_fastmod.pdf}}
-  \subfloat[]{\label{fig:comsize-lp} \includegraphics[scale=0.65]{images/community-size-dist_label.pdf}} \\
-  \subfloat[]{\label{fig:comsize-bl2} \includegraphics[scale=0.65]{images/community-size-dist_copra.pdf}}
-  \subfloat[]{\label{fig:comsize-bl5} \includegraphics[scale=0.65]{images/community-size-dist_bl2.pdf}} \\
+  \subfloat[]{\label{fig:comsize-lp} \includegraphics[scale=0.65]{images/community-size-dist_label.pdf}}
+  \subfloat[]{\label{fig:comsize-bl2} \includegraphics[scale=0.65]{images/community-size-dist_copra.pdf}}\\
+  \subfloat[]{\label{fig:comsize-bl5} \includegraphics[scale=0.65]{images/community-size-dist_bl2.pdf}} 
   \subfloat[]{\label{fig:comsize-copra} \includegraphics[scale=0.65]{images/community-size-dist_bl5.pdf}}
-  \caption{Gr\"ossenverteilung der Communities: Fast-Modularity \ref{fig:comsize-fm}}
+  \caption{Gr\"ossenverteilung der Communities}
   \label{fig:comsizedist}
 \end{figure}
 
@@ -97,7 +96,9 @@ Modularity-Werte hatten eine geringe Standardabweichung von 0,003.
   \label{tab:foo}
 \end{table}
 
-
+Der insgesamt recht hohe Modularity-Wert weist darauf hin, dass der
+Graph in der Tat eine ausgepr\"agte modulare Struktur hat, wie dies
+von einem sozialen Netzwerk erwartet wird.
 
 \begin{table}[h]
   \centering
@@ -202,7 +203,7 @@ der Community, da die Knoten am Rand nur Signaturen zu dem zentralen
 Knoten haben und damit die interne Kantendichte deutlich h\"oher ist
 als die externe. Um solche Extremf\"alle auszuschliessen, ist als
 zus\"atzliches Kriterium f\"ur die Erkennung von KSPs ein hoher
-durschnittlicher Grad der Knoten denkbar.
+durchschnittlicher Grad der Knoten denkbar.
 
 
 \begin{figure}[h]
@@ -251,43 +252,57 @@ Indiz f\"ur eine modulare Struktur dieses Graphen zu betrachten.
   \label{fig:metagraph-com-fastmod}
 \end{figure}
 
-\begin{figure}[h]
+
+\begin{figure}[t]
   \centering
-  \includegraphics[scale=0.8]{images/tld_sure_dist.pdf}
+  \subfloat[]{\label{fig:comsize-lp} \includegraphics[scale=0.45]{images/tld-sure-ass_label.pdf}}
+  \subfloat[]{\label{fig:comsize-bl2} \includegraphics[scale=0.45]{images/tld-sure-ass_copra.pdf}}\\
+  \subfloat[]{\label{fig:comsize-bl5} \includegraphics[scale=0.45]{images/tld-sure-ass_bl2.pdf}} 
+  \subfloat[]{\label{fig:comsize-copra} \includegraphics[scale=0.45]{images/tld-sure-ass_bl5.pdf}}
   \caption{Zuweisung von Domains zu TLDs abh\"angig von der Community-Gr\"osse}
-  \label{fig:tld-sure-ass-dist}
+  \label{fig:comsizedist}
 \end{figure}
 
-
-\begin{figure}[h]
+\begin{figure}[t]
   \centering
-  \includegraphics[scale=0.8]{images/tld_maybe_dist.pdf}
+  \subfloat[]{\label{fig:comsize-lp} \includegraphics[scale=0.45]{images/tld-maybe-ass_label.pdf}}
+  \subfloat[]{\label{fig:comsize-bl2} \includegraphics[scale=0.45]{images/tld-maybe-ass_copra.pdf}}\\
+  \subfloat[]{\label{fig:comsize-bl5} \includegraphics[scale=0.45]{images/tld-maybe-ass_bl2.pdf}} 
+  \subfloat[]{\label{fig:comsize-copra} \includegraphics[scale=0.45]{images/tld-maybe-ass_bl5.pdf}}
   \caption{Verteilung der Gr\"osse der von einer TLD dominierten Communities}
-  \label{fig:tld-maybe-ass-dist}
+  \label{fig:comsizedist}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[t]
   \centering
-  \includegraphics[scale=0.8]{images/sld_sure_dist.pdf}
-  \caption{foo}
+  \subfloat[]{\label{fig:comsize-lp} \includegraphics[scale=0.45]{images/sld-sure-ass_label.pdf}}
+  \subfloat[]{\label{fig:comsize-bl2} \includegraphics[scale=0.45]{images/sld-sure-ass_copra.pdf}}\\
+  \subfloat[]{\label{fig:comsize-bl5} \includegraphics[scale=0.45]{images/sld-sure-ass_bl2.pdf}} 
+  \subfloat[]{\label{fig:comsize-copra} \includegraphics[scale=0.45]{images/sld-sure-ass_bl5.pdf}}
   \caption{Zuweisung von Domains zu SLDs abh\"angig von der Community-Gr\"osse}
-  \label{fig:sld-sure-ass-dist}
+  \label{fig:comsizedist}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[t]
   \centering
-  \includegraphics[scale=0.8]{images/sld_maybe_dist.pdf}
-  \caption{Verteilung der Gr\"osse der von einer TLD dominierten Communities}
-  \label{fig:sld-maybe-ass-dist}
+  \subfloat[]{\label{fig:comsize-lp} \includegraphics[scale=0.45]{images/sld-maybe-ass_label.pdf}}
+  \subfloat[]{\label{fig:comsize-bl2} \includegraphics[scale=0.45]{images/sld-maybe-ass_copra.pdf}}\\
+  \subfloat[]{\label{fig:comsize-bl5} \includegraphics[scale=0.45]{images/sld-maybe-ass_bl2.pdf}} 
+  \subfloat[]{\label{fig:comsize-copra} \includegraphics[scale=0.45]{images/sld-maybe-ass_bl5.pdf}}
+  \caption{Verteilung der Gr\"osse der von einer SLD dominierten Communities}
+  \label{fig:comsizedist}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[t]
   \centering
-  \includegraphics[scale=0.8]{images/time_corr_dist.pdf}
-  \caption{Verteilung der Gr\"osse der Communities mit zeitlicher Korrelation}
-  \label{fig:time-corr-dist}
+  \subfloat[]{\label{fig:comsize-lp} \includegraphics[scale=0.45]{images/time-corr_label.pdf}}
+  \subfloat[]{\label{fig:comsize-bl2} \includegraphics[scale=0.45]{images/time-corr_copra.pdf}}\\
+  \subfloat[]{\label{fig:comsize-bl5} \includegraphics[scale=0.45]{images/time-corr_bl2.pdf}} 
+  \subfloat[]{\label{fig:comsize-copra} \includegraphics[scale=0.45]{images/time-corr_bl5.pdf}}
+  \caption{Verteilung der Gr\"osse von Communities mit zeitlicher
+    Korrelation der Signaturen}
+  \label{fig:comsizedist}
 \end{figure}
-
 
 erichteten Graphen definiert. Ebenso 
 
