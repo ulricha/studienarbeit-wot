@@ -53,7 +53,13 @@ der verwendeten Implementierung der Autoren
 \footnote{http://www.tp.umu.se/~rosvall/code.html} oder auf Fehler im
 Algorithmus zur\"uckgeht, ist nicht bekannt.
 
-Die nichtdeterministische COPRA-Berechnung lieferte Modularity-Werte 
+Die nichtdeterministische LP-Berechnung lieferte Modularity-Werte mit
+einer maximalen Abweichung von 0,002. Hier wurde das Maximum
+verwendet. F\"ur die COPRA-Berechnung ergaben sich mit steigender
+maximaler \"Uberlappung $v$ nur bis $v\le 3$ steigende
+Modularity-Werte, dar\"uber hinaus fielen sie konstant ab. Deshalb
+wurde die Berechnung mit $v=3$ verwendet. Die dort berechneten
+Modularity-Werte hatten eine geringe Standardabweichung von 0,003. 
 
 \begin{figure}[t]
   \centering
@@ -90,6 +96,8 @@ Die nichtdeterministische COPRA-Berechnung lieferte Modularity-Werte
     Werten nicht verglichen werden.}
   \label{tab:foo}
 \end{table}
+
+
 
 \begin{table}[h]
   \centering
@@ -133,7 +141,8 @@ Dieses Ergebnis ist naheliegend. Es wird davon ausgegangen, dass ein
 wesentlicher Faktor, der das Zustandekommen von Signaturen
 beeinflusst, die sozialen Kontakte einer Person sind. Es ist weiterhin
 naheliegend, dass sich diese sozialen Kontakte unter anderem aufgrund
-von Sprachbarrieren haupts\"achlich im Rahmen eines Landes ergeben. 
+von Sprachbarrieren und der r\"aumlichen N\"ahe haupts\"achlich im
+Rahmen eines Landes ergeben.
 
 Zwar k\"onnte argumentiert werden, dass das Internet die geographische
 bzw. nationale Beschr\"ankung sozialer Kontakte aufhebt. Allerdings
