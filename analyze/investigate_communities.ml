@@ -53,7 +53,9 @@ let community_statistics db m =
       | keyids :: tl when (List.length keyids) > minsize && (List.length keyids) > 100 ->
 	  let id = Component_helpers.canonical_component_name keyids in
 	  let records = divide_et_impera (get_key_records dbh) keyids in
-	    assert ((List.length records) = (List.length keyids));
+	    Printf.printf "wanted %d got %d\n" (List.length keyids) (List.length records);
+	    flush stdout;
+	    assert (((List.length records) - (List.length keyids)) < 10);
 	  let sig_ctimes = filter_community_sigs keyids sigs in
 	  let uids = get_uids_per_key dbh keyids in
 	    Printf.printf "stats community %s size %d edges %d\n" id (List.length keyids) (List.length sig_ctimes); flush stdout;
@@ -64,7 +66,9 @@ let community_statistics db m =
       | keyids :: tl when (List.length keyids) > minsize ->
 	  let id = Component_helpers.canonical_component_name keyids in
 	  let records = get_key_records dbh keyids in
-	    assert ((List.length records) = (List.length keyids));
+	    Printf.printf "wanted %d got %d\n" (List.length keyids) (List.length records);
+	    flush stdout;
+	    assert (((List.length records) - (List.length keyids)) < 10);
 	  let sig_ctimes = filter_community_sigs keyids sigs in
 	  let uids = get_uids_per_key dbh keyids in
 	    assert (List.length records > 0);

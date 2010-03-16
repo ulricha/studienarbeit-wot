@@ -37,14 +37,25 @@ let component_metagraph g communities =
 	  Metagraph.export_umetagraph_attributes metagraph (basename ^ "_attributes.cyto")
 
 let _ =
-  if (Array.length Sys.argv) <> 5 then (
-    print_endline "usage: community_structure edge-file index-file community-file minsize";
+  if (Array.length Sys.argv) <> 6 then (
+    print_endline "usage: community_structure edge-file index-file community-file minsize format";
     exit (-1))
 
 let main () =
   print_endline "construct communities metagraph";
   let minsize = int_of_string Sys.argv.(4) in
-  let cid_map = import_igraph_communities Sys.argv.(2) Sys.argv.(3) in
+  let cid_map = 
+    if Sys.argv.(5) = "copra" then
+      import_copra_communities Sys.argv.(3)
+    else if Sys.argv.(5) = "igraph" then
+      import_igraph_communities Sys.argv.(2) Sys.argv.(3)
+    else if Sys.argv.(5) = "infomap" then
+      import_infomap_communities Sys.argv.(3)
+    else if Sys.argv.(5) = "blondel" then
+      import_blondel_communities Sys.argv.(2) Sys.argv.(3)
+    else
+      failwith "format = copra / igraph / infomap / blondel"
+  in
   let communities = Map.IntMap.fold (fun i c l -> c :: l) cid_map [] in
   let communities = List.filter (fun l -> List.length l >= minsize) communities in
   let edge_fname = Sys.argv.(1) in

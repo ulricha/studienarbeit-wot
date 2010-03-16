@@ -34,7 +34,6 @@ results-*
 *.graph
 *.orig
 *.cfinder
-*.log
 *.aux
 *.bbl
 *.blg
