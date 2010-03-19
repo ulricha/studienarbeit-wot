@@ -522,8 +522,7 @@ vergleichsweise schlechte Einteilung durch einen Algorithmus die
 Ergebnisse verf\"alscht, wurden mehrere Algorithmen zur
 Community-Erkennung auf ungerichteten Graphen verwendet, um ihre
 Ergebnisse vergleichen zu k\"onnen: Fast-Modularity (FM) von Newman et
-al., Label-Propagation (LP) von Raghavan et al. sowie der Algorithmus
-von Blondel et al. (LP) (siehe Abschnitt
+al., sowie der Algorithmus von Blondel et al. (LP) (siehe Abschnitt
 \ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities}). Die
 Auswahl wurde aus folgenden Gr\"unden getroffen:
 
@@ -533,7 +532,6 @@ Auswahl wurde aus folgenden Gr\"unden getroffen:
   verwendet. Allerdings liefert er in der Literatur durchg\"angig
   schlechtere Ergebnisse als moderne Algorithmen \cite{Fortunato2010}
   und wird deshalb hier nur als Vergleichsbasis verwendet.
-\item Label-Propagation 
 \item Der Algorithmus von Blondel et al. erzielte im Vergleich von
   Lancichinetti et al. \cite{Lancichinetti2009} mit die besten Ergebnisse.
 \end{itemize}
@@ -544,10 +542,6 @@ sind. Ausserdem existieren Algorithmen, die zwar f\"ur kleinere
 Graphen bessere Ergebnisse liefern als die hier verwendeten, aufgrund
 ihrer Berechnungskomplexit\"at f\"ur grosse Graphen wie den hier
 vorliegenden nicht geeignet sind.
-
-Da es sich bei Label-Propagation um eine nichtdeterministische
-Berechnung handelt, wurden 10 Berechnungen durchgef\"uhrt, um
-Schwankungen des Modularity-Wertes zu ermitteln.
 
 Eine Zuordnung von einer Person zu genau einer sozialen Gruppe scheint
 unrealistisch. Statt dessen ist davon auszugehen, dass eine Person im
@@ -567,9 +561,10 @@ Zerlegung mit dem Algorithmus COPRA \cite{Gregory2010}, einer
 Verallgemeinerung von Label-Progagation auf berechnet. Dabei handelt
 es sich um eine Verallgemeinerung des bereits erw\"ahnten Algorithmus
 Label-Propagation. COPRA erwartet einen Parameter $v$, der angibt, zu
-wie vielen Communities ein Knoten geh\"oren kann. Um hierdas Optimum
+wie vielen Communities ein Knoten geh\"oren kann. Um hier das Optimum
 bez\"uglich der Modularity zu finden, wurden Zerlegungen mit Werten
-$v=1, \dots, 15$ berechnet. Da COPRA genauso wie Label-Propagation
+$v=2, \dots, 15$ berechnet. Zum Vergleich wurde eine Zerlegung mit
+$v=1$ berechnet, die keine \"Uberlappung erlaubt. Da COPRA
 nichtdeterministisch ist, wurden f\"ur jeden Wert 10 Berechnungen
 durchgef\"uhrt, um die Abweichung zu ermitteln.
 
@@ -581,7 +576,9 @@ zutrifft, ist eine Zerlegung in Bezug darauf ``besser'', wenn eine
 gr\"ossere Anzahl von Communities einer sozialen Gruppe oder
 Keysigning-Party zugeordnet werden kann. Es kann nicht vorrausgesetzt
 werden, dass eine Zerlegung mit hoher Modularity automatisch auch eine
-Zerlegung mit hohen Zuordnungszahlen ist.
+Zerlegung mit hohen Zuordnungszahlen ist, dass sich also die real
+existierenden Communities direkt in der Struktur des Graphen
+wiederfinden.
 
 \subsection{Communities in gerichteten Graphen}
 \label{sec:comm-gericht-graph}

@@ -53,77 +53,134 @@ der verwendeten Implementierung der Autoren
 \footnote{http://www.tp.umu.se/~rosvall/code.html} oder auf Fehler im
 Algorithmus zur\"uckgeht, ist nicht bekannt.
 
-Die nichtdeterministische LP-Berechnung lieferte Modularity-Werte mit
-einer maximalen Abweichung von 0,002. Hier wurde das Maximum
-verwendet. F\"ur die COPRA-Berechnung ergaben sich mit steigender
-maximaler \"Uberlappung $v$ nur bis $v\le 3$ steigende
-Modularity-Werte, dar\"uber hinaus fielen sie konstant ab. Deshalb
-wurde die Berechnung mit $v=3$ verwendet. Die dort berechneten
-Modularity-Werte hatten eine geringe Standardabweichung von 0,003. 
+F\"ur die restlichen Methoden wurde der Graph auf einen ungerichteten
+Graphen reduziert. Dazu wurde jede einzelne gerichtete Kante in eine
+ungerichte Kante umgewandelt. Aus dem gerichteten Graphen mit XXX
+Kanten ergab sich so ein ungerichteter Graph mit 295425 Kanten.
+
+F\"ur die COPRA-Berechnung wurden -- wie in \cite{Gregory2010}
+vorgeschlagen -- Berechnungen mit unterschiedlichen Werten $v$
+durchgef\"uhrt, um den ``besten'' Wert im Sinne der Modularity zu
+ermitteln. Dabei ergaben sich mit steigender maximaler \"Uberlappung
+$v$ nur bis $v\le 3$ steigende Modularity-Werte, dar\"uber hinaus
+fielen sie kontinuierlich ab. Deshalb wurde die Berechnung mit $v=3$
+verwendet. Die dort berechneten Modularity-Werte hatten eine geringe
+Standardabweichung von 0,003. Dieses Ergebnis kommt unerwartet. In
+\cite{Gregory2010} ergaben sich f\"ur ein PGP-Web-of-Trust-Netzwerk
+mit 10680 Knoten bis zu $v=9$ ansteigende Modularity-Werte. Das
+(lokale) Maximum bei geringem $v$ f\"ur das hier verwendete Netzwerk
+k\"onnte darauf hinweisen, dass seine Community-Struktur keine
+signifikante \"Uberlappung aufweist. Ein weiterer Hinweis darauf ist,
+dass die Einf\"uhrung der \"Uberlappung mit $v=3$ gegen\"uber der
+nicht \"uberlappenden Berechnung mit $v=1$ f\"ur die Modularity
+(Tabelle \ref{tab:mod-result}) keinen signifikanten Anstieg
+brachte. Auch die Zuordnung zu Gruppen bzw. Keysigning-Parties
+(Tabelle \ref{tab:assign}) und die Verteilung der Gr\"osse der
+Communities (Abbildungen \ref{fig:comsize-copra} und
+\ref{fig:comsize-copra1}) \"ahneln sich weitgehend. Alternativ
+k\"onnte dieses Ergebnis allerdings auch in einem nicht-optimalen
+Verhalten des Algorithmus begr\"undet liegen.
 
 \begin{figure}[t]
   \centering
-  \subfloat[]{\label{fig:comsize-lp} \includegraphics[scale=0.65]{images/community-size-dist_label.pdf}}
-  \subfloat[]{\label{fig:comsize-bl2} \includegraphics[scale=0.65]{images/community-size-dist_copra.pdf}}\\
-  \subfloat[]{\label{fig:comsize-bl5} \includegraphics[scale=0.65]{images/community-size-dist_bl2.pdf}} 
-  \subfloat[]{\label{fig:comsize-copra} \includegraphics[scale=0.65]{images/community-size-dist_bl5.pdf}}
+  \subfloat[]{\label{fig:comsize-copra1} \includegraphics[scale=0.45]{images/community-size-dist_copra1.pdf}}
+  \subfloat[]{\label{fig:comsize-copra} \includegraphics[scale=0.45]{images/community-size-dist_copra.pdf}} \\
+  \subfloat[]{\label{fig:comsize-bl2} \includegraphics[scale=0.45]{images/community-size-dist_bl2.pdf}} 
+  \subfloat[]{\label{fig:comsize-bl5} \includegraphics[scale=0.45]{images/community-size-dist_bl5.pdf}} 
   \caption{Gr\"ossenverteilung der Communities}
   \label{fig:comsizedist}
 \end{figure}
 
+F\"ur den Algorithmus von Blondel et al. zeigt sich zun\"achst ein
+deutlich h\"oherer Modularity-Wert als f\"ur Fastmod. Dieses Ergebnis
+gibt also die reine Struktur des Graphen deutlich besser wieder.  Wie
+in Abschnitt
+\ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities}
+beschrieben, verl\"auft der Algorithmus von Blondel et al. iterativ in
+Phasen, in denen jeweils zuerst Knoten einer benachbarten Community
+zugeordnet werden, wenn sich dadurch ein Modularity-Gewinn erzielen
+l\"asst, und dann die Knoten dieser so entstandenen Communities zu
+Knoten in einem neuen Netzwerk verschmolzen werden. Hier werden die
+Ergebnisse der Phasen $l=2$ und der letzten Phase $l=5$
+betrachtet. F\"ur $l=5$ ergab sich die h\"ochste
+Modularity. Allerdings sticht hier die sehr kleine Anzahl von
+Communities heraus, die wiederum vergleichsweise gross sein
+m\"ussen. Da der Algorithmus von Blondel et al. genauso wie Fastmod
+mittels einer (lokalen) Optimierung der Modularity arbeitet, k\"onnte
+dieses Ph\"anomen auf das in der Literatur beschriebene
+Aufl\"osungslimit der Modularity-Funktion (bspw. \cite{Good2009}) zur\"uckzuf\"uhren sein.
 
-\begin{table}[h]
+
+\begin{table}[t]
   \centering
   \footnotesize
   \begin{tabular}{l|c|c|c}
     Algorithmus & Modularity & Communities &
     Enthaltene Knoten \\
     \hline
-    FM & 0,596 & 552 & foo \\
-    LP & 0,658 & 1834 & foo \\
-    BL ($l=2$)& 0,701 & 936 & foo \\
-    BL ($l=5$)& 0,710 & 186 & foo \\
-    COPRA & (0,786) & 1354 & foo
+    FM & 0,596 & 552 & 44611 \\
+    \hline
+    BL ($l=2$)& 0,701 & 936 & 44934 \\
+    BL ($l=5$)& 0,710 & 186 & 44934 \\
+    \hline
+    COPRA ($v=1$) & (0,780) & 1421 & 42205 \\
+    COPRA ($v=3$) & (0,786) & 1354 & --- \\
+
   \end{tabular}
   \caption{Modularity-Werte, Anzahl der Communities mit mehr als 3
     Knoten sowie die Anzahl der insgesamt in diesen Communities (>3) enthaltenen
     Knoten 
     f\"ur die Algorithmen Fast-Modularity (FM), Label-Propagation
-    (LP), Blondel et al. (BL) auf Level 2 und 5 sowie COPRA. Der
-    Modularity-Wert f\"ur COPRA entspricht der Modularity-Definition
-    f\"ur \"uberlappende Zerlegungen nach \cite{Nicosia2009} und kann mit den anderen
+    (LP), Blondel et al. (BL) auf Level 2 und 5 sowie COPRA. Die
+    Modularity-Werte f\"ur COPRA entsprechen der Modularity-Definition
+    f\"ur \"uberlappende Zerlegungen nach \cite{Nicosia2009} und k\"onnen mit den anderen
     Werten nicht verglichen werden.}
-  \label{tab:foo}
+  \label{tab:mod-result}
 \end{table}
+
+Aus Tabelle \ref{tab:mod-result} geht hervor, dass sich -- zumindest
+im Fall von Fastmod und Blondel et al. -- fast alle Knoten des Graphen
+in einer Community wiederfinden, die mindestens die Gr\"osse 4 hat. In
+Abschnitt \ref{sec:result-allg-merkm-des} wurde gezeigt, dass ein
+erheblicher Anteil der Knoten einen sehr geringen Grad von 1 oder 2
+hat. Da solche Knoten mangels Kanten nicht selbst eine dichte
+Vernetzung herstellen k\"onnen, m\"ussen sie Mitglied in Communities
+sein, in denen Knoten mit h\"oherem Grad sowohl die interne Vernetzung
+der Community als auch die Vernetzung der Community mit anderen
+erzeugen.
+
+COPRA scheint hingegen dazu tendieren, deutlich mehr Knoten in
+Communities sehr kleiner Gr\"osse unterzubringen. Dieses Verhalten
+k\"onnte dazu f\"uhren, dass die Aussagekraft der Zerlegung in Bezug
+auf die realen Communities geschw\"acht wird, wenn viele Knoten auf
+diese Art abgespalten werden.
+
 
 Der insgesamt recht hohe Modularity-Wert weist darauf hin, dass der
 Graph in der Tat eine ausgepr\"agte modulare Struktur hat, wie dies
 von einem sozialen Netzwerk erwartet wird.
 
-\begin{table}[h]
+\begin{table}[t]
   \centering
   \footnotesize
   \begin{tabular}{l|c|c|c|c|c}
     Algorithmus & TLD-S & TLD-M & SLD-S & SLD-M & SIG \\
     \hline
-    FM & 293 (53\%) & 247 (44\%) & 66 (11\%) & 194 (35\%) & 128
+    FM & 293 (53\%) & 247 (44\%) & 56 (10\%) & 154 (27\%) & 128
     (23\%) \\
     \hline
-    LP & 1048 (57\%) & 755 (41\%) & 277 (15\%) & 720 (39\%) &
-    553 (30\%) \\
+    BL ($l=2$) & 499 (53\%) & 417 (45\%) & 41 (4\%) & 254 (27\%) & 115 (12\%) \\
+    BL ($l=5$) & 85 (47\%) & 85 (47\%) & 15 (8\%) & 38 (21\%) & 26 (14\%) \\
     \hline
-    BL ($l=2$) & 499 (53\%) & 417 (45\%) & 41 (4\%) & 254 (27\%) & 26
-    (14\%) \\
-    \hline
-    BL ($l=5$) & 85 (47\%) & 85 (47\%) & 15 (8\%) & 38 (21\%) & 26
-    (14\%) \\
-    \hline
-    COPRA & 792 (58\%) & 525 (38\%) & 259 (19\%) & 533 (39\%) & 555 (40\%)
-
+    COPRA ($v=1$) & 824 (58\%) & 564 (40\%) & 178 (13\%) & 429 (30\%)
+    & 572 (40\%) \\
+    COPRA ($v=3$) & 792 (58\%) & 525 (38\%) & 187 (14\%) & 425 (31\%) & 555
+    (41\%)
   \end{tabular}
   \caption{SLD-TLD-Zuweisung, TIME-CORR}
   \label{tab:assign}
 \end{table}
+
 
 Aus Tab. \ref{tab:assign} geht hervor, dass f\"ur alle Zerlegungen
 fast alle Communities einer Top-Level-Domain zuordnenbar sind oder von
@@ -138,12 +195,15 @@ gTLD dominierten Communities ergeben Stichproben, dass sich die
 Teilnehmer der meisten dieser Communities anhand der Namen zumindest
 einem Sprachraum zuweisen lassen.
 
-Dieses Ergebnis ist naheliegend. Es wird davon ausgegangen, dass ein
+Dieses Ergebnis ist naheliegend. Wie in Abschnitt
+\ref{sec:community-analyse} dargelegt, wird davon ausgegangen, dass ein
 wesentlicher Faktor, der das Zustandekommen von Signaturen
 beeinflusst, die sozialen Kontakte einer Person sind. Es ist weiterhin
 naheliegend, dass sich diese sozialen Kontakte unter anderem aufgrund
 von Sprachbarrieren und der r\"aumlichen N\"ahe haupts\"achlich im
-Rahmen eines Landes ergeben.
+Rahmen eines Landes ergeben. Beispielsweise ist f\"ur eine aus
+Finnland stammende Person anzunehmen, dass die Mehrzahl ihrer Freunde,
+Bekannten, Gesch\"aftspartner und sonstigen Kontakte wieder Finnen sind.
 
 Zwar k\"onnte argumentiert werden, dass das Internet die geographische
 bzw. nationale Beschr\"ankung sozialer Kontakte aufhebt. Allerdings
@@ -255,56 +315,59 @@ Indiz f\"ur eine modulare Struktur dieses Graphen zu betrachten.
 
 \begin{figure}[t]
   \centering
-  \subfloat[]{\label{fig:comsize-lp} \includegraphics[scale=0.45]{images/tld-sure-ass_label.pdf}}
-  \subfloat[]{\label{fig:comsize-bl2} \includegraphics[scale=0.45]{images/tld-sure-ass_copra.pdf}}\\
-  \subfloat[]{\label{fig:comsize-bl5} \includegraphics[scale=0.45]{images/tld-sure-ass_bl2.pdf}} 
-  \subfloat[]{\label{fig:comsize-copra} \includegraphics[scale=0.45]{images/tld-sure-ass_bl5.pdf}}
+  \subfloat[]{\label{fig:tld-sure-copra1} \includegraphics[scale=0.45]{images/tld-sure-ass_copra1.pdf}}
+  \subfloat[]{\label{fig:tld-sure-bl2} \includegraphics[scale=0.45]{images/tld-sure-ass_copra.pdf}}\\
+  \subfloat[]{\label{fig:tld-sure-bl5} \includegraphics[scale=0.45]{images/tld-sure-ass_bl2.pdf}} 
+  \subfloat[]{\label{fig:tld-sure-copra} \includegraphics[scale=0.45]{images/tld-sure-ass_bl5.pdf}}
   \caption{Zuweisung von Domains zu TLDs abh\"angig von der Community-Gr\"osse}
-  \label{fig:comsizedist}
+  \label{fig:tld-suredist}
 \end{figure}
 
 \begin{figure}[t]
   \centering
-  \subfloat[]{\label{fig:comsize-lp} \includegraphics[scale=0.45]{images/tld-maybe-ass_label.pdf}}
-  \subfloat[]{\label{fig:comsize-bl2} \includegraphics[scale=0.45]{images/tld-maybe-ass_copra.pdf}}\\
-  \subfloat[]{\label{fig:comsize-bl5} \includegraphics[scale=0.45]{images/tld-maybe-ass_bl2.pdf}} 
-  \subfloat[]{\label{fig:comsize-copra} \includegraphics[scale=0.45]{images/tld-maybe-ass_bl5.pdf}}
+  \subfloat[]{\label{fig:tld-maybe-copra1} \includegraphics[scale=0.45]{images/tld-maybe-ass_copra1.pdf}}
+  \subfloat[]{\label{fig:tld-maybe-bl2} \includegraphics[scale=0.45]{images/tld-maybe-ass_copra.pdf}}\\
+  \subfloat[]{\label{fig:tld-maybe-bl5} \includegraphics[scale=0.45]{images/tld-maybe-ass_bl2.pdf}} 
+  \subfloat[]{\label{fig:tld-maybe-copra} \includegraphics[scale=0.45]{images/tld-maybe-ass_bl5.pdf}}
   \caption{Verteilung der Gr\"osse der von einer TLD dominierten Communities}
-  \label{fig:comsizedist}
+  \label{fig:tld-maybedist}
 \end{figure}
 
 \begin{figure}[t]
   \centering
-  \subfloat[]{\label{fig:comsize-lp} \includegraphics[scale=0.45]{images/sld-sure-ass_label.pdf}}
-  \subfloat[]{\label{fig:comsize-bl2} \includegraphics[scale=0.45]{images/sld-sure-ass_copra.pdf}}\\
-  \subfloat[]{\label{fig:comsize-bl5} \includegraphics[scale=0.45]{images/sld-sure-ass_bl2.pdf}} 
-  \subfloat[]{\label{fig:comsize-copra} \includegraphics[scale=0.45]{images/sld-sure-ass_bl5.pdf}}
+  \subfloat[]{\label{fig:sld-sure-copra1} \includegraphics[scale=0.45]{images/sld-sure-ass_copra1.pdf}}
+  \subfloat[]{\label{fig:sld-sure-bl2} \includegraphics[scale=0.45]{images/sld-sure-ass_copra.pdf}}\\
+  \subfloat[]{\label{fig:sld-sure-bl5} \includegraphics[scale=0.45]{images/sld-sure-ass_bl2.pdf}} 
+  \subfloat[]{\label{fig:sld-sure-copra} \includegraphics[scale=0.45]{images/sld-sure-ass_bl5.pdf}}
   \caption{Zuweisung von Domains zu SLDs abh\"angig von der Community-Gr\"osse}
-  \label{fig:comsizedist}
+  \label{fig:sld-suredist}
 \end{figure}
 
 \begin{figure}[t]
   \centering
-  \subfloat[]{\label{fig:comsize-lp} \includegraphics[scale=0.45]{images/sld-maybe-ass_label.pdf}}
-  \subfloat[]{\label{fig:comsize-bl2} \includegraphics[scale=0.45]{images/sld-maybe-ass_copra.pdf}}\\
-  \subfloat[]{\label{fig:comsize-bl5} \includegraphics[scale=0.45]{images/sld-maybe-ass_bl2.pdf}} 
-  \subfloat[]{\label{fig:comsize-copra} \includegraphics[scale=0.45]{images/sld-maybe-ass_bl5.pdf}}
+  \subfloat[]{\label{fig:sld-maybe-copra1} \includegraphics[scale=0.45]{images/sld-maybe-ass_copra1.pdf}}
+  \subfloat[]{\label{fig:sld-maybe-bl2} \includegraphics[scale=0.45]{images/sld-maybe-ass_copra.pdf}}\\
+  \subfloat[]{\label{fig:sld-maybe-bl5} \includegraphics[scale=0.45]{images/sld-maybe-ass_bl2.pdf}} 
+  \subfloat[]{\label{fig:sld-maybe-copra} \includegraphics[scale=0.45]{images/sld-maybe-ass_bl5.pdf}}
   \caption{Verteilung der Gr\"osse der von einer SLD dominierten Communities}
-  \label{fig:comsizedist}
+  \label{fig:sld-maybedist}
 \end{figure}
 
 \begin{figure}[t]
   \centering
-  \subfloat[]{\label{fig:comsize-lp} \includegraphics[scale=0.45]{images/time-corr_label.pdf}}
-  \subfloat[]{\label{fig:comsize-bl2} \includegraphics[scale=0.45]{images/time-corr_copra.pdf}}\\
-  \subfloat[]{\label{fig:comsize-bl5} \includegraphics[scale=0.45]{images/time-corr_bl2.pdf}} 
-  \subfloat[]{\label{fig:comsize-copra} \includegraphics[scale=0.45]{images/time-corr_bl5.pdf}}
+  \subfloat[]{\label{fig:time-corr-copra1} \includegraphics[scale=0.45]{images/time-corr_copra1.pdf}}
+  \subfloat[]{\label{fig:time-corr-bl2} \includegraphics[scale=0.45]{images/time-corr_copra.pdf}}\\
+  \subfloat[]{\label{fig:time-corr-bl5} \includegraphics[scale=0.45]{images/time-corr_bl2.pdf}} 
+  \subfloat[]{\label{fig:time-corr-copra} \includegraphics[scale=0.45]{images/time-corr_bl5.pdf}}
   \caption{Verteilung der Gr\"osse von Communities mit zeitlicher
     Korrelation der Signaturen}
-  \label{fig:comsizedist}
+  \label{fig:time-corrdist}
 \end{figure}
 
-erichteten Graphen definiert. Ebenso 
+
+Insgesamt l\"asst sich festhalten, dass die hier verwendeten Methoden
+nicht geeignet sind, um den Entstehungsmechanismus 
+
 
 %%% Local Variables: 
 %%% mode: latex
