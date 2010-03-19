@@ -1,4 +1,4 @@
-for alg in fastmod label-prop blondel-l2 blondel-l5 copra infomap_dir; do
+for alg in fastmod label-prop blondel-l2 blondel-l5 copra infomap_dir copra-1; do
     COMNUM=`grep SIG_TIME_CORR $alg/inv.log | wc -l`
     echo $alg size $COMNUM
     for target in TLD_SURE_ASS TLD_MAYBE_ASS SLD_SURE_ASS SLD_MAYBE_ASS; do
