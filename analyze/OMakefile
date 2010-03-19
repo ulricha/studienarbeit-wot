@@ -137,6 +137,7 @@ OCamlProgram(export, export $(AUXFILES))
 OCamlProgram(mscc_size, mscc_size $(AUXFILES))
 OCamlProgram(simple_stats, simple_stats $(AUXFILES))
 OCamlProgram(time, time $(AUXFILES))
+OCamlProgram(count, count $(AUXFILES))
 
 EXE[] = 
 	dump_sql
@@ -153,6 +154,7 @@ EXE[] =
 	mscc_size
 	simple_stats
 	time
+	count
 
 .DEFAULT: $(EXE)
 
