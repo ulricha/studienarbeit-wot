@@ -109,16 +109,19 @@ m\"ussen. Gegen\"uber dem Ergebnis der Phase 2 ergibt sich eine
 relativ kleine Steigerung der Modularity, die mit einem erheblichen
 Verlust an \emph{Aufl\"osung} erkauft wird\footnote{Die Zerlegungen
   der Phasen 3 und 4 unterschieden sich nur geringf\"ugig von der
-  Zerlegung der Phase 5}. Da der Algorithmus von Blondel et
-al. genauso wie Fastmod mittels einer (lokalen) Optimierung der
-Modularity arbeitet, k\"onnte dieses Ph\"anomen auf das in der
-Literatur beschriebene Aufl\"osungslimit der Modularity-Funktion
-(bspw. \cite{Fortunato2007} \cite{Good2009}) zur\"uckzuf\"uhren
-sein. Es scheint fraglich, ob die in Relation zur Gr\"osse des Graphen
-sehr geringe Zahl von 186 Communities die Struktur des Graphen (in
-Bezug auf die inhaltliche Analyse) ad\"aquat wiedergibt.
+  Zerlegung der Phase 5}. Aus Abbildung \ref{fig:comsize-bl2} und
+\ref{fig:comsize-bl5} geht hervor, dass diese Reduktion der Anzahl im
+Wesentlichen auf das Reduzieren sehr kleiner Communities
+zur\"uckgeht. Da der Algorithmus von Blondel et al. genauso wie
+Fastmod mittels einer (lokalen) Optimierung der Modularity arbeitet,
+k\"onnte dieses Ph\"anomen auf das in der Literatur beschriebene
+Aufl\"osungslimit der Modularity-Funktion (bspw. \cite{Fortunato2007}
+\cite{Good2009}) zur\"uckzuf\"uhren sein. Es scheint fraglich, ob die
+in Relation zur Gr\"osse des Graphen sehr geringe Zahl von 186
+Communities die Struktur des Graphen (in Bezug auf die inhaltliche
+Analyse) ad\"aquat wiedergibt.
 
-\begin{figure}
+\begin{figure}[ht]
   \centering
   \includegraphics[scale=0.7]{images/blondel-l5-com-c3a5eaab680984b123037897b0be74bf-edit.pdf}
   \caption{Community mit modularen Untereinheiten (Gr\"osse 2271,
@@ -187,14 +190,25 @@ hat. Da solche Knoten mangels Kanten nicht selbst eine dichte
 Vernetzung herstellen k\"onnen, m\"ussen sie Mitglied in Communities
 sein, in denen Knoten mit h\"oherem Grad sowohl die interne Vernetzung
 der Community als auch die Vernetzung der Community mit anderen
-erzeugen.
+erzeugen. COPRA scheint hingegen dazu tendieren, deutlich mehr Knoten
+in Communities sehr kleiner Gr\"osse mit 3 oder weniger
+unterzubringen. Dieses Verhalten k\"onnte dazu f\"uhren, dass die
+Aussagekraft der Zerlegung in Bezug auf die realen Communities
+geschw\"acht wird, wenn viele Knoten auf diese Art abgespalten werden.
 
-COPRA scheint hingegen dazu tendieren, deutlich mehr Knoten in
-Communities sehr kleiner Gr\"osse unterzubringen. Dieses Verhalten
-k\"onnte dazu f\"uhren, dass die Aussagekraft der Zerlegung in Bezug
-auf die realen Communities geschw\"acht wird, wenn viele Knoten auf
-diese Art abgespalten werden.
+Gegen\"uber der COPRA-Zerlegung mit $v=1$ zeigt die Zerlegung mit
+$v=3$ eine deutlich gr\"ossere Anzahl von Communities der Gr\"osse 3
+und 4. Abgesehen davon \"ahneln sich die Gr\"ossenverteilungen aber
+weitgehend. Beide enthalten eine charakteristische sehr grosse
+Community mit ca. 19000 bzw. ca. 21000 Mitgliedern. Demgegen\"uber
+bietet die Blondel-Zerlegung mit $l=2$ eine deutlich geringere Anzahl
+solcher sehr kleiner Communities, daf\"ur aber eine h\"ohrere Zahl
+mittlerer (mehr als 100 Mitglieder) und insbesondere eine h\"ohere
+Zahl sehr grosser (zwischen 500 und 5000 Mitglieder).
 
+Blondel ist insgesamt vom Resolution limit gestraft
+(wg. mod. maximierung) und bietet daher nicht die notwendige
+aufloesung, um communities besser inhaltlich analysieren zu koennen.
 
 Der insgesamt recht hohe Modularity-Wert weist darauf hin, dass der
 Graph in der Tat eine ausgepr\"agte modulare Struktur hat, wie dies
@@ -220,7 +234,6 @@ von einem sozialen Netzwerk erwartet wird.
   \caption{SLD-TLD-Zuweisung, TIME-CORR}
   \label{tab:assign}
 \end{table}
-
 
 Aus Tabelle \ref{tab:assign} geht hervor, dass f\"ur alle Zerlegungen
 fast alle Communities einer Top-Level-Domain zuordnenbar sind oder von
@@ -248,7 +261,7 @@ sind.
 
 Zwar k\"onnte argumentiert werden, dass das Internet die geographische
 bzw. nationale Beschr\"ankung sozialer Kontakte aufhebt. Allerdings
-spielt die die geographische N\"ahe eine wichtige Rolle im
+spielt die geographische N\"ahe eine wichtige Rolle im
 Signaturprozess. Die verbreitete Prozedur f\"ur das Signieren eines
 Schl\"ussels setzt ein direktes pers\"onliches Treffen der
 Signierenden voraus (siehe Abschnitt \ref{sec:sozi-komp-des}). Es ist
@@ -262,19 +275,24 @@ der PGP-Benutzer d\"urfte die notwendige internationale Mobilit\"at
 aufweisen, so dass sich seine Signaturen nicht \"uberwiegend einem
 geographischen Bereich bzw. einem Land zuweisen lassen.
 
-\begin{figure}[h]
+Interessanter f\"ur die Fragestellung ist aber die Erkennung von
+Keysigning-Parties und die Zuordnung zu Second-Level-Domains. 
+
+\begin{figure}[th]
   \centering
   \includegraphics[scale=1.5]{images/subgraph-label-time-fa62cc57cd35e9f90b85435efc407ad5.pdf}
-  \caption{Community mit zeitlicher Korrelation der Signaturen (LP,
+  \caption{Community mit zeitlicher Korrelation der Signaturen
+    (Blondel ($l=5$),
     100 Knoten, 72\% der Signaturen innerhalb eines Monats)}
   \label{fig:time-corr-com-normal}
 \end{figure}
 
 
-\begin{figure}[h]
+\begin{figure}[th]
   \centering
   \includegraphics[scale=1.3]{images/label-subgraph-41-star-c222345bc5eb1f9eff80d58a81861974.pdf}
-    \caption{Community mit zeitlicher Korrelation der Signaturen (LP,
+    \caption{Community mit zeitlicher Korrelation der Signaturen
+      (Blondel ($l=5$),
       41 Knoten, 84 \% der Signaturen innerhalb eines Monats)}
   \label{fig:time-corr-com-star}
 \end{figure}
@@ -333,25 +351,25 @@ durchschnittlicher Grad der Knoten denkbar.
 \end{figure}
 
 
-\begin{figure}[t]
-  \centering
-  \subfloat[]{\label{fig:tld-sure-copra1} \includegraphics[scale=0.45]{images/tld-sure-ass_copra1.pdf}}
-  \subfloat[]{\label{fig:tld-sure-bl2} \includegraphics[scale=0.45]{images/tld-sure-ass_copra.pdf}}\\
-  \subfloat[]{\label{fig:tld-sure-bl5} \includegraphics[scale=0.45]{images/tld-sure-ass_bl2.pdf}} 
-  \subfloat[]{\label{fig:tld-sure-copra} \includegraphics[scale=0.45]{images/tld-sure-ass_bl5.pdf}}
-  \caption{Zuweisung von Domains zu TLDs abh\"angig von der Community-Gr\"osse}
-  \label{fig:tld-suredist}
-\end{figure}
+%\begin{figure}[t]
+%  \centering
+%  \subfloat[]{\label{fig:tld-sure-copra1} \includegraphics[scale=0.45]{images/tld-sure-ass_copra1.pdf}}
+%  \subfloat[]{\label{fig:tld-sure-bl2} \includegraphics[scale=0.45]{images/tld-sure-ass_copra.pdf}}\\
+%  \subfloat[]{\label{fig:tld-sure-bl5} \includegraphics[scale=0.45]{images/tld-sure-ass_bl2.pdf}} 
+%  \subfloat[]{\label{fig:tld-sure-copra} \includegraphics[scale=0.45]{images/tld-sure-ass_bl5.pdf}}
+%  \caption{Zuweisung von Domains zu TLDs abh\"angig von der Community-Gr\"osse}
+%  \label{fig:tld-suredist}
+%\end{figure}
 
-\begin{figure}[t]
-  \centering
-  \subfloat[]{\label{fig:tld-maybe-copra1} \includegraphics[scale=0.45]{images/tld-maybe-ass_copra1.pdf}}
-  \subfloat[]{\label{fig:tld-maybe-bl2} \includegraphics[scale=0.45]{images/tld-maybe-ass_copra.pdf}}\\
-  \subfloat[]{\label{fig:tld-maybe-bl5} \includegraphics[scale=0.45]{images/tld-maybe-ass_bl2.pdf}} 
-  \subfloat[]{\label{fig:tld-maybe-copra} \includegraphics[scale=0.45]{images/tld-maybe-ass_bl5.pdf}}
-  \caption{Verteilung der Gr\"osse der von einer TLD dominierten Communities}
-  \label{fig:tld-maybedist}
-\end{figure}
+%\begin{figure}[t]
+%  \centering
+%  \subfloat[]{\label{fig:tld-maybe-copra1} \includegraphics[scale=0.45]{images/tld-maybe-ass_copra1.pdf}}
+%  \subfloat[]{\label{fig:tld-maybe-bl2} \includegraphics[scale=0.45]{images/tld-maybe-ass_copra.pdf}}\\
+%  \subfloat[]{\label{fig:tld-maybe-bl5} \includegraphics[scale=0.45]{images/tld-maybe-ass_bl2.pdf}} 
+%  \subfloat[]{\label{fig:tld-maybe-copra} \includegraphics[scale=0.45]{images/tld-maybe-ass_bl5.pdf}}
+%  \caption{Verteilung der Gr\"osse der von einer TLD dominierten Communities}
+%  \label{fig:tld-maybedist}
+%\end{figure}
 
 \begin{figure}[t]
   \centering
@@ -383,10 +401,58 @@ durchschnittlicher Grad der Knoten denkbar.
     Korrelation der Signaturen}
   \label{fig:time-corrdist}
 \end{figure}
+Teilnehmer einer KSP, die schon gut vernetzt sind, werden ihre grosse
+Community ja nicht einfach verlassen. Statt dessen wird die ``neue''
+Community zur grossen hinzugef\"ugt oder so.
 
+Zusammenfassung Allgemein: modulare Struktur, im Metagraphen keine
+Sternstruktur sondern Vernetzung auf allen Gr\"ossenebenen. Bei 
 
-Insgesamt l\"asst sich festhalten, dass die hier verwendeten Methoden
-nicht geeignet sind, um den Entstehungsmechanismus 
+(Kurzzusammenfassung: die Zuordnungszahlen sind niedrig. Tatsaechlich
+zugeordnete Comm. (von nichttrivialer Groesse) sind dann aber auch
+inhaltlich sinnvoll (KSPs mit fast-cliquenstruktur usw). Ausserdem:
+optimale/bessere Zerlegung anhand von Modularity ist nicht automatisch
+auch eine besser inhaltlich interpretierbare Zerlegung. Reduzierung
+der Aufl\"osung kann zwar ``bessere'' Zerlegung ergeben, die aber
+inhaltlich weniger aussagekr\"aftig ist. Ausserdem: kein signifikanter
+Overlap. Und: unterschiedliche Algorithmen ``konvergieren'' nicht,
+sondern liefern auch qualitativ unterschiedliche Ergebnisse (Blondel
+<-> COPRA)
+
+Diese Ergebnisse widerlegen nicht die Annahme, dass die
+Vernetzung im Web of Trust im wesentlichen von Keysigning-Parties und
+den sozialen Kontakten der Teilnehmer und damit unter anderem anhand
+von Gruppenzugeh\"origkeit verl\"auft. Allerdings muss festgehalten
+werden, dass die hier verwendeten Methoden nicht geeignet sind, um den
+Entstehungsmechanismus entlang dieser Annahme befriedigend zu
+erkl\"aren. 
+
+Ein Grund daf\"ur ist sicherlich, dass die Struktur des Web of Trust
+nur zu einem bestimmten, festen Zeitpunkt betrachtet wurde. Um die
+Entstehungsdynamik zu verstehen, k\"onnte alternativ die Entwicklung
+des Netzwerks tats\"achlich \"uber die Zeit nachvollzogen werden. Das
+Keyserver-Netzwerk speichert nicht nur den momentanen Zustand des
+Netzwerks, sondern implizit auch den Entstehungszeitpunkt jedes
+Schl\"ussels und jeder Signatur. Die im Rahmen dieser Arbeit
+entwickelte Software speichert diese Zeitstempel in einer Datenbank
+und macht so die gesamte Entwicklungsgeschichte des Web of Trust
+verf\"ugbar (siehe Abschnitt
+\ref{ch:Grundlagen:sec:Design:subsec:eigene-software}). Anhand dieser
+Daten k\"onnte nachvollzogen werden, wie und in welcher Form die
+Communities tats\"achlich entstehen und sich entwickeln.
+
+Mitgliedschaft in einer Gruppe (hier Firma, Open-Source-Projekt)
+charakterisiert die sozialen Verbindungen einer Person nicht
+vollst\"andig oder deutlich.
+
+Das Problem im Ansatz ist, dass das WoT als Netz von building-blocks
+(communities) gedacht wird, die entstehen und dann keine oder wenig
+weitere Aktitiv\"at zeigen. Das Bild zeigt, dass das f\"ur einen
+gewissen Teil (die, die teil einer ksp oder sld-s/m com sind) auch
+zutrifft. allerdings gilt f\"ur einen sehr grossen Teil (21000 in
+Monster-Community), offensichtlich, dass die Vernetzung so
+vielf\"altig ist, dass solche primitive Mechanismen (KSPS + SGs) nicht
+mehr sichtbar sind und in der Masse verschwinden.
 
 
 %%% Local Variables: 
