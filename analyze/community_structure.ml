@@ -9,19 +9,22 @@ module C = Component_helpers.Make(G)
 
 let export_community_subgraphs g node_lists basename =
   let node_lists = Graph_misc.list_list_sort_reverse node_lists in
-    let rec loop l =
-      match l with
-	| nodes :: tl ->
-	    let l = List.length nodes in
-	    let g_induced = C.graph_from_node_list nodes g in
+  let rec loop l =
+    match l with
+      | nodes :: tl ->
+	  let l = List.length nodes in
+	  let g_induced = C.graph_from_node_list nodes g in
+	    print_endline "foo1";
 	    let id = Component_helpers.canonical_component_name nodes in
-	    let fname = sprintf "%s-%s-%d.igraph" basename id l in
-	      Export_helpers.export_igraph_index g_induced fname;
-	      loop tl
-	| [] -> 
-	    ()
-    in
-      loop node_lists
+	      print_endline "foo2";
+	      let fname = sprintf "%s-%s-%d.igraph" basename id l in
+	      	print_endline "foo3";
+		Export_helpers.export_igraph_index g_induced fname;
+		loop tl
+      | [] -> 
+	  ()
+  in
+    loop node_lists
 
 let component_metagraph g communities =
   let minsize = int_of_string Sys.argv.(4) in
@@ -37,7 +40,7 @@ let component_metagraph g communities =
 	  Metagraph.export_umetagraph_attributes metagraph (basename ^ "_attributes.cyto")
 
 let _ =
-  if (Array.length Sys.argv) <> 6 then (
+  if (Array.length Sys.argv) < 6 then (
     print_endline "usage: community_structure edge-file index-file community-file minsize format";
     exit (-1))
 
@@ -62,6 +65,7 @@ let main () =
   let g = load_graph_from_file edge_fname in 
     write_community_size_values cid_map "community_sizes.dat";
     component_metagraph g communities;
+    print_endline "foo0";
     export_community_subgraphs g communities "community_subgraph"
 
 let _ = 

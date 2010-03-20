@@ -61,13 +61,16 @@ module Make(G : Sig.G) = struct
      to which the vertex belongs *)
   let assoc_vertex_component component_list component_to_id =
     print_endline "assoc_vertex_component";
-    let h = VH.create 1000 in
-      List.iter	
-	(fun c -> 
+    let m = List.fold_left
+	(fun m c -> 
 	   let ci = component_to_id c in
-	     List.iter (fun v -> VH.add h v ci) c)
-	component_list;
-      (fun v -> VH.find h v)
+	     List.fold_left (fun m' v -> PMap.add v ci m') m c)
+	PMap.empty
+	component_list
+    in
+      (fun v -> PMap.find v m)
+
+
 
   (* *) 
   let construct_vertices component_list component_to_id = 

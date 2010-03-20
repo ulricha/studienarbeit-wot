@@ -33,7 +33,6 @@ results-*
 *.html
 *.graph
 *.orig
-*.cfinder
 *.aux
 *.bbl
 *.blg

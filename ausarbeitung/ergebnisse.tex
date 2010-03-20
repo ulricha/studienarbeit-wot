@@ -6,13 +6,7 @@
 \section{Allgemeine Merkmale des Netzwerkes}
 \label{sec:result-allg-merkm-des}
 
-\section{Eigenschaften einzelner Schl\"ussel}
-\label{sec:result-key-properties}
-
-\section{Zusammenhangskomponenten und Communities}
-\label{sec:result-zusamm-und-comm}
-
-\section{Struktur der starken Zusammenhangskomponenten}
+\subsection{Starke Zusammenhangskomponenten}
 \label{sec:result-komponentenstruktur}
 
 \begin{figure}[t]
@@ -23,6 +17,16 @@
     21-30, violett = Grösse $>= 31$, gelb = MSCC)}
   \label{fig:komponenten-struktur}
 \end{figure}
+
+
+\section{Eigenschaften einzelner Schl\"ussel, zeitliche Entwicklung}
+\label{sec:result-key-properties}
+
+\section{Zusammenhangskomponenten und Communities}
+\label{sec:result-zusamm-und-comm}
+
+
+
 
 Foobar bla bla bla.
 
@@ -441,18 +445,76 @@ verf\"ugbar (siehe Abschnitt
 Daten k\"onnte nachvollzogen werden, wie und in welcher Form die
 Communities tats\"achlich entstehen und sich entwickeln.
 
-Mitgliedschaft in einer Gruppe (hier Firma, Open-Source-Projekt)
-charakterisiert die sozialen Verbindungen einer Person nicht
-vollst\"andig oder deutlich.
+Dass nur sehr wenige gr\"ossere Communities mit zeitlicher Korrelation
+der Signaturen gefunden wurden, obwohl regelm\"assig gr\"ossere
+Keysigning-Parties stattfinden (siehe Abschnitt
+\ref{sec:sozi-komp-des}) ist bei n\"ahrerer Betrachtung durchaus
+plausibel. Dass eine Keysigning-Party sich in der Struktur markant
+abhebt, setzt vorraus, dass ihre Teilnehmer ausser der Teilnahme an
+dieser Party keine wesentliche Signaturaktivit\"at starten. W\"urden
+sie weiterhin an Signaturaktitiv\"aten teilnehmen, w\"urde die
+Struktur der Keysigning-Party mit der Zeit durch Signaturen von und zu
+Nicht-Teilnehmern ``verwischt'' werden. Aufgefunden wurden also
+vermutlich nur die Keysigning-Parties mit einer Mehrheit von insgesamt
+eher inaktiven Teilnehmern. Gleiches kann f\"ur Teilnehmer angenommen
+werden, die sich anhand von Gruppenzugeh\"origkeit vernetzen. Auch
+hier w\"urde die Struktur mit der Zeit ``unsch\"arfer'' werden, wenn
+ihre Mitglieder weiterhin Signierungen vornehmen w\"urden.
 
-Das Problem im Ansatz ist, dass das WoT als Netz von building-blocks
-(communities) gedacht wird, die entstehen und dann keine oder wenig
-weitere Aktitiv\"at zeigen. Das Bild zeigt, dass das f\"ur einen
-gewissen Teil (die, die teil einer ksp oder sld-s/m com sind) auch
-zutrifft. allerdings gilt f\"ur einen sehr grossen Teil (21000 in
-Monster-Community), offensichtlich, dass die Vernetzung so
-vielf\"altig ist, dass solche primitive Mechanismen (KSPS + SGs) nicht
-mehr sichtbar sind und in der Masse verschwinden.
+Es scheint unrealistisch, dass die Mitgliedschaft in einer Gruppe --
+etwa einer Firma, akademischen Einrichtung oder einem
+Open-Source-Projekt -- die sozialen Kontakte einer Person
+vollst\"andig charakterisiert. Daneben kann eine Person noch ein
+weites Netzwerk an Freunden oder Bekannten haben, die diese
+Mitgliedschaft nicht teilen. Trotzdem k\"onnen sich zu ihnen
+Signaturen ergeben, die einen wesentlichen Teil der Signaturen dieser
+Person ausmachen k\"onnen. Ausserdem ist anzunehmen, dass eine
+Vielzahl solcher Gruppen nicht \"uber eine gemeinsame Domain
+verf\"ugen, und damit mit den hier vorliegenden Daten schlicht nicht
+sichtbar sind. Zwar wurde versucht, der anzunehmenden Komplexit\"at
+der Gruppenzugeh\"origkeiten durch \"uberlappende Communities zu
+begegnen. blabla fehlgeschlagen. Die Frage, inwiefern sich die
+einzelnen Communities sozialen Gruppen zuordnen lassen, konnte also
+nur unvollst\"andig beantwortet werden.
+
+Es zeigt sich, dass dem Web of Trust kein einzelner, einfacher
+Entstehungsmechanismus der hier angenommenen Form zugrundeliegt. Es
+kann nur unzureichend beschrieben werden als eine Ansammlung von
+einzelnen, einfach entstandenen Bausteinen, als die hier Communities
+angenommen wurden. Implizit vorrausgesetzt wird dabei auch, dass diese
+zum Beispiel im Fall einer Keysigning-Party nach ihrer Entstehung
+keine wesentliche weitere Vernetzungsaktitiv\"at zeigen. Zwar trifft
+dies f\"ur einen Teil der Communities -- gerade die, die eine
+zeitliche Korrelation der Signaturen zeigen oder einer
+Second-Level-Domain zugeordnet werden k\"onnen -- durchaus zu. F\"ur
+einen erheblichen Anteil der Teilnehmer -- beispielsweise die
+Mitglieder der sehr grossen Community aus der COPRA-Berechnung --
+scheint die Vernetzung jedoch so vielf\"altig zu sein, dass solche
+einfachen Mechanismen nicht mehr sichtbar sind und ``in der Masse
+verschwinden''.
+
+Diese Punkte k\"onnen anhand des Beispiels von Debian illustriert
+werden: Das Debian-Projekt als tats\"achliche Community, in der
+PGP und das Web of Trust eine besonders wichtige Rolle spielen (siehe
+Abschnitt \ref{sec:sozi-komp-des}) findet sich in den Zerlegungen
+nicht als eigene abgregrenzte Einheit wieder. Statt dessen finden sich
+sehr grosse Communities, in denen Debian-Entwickler einen signifikaten
+Anteil der Schl\"ussel stellen. Im Fall der COPRA-Zerlegung ist dies
+die bereits erw\"ahnte Community mit ca. 21000 Mitgliedern. Von diesen
+verf\"ugen 1247 \"uber eine E-Mail-Adresse in der Domain debian.org
+und sind damit offensichtlich Mitglieder des Debian-Projekts. Daneben
+finden sich Mitglieder des Debian-Projekts in einer Vielzahl von
+kleineren Communities aller Gr\"ossen. Die Mitgliedschaft im
+Debian-Projekt scheint hier also f\"ur die Vernetzung keine so
+wesentliche Rolle zu spielen, dass sie die Struktur dieser real
+existierenden Community im Web of Trust bestimmt. Selbst wenn viele
+Debian-Entwickler mit vielen anderen Projektmitgliedern vernetzt sind,
+so verf\"ugen sie offensichtlich \"uber gen\"ugend andere Kontakte,
+so dass diese Struktur nicht mehr auffindbar ist.
+
+\subsection{Inhaltliche Analyse der Zusammenhangskomponenten}
+\label{sec:zusammenhangskomponenten-inhaltlich}
+
 
 
 %%% Local Variables: 
