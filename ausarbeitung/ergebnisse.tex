@@ -105,10 +105,50 @@ Ergebnisse der Phasen $l=2$ und der letzten Phase $l=5$
 betrachtet. F\"ur $l=5$ ergab sich die h\"ochste
 Modularity. Allerdings sticht hier die sehr kleine Anzahl von
 Communities heraus, die wiederum vergleichsweise gross sein
-m\"ussen. Da der Algorithmus von Blondel et al. genauso wie Fastmod
-mittels einer (lokalen) Optimierung der Modularity arbeitet, k\"onnte
-dieses Ph\"anomen auf das in der Literatur beschriebene
-Aufl\"osungslimit der Modularity-Funktion (bspw. \cite{Good2009}) zur\"uckzuf\"uhren sein.
+m\"ussen. Gegen\"uber dem Ergebnis der Phase 2 ergibt sich eine
+relativ kleine Steigerung der Modularity, die mit einem erheblichen
+Verlust an \emph{Aufl\"osung} erkauft wird\footnote{Die Zerlegungen
+  der Phasen 3 und 4 unterschieden sich nur geringf\"ugig von der
+  Zerlegung der Phase 5}. Da der Algorithmus von Blondel et
+al. genauso wie Fastmod mittels einer (lokalen) Optimierung der
+Modularity arbeitet, k\"onnte dieses Ph\"anomen auf das in der
+Literatur beschriebene Aufl\"osungslimit der Modularity-Funktion
+(bspw. \cite{Fortunato2007} \cite{Good2009}) zur\"uckzuf\"uhren
+sein. Es scheint fraglich, ob die in Relation zur Gr\"osse des Graphen
+sehr geringe Zahl von 186 Communities die Struktur des Graphen (in
+Bezug auf die inhaltliche Analyse) ad\"aquat wiedergibt.
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.7]{images/blondel-l5-com-c3a5eaab680984b123037897b0be74bf-edit.pdf}
+  \caption{Community mit modularen Untereinheiten (Gr\"osse 2271,
+    Blondel ($l=5$), Force-directed Layout)}
+  \label{fig:large-modular}
+\end{figure}
+
+Abbildung \ref{fig:large-modular} illustriert dies anhand einer
+Community aus der Zerlegung des Algorithmus von Blondel et al. mit
+$l=5$, die klar abgegrenzte Untereinheiten enth\"alt, die intuitiv
+wieder eigenst\"andige Communities darstellen.
+
+
+Abbildung \ref{fig:large-community-modular} illustriert die begrenzte
+Qualit\"at der Fast-Modularity-Zerlegung, die sich im vergleichweise
+niedrigen Modularity-Wert niederschl\"agt. In der Zeichnung des
+induzierten Teilgraphen einer grossen Community sind etliche dicht
+gezeichnete Zusammenballungen von Knoten zu sehen, die nur wenige
+Kanten nach aussen haben. Diese k\"onnen als Community-artige
+Strukturen interpretiert werden. Zwar kann argumentiert werden, dass
+die Zeichnung die Struktur des Teilgraphen nicht notwendigerweise
+sinnvoll wiedergibt, dass also die dichten Teilbereiche in der
+Zeichnung nur Artefakte der Zeichenmethode darstellen. Allerdings
+zeigt Noack, dass starke \"Ubereinstimmungen zwischen einer
+energieoptimalen Einbettung eines Graphen in die Ebene nach der
+Force-directed-Methode und einer Partitionierung eines Graphen mit
+optimaler Modularity bestehen \cite{Noack2009}. Es scheint daher
+gerechtfertigt, eine Zeichnung eines Graphen (Force-directed) mit
+markanten dichten Bereichen als Indiz f\"ur eine modulare Struktur
+dieses Graphen zu betrachten.
 
 
 \begin{table}[t]
@@ -182,7 +222,7 @@ von einem sozialen Netzwerk erwartet wird.
 \end{table}
 
 
-Aus Tab. \ref{tab:assign} geht hervor, dass f\"ur alle Zerlegungen
+Aus Tabelle \ref{tab:assign} geht hervor, dass f\"ur alle Zerlegungen
 fast alle Communities einer Top-Level-Domain zuordnenbar sind oder von
 einer TLD dominiert werden. Werden die generischen Top-Level-Domains
 (gTLD: com, org, net, info, ...) abgezogen, verbleiben im Fall von COPRA
@@ -196,14 +236,15 @@ Teilnehmer der meisten dieser Communities anhand der Namen zumindest
 einem Sprachraum zuweisen lassen.
 
 Dieses Ergebnis ist naheliegend. Wie in Abschnitt
-\ref{sec:community-analyse} dargelegt, wird davon ausgegangen, dass ein
-wesentlicher Faktor, der das Zustandekommen von Signaturen
+\ref{sec:community-analyse} dargelegt, wird davon ausgegangen, dass
+ein wesentlicher Faktor, der das Zustandekommen von Signaturen
 beeinflusst, die sozialen Kontakte einer Person sind. Es ist weiterhin
 naheliegend, dass sich diese sozialen Kontakte unter anderem aufgrund
 von Sprachbarrieren und der r\"aumlichen N\"ahe haupts\"achlich im
 Rahmen eines Landes ergeben. Beispielsweise ist f\"ur eine aus
 Finnland stammende Person anzunehmen, dass die Mehrzahl ihrer Freunde,
-Bekannten, Gesch\"aftspartner und sonstigen Kontakte wieder Finnen sind.
+Bekannten, Gesch\"aftspartner und sonstigen Kontakte wieder Finnen
+sind.
 
 Zwar k\"onnte argumentiert werden, dass das Internet die geographische
 bzw. nationale Beschr\"ankung sozialer Kontakte aufhebt. Allerdings
@@ -248,14 +289,14 @@ Ab. \ref{sec:sozi-komp-des} beschrieben, dass jeder Teilnehmer mit
 eine fast vollst\"andige Vermaschung -- fast eine Clique --
 ergibt. Eine stichprobenartige Untersuchung in den Communities zeigt,
 dass die meisten Communities mit zeitlicher Korrelation zumindest
-teilweise dieses Merkmal zeigen. Abb. \ref{fig:time-corr-com-normal}
-zeigt ein Beispiel einer solchen Community. Etwa die H\"alfte der
-Knoten ist in einer Fast-Clique enthalten, deren Knoten mit (fast)
-allen anderen vernetzt sind. Dieser innere Teil des Teilgraphen
-entspricht genau dem Bild, das als Resultat einer Keysigning-Party
-erwartet wird. Auch wenn dies auf die meisten der Communities mit
-zeitlicher Korrelation zutrifft, gibt es auch
-Gegenbeispiele. Abb. \ref{fig:time-corr-com-star} zeigt eine
+teilweise dieses Merkmal zeigen. Abbildung
+\ref{fig:time-corr-com-normal} zeigt ein Beispiel einer solchen
+Community. Etwa die H\"alfte der Knoten ist in einer Fast-Clique
+enthalten, deren Knoten mit (fast) allen anderen vernetzt sind. Dieser
+innere Teil des Teilgraphen entspricht genau dem Bild, das als
+Resultat einer Keysigning-Party erwartet wird. Auch wenn dies auf die
+meisten der Communities mit zeitlicher Korrelation zutrifft, gibt es
+auch Gegenbeispiele. Abbildung \ref{fig:time-corr-com-star} zeigt eine
 Community, die zwar das Kriterium der zeitlichen Korrelation
 erf\"ullt, ansonsten aber nichts mit dem erwarteten Bild einer KSP
 gemein hat. Allerdings erf\"ullt der Teilgraph trotzdem das Kriterium
@@ -273,27 +314,6 @@ durchschnittlicher Grad der Knoten denkbar.
     Fast-Modularity, Force-directed layout)}
   \label{fig:large-community-modular}
 \end{figure}
-
-Communities k\"onnen sich nicht nur \"uberlappen. Genauso k\"onnen
-einzelne Communities intern wieder eine modulare Struktur haben, so
-dass sie sich in mehrere Communities zerlegen lassen.
-Abb. \ref{fig:large-community-modular} illustriert, dass die
-Verwendung von Methoden zur Berechnung \"uberlappender Communities
-sinnvoll sein kann. In der Zeichnung des induzierten Teilgraphen einer
-grossen Community (4767 Knoten) aus der
-Fast-Modularity-Partitionierung sind etliche dicht gezeichnete
-Zusammenballungen von Knoten zu sehen, die nur wenige Kanten nach
-aussen haben. Diese k\"onnen als Community-artige Strukturen
-interpretiert werden. Zwar kann argumentiert werden, dass die
-Zeichnung die Struktur des Teilgraphen nicht notwendigerweise sinnvoll
-wiedergibt, dass also die dichten Teilbereiche in der Zeichnung nur
-Artefakte der Zeichenmethode darstellen. Allerdings zeigt Noack, dass
-starke \"Ubereinstimmungen zwischen einer energieoptimalen Einbettung
-eines Graphen in die Ebene nach der Force-directed-Methode und einer
-Partitionierung eines Graphen mit optimaler Modularity bestehen
-\cite{Noack2009}. Es scheint daher gerechtfertigt, eine Zeichnung
-eines Graphen (Force-directed) mit markanten dichten Bereichen als
-Indiz f\"ur eine modulare Struktur dieses Graphen zu betrachten.
 \begin{figure}[h]
   \centering
   \includegraphics[scale=1.5]{images/label-prop-metagraph-20-narrow-cut.pdf}
@@ -373,3 +393,4 @@ nicht geeignet sind, um den Entstehungsmechanismus
 %%% mode: latex
 %%% TeX-master: "diplarb"
 %%% End: 
+
