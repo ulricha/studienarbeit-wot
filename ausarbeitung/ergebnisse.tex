@@ -3,11 +3,27 @@
 \chapter{Ergebnisse und Diskussion}
 \label{ch:Ergebnisse}
 
+\subsection{Datensatz}
+\label{sec:datensatz}
+
+Der berechnete Datensatz enth\"alt 2725504 Schl\"ussel und 1145337
+zugeh\"orige Signaturen, wobei hier keine Selbstsignaturen enthalten
+sind. Von diesen Schl\"usseln sind 417163 Schl\"ussel abgelaufen und
+100071 Schl\"ussel wurden zur\"uckgezogen. Die in Relation zur Anzahl
+der Schl\"ussel niedrige Anzahl von Signaturen weist schon darauf hin,
+dass ein erheblicher Teil der (g\"ultigen) Schl\"ussel nicht oder kaum
+vernetzt ist. In der Tat verbleiben nach Abzug von Schl\"usseln, die
+weder ein- noch ausgehende Signaturen haben, nur 325410 g\"ultige
+Schl\"ussel und 816785 zugeh\"orige g\"ultige Kanten. Die grosse
+Mehrheit der im Keyserver-Netzwerk vorhandenen Schl\"ussel ist also
+komplett unvernetzt und nimmt von vorneherein nicht am Web of Trust teil.
+
+Vergleich mit anderen PGP-Graphen in der Literatur
+(social-distance-zeug, capkun-paper etc.)
+
 \section{Allgemeine Merkmale des Netzwerkes}
 \label{sec:result-allg-merkm-des}
 
-\subsection{Datensatz}
-\label{sec:datensatz}
 
 \subsection{Kennzahlen des Graphen}
 \label{sec:kennz-des-graph}
@@ -176,7 +192,6 @@ gerechtfertigt, eine Zeichnung eines Graphen (Force-directed) mit
 markanten dichten Bereichen als Indiz f\"ur eine modulare Struktur
 dieses Graphen zu betrachten.
 
-
 \begin{table}[t]
   \centering
   \footnotesize
@@ -227,16 +242,13 @@ Community mit ca. 19000 bzw. ca. 21000 Mitgliedern. Demgegen\"uber
 bietet die Blondel-Zerlegung mit $l=2$ eine deutlich geringere Anzahl
 solcher sehr kleiner Communities, daf\"ur aber eine h\"ohrere Zahl
 mittlerer (mehr als 100 Mitglieder) und insbesondere eine h\"ohere
-Zahl sehr grosser (zwischen 500 und 5000 Mitglieder) Communities.
-
-Blondel ist insgesamt vom Resolution limit gestraft
-(wg. mod. maximierung) und bietet daher nicht die notwendige
-aufloesung, um communities besser inhaltlich analysieren zu koennen.
+Zahl sehr grosser (zwischen 500 und 5000 Mitglieder) Communities.  Die
+beiden Algorithmen konvergieren nicht gegen ein gemeinsames Optimum,
+sondern liefern Ergebnisse, die sich qualitativ stark unterscheiden.
 
 Der insgesamt recht hohe Modularity-Wert weist darauf hin, dass der
 Graph in der Tat eine ausgepr\"agte modulare Struktur hat, wie dies
 von einem sozialen Netzwerk erwartet wird.
-
 
 Die Abbildungen \ref{fig:metagraph-com-copra} und
 \ref{fig:metagraph-com-blondel2} zeigen die Struktur der Communities
@@ -359,17 +371,23 @@ die \"Uberlappung keine wesentlichen Vorteile bringt. Im Vergleich der
 Blondel-Zerlegungen zeigt sich, dass das Zusammenpacken von
 Communities von Phase $l=2$ zu Phase $l=5$ und der damit verbundene
 Aufl\"osungsverlust es erheblich erschwert, die Communities inhaltlich
-zuzuordnen. Eine Zerlegung mit h\"oherer Modularity entspricht also
-im Allgemeinen nicht einer Zerlegung, die die Struktur realer
-Communities besser wiedergibt. 
+zuzuordnen. Eine Zerlegung mit h\"oherer Modularity entspricht also im
+Allgemeinen nicht einer Zerlegung, die die Struktur realer Communities
+besser wiedergibt. Die Zerlegungen des Algorithmus von BLondel et
+al. scheinen insgesamt vom Aufl\"osungslimit der
+Modularity-Maximierung betroffen zu sein und bieten daher nicht die
+notwendige Aufl\"osung, um die Communities besser inhaltlich
+analysieren zu k\"nnen.
+
 
 Insgesamt ist eine tats\"achliche Zuordnung anhand des
 80\%-Schwellwerts nur f\"ur sehr wenige Communities von geringer
-Gr\"osse m\"oglich. 
-
-Dass so gut wie keine Communities mit einer
-Gr\"osse \"uber 100 zugeordnet werden k\"onnen, spricht daf\"ur, dass
-diese sich nicht anhand dieser einfachen Mechanismen bilden. 
+Gr\"osse m\"oglich. F\"ur den 40\%-Schwellwert und die zeitliche
+Korrelation ist die Anzahl zuordnenbarer Communities deutlich
+h\"oher. Auch hier entf\"allt allerdings die Mehrzahl auf sehr kleine
+Communities.  Dass so gut wie keine Communities mit einer Gr\"osse
+\"uber 100 zugeordnet werden k\"onnen, spricht daf\"ur, dass diese
+sich nicht anhand dieser einfachen Mechanismen bilden.
 
 Die sehr grosse Community aus der COPRA-Zerlegung k\"onnte vermuten
 lassen, dass hier relativ willk\"urlich Knoten zusammengepackt
@@ -396,8 +414,23 @@ schlecht aufgel\"oste modulare Struktur wie in Abbildung
 \ref{fig:large-community-modular} hat, die sich in sinnvolle
 Untereinheiten zerlegen l\"asst.
 
-In Tabelle XXX sind die 6 gr\"ossten Communities aus der
-COPRA-Zerlegung mit Zuordnung zu Second-Level-Domains aufgef\"uhrt.
+\begin{table}
+  \centering
+  \begin{tabular}{c|c|c}
+    Gr\"osse & SLD & Anteil \\
+    436 & apache.org & 48\% \\
+    130 & nun.org & 82\% \\
+    97 & cert.org & 70\% \\
+    81 & redhat.org & 68\% \\
+    63 & purdue.edu & 65\% \\
+    59 & cisco.com & 79\% 
+  \end{tabular}
+  \caption{foo}
+  \label{tab:ass-examples}
+\end{table}
+In Tabelle \ref{tab:ass-examples} sind die 6 gr\"ossten Communities
+aus der COPRA-Zerlegung mit Zuordnung zu Second-Level-Domains
+aufgef\"uhrt.
 
 \begin{figure}[th]
   \centering
@@ -417,7 +450,6 @@ COPRA-Zerlegung mit Zuordnung zu Second-Level-Domains aufgef\"uhrt.
       41 Knoten, 84 \% der Signaturen innerhalb eines Monats)}
   \label{fig:time-corr-com-star}
 \end{figure}
-
 
 Es stellt sich die Frage, ob die zeitliche Korrelation der Signaturen
 in einer Community ein geeignetes Mittel ist, um Keysigning-Parties zu
@@ -444,26 +476,6 @@ Knoten haben und damit die interne Kantendichte deutlich h\"oher ist
 als die externe. Um solche Extremf\"alle auszuschliessen, ist als
 zus\"atzliches Kriterium f\"ur die Erkennung von KSPs ein hoher
 durchschnittlicher Grad der Knoten denkbar.
-
-%\begin{figure}[t]
-%  \centering
-%  \subfloat[]{\label{fig:tld-sure-copra1} \includegraphics[scale=0.45]{images/tld-sure-ass_copra1.pdf}}
-%  \subfloat[]{\label{fig:tld-sure-bl2} \includegraphics[scale=0.45]{images/tld-sure-ass_copra.pdf}}\\
-%  \subfloat[]{\label{fig:tld-sure-bl5} \includegraphics[scale=0.45]{images/tld-sure-ass_bl2.pdf}} 
-%  \subfloat[]{\label{fig:tld-sure-copra} \includegraphics[scale=0.45]{images/tld-sure-ass_bl5.pdf}}
-%  \caption{Zuweisung von Domains zu TLDs abh\"angig von der Community-Gr\"osse}
-%  \label{fig:tld-suredist}
-%\end{figure}
-
-%\begin{figure}[t]
-%  \centering
-%  \subfloat[]{\label{fig:tld-maybe-copra1} \includegraphics[scale=0.45]{images/tld-maybe-ass_copra1.pdf}}
-%  \subfloat[]{\label{fig:tld-maybe-bl2} \includegraphics[scale=0.45]{images/tld-maybe-ass_copra.pdf}}\\
-%  \subfloat[]{\label{fig:tld-maybe-bl5} \includegraphics[scale=0.45]{images/tld-maybe-ass_bl2.pdf}} 
-%  \subfloat[]{\label{fig:tld-maybe-copra} \includegraphics[scale=0.45]{images/tld-maybe-ass_bl5.pdf}}
-%  \caption{Verteilung der Gr\"osse der von einer TLD dominierten Communities}
-%  \label{fig:tld-maybedist}
-%\end{figure}
 
 \begin{figure}[t]
   \centering
@@ -496,21 +508,10 @@ durchschnittlicher Grad der Knoten denkbar.
   \label{fig:time-corrdist}
 \end{figure}
 
-(Kurzzusammenfassung: die Zuordnungszahlen sind niedrig. Tatsaechlich
-zugeordnete Comm. (von nichttrivialer Groesse) sind dann aber auch
-inhaltlich sinnvoll (KSPs mit fast-cliquenstruktur usw). Ausserdem:
-optimale/bessere Zerlegung anhand von Modularity ist nicht automatisch
-auch eine besser inhaltlich interpretierbare Zerlegung. Reduzierung
-der Aufl\"osung kann zwar ``bessere'' Zerlegung ergeben, die aber
-inhaltlich weniger aussagekr\"aftig ist. Ausserdem: kein signifikanter
-Overlap. Und: unterschiedliche Algorithmen ``konvergieren'' nicht,
-sondern liefern auch qualitativ unterschiedliche Ergebnisse (Blondel
-<-> COPRA)
-
-Diese Ergebnisse widerlegen nicht die Annahme, dass die
-Vernetzung im Web of Trust im wesentlichen von Keysigning-Parties und
-den sozialen Kontakten der Teilnehmer und damit unter anderem anhand
-von Gruppenzugeh\"origkeit verl\"auft. Allerdings muss festgehalten
+Diese Ergebnisse widerlegen nicht die Annahme, dass die Vernetzung im
+Web of Trust im wesentlichen von Keysigning-Parties und den sozialen
+Kontakten der Teilnehmer beeinflusst wird und damit unter anderem von
+Gruppenzugeh\"origkeit bestimmt wird. Allerdings muss festgehalten
 werden, dass die hier verwendeten Methoden nicht geeignet sind, um den
 Entstehungsmechanismus entlang dieser Annahme befriedigend zu
 erkl\"aren. 
@@ -546,7 +547,10 @@ hier w\"urde die Struktur mit der Zeit ``unsch\"arfer'' werden, wenn
 ihre Mitglieder weiterhin Signierungen vornehmen w\"urden. Es kann
 also angenommen werden, dass die kleineren und insbesondere die klar
 zuordnenbaren Communities tendenziell Teilnehmer enthalten, die in
-Bezug auf die Teilnahme am Web of Trust eher inaktiv sind. 
+Bezug auf die Teilnahme am Web of Trust eher inaktiv sind. Um diese
+Vermutung zu best\"atigen oder zu wiederlegen, k\"onnte das
+Signaturverhalten der Teilnehmer \"uber die Zeit mit ihrer
+Community-Mitgliedschaft verglichen und korreliert werden.
 
 Es scheint unrealistisch, dass die Mitgliedschaft in einer Gruppe --
 etwa einer Firma, akademischen Einrichtung oder einem
