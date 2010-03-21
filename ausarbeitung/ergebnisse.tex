@@ -6,6 +6,18 @@
 \section{Allgemeine Merkmale des Netzwerkes}
 \label{sec:result-allg-merkm-des}
 
+\subsection{Datensatz}
+\label{sec:datensatz}
+
+\subsection{Kennzahlen des Graphen}
+\label{sec:kennz-des-graph}
+
+\subsection{Betweeness Centrality}
+\label{sec:betw-centr}
+
+\subsection{Struktur der starken Zusammenhangskomponenten}
+\label{sec:struktur-der-starken}
+
 \subsection{Starke Zusammenhangskomponenten}
 \label{sec:result-komponentenstruktur}
 
@@ -59,7 +71,7 @@ Algorithmus zur\"uckgeht, ist nicht bekannt.
 
 F\"ur die restlichen Methoden wurde der Graph auf einen ungerichteten
 Graphen reduziert. Dazu wurde jede einzelne gerichtete Kante in eine
-ungerichte Kante umgewandelt. Aus dem gerichteten Graphen mit XXX
+ungerichte Kante umgewandelt. Aus dem gerichteten Graphen mit 446326
 Kanten ergab sich so ein ungerichteter Graph mit 295425 Kanten.
 
 F\"ur die COPRA-Berechnung wurden -- wie in \cite{Gregory2010}
@@ -138,6 +150,13 @@ Community aus der Zerlegung des Algorithmus von Blondel et al. mit
 $l=5$, die klar abgegrenzte Untereinheiten enth\"alt, die intuitiv
 wieder eigenst\"andige Communities darstellen.
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=1.7]{images/fastmod-subgraph-large-modular-6525064ccab580a0b304a3620b197d7a.pdf}
+  \caption{Grosse Community mit modularer Struktur (Berechnet mit
+    Fast-Modularity, Force-directed layout)}
+  \label{fig:large-community-modular}
+\end{figure}
 
 Abbildung \ref{fig:large-community-modular} illustriert die begrenzte
 Qualit\"at der Fast-Modularity-Zerlegung, die sich im vergleichweise
@@ -208,7 +227,7 @@ Community mit ca. 19000 bzw. ca. 21000 Mitgliedern. Demgegen\"uber
 bietet die Blondel-Zerlegung mit $l=2$ eine deutlich geringere Anzahl
 solcher sehr kleiner Communities, daf\"ur aber eine h\"ohrere Zahl
 mittlerer (mehr als 100 Mitglieder) und insbesondere eine h\"ohere
-Zahl sehr grosser (zwischen 500 und 5000 Mitglieder).
+Zahl sehr grosser (zwischen 500 und 5000 Mitglieder) Communities.
 
 Blondel ist insgesamt vom Resolution limit gestraft
 (wg. mod. maximierung) und bietet daher nicht die notwendige
@@ -217,6 +236,50 @@ aufloesung, um communities besser inhaltlich analysieren zu koennen.
 Der insgesamt recht hohe Modularity-Wert weist darauf hin, dass der
 Graph in der Tat eine ausgepr\"agte modulare Struktur hat, wie dies
 von einem sozialen Netzwerk erwartet wird.
+
+
+Die Abbildungen \ref{fig:metagraph-com-copra} und
+\ref{fig:metagraph-com-blondel2} zeigen die Struktur der Communities
+f\"ur die Zerlegungen COPRA ($v=1$) und Blondel ($l=2$). Auff\"allig
+ist hier insbesondere die teilweise sternf\"ormige Struktur der
+COPRA-Zerlegung. Ein signifikanter Anteil der kleineren Communities
+ist rund um die zentrale Community der Gr\"osse ca. 19000 angeordnet
+und im wesentlichen nur mit dieser vernetzt. Diese Struktur weist
+gewisse \"Ahnlichkeiten zur Struktur der starken
+Zusammenhangskomponenten auf (siehe Abschnitt
+\ref{sec:struktur-der-starken}). Diese sind ebenfalls sternf\"ormig um
+eine zentrale Komponente angeordnet, die die Gr\"osse der anderen um
+mehrere Gr\"ossenordnungen \"ubertrifft. Allerdings sind im Fall der
+Community-Struktur noch eine Reihe mittelgrosser Communities
+vertreten, die dieses Muster etwas st\"oren. Das sternf\"ormige Muster
+der Zusammenhangskomponenten wiederholt sich also in etwa innerhalb
+der gr\"ossten Zusammenhangskomponente auf einem anderen Level. Es
+k\"onnte daher spekuliert werden, ob das Netzwerk eine
+\emph{Selbst\"ahnlichkeit} aufweist, wie sie f\"ur eine Reihe von
+komplexen Netzwerken gezeigt wurde\cite{Song2005}. Dieser Frage wurde
+allerdings im Rahmen dieser Arbeit nicht weiter nachgegangen. Im
+Vergleich dazu zeigt sich in der Struktur der Blondel-Communities die
+etwas ausgewogenere Gr\"ossenverteilung. Zwar sind auch hier viele
+kleine Communities sternf\"ormig um die zentralen Communities
+angeordnet, verteilen sich hier aber auf mehrere solcher grossen
+zentralen Communities.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=2]{images/metagraph-copra1-minsize5.pdf}
+  \caption{Struktur der Communities (COPRA ($v=1$) (rot: Gr\"osse
+    $<10$, gr\"un: Gr\"osse $<100$, blau: Gr\"osse < 1000, gelb:
+    Gr\"osse > 1000).}
+  \label{fig:metagraph-com-copra}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=1.6]{images/metagraph-blondel2-minsize4.pdf}
+  \caption{Struktur der Communities (Blondel ($l=5$) (Knotenf\"arbung
+    wie in Abb.\ref{fig:metagraph-com-copra})}
+  \label{fig:metagraph-com-blondel2}
+\end{figure}
 
 \begin{table}[t]
   \centering
@@ -280,7 +343,61 @@ aufweisen, so dass sich seine Signaturen nicht \"uberwiegend einem
 geographischen Bereich bzw. einem Land zuweisen lassen.
 
 Interessanter f\"ur die Fragestellung ist aber die Erkennung von
-Keysigning-Parties und die Zuordnung zu Second-Level-Domains. 
+Keysigning-Parties und die Zuordnung zu Second-Level-Domains. Im
+Vergleich der Algorithmen (Tabelle \ref{tab:assign}) zeigt sich
+zun\"achst, dass die COPRA-Zerlegungen bessere Resultate liefern als
+die Blondel-Zerlegungen, da hier mehr Communities zugeordnet werden
+k\"onnen. Zwar entf\"allt bei COPRA ein grosser Anteil dieser
+Zuordnungen auf sehr kleine Communities der Gr\"osse 3 und 4. Die
+Aussagekraft solcher kleiner Zuordnungen ist selbstverst\"andlich sehr
+begrenzt. Werden diese abgezogen, verbleibt aber immer noch eine
+gr\"ossere Zahl zuordnenbarer Communities nichttrivialer Gr\"osse. Aus
+den absoluten Zahlen in Tabelle \ref{tab:assign} und den
+Gr\"ossenverteilungen in Abbildungen \ref{fig:sld-suredist},
+\ref{fig:sld-maybedist} und \ref{fig:time-corrdist} geht hervor, dass
+die \"Uberlappung keine wesentlichen Vorteile bringt. Im Vergleich der
+Blondel-Zerlegungen zeigt sich, dass das Zusammenpacken von
+Communities von Phase $l=2$ zu Phase $l=5$ und der damit verbundene
+Aufl\"osungsverlust es erheblich erschwert, die Communities inhaltlich
+zuzuordnen. Eine Zerlegung mit h\"oherer Modularity entspricht also
+im Allgemeinen nicht einer Zerlegung, die die Struktur realer
+Communities besser wiedergibt. 
+
+Insgesamt ist eine tats\"achliche Zuordnung anhand des
+80\%-Schwellwerts nur f\"ur sehr wenige Communities von geringer
+Gr\"osse m\"oglich. 
+
+Dass so gut wie keine Communities mit einer
+Gr\"osse \"uber 100 zugeordnet werden k\"onnen, spricht daf\"ur, dass
+diese sich nicht anhand dieser einfachen Mechanismen bilden. 
+
+Die sehr grosse Community aus der COPRA-Zerlegung k\"onnte vermuten
+lassen, dass hier relativ willk\"urlich Knoten zusammengepackt
+wurden. Allerdings hat diese Community eine Reihe von Eigenschaften,
+die nahelegen, dass diese Gruppierung durchaus Sinn macht. Von 21157
+Knoten vef\"ugen 8879 (42\%) \"uber eine E-Mail-Adresse in der
+Top-Level-Domain \emph{.de}, w\"ahrend andere -- insbesondere
+nicht-deutschsprachige -- ccTLDs deutlich schw\"acher vertreten
+sind. Das zeigt einerseits einen \"uberraschend hohen Anteil von
+deutschen oder deutschsprachigen Benutzern am Gesamtnetzwerk. Die 8879
+Schl\"ussel sind nat\"urlich nur eine Untergrenze, da auch in einer
+Vielzahl weiterer Communities deutsche Teilnehmer
+vorkommen. Andererseits l\"asst dies den Schluss zu, dass die
+enthaltenen Knoten eben nicht willk\"urlich zusammengepackt wurden,
+sondern neben ihrer topographischen N\"ahe auch eine ``inhaltliche''
+Gemeinsamkeit aufweisen. Darauf weist auch hin, dass in dieser
+Community eine relativ zu anderen SLDs sehr grosse Anzahl von
+Schl\"usseln von Mitgliedern des Debian-Projekts enthalten ist. Diese
+Community enth\"alt nicht nur knapp die H\"alfte der Schl\"ussel,
+sondern mit ca. 260000 Kanten den Grossteil der \"uberhaupt
+vorhandenen Kanten. Sie ist also anscheinend intern sehr dicht
+vernetzt. Daher scheint es fraglich, ob sie intern wieder eine
+schlecht aufgel\"oste modulare Struktur wie in Abbildung
+\ref{fig:large-community-modular} hat, die sich in sinnvolle
+Untereinheiten zerlegen l\"asst.
+
+In Tabelle XXX sind die 6 gr\"ossten Communities aus der
+COPRA-Zerlegung mit Zuordnung zu Second-Level-Domains aufgef\"uhrt.
 
 \begin{figure}[th]
   \centering
@@ -327,33 +444,6 @@ Knoten haben und damit die interne Kantendichte deutlich h\"oher ist
 als die externe. Um solche Extremf\"alle auszuschliessen, ist als
 zus\"atzliches Kriterium f\"ur die Erkennung von KSPs ein hoher
 durchschnittlicher Grad der Knoten denkbar.
-
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[scale=1.7]{images/fastmod-subgraph-large-modular-6525064ccab580a0b304a3620b197d7a.pdf}
-  \caption{Grosse Community mit modularer Struktur (Berechnet mit
-    Fast-Modularity, Force-directed layout)}
-  \label{fig:large-community-modular}
-\end{figure}
-\begin{figure}[h]
-  \centering
-  \includegraphics[scale=1.5]{images/label-prop-metagraph-20-narrow-cut.pdf}
-  \caption{Struktur der Communities (Label-Propagation) (rot: Gr\"osse
-    $<50$, gr\"un: Gr\"osse $<100$, blau: Gr\"osse < 1000, gelb:
-    Gr\"osse > 1000).}
-  \label{fig:metagraph-com-label}
-\end{figure}
-
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[scale=1.0]{images/fastmod-metagraph-20.pdf}
-  \caption{Struktur der Communities (Fast Modularity) (Knotenf\"arbung
-    wie in Abb.\ref{fig:metagraph-com-label})}
-  \label{fig:metagraph-com-fastmod}
-\end{figure}
-
 
 %\begin{figure}[t]
 %  \centering
@@ -405,12 +495,6 @@ durchschnittlicher Grad der Knoten denkbar.
     Korrelation der Signaturen}
   \label{fig:time-corrdist}
 \end{figure}
-Teilnehmer einer KSP, die schon gut vernetzt sind, werden ihre grosse
-Community ja nicht einfach verlassen. Statt dessen wird die ``neue''
-Community zur grossen hinzugef\"ugt oder so.
-
-Zusammenfassung Allgemein: modulare Struktur, im Metagraphen keine
-Sternstruktur sondern Vernetzung auf allen Gr\"ossenebenen. Bei 
 
 (Kurzzusammenfassung: die Zuordnungszahlen sind niedrig. Tatsaechlich
 zugeordnete Comm. (von nichttrivialer Groesse) sind dann aber auch
@@ -459,7 +543,10 @@ vermutlich nur die Keysigning-Parties mit einer Mehrheit von insgesamt
 eher inaktiven Teilnehmern. Gleiches kann f\"ur Teilnehmer angenommen
 werden, die sich anhand von Gruppenzugeh\"origkeit vernetzen. Auch
 hier w\"urde die Struktur mit der Zeit ``unsch\"arfer'' werden, wenn
-ihre Mitglieder weiterhin Signierungen vornehmen w\"urden.
+ihre Mitglieder weiterhin Signierungen vornehmen w\"urden. Es kann
+also angenommen werden, dass die kleineren und insbesondere die klar
+zuordnenbaren Communities tendenziell Teilnehmer enthalten, die in
+Bezug auf die Teilnahme am Web of Trust eher inaktiv sind. 
 
 Es scheint unrealistisch, dass die Mitgliedschaft in einer Gruppe --
 etwa einer Firma, akademischen Einrichtung oder einem
@@ -473,9 +560,10 @@ Vielzahl solcher Gruppen nicht \"uber eine gemeinsame Domain
 verf\"ugen, und damit mit den hier vorliegenden Daten schlicht nicht
 sichtbar sind. Zwar wurde versucht, der anzunehmenden Komplexit\"at
 der Gruppenzugeh\"origkeiten durch \"uberlappende Communities zu
-begegnen. blabla fehlgeschlagen. Die Frage, inwiefern sich die
-einzelnen Communities sozialen Gruppen zuordnen lassen, konnte also
-nur unvollst\"andig beantwortet werden.
+begegnen. Allerdings konnte der verwendete Algorithmus keine
+signifikanten \"Uberlappungseigenschaften liefern . Die Frage,
+inwiefern sich die einzelnen Communities sozialen Gruppen zuordnen
+lassen, konnte also nur unvollst\"andig beantwortet werden.
 
 Es zeigt sich, dass dem Web of Trust kein einzelner, einfacher
 Entstehungsmechanismus der hier angenommenen Form zugrundeliegt. Es
@@ -491,7 +579,12 @@ einen erheblichen Anteil der Teilnehmer -- beispielsweise die
 Mitglieder der sehr grossen Community aus der COPRA-Berechnung --
 scheint die Vernetzung jedoch so vielf\"altig zu sein, dass solche
 einfachen Mechanismen nicht mehr sichtbar sind und ``in der Masse
-verschwinden''.
+verschwinden''. Bei der COPRA-Zerlegung ist es etwa naheliegend, dass
+die sehr grosse zentrale Community die Mehrzahl der aktiveren
+Teilnehmer enth\"alt. Hier ergibt sich eine \"Ahnlichkeit zur Struktur
+der Zusammenhangskomponenten, bei denen die gr\"osste alle aktiven
+einigermassen aktiven Teilnehmer zu enthalten scheint (siehe Abschnitt
+\ref{sec:zusammenhangskomponenten-inhaltlich}).
 
 Diese Punkte k\"onnen anhand des Beispiels von Debian illustriert
 werden: Das Debian-Projekt als tats\"achliche Community, in der
@@ -507,7 +600,7 @@ finden sich Mitglieder des Debian-Projekts in einer Vielzahl von
 kleineren Communities aller Gr\"ossen. Die Mitgliedschaft im
 Debian-Projekt scheint hier also f\"ur die Vernetzung keine so
 wesentliche Rolle zu spielen, dass sie die Struktur dieser real
-existierenden Community im Web of Trust bestimmt. Selbst wenn viele
+existierenden Community im Web of Trust wiederspiegelt. Selbst wenn viele
 Debian-Entwickler mit vielen anderen Projektmitgliedern vernetzt sind,
 so verf\"ugen sie offensichtlich \"uber gen\"ugend andere Kontakte,
 so dass diese Struktur nicht mehr auffindbar ist.
