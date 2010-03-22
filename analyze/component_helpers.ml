@@ -41,6 +41,7 @@ module Make(G : Sig.I) = struct
       printf "number of components %d\n" (List.length scc_list);
       List.iter (fun (size, number) -> printf "%d: %d " size number) size_number_list;
       write_distribution_to_file "%d %d\n" (Map.IntMap.enum size_map) "component_size.plot"; 
+      write_int_values_to_file (List.enum l) "component_size_values.dat";
       print_endline ""
 
   let scc_list_to_graph_list scc_list original_graph original_siginfo =

@@ -2,6 +2,8 @@ open Batteries
 open Wot_graph
 open Community_helpers
 
+module C = Component_helpers.Make(G)
+
 let _ =
   let len = Array.length Sys.argv in
     if len < 2 then (
@@ -38,7 +40,8 @@ let main () =
 	Printf.printf "communities > 4: %d members\n" members
   else
     let (g, scc_list_sorted) = Component_helpers.load_scc_list Sys.argv.(1)  in
-      Printf.printf "vertices %d edges %d\n" (G.nb_vertex g) (G.nb_edges g)
+      Printf.printf "vertices %d edges %d\n" (G.nb_vertex g) (G.nb_edges g);
+      C.overall_component_properties scc_list_sorted
 
 let _ =
   try main () with
