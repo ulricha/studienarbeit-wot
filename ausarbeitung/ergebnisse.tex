@@ -33,7 +33,8 @@ Vergleich mit anderen PGP-Graphen in der Literatur
   \subfloat[]{\label{fig:indeg-dist} \includegraphics[scale=0.42]{images/indegree-dist.pdf}}
   \subfloat[]{\label{fig:outdeg-dist} \includegraphics[scale=0.42]{images/outdegree-dist.pdf}}
   \caption{Verteilung der eingehenden (\ref{fig:indeg-dist}) und
-    ausgehenden (\ref{fig:outdeg-dist}) Knotengrade}
+    ausgehenden (\ref{fig:outdeg-dist}) Knotengrade in der gr\"ossten
+    starken Zusammenhangskomponente}
   \label{fig:comsizedist}
 \end{figure}
 
@@ -53,7 +54,7 @@ Vergleich mit anderen PGP-Graphen in der Literatur
   \label{fig:component-size}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[th!]
   \centering
   \includegraphics[scale=1.0]{images/component-metagraph-8.pdf}
   \caption{Struktur der starken Zusammenhangskomponenten bis zur
@@ -129,7 +130,7 @@ Communities (Abbildungen \ref{fig:comsize-copra} und
 k\"onnte dieses Ergebnis allerdings auch in einem nicht-optimalen
 Verhalten des Algorithmus begr\"undet liegen.
 
-\begin{figure}[t]
+\begin{figure}[th!]
   \centering
   \subfloat[]{\label{fig:comsize-copra1} \includegraphics[scale=0.45]{images/community-size-dist_copra1.pdf}}
   \subfloat[]{\label{fig:comsize-copra} \includegraphics[scale=0.45]{images/community-size-dist_copra.pdf}} \\
@@ -169,7 +170,7 @@ in Relation zur Gr\"osse des Graphen sehr geringe Zahl von 186
 Communities die Struktur des Graphen (in Bezug auf die inhaltliche
 Analyse) ad\"aquat wiedergibt.
 
-\begin{figure}[ht]
+\begin{figure}[ht!]
   \centering
   \includegraphics[scale=0.7]{images/blondel-l5-com-c3a5eaab680984b123037897b0be74bf-edit.pdf}
   \caption{Community mit modularen Untereinheiten (Gr\"osse 2271,
@@ -182,9 +183,9 @@ Community aus der Zerlegung des Algorithmus von Blondel et al. mit
 $l=5$, die klar abgegrenzte Untereinheiten enth\"alt, die intuitiv
 wieder eigenst\"andige Communities darstellen.
 
-\begin{figure}[h]
+\begin{figure}[th!]
   \centering
-  \includegraphics[scale=1.7]{images/fastmod-subgraph-large-modular-6525064ccab580a0b304a3620b197d7a.pdf}
+  \includegraphics[scale=1.3]{images/fastmod-subgraph-large-modular-6525064ccab580a0b304a3620b197d7a.pdf}
   \caption{Grosse Community mit modularer Struktur (Berechnet mit
     Fast-Modularity, Force-directed layout)}
   \label{fig:large-community-modular}
@@ -292,7 +293,7 @@ kleine Communities sternf\"ormig um die zentralen Communities
 angeordnet, verteilen sich hier aber auf mehrere solcher grossen
 zentralen Communities.
 
-\begin{figure}[h]
+\begin{figure}[h!]
   \centering
   \includegraphics[scale=2]{images/metagraph-copra1-minsize5.pdf}
   \caption{Struktur der Communities (COPRA ($v=1$) (rot: Gr\"osse
@@ -301,7 +302,7 @@ zentralen Communities.
   \label{fig:metagraph-com-copra}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[h!]
   \centering
   \includegraphics[scale=1.6]{images/metagraph-blondel2-minsize4.pdf}
   \caption{Struktur der Communities (Blondel ($l=5$) (Knotenf\"arbung
@@ -448,7 +449,7 @@ In Tabelle \ref{tab:ass-examples} sind die 6 gr\"ossten Communities
 aus der COPRA-Zerlegung mit Zuordnung zu Second-Level-Domains
 aufgef\"uhrt.
 
-\begin{figure}[th]
+\begin{figure}[th!]
   \centering
   \includegraphics[scale=1.5]{images/subgraph-label-time-fa62cc57cd35e9f90b85435efc407ad5.pdf}
   \caption{Community mit zeitlicher Korrelation der Signaturen
@@ -458,7 +459,7 @@ aufgef\"uhrt.
 \end{figure}
 
 
-\begin{figure}[th]
+\begin{figure}[th!]
   \centering
   \includegraphics[scale=1.3]{images/label-subgraph-41-star-c222345bc5eb1f9eff80d58a81861974.pdf}
     \caption{Community mit zeitlicher Korrelation der Signaturen
@@ -493,7 +494,7 @@ als die externe. Um solche Extremf\"alle auszuschliessen, ist als
 zus\"atzliches Kriterium f\"ur die Erkennung von KSPs ein hoher
 durchschnittlicher Grad der Knoten denkbar.
 
-\begin{figure}[t]
+\begin{figure}[th!]
   \centering
   \subfloat[]{\label{fig:sld-sure-copra1} \includegraphics[scale=0.45]{images/sld-sure-ass_copra1.pdf}}
   \subfloat[]{\label{fig:sld-sure-bl2} \includegraphics[scale=0.45]{images/sld-sure-ass_copra.pdf}}\\
@@ -503,7 +504,7 @@ durchschnittlicher Grad der Knoten denkbar.
   \label{fig:sld-suredist}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[th!]
   \centering
   \subfloat[]{\label{fig:sld-maybe-copra1} \includegraphics[scale=0.45]{images/sld-maybe-ass_copra1.pdf}}
   \subfloat[]{\label{fig:sld-maybe-bl2} \includegraphics[scale=0.45]{images/sld-maybe-ass_copra.pdf}}\\
@@ -513,7 +514,7 @@ durchschnittlicher Grad der Knoten denkbar.
   \label{fig:sld-maybedist}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[th!]
   \centering
   \subfloat[]{\label{fig:time-corr-copra1} \includegraphics[scale=0.45]{images/time-corr_copra1.pdf}}
   \subfloat[]{\label{fig:time-corr-bl2} \includegraphics[scale=0.45]{images/time-corr_copra.pdf}}\\
