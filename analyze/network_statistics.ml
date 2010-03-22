@@ -211,9 +211,8 @@ module Make(G : Sig.G) = struct
     let neigh_map = M.add v neighbourhoods neigh_map in
       (dist_sum + dist_sum_v, new_ecc_map, new_dist_avg_map, neigh_map)
 
-  let combine_distance_results (dist_sum, ecc_map, dist_avg_map, neigh_map) alist =
-    let init = (0, M.empty, M.empty, M.empty) in
-      List.fold_left add_result_to_maps init alist
+  let combine_distance_results results alist =
+    List.fold_left add_result_to_maps results alist
 
   module Distance_statistics_job = struct
     include G

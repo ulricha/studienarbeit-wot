@@ -1,4 +1,5 @@
 (* job description: (component_index:int * node_list:G.V.t list) *)
+open Batteries
 open Graph
 open Printf
 open Wot_graph
