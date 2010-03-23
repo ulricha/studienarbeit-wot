@@ -30,6 +30,16 @@ let divide_period lastmonth lastyear =
 
 let increment_by_one = Graph_misc.int32map_add_or_create 1
 
+let common_keylens = 
+  Set.IntSet.add 512
+    (Set.IntSet.add 768
+       (Set.IntSet.add 1024
+	  (Set.IntSet.add 2048
+	     (Set.IntSet.add 3072
+		(Set.IntSet.add 4096
+		   Set.IntSet.empty)))))
+  
+
 let count_algorithm_use records =
   let project_record m r =
     let (_, _, _, _, _, _, pk_alg, _) = r in
@@ -40,7 +50,7 @@ let count_algorithm_use records =
 let count_rsa_keylen records =
   let project_record m r =
     let (_, _, _, _, _, _, pk_alg, pk_keylen) = r in
-      if pk_alg = 1l then
+      if pk_alg = 1l && Set.IntSet.mem pk_keylen common_keylens then
 	increment_by_one m pk_keylen
       else
 	m
@@ -50,7 +60,7 @@ let count_rsa_keylen records =
 let count_dsa_keylen records =
   let project_record m r =
     let (_, _, _, _, _, _, pk_alg, pk_keylen) = r in
-      if pk_alg = 17l then
+      if pk_alg = 17l && Set.IntSet.mem pk_keylen common_keylens then
 	increment_by_one m pk_keylen
       else
 	m
