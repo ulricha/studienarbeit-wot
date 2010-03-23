@@ -67,7 +67,7 @@ module Make(G : Sig.G) = struct
       accum_dist := !accum_dist + d
     in
       iter_component visit g u;
-      let avg_dist = !accum_dist / (n-1) in
+      let avg_dist = (float_of_int !accum_dist) /. (float_of_int (n-1)) in
       let neighbourhoods = (!neigh_2, !neigh_3, !neigh_4, !neigh_5) in
       (!ecc, !accum_dist, avg_dist, neighbourhoods)
 
@@ -144,9 +144,7 @@ module Make(G : Sig.G) = struct
     let connected_avg_distance = (float_of_int dist_sum) /. nr_pairs in
     let (max_ecc, min_ecc) = enum_max_min (M.values ecc_map) in
     let median_ecc = median (Array.of_enum (M.values ecc_map)) in
-    let median_avg_dist_per_node = median (Array.of_enum (M.values dist_avg_map)) in
     let ecc_dist = values_to_distribution (M.values ecc_map) in
-    let avg_distance_dist = values_to_distribution (M.values dist_avg_map) in
     let n5_map = project_neigh5 neigh_map in
     let n5_dist = values_to_distribution (M.values n5_map) in
     let (max_5, min_5) = enum_max_min (M.values n5_map) in
@@ -157,10 +155,7 @@ module Make(G : Sig.G) = struct
       printf "eccentricity median %d max %d min %d\n" 
 	median_ecc max_ecc min_ecc;
       printf "(connected) average distance %f\n" connected_avg_distance;
-      printf "median average distance per node %d\n" median_avg_dist_per_node;
       printf "5-neighbourhood max %d min %d\n" max_5 min_5;
-      write_distribution_to_file "%d %d\n"(Map.IntMap.enum avg_distance_dist) 
-	(graph_name ^ "-avg_distance_per_node_dist.plot");
       write_distribution_to_file "%d %d\n" (Map.IntMap.enum ecc_dist) 
 	(graph_name ^ "_ecc_dist.plot");
       write_distribution_to_file "%d %d\n" (Map.IntMap.enum n5_dist) 
@@ -170,7 +165,7 @@ module Make(G : Sig.G) = struct
       write_int_values_to_file (M.values n3_map) (graph_name ^ "_n3.values");
       write_int_values_to_file (M.values n2_map) (graph_name ^ "_n2.values");
       write_int_values_to_file (M.values ecc_map) (graph_name ^ "_ecc.values");
-      write_int_values_to_file (M.values dist_avg_map) (graph_name ^ "_avg_dist.values");
+      write_float_values_to_file (M.values dist_avg_map) (graph_name ^ "_avg_dist.values");
       
       print_endline ""
 
@@ -217,9 +212,9 @@ module Make(G : Sig.G) = struct
   module Distance_statistics_job = struct
     include G
       (* ecc, dist_sum_v, avg_dist, n2_size, n3_size *)
-    type worker_result = (G.V.t * (int * int * int * (int * int * int * int))) list
+    type worker_result = (G.V.t * (int * int * float * (int * int * int * int))) list
     let worker_function = distance_statistics_vertex_subset
-    type combine_type = int * int M.t * int M.t * (int * int * int * int) M.t
+    type combine_type = int * int M.t * float M.t * (int * int * int * int) M.t
     let combine_start = (0, M.empty, M.empty, M.empty)
     let combine_results = combine_distance_results
     let jobname = "distance_statistics"

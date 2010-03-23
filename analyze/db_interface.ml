@@ -1,4 +1,5 @@
 open Batteries
+open Domain_time_statistics
 
 let today = Unix.time ()
 
@@ -14,7 +15,7 @@ let get_keys_per_period dbh interval_list keyids =
     let records = 
       PGSQL(dbh) "SELECT * FROM keys where ctime >= $interval_start AND ctime <= $interval_end AND (exptime IS NULL OR exptime > $interval_end) AND (revoktime IS NULL OR revoktime > $interval_end) AND keyid in $@keyids"
     in
-      print_endline (Printf.sprintf "get interval %f keys %d" interval_start (List.length records));
+      print_endline (Printf.sprintf "get interval %s keys %d" (format_time interval_start) (List.length records));
       (interval_start, records)
   in
     List.map get interval_list
@@ -25,7 +26,7 @@ let get_keys_per_period_cid dbh interval_list cid =
     let records = 
       PGSQL(dbh) "SELECT keys.keyid, keys.version, keys.puid, keys.ctime, keys.exptime, keys.revoktime, keys.alg, keys.keylen FROM keys inner join component_ids on keys.keyid = component_ids.keyid where component_id = $cid AND ctime >= $interval_start AND ctime <= $interval_end AND (revoktime IS NULL OR revoktime > $interval_end)"
     in
-      print_endline (Printf.sprintf "get interval %f keys %d" interval_start (List.length records));
+      print_endline (Printf.sprintf "get interval %s keys %d" (format_time interval_start) (List.length records));
       (interval_start, records)
   in
     List.map get interval_list
@@ -36,13 +37,16 @@ let get_keys_per_period_all dbh interval_list =
     let records = 
       PGSQL(dbh) "SELECT * FROM keys where ctime >= $interval_start AND ctime <= $interval_end AND (revoktime IS NULL OR revoktime > $interval_end) AND (exptime IS NULL OR exptime > $interval_end)"
     in
-      print_endline (Printf.sprintf "get interval %f keys %d" interval_start (List.length records));
+      print_endline (Printf.sprintf "get interval %s keys %d" (format_time interval_start) (List.length records));
       (interval_start, records)
   in
     List.map get interval_list
 
 let get_valid_sigs dbh timestamp =
   PGSQL(dbh) "(SELECT signer, signee FROM sigs INNER JOIN keys on sigs.signer = keys.keyid WHERE (keys.revoktime IS NULL OR keys.revoktime > $timestamp) AND (keys.exptime IS NULL OR keys.exptime > $timestamp) AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp)) intersect (SELECT signer, signee FROM sigs INNER JOIN keys on sigs.signee = keys.keyid WHERE (keys.revoktime IS NULL OR keys.revoktime > $timestamp) AND (keys.exptime IS NULL OR keys.exptime > $timestamp) AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp))"
+
+let get_valid_sigs_upto dbh timestamp =
+  PGSQL(dbh) "(SELECT signer, signee FROM sigs INNER JOIN keys on sigs.signer = keys.keyid WHERE (keys.revoktime IS NULL OR keys.revoktime > $timestamp) AND (keys.exptime IS NULL OR keys.exptime > $timestamp) AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp) AND keys.ctime < $timestamp AND sigs.ctime < $timestamp) intersect (SELECT signer, signee FROM sigs INNER JOIN keys on sigs.signee = keys.keyid WHERE (keys.revoktime IS NULL OR keys.revoktime > $timestamp) AND (keys.exptime IS NULL OR keys.exptime > $timestamp) AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp) AND keys.ctime < $timestamp AND sigs.ctime < $timestamp)"
 
 let get_valid_signed_keys dbh timestamp =
   PGSQL(dbh) "SELECT distinct keyid FROM keys INNER JOIN sigs on sigs.signer = keys.keyid OR sigs.signee = keys.keyid WHERE (keys.revoktime IS NULL OR keys.revoktime > $timestamp) AND (keys.exptime IS NULL OR keys.exptime > $timestamp) AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp)"

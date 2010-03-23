@@ -117,7 +117,7 @@ AUXFILES[] =
 	network_statistics
 	simple_stats
 	metagraph
-	mpi_framework
+
 
 PROGRAM = dump_sql
 # OCAML_LIBS +=
@@ -140,7 +140,7 @@ OCamlProgram(mscc_size, mscc_size $(AUXFILES))
 OCamlProgram(simple_stats, simple_stats $(AUXFILES))
 OCamlProgram(time, time $(AUXFILES))
 OCamlProgram(count, count $(AUXFILES))
-OCamlProgram(basic_properties_mpi, basic_properties_mpi $(AUXFILES))
+OCamlProgram(basic_properties_mpi, basic_properties_mpi $(AUXFILES) mpi_framework)
 OCamlProgram(basic_properties, basic_properties $(AUXFILES))
 
 EXE[] = 

@@ -1,9 +1,10 @@
 open Batteries
 open Ekey
+open Misc
 
 let _ =
   let len = Array.length Sys.argv in
-    if len > 3 then (
+    if len > 3 || len < 2 then (
       print_endline "usage: graph_snapshot db <time>";
       exit 1)
 
@@ -23,7 +24,7 @@ let main () =
     else
       (Sys.argv.(2), float_of_string Sys.argv.(2))
   in
-  let sigs = Db_interface.get_valid_sigs dbh timestamp in
+  let sigs = time_eval (fun () -> Db_interface.get_valid_sigs dbh timestamp) "get_valid" in
     Printf.printf "sigs %d\n" (List.length sigs); 
     flush stdout;
     write_sigs_from_db basename sigs
