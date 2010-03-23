@@ -1,0 +1,742 @@
+basic_properties
+rank 19
+basic_properties
+rank 10
+basic_properties
+basic_properties
+rank 11
+rank 17
+basic_properties
+basic_properties
+rank 18
+basic_properties
+rank 15
+basic_properties
+rank 3
+basic_properties
+rank 0
+basic_properties
+rank 2
+basic_properties
+basic_properties
+rank 16
+rank 1
+basic_properties
+rank 8
+rank 9
+basic_properties
+rank 12
+basic_properties
+rank 13
+basic_properties
+rank 14
+basic_properties
+rank 5
+basic_properties
+rank 7
+basic_properties
+rank 4
+basic_properties
+rank 6
+worker 4 started
+worker 6 started
+worker 14 started
+worker 13 started
+worker 5 started
+worker 7 started
+worker 15 started
+worker 12 started
+worker 17 started
+worker 19 started
+worker 11 started
+worker 9 started
+worker 16 started
+worker 18 started
+worker 8 started
+worker 10 started
+worker 2 started
+edges total 446326 oneway 144525
+largest component 44952
+number of components 240382
+44952: 1 117: 1 70: 1 68: 1 66: 1 55: 1 48: 1 45: 1 40: 2 35: 1 34: 1 33: 1 31: 1 30: 2 29: 1 28: 3 27: 3 26: 1 25: 3 24: 3 23: 1 22: 1 21: 2 20: 2 19: 5 18: 7 17: 11 16: 14 15: 11 14: 18 13: 33 12: 34 11: 40 10: 53 9: 108 8: 128 7: 217 6: 430 5: 735 4: 1665 3: 4080 2: 14939 1: 217818 
+worker 1 started
+worker 3 started
+basic_network_statistics whole_graph
+vertices 325410 edges 816785
+average indegree = average outdegree 2.510018
+
+server started
+server: send workunit of size 2365 to worker 1
+server: send workunit of size 2365 to worker 2
+server: send workunit of size 2365 to worker 3
+server: send workunit of size 2365 to worker 4
+server: send workunit of size 2365 to worker 5
+server: send workunit of size 2365 to worker 6
+distance_statistics-worker 1: workunit size 2365 on component 0
+distance_statistics-worker 2: workunit size 2365 on component 0
+distance_statistics-worker 4: workunit size 2365 on component 0
+server: send workunit of size 2365 to worker 7
+distance_statistics-worker 3: workunit size 2365 on component 0
+distance_statistics-worker 5: workunit size 2365 on component 0
+server: send workunit of size 2365 to worker 8
+server: send workunit of size 2365 to worker 9
+distance_statistics-worker 6: workunit size 2365 on component 0
+server: send workunit of size 2365 to worker 10
+distance_statistics-worker 7: workunit size 2365 on component 0
+server: send workunit of size 2365 to worker 11
+distance_statistics-worker 8: workunit size 2365 on component 0
+server: send workunit of size 2365 to worker 12
+distance_statistics-worker 9: workunit size 2365 on component 0
+server: send workunit of size 2365 to worker 13
+distance_statistics-worker 10: workunit size 2365 on component 0
+server: send workunit of size 2365 to worker 14
+distance_statistics-worker 11: workunit size 2365 on component 0
+server: send workunit of size 2365 to worker 15
+distance_statistics-worker 12: workunit size 2365 on component 0
+server: send workunit of size 2365 to worker 16
+distance_statistics-worker 13: workunit size 2365 on component 0
+server: send workunit of size 2365 to worker 17
+distance_statistics-worker 14: workunit size 2365 on component 0
+server: send workunit of size 2365 to worker 18
+distance_statistics-worker 15: workunit size 2365 on component 0
+server: send workunit of size 2382 to worker 19
+distance_statistics-worker 16: workunit size 2365 on component 0
+server: accumulate results
+waiting for 19 workers to finish
+distance_statistics-worker 17: workunit size 2365 on component 0
+distance_statistics-worker 18: workunit size 2365 on component 0
+distance_statistics-worker 19: workunit size 2382 on component 0
+distance_statistics-worker 4: 100 iterations (last interval took 38.170065 sec)
+distance_statistics-worker 5: 100 iterations (last interval took 38.302796 sec)
+distance_statistics-worker 6: 100 iterations (last interval took 38.277022 sec)
+distance_statistics-worker 7: 100 iterations (last interval took 38.322302 sec)
+distance_statistics-worker 9: 100 iterations (last interval took 38.284805 sec)
+distance_statistics-worker 14: 100 iterations (last interval took 38.181073 sec)
+distance_statistics-worker 8: 100 iterations (last interval took 38.420402 sec)
+distance_statistics-worker 13: 100 iterations (last interval took 38.314612 sec)
+distance_statistics-worker 11: 100 iterations (last interval took 38.377984 sec)
+distance_statistics-worker 12: 100 iterations (last interval took 38.362197 sec)
+distance_statistics-worker 15: 100 iterations (last interval took 38.297506 sec)
+distance_statistics-worker 17: 100 iterations (last interval took 38.343656 sec)
+distance_statistics-worker 10: 100 iterations (last interval took 38.550198 sec)
+distance_statistics-worker 16: 100 iterations (last interval took 38.414669 sec)
+distance_statistics-worker 19: 100 iterations (last interval took 38.342621 sec)
+distance_statistics-worker 18: 100 iterations (last interval took 38.437953 sec)
+distance_statistics-worker 1: 100 iterations (last interval took 40.586765 sec)
+distance_statistics-worker 2: 100 iterations (last interval took 40.698529 sec)
+distance_statistics-worker 3: 100 iterations (last interval took 43.981536 sec)
+distance_statistics-worker 4: 200 iterations (last interval took 31.149515 sec)
+distance_statistics-worker 5: 200 iterations (last interval took 31.211984 sec)
+distance_statistics-worker 6: 200 iterations (last interval took 31.220753 sec)
+distance_statistics-worker 14: 200 iterations (last interval took 31.126405 sec)
+distance_statistics-worker 9: 200 iterations (last interval took 31.213819 sec)
+distance_statistics-worker 7: 200 iterations (last interval took 31.259373 sec)
+distance_statistics-worker 13: 200 iterations (last interval took 31.236236 sec)
+distance_statistics-worker 11: 200 iterations (last interval took 31.253525 sec)
+distance_statistics-worker 8: 200 iterations (last interval took 31.301510 sec)
+distance_statistics-worker 15: 200 iterations (last interval took 31.232666 sec)
+distance_statistics-worker 12: 200 iterations (last interval took 31.300278 sec)
+distance_statistics-worker 17: 200 iterations (last interval took 31.259229 sec)
+distance_statistics-worker 19: 200 iterations (last interval took 31.227619 sec)
+distance_statistics-worker 16: 200 iterations (last interval took 31.297336 sec)
+distance_statistics-worker 18: 200 iterations (last interval took 31.310736 sec)
+distance_statistics-worker 10: 200 iterations (last interval took 31.493248 sec)
+distance_statistics-worker 1: 200 iterations (last interval took 33.284161 sec)
+distance_statistics-worker 2: 200 iterations (last interval took 33.386112 sec)
+distance_statistics-worker 3: 200 iterations (last interval took 38.420617 sec)
+distance_statistics-worker 4: 300 iterations (last interval took 31.189414 sec)
+distance_statistics-worker 5: 300 iterations (last interval took 31.157173 sec)
+distance_statistics-worker 14: 300 iterations (last interval took 31.317486 sec)
+distance_statistics-worker 6: 300 iterations (last interval took 31.452148 sec)
+distance_statistics-worker 7: 300 iterations (last interval took 31.340665 sec)
+distance_statistics-worker 9: 300 iterations (last interval took 31.451190 sec)
+distance_statistics-worker 12: 300 iterations (last interval took 31.247851 sec)
+distance_statistics-worker 11: 300 iterations (last interval took 31.300003 sec)
+distance_statistics-worker 13: 300 iterations (last interval took 31.357226 sec)
+distance_statistics-worker 15: 300 iterations (last interval took 31.338558 sec)
+distance_statistics-worker 17: 300 iterations (last interval took 31.225625 sec)
+distance_statistics-worker 8: 300 iterations (last interval took 31.376561 sec)
+distance_statistics-worker 19: 300 iterations (last interval took 31.284937 sec)
+distance_statistics-worker 18: 300 iterations (last interval took 31.274639 sec)
+distance_statistics-worker 16: 300 iterations (last interval took 31.375929 sec)
+distance_statistics-worker 10: 300 iterations (last interval took 31.561943 sec)
+distance_statistics-worker 1: 300 iterations (last interval took 32.259894 sec)
+distance_statistics-worker 2: 300 iterations (last interval took 32.360972 sec)
+distance_statistics-worker 3: 300 iterations (last interval took 35.573041 sec)
+distance_statistics-worker 4: 400 iterations (last interval took 28.449736 sec)
+distance_statistics-worker 5: 400 iterations (last interval took 28.448285 sec)
+distance_statistics-worker 14: 400 iterations (last interval took 28.244347 sec)
+distance_statistics-worker 6: 400 iterations (last interval took 28.343328 sec)
+distance_statistics-worker 9: 400 iterations (last interval took 28.323851 sec)
+distance_statistics-worker 7: 400 iterations (last interval took 28.560178 sec)
+distance_statistics-worker 12: 400 iterations (last interval took 28.517365 sec)
+distance_statistics-worker 17: 400 iterations (last interval took 28.506359 sec)
+distance_statistics-worker 11: 400 iterations (last interval took 28.595102 sec)
+distance_statistics-worker 13: 400 iterations (last interval took 28.572725 sec)
+distance_statistics-worker 15: 400 iterations (last interval took 28.578306 sec)
+distance_statistics-worker 19: 400 iterations (last interval took 28.540648 sec)
+distance_statistics-worker 8: 400 iterations (last interval took 28.608759 sec)
+distance_statistics-worker 16: 400 iterations (last interval took 28.472008 sec)
+distance_statistics-worker 18: 400 iterations (last interval took 28.564599 sec)
+distance_statistics-worker 10: 400 iterations (last interval took 28.782601 sec)
+distance_statistics-worker 1: 400 iterations (last interval took 30.561784 sec)
+distance_statistics-worker 2: 400 iterations (last interval took 30.642523 sec)
+distance_statistics-worker 3: 400 iterations (last interval took 33.116959 sec)
+distance_statistics-worker 4: 500 iterations (last interval took 28.562947 sec)
+distance_statistics-worker 14: 500 iterations (last interval took 28.967854 sec)
+distance_statistics-worker 7: 500 iterations (last interval took 28.642529 sec)
+distance_statistics-worker 9: 500 iterations (last interval took 28.930598 sec)
+distance_statistics-worker 13: 500 iterations (last interval took 28.652665 sec)
+distance_statistics-worker 15: 500 iterations (last interval took 28.638947 sec)
+distance_statistics-worker 5: 500 iterations (last interval took 29.259691 sec)
+distance_statistics-worker 6: 500 iterations (last interval took 29.096854 sec)
+distance_statistics-worker 19: 500 iterations (last interval took 28.667809 sec)
+distance_statistics-worker 11: 500 iterations (last interval took 28.826996 sec)
+distance_statistics-worker 8: 500 iterations (last interval took 28.860368 sec)
+distance_statistics-worker 12: 500 iterations (last interval took 29.289960 sec)
+distance_statistics-worker 17: 500 iterations (last interval took 29.282193 sec)
+distance_statistics-worker 16: 500 iterations (last interval took 29.136945 sec)
+distance_statistics-worker 18: 500 iterations (last interval took 29.377836 sec)
+distance_statistics-worker 10: 500 iterations (last interval took 28.870982 sec)
+distance_statistics-worker 1: 500 iterations (last interval took 30.392701 sec)
+distance_statistics-worker 2: 500 iterations (last interval took 30.434055 sec)
+distance_statistics-worker 4: 600 iterations (last interval took 27.368946 sec)
+distance_statistics-worker 9: 600 iterations (last interval took 27.080881 sec)
+distance_statistics-worker 14: 600 iterations (last interval took 27.304946 sec)
+distance_statistics-worker 3: 500 iterations (last interval took 34.341212 sec)
+distance_statistics-worker 5: 600 iterations (last interval took 27.186861 sec)
+distance_statistics-worker 15: 600 iterations (last interval took 27.248940 sec)
+distance_statistics-worker 7: 600 iterations (last interval took 27.477662 sec)
+distance_statistics-worker 19: 600 iterations (last interval took 27.281605 sec)
+distance_statistics-worker 6: 600 iterations (last interval took 27.394697 sec)
+distance_statistics-worker 13: 600 iterations (last interval took 27.533716 sec)
+distance_statistics-worker 8: 600 iterations (last interval took 27.330811 sec)
+distance_statistics-worker 11: 600 iterations (last interval took 27.497715 sec)
+distance_statistics-worker 17: 600 iterations (last interval took 27.200756 sec)
+distance_statistics-worker 12: 600 iterations (last interval took 27.257694 sec)
+distance_statistics-worker 16: 600 iterations (last interval took 27.247762 sec)
+distance_statistics-worker 18: 600 iterations (last interval took 27.286776 sec)
+distance_statistics-worker 10: 600 iterations (last interval took 27.701532 sec)
+distance_statistics-worker 1: 600 iterations (last interval took 29.056029 sec)
+distance_statistics-worker 2: 600 iterations (last interval took 28.910019 sec)
+distance_statistics-worker 4: 700 iterations (last interval took 27.683823 sec)
+distance_statistics-worker 14: 700 iterations (last interval took 27.570784 sec)
+distance_statistics-worker 9: 700 iterations (last interval took 27.602463 sec)
+distance_statistics-worker 5: 700 iterations (last interval took 27.472665 sec)
+distance_statistics-worker 7: 700 iterations (last interval took 27.791869 sec)
+distance_statistics-worker 6: 700 iterations (last interval took 27.678509 sec)
+distance_statistics-worker 15: 700 iterations (last interval took 28.030489 sec)
+distance_statistics-worker 13: 700 iterations (last interval took 27.805290 sec)
+distance_statistics-worker 19: 700 iterations (last interval took 28.026573 sec)
+distance_statistics-worker 17: 700 iterations (last interval took 27.625165 sec)
+distance_statistics-worker 12: 700 iterations (last interval took 27.625166 sec)
+distance_statistics-worker 8: 700 iterations (last interval took 27.870709 sec)
+distance_statistics-worker 11: 700 iterations (last interval took 27.851520 sec)
+distance_statistics-worker 16: 700 iterations (last interval took 27.651454 sec)
+distance_statistics-worker 18: 700 iterations (last interval took 27.682438 sec)
+distance_statistics-worker 10: 700 iterations (last interval took 28.141679 sec)
+distance_statistics-worker 3: 600 iterations (last interval took 29.910516 sec)
+distance_statistics-worker 1: 700 iterations (last interval took 28.509970 sec)
+distance_statistics-worker 2: 700 iterations (last interval took 28.849882 sec)
+distance_statistics-worker 14: 800 iterations (last interval took 26.711741 sec)
+distance_statistics-worker 4: 800 iterations (last interval took 27.241283 sec)
+distance_statistics-worker 5: 800 iterations (last interval took 27.012354 sec)
+distance_statistics-worker 6: 800 iterations (last interval took 26.827839 sec)
+distance_statistics-worker 9: 800 iterations (last interval took 27.386161 sec)
+distance_statistics-worker 7: 800 iterations (last interval took 27.122435 sec)
+distance_statistics-worker 16: 800 iterations (last interval took 26.864737 sec)
+distance_statistics-worker 13: 800 iterations (last interval took 27.124867 sec)
+distance_statistics-worker 15: 800 iterations (last interval took 27.198131 sec)
+distance_statistics-worker 17: 800 iterations (last interval took 27.131364 sec)
+distance_statistics-worker 12: 800 iterations (last interval took 27.159711 sec)
+distance_statistics-worker 19: 800 iterations (last interval took 27.205306 sec)
+distance_statistics-worker 11: 800 iterations (last interval took 27.146085 sec)
+distance_statistics-worker 8: 800 iterations (last interval took 27.248328 sec)
+distance_statistics-worker 18: 800 iterations (last interval took 27.073687 sec)
+distance_statistics-worker 10: 800 iterations (last interval took 27.260868 sec)
+distance_statistics-worker 3: 700 iterations (last interval took 34.448678 sec)
+distance_statistics-worker 1: 800 iterations (last interval took 28.764795 sec)
+distance_statistics-worker 2: 800 iterations (last interval took 29.013983 sec)
+distance_statistics-worker 14: 900 iterations (last interval took 26.507224 sec)
+distance_statistics-worker 4: 900 iterations (last interval took 26.576440 sec)
+distance_statistics-worker 5: 900 iterations (last interval took 26.765821 sec)
+distance_statistics-worker 6: 900 iterations (last interval took 26.635318 sec)
+distance_statistics-worker 9: 900 iterations (last interval took 26.766501 sec)
+distance_statistics-worker 7: 900 iterations (last interval took 26.801092 sec)
+distance_statistics-worker 15: 900 iterations (last interval took 26.654247 sec)
+distance_statistics-worker 13: 900 iterations (last interval took 26.794618 sec)
+distance_statistics-worker 17: 900 iterations (last interval took 26.713749 sec)
+distance_statistics-worker 19: 900 iterations (last interval took 26.673236 sec)
+distance_statistics-worker 12: 900 iterations (last interval took 26.693143 sec)
+distance_statistics-worker 16: 900 iterations (last interval took 26.965098 sec)
+distance_statistics-worker 11: 900 iterations (last interval took 26.720433 sec)
+distance_statistics-worker 8: 900 iterations (last interval took 26.704238 sec)
+distance_statistics-worker 18: 900 iterations (last interval took 26.954647 sec)
+distance_statistics-worker 10: 900 iterations (last interval took 26.902964 sec)
+distance_statistics-worker 3: 800 iterations (last interval took 30.335588 sec)
+distance_statistics-worker 1: 900 iterations (last interval took 27.957184 sec)
+distance_statistics-worker 2: 900 iterations (last interval took 28.143030 sec)
+distance_statistics-worker 4: 1000 iterations (last interval took 27.023664 sec)
+distance_statistics-worker 14: 1000 iterations (last interval took 27.376531 sec)
+distance_statistics-worker 5: 1000 iterations (last interval took 27.285574 sec)
+distance_statistics-worker 7: 1000 iterations (last interval took 26.899528 sec)
+distance_statistics-worker 6: 1000 iterations (last interval took 27.457867 sec)
+distance_statistics-worker 9: 1000 iterations (last interval took 27.350073 sec)
+distance_statistics-worker 13: 1000 iterations (last interval took 26.960940 sec)
+distance_statistics-worker 15: 1000 iterations (last interval took 27.093230 sec)
+distance_statistics-worker 17: 1000 iterations (last interval took 27.044703 sec)
+distance_statistics-worker 19: 1000 iterations (last interval took 27.086765 sec)
+distance_statistics-worker 12: 1000 iterations (last interval took 27.154554 sec)
+distance_statistics-worker 11: 1000 iterations (last interval took 27.135661 sec)
+distance_statistics-worker 8: 1000 iterations (last interval took 27.156789 sec)
+distance_statistics-worker 16: 1000 iterations (last interval took 27.399114 sec)
+distance_statistics-worker 18: 1000 iterations (last interval took 27.090391 sec)
+distance_statistics-worker 10: 1000 iterations (last interval took 27.494852 sec)
+distance_statistics-worker 1: 1000 iterations (last interval took 28.629993 sec)
+distance_statistics-worker 2: 1000 iterations (last interval took 28.610324 sec)
+distance_statistics-worker 3: 900 iterations (last interval took 31.770230 sec)
+distance_statistics-worker 14: 1100 iterations (last interval took 26.211146 sec)
+distance_statistics-worker 4: 1100 iterations (last interval took 26.403213 sec)
+distance_statistics-worker 5: 1100 iterations (last interval took 26.495040 sec)
+distance_statistics-worker 6: 1100 iterations (last interval took 26.262926 sec)
+distance_statistics-worker 9: 1100 iterations (last interval took 26.280948 sec)
+distance_statistics-worker 7: 1100 iterations (last interval took 26.513088 sec)
+distance_statistics-worker 17: 1100 iterations (last interval took 26.316124 sec)
+distance_statistics-worker 13: 1100 iterations (last interval took 26.539747 sec)
+distance_statistics-worker 19: 1100 iterations (last interval took 26.410944 sec)
+distance_statistics-worker 15: 1100 iterations (last interval took 26.625576 sec)
+distance_statistics-worker 11: 1100 iterations (last interval took 26.527799 sec)
+distance_statistics-worker 8: 1100 iterations (last interval took 26.472909 sec)
+distance_statistics-worker 12: 1100 iterations (last interval took 26.742242 sec)
+distance_statistics-worker 16: 1100 iterations (last interval took 26.668765 sec)
+distance_statistics-worker 18: 1100 iterations (last interval took 26.402476 sec)
+distance_statistics-worker 10: 1100 iterations (last interval took 26.528004 sec)
+distance_statistics-worker 1: 1100 iterations (last interval took 27.394876 sec)
+distance_statistics-worker 2: 1100 iterations (last interval took 27.780734 sec)
+distance_statistics-worker 3: 1000 iterations (last interval took 31.451800 sec)
+distance_statistics-worker 4: 1200 iterations (last interval took 26.522363 sec)
+distance_statistics-worker 14: 1200 iterations (last interval took 26.700327 sec)
+distance_statistics-worker 5: 1200 iterations (last interval took 26.850593 sec)
+distance_statistics-worker 6: 1200 iterations (last interval took 26.761100 sec)
+distance_statistics-worker 7: 1200 iterations (last interval took 26.761946 sec)
+distance_statistics-worker 9: 1200 iterations (last interval took 26.913307 sec)
+distance_statistics-worker 19: 1200 iterations (last interval took 26.662022 sec)
+distance_statistics-worker 13: 1200 iterations (last interval took 26.691662 sec)
+distance_statistics-worker 15: 1200 iterations (last interval took 26.619202 sec)
+distance_statistics-worker 17: 1200 iterations (last interval took 26.888794 sec)
+distance_statistics-worker 11: 1200 iterations (last interval took 26.688743 sec)
+distance_statistics-worker 12: 1200 iterations (last interval took 26.670048 sec)
+distance_statistics-worker 8: 1200 iterations (last interval took 26.913100 sec)
+distance_statistics-worker 16: 1200 iterations (last interval took 26.770685 sec)
+distance_statistics-worker 18: 1200 iterations (last interval took 27.016680 sec)
+distance_statistics-worker 10: 1200 iterations (last interval took 27.068143 sec)
+distance_statistics-worker 1: 1200 iterations (last interval took 28.677368 sec)
+distance_statistics-worker 2: 1200 iterations (last interval took 28.214085 sec)
+distance_statistics-worker 14: 1300 iterations (last interval took 26.797819 sec)
+distance_statistics-worker 4: 1300 iterations (last interval took 27.187464 sec)
+distance_statistics-worker 3: 1100 iterations (last interval took 30.348515 sec)
+distance_statistics-worker 5: 1300 iterations (last interval took 26.882519 sec)
+distance_statistics-worker 6: 1300 iterations (last interval took 26.992310 sec)
+distance_statistics-worker 7: 1300 iterations (last interval took 26.942381 sec)
+distance_statistics-worker 9: 1300 iterations (last interval took 26.880929 sec)
+distance_statistics-worker 19: 1300 iterations (last interval took 26.936054 sec)
+distance_statistics-worker 13: 1300 iterations (last interval took 26.962106 sec)
+distance_statistics-worker 17: 1300 iterations (last interval took 26.925637 sec)
+distance_statistics-worker 15: 1300 iterations (last interval took 26.965249 sec)
+distance_statistics-worker 11: 1300 iterations (last interval took 26.873328 sec)
+distance_statistics-worker 12: 1300 iterations (last interval took 27.077349 sec)
+distance_statistics-worker 8: 1300 iterations (last interval took 26.991363 sec)
+distance_statistics-worker 16: 1300 iterations (last interval took 27.107340 sec)
+distance_statistics-worker 18: 1300 iterations (last interval took 27.181934 sec)
+distance_statistics-worker 10: 1300 iterations (last interval took 27.204248 sec)
+distance_statistics-worker 1: 1300 iterations (last interval took 28.102429 sec)
+distance_statistics-worker 2: 1300 iterations (last interval took 28.331786 sec)
+distance_statistics-worker 14: 1400 iterations (last interval took 26.164211 sec)
+distance_statistics-worker 4: 1400 iterations (last interval took 26.211754 sec)
+distance_statistics-worker 5: 1400 iterations (last interval took 26.284267 sec)
+distance_statistics-worker 9: 1400 iterations (last interval took 26.300946 sec)
+distance_statistics-worker 6: 1400 iterations (last interval took 26.501712 sec)
+distance_statistics-worker 7: 1400 iterations (last interval took 26.494298 sec)
+distance_statistics-worker 13: 1400 iterations (last interval took 26.337775 sec)
+distance_statistics-worker 19: 1400 iterations (last interval took 26.526149 sec)
+distance_statistics-worker 15: 1400 iterations (last interval took 26.478032 sec)
+distance_statistics-worker 11: 1400 iterations (last interval took 26.340831 sec)
+distance_statistics-worker 17: 1400 iterations (last interval took 26.518860 sec)
+distance_statistics-worker 12: 1400 iterations (last interval took 26.561678 sec)
+distance_statistics-worker 8: 1400 iterations (last interval took 26.574948 sec)
+distance_statistics-worker 16: 1400 iterations (last interval took 26.390151 sec)
+distance_statistics-worker 18: 1400 iterations (last interval took 26.575057 sec)
+distance_statistics-worker 10: 1400 iterations (last interval took 26.548831 sec)
+distance_statistics-worker 3: 1200 iterations (last interval took 32.303750 sec)
+distance_statistics-worker 1: 1400 iterations (last interval took 27.992157 sec)
+distance_statistics-worker 2: 1400 iterations (last interval took 27.790704 sec)
+distance_statistics-worker 14: 1500 iterations (last interval took 26.573006 sec)
+distance_statistics-worker 4: 1500 iterations (last interval took 26.935408 sec)
+distance_statistics-worker 5: 1500 iterations (last interval took 26.868943 sec)
+distance_statistics-worker 6: 1500 iterations (last interval took 26.702965 sec)
+distance_statistics-worker 9: 1500 iterations (last interval took 26.794961 sec)
+distance_statistics-worker 7: 1500 iterations (last interval took 27.050232 sec)
+distance_statistics-worker 15: 1500 iterations (last interval took 26.859945 sec)
+distance_statistics-worker 19: 1500 iterations (last interval took 26.893953 sec)
+distance_statistics-worker 13: 1500 iterations (last interval took 27.200753 sec)
+distance_statistics-worker 11: 1500 iterations (last interval took 27.116222 sec)
+distance_statistics-worker 17: 1500 iterations (last interval took 27.292358 sec)
+distance_statistics-worker 8: 1500 iterations (last interval took 27.043317 sec)
+distance_statistics-worker 12: 1500 iterations (last interval took 27.134415 sec)
+distance_statistics-worker 16: 1500 iterations (last interval took 26.971779 sec)
+distance_statistics-worker 18: 1500 iterations (last interval took 27.242079 sec)
+distance_statistics-worker 10: 1500 iterations (last interval took 27.303253 sec)
+distance_statistics-worker 3: 1300 iterations (last interval took 28.758647 sec)
+distance_statistics-worker 1: 1500 iterations (last interval took 28.220135 sec)
+distance_statistics-worker 2: 1500 iterations (last interval took 28.236094 sec)
+distance_statistics-worker 14: 1600 iterations (last interval took 26.577338 sec)
+distance_statistics-worker 4: 1600 iterations (last interval took 26.549561 sec)
+distance_statistics-worker 5: 1600 iterations (last interval took 26.538263 sec)
+distance_statistics-worker 9: 1600 iterations (last interval took 26.575168 sec)
+distance_statistics-worker 6: 1600 iterations (last interval took 26.650438 sec)
+distance_statistics-worker 15: 1600 iterations (last interval took 26.503049 sec)
+distance_statistics-worker 7: 1600 iterations (last interval took 26.644485 sec)
+distance_statistics-worker 19: 1600 iterations (last interval took 26.709311 sec)
+distance_statistics-worker 13: 1600 iterations (last interval took 26.676259 sec)
+distance_statistics-worker 17: 1600 iterations (last interval took 26.451888 sec)
+distance_statistics-worker 11: 1600 iterations (last interval took 26.721515 sec)
+distance_statistics-worker 8: 1600 iterations (last interval took 26.544043 sec)
+distance_statistics-worker 16: 1600 iterations (last interval took 26.536845 sec)
+distance_statistics-worker 12: 1600 iterations (last interval took 26.706299 sec)
+distance_statistics-worker 18: 1600 iterations (last interval took 26.575707 sec)
+distance_statistics-worker 10: 1600 iterations (last interval took 26.738989 sec)
+distance_statistics-worker 3: 1400 iterations (last interval took 32.809038 sec)
+distance_statistics-worker 1: 1600 iterations (last interval took 28.041593 sec)
+distance_statistics-worker 14: 1700 iterations (last interval took 26.208535 sec)
+distance_statistics-worker 4: 1700 iterations (last interval took 26.398900 sec)
+distance_statistics-worker 2: 1600 iterations (last interval took 28.596372 sec)
+distance_statistics-worker 5: 1700 iterations (last interval took 26.283147 sec)
+distance_statistics-worker 9: 1700 iterations (last interval took 26.302130 sec)
+distance_statistics-worker 6: 1700 iterations (last interval took 26.292890 sec)
+distance_statistics-worker 15: 1700 iterations (last interval took 26.260282 sec)
+distance_statistics-worker 7: 1700 iterations (last interval took 26.282341 sec)
+distance_statistics-worker 19: 1700 iterations (last interval took 26.312918 sec)
+distance_statistics-worker 17: 1700 iterations (last interval took 26.341468 sec)
+distance_statistics-worker 13: 1700 iterations (last interval took 26.563768 sec)
+distance_statistics-worker 11: 1700 iterations (last interval took 26.411808 sec)
+distance_statistics-worker 8: 1700 iterations (last interval took 26.356334 sec)
+distance_statistics-worker 16: 1700 iterations (last interval took 26.388562 sec)
+distance_statistics-worker 12: 1700 iterations (last interval took 26.509620 sec)
+distance_statistics-worker 18: 1700 iterations (last interval took 26.394033 sec)
+distance_statistics-worker 10: 1700 iterations (last interval took 26.536284 sec)
+distance_statistics-worker 3: 1500 iterations (last interval took 29.671709 sec)
+distance_statistics-worker 14: 1800 iterations (last interval took 26.777734 sec)
+distance_statistics-worker 1: 1700 iterations (last interval took 27.373484 sec)
+distance_statistics-worker 4: 1800 iterations (last interval took 26.865099 sec)
+distance_statistics-worker 5: 1800 iterations (last interval took 26.937156 sec)
+distance_statistics-worker 9: 1800 iterations (last interval took 26.956068 sec)
+distance_statistics-worker 6: 1800 iterations (last interval took 26.973186 sec)
+distance_statistics-worker 2: 1700 iterations (last interval took 27.686937 sec)
+distance_statistics-worker 15: 1800 iterations (last interval took 26.956150 sec)
+distance_statistics-worker 7: 1800 iterations (last interval took 26.979494 sec)
+distance_statistics-worker 19: 1800 iterations (last interval took 26.949803 sec)
+distance_statistics-worker 17: 1800 iterations (last interval took 26.962299 sec)
+distance_statistics-worker 13: 1800 iterations (last interval took 26.965918 sec)
+distance_statistics-worker 11: 1800 iterations (last interval took 27.001686 sec)
+distance_statistics-worker 8: 1800 iterations (last interval took 27.039266 sec)
+distance_statistics-worker 16: 1800 iterations (last interval took 27.025256 sec)
+distance_statistics-worker 12: 1800 iterations (last interval took 27.110862 sec)
+distance_statistics-worker 18: 1800 iterations (last interval took 27.028854 sec)
+distance_statistics-worker 10: 1800 iterations (last interval took 27.216093 sec)
+distance_statistics-worker 3: 1600 iterations (last interval took 32.911455 sec)
+distance_statistics-worker 14: 1900 iterations (last interval took 26.364901 sec)
+distance_statistics-worker 4: 1900 iterations (last interval took 26.306418 sec)
+distance_statistics-worker 5: 1900 iterations (last interval took 26.377581 sec)
+distance_statistics-worker 9: 1900 iterations (last interval took 26.420740 sec)
+distance_statistics-worker 6: 1900 iterations (last interval took 26.467370 sec)
+distance_statistics-worker 15: 1900 iterations (last interval took 26.387801 sec)
+distance_statistics-worker 1: 1800 iterations (last interval took 28.539465 sec)
+distance_statistics-worker 7: 1900 iterations (last interval took 26.411033 sec)
+distance_statistics-worker 19: 1900 iterations (last interval took 26.436782 sec)
+distance_statistics-worker 17: 1900 iterations (last interval took 26.443446 sec)
+distance_statistics-worker 13: 1900 iterations (last interval took 26.403192 sec)
+distance_statistics-worker 11: 1900 iterations (last interval took 26.423844 sec)
+distance_statistics-worker 8: 1900 iterations (last interval took 26.471061 sec)
+distance_statistics-worker 16: 1900 iterations (last interval took 26.469016 sec)
+distance_statistics-worker 12: 1900 iterations (last interval took 26.440208 sec)
+distance_statistics-worker 2: 1800 iterations (last interval took 28.551448 sec)
+distance_statistics-worker 18: 1900 iterations (last interval took 26.483191 sec)
+distance_statistics-worker 10: 1900 iterations (last interval took 26.648298 sec)
+distance_statistics-worker 14: 2000 iterations (last interval took 26.206443 sec)
+distance_statistics-worker 4: 2000 iterations (last interval took 26.226724 sec)
+distance_statistics-worker 3: 1700 iterations (last interval took 29.678722 sec)
+distance_statistics-worker 5: 2000 iterations (last interval took 26.403953 sec)
+distance_statistics-worker 9: 2000 iterations (last interval took 26.345718 sec)
+distance_statistics-worker 6: 2000 iterations (last interval took 26.269745 sec)
+distance_statistics-worker 15: 2000 iterations (last interval took 26.375571 sec)
+distance_statistics-worker 7: 2000 iterations (last interval took 26.346290 sec)
+distance_statistics-worker 19: 2000 iterations (last interval took 26.464276 sec)
+distance_statistics-worker 17: 2000 iterations (last interval took 26.456680 sec)
+distance_statistics-worker 11: 2000 iterations (last interval took 26.394584 sec)
+distance_statistics-worker 13: 2000 iterations (last interval took 26.467887 sec)
+distance_statistics-worker 1: 1900 iterations (last interval took 27.484216 sec)
+distance_statistics-worker 8: 2000 iterations (last interval took 26.429416 sec)
+distance_statistics-worker 16: 2000 iterations (last interval took 26.508164 sec)
+distance_statistics-worker 12: 2000 iterations (last interval took 26.336949 sec)
+distance_statistics-worker 18: 2000 iterations (last interval took 26.507667 sec)
+distance_statistics-worker 2: 1900 iterations (last interval took 27.764218 sec)
+distance_statistics-worker 10: 2000 iterations (last interval took 26.597468 sec)
+distance_statistics-worker 14: 2100 iterations (last interval took 26.833352 sec)
+distance_statistics-worker 4: 2100 iterations (last interval took 26.847151 sec)
+distance_statistics-worker 5: 2100 iterations (last interval took 26.925661 sec)
+distance_statistics-worker 9: 2100 iterations (last interval took 26.931948 sec)
+distance_statistics-worker 6: 2100 iterations (last interval took 26.971618 sec)
+distance_statistics-worker 15: 2100 iterations (last interval took 26.901590 sec)
+distance_statistics-worker 7: 2100 iterations (last interval took 26.955639 sec)
+distance_statistics-worker 19: 2100 iterations (last interval took 26.945500 sec)
+distance_statistics-worker 17: 2100 iterations (last interval took 26.944870 sec)
+distance_statistics-worker 11: 2100 iterations (last interval took 26.933669 sec)
+distance_statistics-worker 13: 2100 iterations (last interval took 27.007852 sec)
+distance_statistics-worker 8: 2100 iterations (last interval took 26.940760 sec)
+distance_statistics-worker 16: 2100 iterations (last interval took 27.015507 sec)
+distance_statistics-worker 12: 2100 iterations (last interval took 26.974701 sec)
+distance_statistics-worker 1: 2000 iterations (last interval took 28.002457 sec)
+distance_statistics-worker 18: 2100 iterations (last interval took 27.019161 sec)
+distance_statistics-worker 3: 1800 iterations (last interval took 31.962435 sec)
+distance_statistics-worker 2: 2000 iterations (last interval took 28.043303 sec)
+distance_statistics-worker 10: 2100 iterations (last interval took 27.162952 sec)
+distance_statistics-worker 14: 2200 iterations (last interval took 26.293576 sec)
+distance_statistics-worker 4: 2200 iterations (last interval took 26.332886 sec)
+distance_statistics-worker 5: 2200 iterations (last interval took 26.277472 sec)
+distance_statistics-worker 9: 2200 iterations (last interval took 26.389587 sec)
+distance_statistics-worker 6: 2200 iterations (last interval took 26.380582 sec)
+distance_statistics-worker 15: 2200 iterations (last interval took 26.359443 sec)
+distance_statistics-worker 7: 2200 iterations (last interval took 26.366886 sec)
+distance_statistics-worker 19: 2200 iterations (last interval took 26.283384 sec)
+distance_statistics-worker 17: 2200 iterations (last interval took 26.342449 sec)
+distance_statistics-worker 13: 2200 iterations (last interval took 26.333856 sec)
+distance_statistics-worker 11: 2200 iterations (last interval took 26.437817 sec)
+distance_statistics-worker 8: 2200 iterations (last interval took 26.445627 sec)
+distance_statistics-worker 16: 2200 iterations (last interval took 26.369354 sec)
+distance_statistics-worker 12: 2200 iterations (last interval took 26.407011 sec)
+distance_statistics-worker 18: 2200 iterations (last interval took 26.357254 sec)
+distance_statistics-worker 1: 2100 iterations (last interval took 28.143223 sec)
+distance_statistics-worker 10: 2200 iterations (last interval took 26.611662 sec)
+distance_statistics-worker 2: 2100 iterations (last interval took 28.660751 sec)
+distance_statistics-worker 3: 1900 iterations (last interval took 30.959491 sec)
+distance_statistics-worker 14: 2300 iterations (last interval took 26.299577 sec)
+distance_statistics-worker 4: 2300 iterations (last interval took 26.295061 sec)
+distance_statistics-worker 5: 2300 iterations (last interval took 26.493246 sec)
+distance_statistics-worker 6: 2300 iterations (last interval took 26.333698 sec)
+distance_statistics-worker 9: 2300 iterations (last interval took 26.406880 sec)
+distance_statistics-worker 15: 2300 iterations (last interval took 26.457659 sec)
+distance_statistics-worker 7: 2300 iterations (last interval took 26.420670 sec)
+distance_statistics-worker 19: 2300 iterations (last interval took 26.603512 sec)
+distance_statistics-worker 17: 2300 iterations (last interval took 26.575496 sec)
+distance_statistics-worker 11: 2300 iterations (last interval took 26.480483 sec)
+distance_statistics-worker 13: 2300 iterations (last interval took 26.574198 sec)
+distance_statistics-worker 8: 2300 iterations (last interval took 26.502298 sec)
+distance_statistics-worker 12: 2300 iterations (last interval took 26.397303 sec)
+distance_statistics-worker 16: 2300 iterations (last interval took 26.616595 sec)
+distance_statistics-worker 18: 2300 iterations (last interval took 26.612798 sec)
+distance_statistics-worker 1: 2200 iterations (last interval took 27.769363 sec)
+distance_statistics-worker 10: 2300 iterations (last interval took 26.701282 sec)
+distance_statistics-worker 2: 2200 iterations (last interval took 27.890837 sec)
+distance_statistics-worker 3: 2000 iterations (last interval took 30.127366 sec)
+distance_statistics-worker 14 finished
+received result 0 from worker
+waiting for 18 workers to finish
+distance_statistics-worker 4 finished
+received result 1 from worker
+waiting for 17 workers to finish
+distance_statistics-worker 5 finished
+received result 2 from worker
+waiting for 16 workers to finish
+distance_statistics-worker 6 finished
+received result 3 from worker
+waiting for 15 workers to finish
+distance_statistics-worker 9 finished
+received result 4 from worker
+waiting for 14 workers to finish
+distance_statistics-worker 7 finished
+received result 5 from worker
+waiting for 13 workers to finish
+distance_statistics-worker 13 finished
+received result 6 from worker
+waiting for 12 workers to finish
+distance_statistics-worker 11 finished
+received result 7 from worker
+waiting for 11 workers to finish
+distance_statistics-worker 8 finished
+received result 8 from worker
+waiting for 10 workers to finish
+distance_statistics-worker 12 finished
+received result 9 from worker
+waiting for 9 workers to finish
+distance_statistics-worker 15 finished
+received result 10 from worker
+waiting for 8 workers to finish
+distance_statistics-worker 16 finished
+received result 11 from worker
+waiting for 7 workers to finish
+distance_statistics-worker 17 finished
+received result 12 from worker
+waiting for 6 workers to finish
+distance_statistics-worker 10 finished
+received result 13 from worker
+waiting for 5 workers to finish
+distance_statistics-worker 18 finished
+received result 14 from worker
+waiting for 4 workers to finish
+distance_statistics-worker 19 finished
+received result 15 from worker
+waiting for 3 workers to finish
+distance_statistics-worker 1: 2300 iterations (last interval took 27.845779 sec)
+distance_statistics-worker 2: 2300 iterations (last interval took 27.881183 sec)
+distance_statistics-worker 3: 2100 iterations (last interval took 32.984683 sec)
+distance_statistics-worker 1 finished
+received result 16 from worker
+waiting for 2 workers to finish
+distance_statistics-worker 2 finished
+received result 17 from worker
+waiting for 1 workers to finish
+distance_statistics-worker 3: 2200 iterations (last interval took 26.605908 sec)
+distance_statistics-worker 3: 2300 iterations (last interval took 30.348923 sec)
+distance_statistics-worker 3 finished
+received result 18 from worker
+server finished
+complete_statistics scc-44952
+eccentricity median 28 max 36 min 16
+(connected) average distance 12.143093
+median average distance per node 5
+5-neighbourhood max 40180 min 6
+
+basic_network_statistics scc-44952
+vertices 44952 edges 446326
+average indegree = average outdegree 9.928946
+
+basic_network_statistics scc-117
+vertices 117 edges 782
+average indegree = average outdegree 6.683761
+
+complete_statistics scc-117
+eccentricity median 3 max 4 min 2
+(connected) average distance 3.967728
+median average distance per node 1
+5-neighbourhood max 117 min 117
+
+basic_network_statistics scc-70
+vertices 70 edges 220
+average indegree = average outdegree 3.142857
+
+complete_statistics scc-70
+eccentricity median 9 max 14 min 4
+(connected) average distance 10.176812
+median average distance per node 4
+5-neighbourhood max 70 min 9
+
+basic_network_statistics scc-68
+vertices 68 edges 1346
+average indegree = average outdegree 19.794118
+
+complete_statistics scc-68
+eccentricity median 3 max 4 min 2
+(connected) average distance 3.583406
+median average distance per node 1
+5-neighbourhood max 68 min 68
+
+basic_network_statistics scc-66
+vertices 66 edges 449
+average indegree = average outdegree 6.803030
+
+complete_statistics scc-66
+eccentricity median 4 max 6 min 3
+(connected) average distance 5.904429
+median average distance per node 2
+5-neighbourhood max 66 min 48
+
+basic_network_statistics scc-55
+vertices 55 edges 2970
+average indegree = average outdegree 54.000000
+
+complete_statistics scc-55
+eccentricity median 1 max 1 min 1
+(connected) average distance 2.000000
+median average distance per node 1
+5-neighbourhood max 55 min 55
+
+basic_network_statistics scc-48
+vertices 48 edges 257
+average indegree = average outdegree 5.354167
+
+complete_statistics scc-48
+eccentricity median 5 max 8 min 4
+(connected) average distance 5.771277
+median average distance per node 2
+5-neighbourhood max 48 min 17
+
+basic_network_statistics scc-45
+vertices 45 edges 120
+average indegree = average outdegree 2.666667
+
+complete_statistics scc-45
+eccentricity median 13 max 16 min 8
+(connected) average distance 12.864646
+median average distance per node 6
+5-neighbourhood max 38 min 8
+
+basic_network_statistics scc-40
+vertices 40 edges 95
+average indegree = average outdegree 2.375000
+
+complete_statistics scc-40
+eccentricity median 4 max 5 min 3
+(connected) average distance 4.997436
+median average distance per node 2
+5-neighbourhood max 40 min 40
+
+basic_network_statistics scc-40
+vertices 40 edges 420
+average indegree = average outdegree 10.500000
+
+complete_statistics scc-40
+eccentricity median 3 max 5 min 3
+(connected) average distance 4.535897
+median average distance per node 2
+5-neighbourhood max 40 min 40
+
+basic_network_statistics scc-35
+vertices 35 edges 283
+average indegree = average outdegree 8.085714
+
+complete_statistics scc-35
+eccentricity median 3 max 4 min 1
+(connected) average distance 4.040336
+median average distance per node 2
+5-neighbourhood max 35 min 35
+
+basic_network_statistics scc-34
+vertices 34 edges 137
+average indegree = average outdegree 4.029412
+
+complete_statistics scc-34
+eccentricity median 4 max 5 min 3
+(connected) average distance 5.499109
+median average distance per node 2
+5-neighbourhood max 34 min 34
+
+basic_network_statistics scc-33
+vertices 33 edges 64
+average indegree = average outdegree 1.939394
+
+complete_statistics scc-33
+eccentricity median 2 max 2 min 1
+(connected) average distance 3.878788
+median average distance per node 1
+5-neighbourhood max 33 min 33
+
+basic_network_statistics scc-31
+vertices 31 edges 138
+average indegree = average outdegree 4.451613
+
+complete_statistics scc-31
+eccentricity median 3 max 5 min 2
+(connected) average distance 4.240860
+median average distance per node 2
+5-neighbourhood max 31 min 31
+
