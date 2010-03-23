@@ -114,7 +114,7 @@ let format_time t =
 
 let print_key_records l =
   let print r =
-    let (keyid, puid, ctime, exptime) = r in
+    let (keyid, puid, ctime, exptime, _, _) = r in
     let ctime_string = format_time ctime in
     let exptime_string = format_time_option exptime in
     let s = Printf.sprintf 

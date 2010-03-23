@@ -5,6 +5,13 @@ open Graph_misc
 open Domain_time_statistics
 
 module Int32Set = Set.Make(Int32)
+
+module Record  = struct
+  type t = string * string * float * float option * int32 * int32
+  let compare (keyid1, _, _, _, _, _) (keyid2, _, _, _, _, _) = compare keyid1 keyid2
+end
+
+module RecordSet = Set.Make(Record)
 (*
 let divide_period s e interval =
   let rec eat l interval_start =
@@ -31,26 +38,26 @@ let divide_period lastmonth lastyear =
 let increment_by_one = Graph_misc.int32map_add_or_create 1
 
 let common_keylens = 
-  Set.IntSet.add 512
-    (Set.IntSet.add 768
-       (Set.IntSet.add 1024
-	  (Set.IntSet.add 2048
-	     (Set.IntSet.add 3072
-		(Set.IntSet.add 4096
-		   Set.IntSet.empty)))))
+  Int32Set.add 512l
+    (Int32Set.add 768l
+       (Int32Set.add 1024l
+	  (Int32Set.add 2048l
+	     (Int32Set.add 3072l
+		(Int32Set.add 4096l
+		   Int32Set.empty)))))
   
 
 let count_algorithm_use records =
   let project_record m r =
-    let (_, _, _, _, _, _, pk_alg, _) = r in
+    let (_, _, _, _, pk_alg, _) = r in
       increment_by_one m pk_alg
   in
     List.fold_left project_record Int32Map.empty records
 
 let count_rsa_keylen records =
   let project_record m r =
-    let (_, _, _, _, _, _, pk_alg, pk_keylen) = r in
-      if pk_alg = 1l && Set.IntSet.mem pk_keylen common_keylens then
+    let (_, _, _, _, pk_alg, pk_keylen) = r in
+      if pk_alg = 1l && Int32Set.mem pk_keylen common_keylens then
 	increment_by_one m pk_keylen
       else
 	m
@@ -59,8 +66,8 @@ let count_rsa_keylen records =
 
 let count_dsa_keylen records =
   let project_record m r =
-    let (_, _, _, _, _, _, pk_alg, pk_keylen) = r in
-      if pk_alg = 17l && Set.IntSet.mem pk_keylen common_keylens then
+    let (_, _, _, _, pk_alg, pk_keylen) = r in
+      if pk_alg = 17l && Int32Set.mem pk_keylen common_keylens then
 	increment_by_one m pk_keylen
       else
 	m
@@ -143,10 +150,13 @@ let mscc_monthly dbh =
     let size = List.length mscc in
       Printf.printf "month %s graph size %d mscc size %d\n" (format_time timestamp) (G.nb_vertex g) size;
       flush stdout;
-      (timestamp, size)
+      (timestamp, mscc)
   in
   let numbers = List.map fetch_and_compute months in
-  let numbers = List.mapi (fun i (_start, x) -> (i, x)) numbers in
+    List.mapi (fun i (_start, x) -> (i, x)) numbers
+
+let mscc_sizes msccs =
+  let numbers = List.map (fun (id, vs) -> (id, (List.length vs))) msccs in
   let fname = "mscc-size.dat" in
     write_distribution_to_file "%d %d\n" (List.enum numbers) fname
 
@@ -162,6 +172,29 @@ let algorithm_stats dbh keys_per_period graph_name =
     List.iter (write (graph_name ^ "-rsa_keylen_stats")) (explode_maps rsa_keylen_stats);
     List.iter (write (graph_name ^ "-dsa_keylen_stats")) (explode_maps dsa_keylen_stats)
 
+let mscc_stats dbh msccs =
+  let records =
+    List.map
+      (fun (i, vs) -> 
+	 let records = divide_et_impera (get_key_records dbh) vs in
+	   (i, records))
+      msccs
+  in
+    let records_per_interval = 
+      List.fold_left
+	(fun (prev_records, l) (i, records) ->
+	   let current_records = RecordSet.of_enum (List.enum records) in
+	   let diff = RecordSet.diff prev_records current_records in
+	     Printf.printf "prev %d current %d diff %d\n" 
+	       (RecordSet.cardinal prev_records) 
+	       (RecordSet.cardinal current_records) 
+	       (RecordSet.cardinal diff);
+	     (current_records, (i, (RecordSet.elements diff)) :: l))
+	(RecordSet.empty, [])
+	records
+    in
+      algorithm_stats dbh (snd records_per_interval) "mscc"
+
 let _ =
   if Array.length Sys.argv <> 2 then (
     print_endline "usage: db";
@@ -169,14 +202,12 @@ let _ =
 
 let main () =
   let dbh = PGOCaml.connect ~database:Sys.argv.(1) () in
-    mscc_monthly dbh;
-    let keys_g = fetch_keys_per_period_all dbh in
-    let keys_mscc = fetch_keys_per_period dbh 0l in
-
-      algorithm_stats dbh keys_mscc "mscc";
-      algorithm_stats dbh keys_g "whole_graph";
-(*      creation_stats (map_len keys_mscc) "mscc"; *)
-      creation_stats (map_len keys_g) "whole_graph"
+    let msccs = mscc_monthly dbh in
+      mscc_sizes msccs;
+      mscc_stats dbh msccs;
+      let keys_g = fetch_keys_per_period_all dbh in
+	algorithm_stats dbh keys_g "whole_graph";
+	creation_stats (map_len keys_g) "whole_graph"
 
 let _ =
   try main () with

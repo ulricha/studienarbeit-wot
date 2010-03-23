@@ -14,7 +14,7 @@ open Community_helpers
 *)
 
 let print_statistics key_records uids_nested sig_ctimes =
-  let key_ctimes = List.map (fun (_, _, ctime, _) -> ctime) key_records in
+  let key_ctimes = List.map (fun (_, _, ctime, _, _, _) -> ctime) key_records in
   let size = List.length key_records in
     (* let puids = List.map (fun (_, uid, _, _) -> uid) key_records in *)
   let adresses = List.map (extract_regexp_group regexp_email) uids_nested in

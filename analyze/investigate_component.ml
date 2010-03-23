@@ -4,9 +4,9 @@ open Db_interface
 open Domain_time_statistics
 
 let print_statistics key_records sig_ctimes =
-  let uids = List.map (fun (_, uid, _, _) -> uid) key_records in
+  let uids = List.map (fun (_, uid, _, _, _, _) -> uid) key_records in
   let size = List.length key_records in
-  let ctimes = List.map (fun (_, _, ctime, _) -> ctime ) key_records in
+  let ctimes = List.map (fun (_, _, ctime, _, _, _) -> ctime ) key_records in
   let adresses = extract_regexp_group regexp_email uids in
   let tlds = extract_regexp_group regexp_tld adresses in
   let slds = extract_slds adresses in

@@ -7,7 +7,7 @@ let all_sigs dbh =
   PGSQL(dbh) "SELECT signer, signee, ctime FROM sigs"
 
 let get_key_records dbh keyids =
-  PGSQL(dbh) "SELECT keyid, puid, ctime, exptime FROM keys where keyid in $@keyids"
+  PGSQL(dbh) "SELECT keyid, puid, ctime, exptime, alg, keylen FROM keys where keyid in $@keyids"
 
 let get_keys_per_period dbh interval_list keyids =
   print_endline "get_keys_per_period";
@@ -35,7 +35,7 @@ let get_keys_per_period_all dbh interval_list =
   print_endline "get_keys_per_period";
   let get (interval_start, interval_end) =
     let records = 
-      PGSQL(dbh) "SELECT * FROM keys where ctime >= $interval_start AND ctime <= $interval_end AND (revoktime IS NULL OR revoktime > $interval_end) AND (exptime IS NULL OR exptime > $interval_end)"
+      PGSQL(dbh) "SELECT keyid, puid, ctime, exptime, alg, keylen FROM keys where ctime >= $interval_start AND ctime <= $interval_end AND (revoktime IS NULL OR revoktime > $interval_end) AND (exptime IS NULL OR exptime > $interval_end)"
     in
       print_endline (Printf.sprintf "get interval %s keys %d" (format_time interval_start) (List.length records));
       (interval_start, records)
