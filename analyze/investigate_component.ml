@@ -21,7 +21,7 @@ let print_statistics key_records sig_ctimes =
        | Some (p, start) ->
 	   let r = Unix.gmtime start in
 	   let s = Printf.sprintf "%d.%d.%d" r.Unix.tm_mday (r.Unix.tm_mon + 1) (r.Unix.tm_year + 1900) in
-	     Printf.printf "HAS_SIG_TIME_CORR %f (%s) %f %d\n" start s p size
+	     Printf.printf "HAS_SIG_TIME_CORR %.0f (%s) %.0f %% %d\n" start s (p *. 100.) size
        | None ->
 	   Printf.printf "NO_SIG_TIME_CORR %d\n" size);
     print_endline "\nCreation times of keys:";
