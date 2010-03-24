@@ -142,6 +142,7 @@ OCamlProgram(time, time $(AUXFILES))
 OCamlProgram(count, count $(AUXFILES))
 OCamlProgram(basic_properties_mpi, basic_properties_mpi $(AUXFILES) mpi_framework)
 OCamlProgram(basic_properties, basic_properties $(AUXFILES))
+OCamlProgram(correlate_weak_sigs, correlate_weak_sigs $(AUXFILES))
 
 EXE[] = 
 	dump_sql
@@ -160,6 +161,7 @@ EXE[] =
 	time
 	count
 	basic_properties_mpi
+	correlate_weak_sigs
 
 .DEFAULT: $(EXE)
 
