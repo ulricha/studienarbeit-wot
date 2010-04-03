@@ -2,68 +2,52 @@
 
 \chapter{Ergebnisse und Diskussion}
 \label{ch:Ergebnisse}
+In Abschnitt \ref{sec:datensatz} wird zun\"achst der berechnete
+Datensatz allgemein charakterisiert. 
 
 \subsection{Datensatz}
 \label{sec:datensatz}
 
-Der berechnete Datensatz enth\"alt 2725504 Schl\"ussel und 1145337
-zugeh\"orige Signaturen, wobei hier keine Selbstsignaturen enthalten
-sind. Von diesen Schl\"usseln sind 417163 Schl\"ussel abgelaufen und
-100071 Schl\"ussel wurden zur\"uckgezogen. Die in Relation zur Anzahl
-der Schl\"ussel niedrige Anzahl von Signaturen weist schon darauf hin,
+Die Extraktion der hier verwendeten Daten wurde auf einem vom
+Verfasser betriebenen Keyserver am 02.12.2009 vorgenommen. Die
+Datenbank des Keyservers war zu diesem Zeitpunkt mit dem Rest des
+Keyserver-Netzwerkes vollst\"andig abgeglichen. Der berechnete
+Datensatz enth\"alt 2725504 Schl\"ussel und 1145337 zugeh\"orige
+Signaturen, wobei hier keine Selbstsignaturen enthalten sind. 52000
+Schl\"ussel wurden w\"ahrend der Extraktion als defekt verworfen. Eine
+Stichprobe von 30 verworfenen Schl\"ussel ergab, dass diese auch
+von GnuPG nicht akzeptiert werden, weil sie entweder \"uber keine
+UserID-Pakete verf\"ugen oder aus anderen Gr\"unden keine
+standardkonformen 
+OpenPGP-Schl\"ussel darstellen. Von den nicht-defekten
+Schl\"usseln sind 417163 Schl\"ussel abgelaufen und 100071
+Schl\"ussel wurden zur\"uckgezogen. Die in Relation zur Anzahl der
+Schl\"ussel niedrige Anzahl von Signaturen weist schon darauf hin,
 dass ein erheblicher Teil der (g\"ultigen) Schl\"ussel nicht oder kaum
 vernetzt ist. In der Tat verbleiben nach Abzug von Schl\"usseln, die
 weder ein- noch ausgehende Signaturen haben, nur 325410 g\"ultige
-Schl\"ussel und 816785 zugeh\"orige g\"ultige Kanten. Die grosse
-Mehrheit der im Keyserver-Netzwerk vorhandenen Schl\"ussel ist also
-komplett unvernetzt und nimmt von vorneherein nicht am Web of Trust teil.
-
-Vergleich mit anderen PGP-Graphen in der Literatur
-(social-distance-zeug, capkun-paper etc.)
+Schl\"ussel und 816785 zugeh\"orige g\"ultige Kanten, die den Graphen
+ausmachen. Die grosse Mehrheit der im Keyserver-Netzwerk vorhandenen
+Schl\"ussel ist also komplett unvernetzt und nimmt von vorneherein
+nicht am Web of Trust teil. Die \"Uberpr\"ufung der Authentizit\"at
+dieser Schl\"ussel anhand \"offentlich verf\"ugbarer Informationen ist
+nicht m\"oglich. Die Besitzer dieser Schl\"ussel haben --
+sofern sie die Schl\"ussel \"uberhaupt einsetzen -- ebenfalls keine
+M\"oglichkeit, die Authentizit\"at anderer Schl\"ussel zu
+pr\"ufen. \"Uber die Gr\"unde f\"ur diese geringe Vernetzung kann hier nur
+spekuliert werden. M\"oglich ist etwa, dass die Benutzer schlichtweg
+keine Notwendigkeit in der Authentifizierung von Schl\"usseln sehen,
+weil ihnen Man-in-the-middle und \"ahnliche Angriffe nicht bekannt
+sind, oder das im Web of Trust verwendete Modell zur Verifizierung von
+Schl\"usseln zu komplex erscheint. Es kann selbstverst\"andlich nicht
+ausgeschlossen werden, dass die Verfizierung \"uber Signaturen
+l\"auft, die nicht auf \"offentliche Keyserver geladen
+wurden. Beachtet werden muss auch, dass der Datensatz keine pr\"azise
+Angabe \"uber die momentane Anzahl von PGP-Benutzern erlaubt, da sich die
+Schl\"ussel \"uber einen Zeitraum von 20 Jahren angesammelt haben.
 
 \section{Allgemeine Merkmale des Netzwerkes}
 \label{sec:result-allg-merkm-des}
-
-
-\subsection{Kennzahlen des Graphen}
-\label{sec:kennz-des-graph}
-
-\begin{figure}[t]
-  \centering
-  \subfloat[]{\label{fig:indeg-dist} \includegraphics[scale=0.42]{images/indegree-dist.pdf}}
-  \subfloat[]{\label{fig:outdeg-dist} \includegraphics[scale=0.42]{images/outdegree-dist.pdf}}
-  \caption{Verteilung der eingehenden (\ref{fig:indeg-dist}) und
-    ausgehenden (\ref{fig:outdeg-dist}) Knotengrade in der gr\"ossten
-    starken Zusammenhangskomponente}
-  \label{fig:comsizedist}
-\end{figure}
-
-\begin{figure}[th!]
-  \centering
-  \includegraphics[scale=0.7]{images/neighbourhood-cdf.pdf}
-  \caption{Kumulative Verteilungsfunktion der Nachbarschaften}
-  \label{fig:neighbourhood-cdf}
-\end{figure}
-
-\begin{figure}[th!]
-  \centering
-  \includegraphics[scale=0.4]{images/pathlen-dist.pdf}
-  \caption{Verteilung der durschnittlichen Pfadl\"angen der gr\"ossten starken Zusammenhangskomponente}
-  \label{fig:pathlen-dist}
-\end{figure}
-
-\begin{figure}[th!]
-  \centering
-  \includegraphics[scale=0.4]{images/ecc-dist.pdf}
-  \caption{Verteilung der Eccentricity in der gr\"ossten starken Zusammenhangskomponente}
-  \label{fig:ecc-dist}
-\end{figure}
-
-\subsection{Betweeness Centrality}
-\label{sec:betw-centr}
-
-\subsection{Struktur der starken Zusammenhangskomponenten}
-\label{sec:struktur-der-starken}
 
 \subsection{Starke Zusammenhangskomponenten}
 \label{sec:result-komponentenstruktur}
@@ -75,30 +59,171 @@ Vergleich mit anderen PGP-Graphen in der Literatur
   \label{fig:component-size}
 \end{figure}
 
+Der so erhaltene Graph wurde zun\"achst in seine 240382 starken
+Zusammenhangskomponenten zerlegt. Die Verteilung der
+Komponentengr\"ossen in Abbildung \ref{fig:component-size} zeigt dabei
+zwei Extreme: Es existiert eine einzelne gigantische Komponente mit
+ca. 45000 Knoten. Demgegen\"uber steht eine geringe Anzahl von kleinen
+Komponenten bis zur Gr\"osse 3 , insbesondere aber \"uber 100000
+einelementige Komponenten, also einzelne Knoten, die nur
+\emph{entweder} ein- oder ausgehende Kanten haben, und \"uber 10000
+zweielementige Komponenten, also durch zwei Kanten verbundene
+Knotenpaare. Ein erheblicher Anteil der \"uberhaupt vernetzten Knoten
+ist also wiederum nur sehr wenig vernetzt.
+
 \begin{figure}[th!]
   \centering
-  \includegraphics[scale=1.0]{images/component-metagraph-8.pdf}
+  \includegraphics[scale=0.7]{images/component-metagraph-8.pdf}
   \caption{Struktur der starken Zusammenhangskomponenten bis zur
     Grösse 6 (rot = Grösse 6-10, grün = Grösse 11-20, blau = Grösse
     21-30, violett = Grösse $>= 31$, gelb = MSCC)}
   \label{fig:komponenten-struktur}
 \end{figure}
 
+Abbildung \ref{fig:komponenten-struktur} zeigt die Struktur der
+Zusammenhangskomponenten bis zur Gr\"osse 6, die mit anderen
+Komponenten verbunden sind. Es ergibt sich eine sternf\"ormige
+Struktur, bei der die kleineren Komponenten fast ausschliesslich mit
+der gr\"ossten Komponente verbunden sind und es so gut wie keine
+weitere Vernetzung gibt. Um zwei starke Zusammenhangskomponenten
+verschmelzen zu lassen, ist nur genau eine Kante in jede Richtung
+n\"otig. Es kann also davon ausgegangen werden, dass die Komponenten
+nur durch einzelne Kanten, die eben nur in eine Richtung verlaufen
+k\"onnen, verbunden sind. Daraus ergibt sich, dass die Mitglieder
+der kleinen Komponenten nur eine sehr geringe Signaturaktivit\"at
+aufweisen k\"onnen, da andernfalls die Wahrscheinlichkeit f\"ur das Verschmelzen
+von Komponenten hoch w\"are und die Anzahl sehr kleiner Komponenten
+geringer sein m\"usste.
+
+Die \emph{N\"utzlichkeit} des Web of Trust f\"ur die Teilnehmer, deren
+Schl\"ussel nicht in der gr\"ossten starken Zusammenhangskomponente
+enthalten sind, ist gering: Die Menge der Schl\"ussel, die von einem
+Teilnehmer anhand von Signaturketten verifiziert werden kann,
+beschr\"ankt sich zun\"achst auf die eigene Komponente und ist damit
+sehr klein. Zwar gibt es auch -- wie oben gezeigt -- Vernetzung
+zwischen kleineren Komponenten und der gr\"ossten Komponente. Es
+existieren ca. 18000 Knoten, die Knoten aus der gr\"ossten Komponente
+direkt \"uber eine einzige Kante errreichen k\"onnen. Allerdings muss
+hier beachtet werden, dass das in PGP/GnuPG verwendete
+Verifizierungsmodell die L\"ange der verwendbaren Signaturketten
+begrenzt -- in der Standardeinstellung von GnuPG auf die maximale
+L\"ange 5 (siehe Abschnitt
+\ref{sec:das-gnupg-vertrauensmodell}). Schon innerhalb der gr\"ossten
+Komponente sind viele k\"urzeste Pfade l\"anger als dieses Maximum
+(siehe Abschnitt \ref{sec:kennz-des-graph}). Durch den zus\"atzlichen
+Schritt zu einem Knoten innerhalb der gr\"ossten Komponente
+verl\"angert sich der Pfad. Insbesondere wenn es sich bei diesen
+Knoten um schwach vernetzte Knoten handelt, die am ``Rand'' der
+gr\"ossten Komponente liegen, ist die Menge der auf Pfaden benutzbarer
+L\"ange erreichbaren Knoten beschr\"ankt. Kann die gr\"osste
+Komponente nur indirekt \"uber andere Knoten erreicht werden,
+reduziert sich diese Menge noch weiter. Gleiches gilt auch f\"ur die
+Erreichbarkeit der Menge von ca. 92000 Knoten, zu denen eine Kante von
+Knoten der gr\"ossten Komponente aus besteht.
+
+Insgesamt lassen diese Daten den Schluss zu, dass ausschliesslich die
+gr\"osste starke Zusammenhangskomponente Schl\"ussel von Personen
+enth\"alt, die sich durch regelm\"assige Signaturaktivit\"aten am Web
+of Trust beteiligen und es zur Verifizierung von Schl\"usseln
+benutzen. Eine weitergehende Analyse der in den kleineren
+Zusammenhangskomponenten enthaltenen Schl\"ussel wird in Abschnitt
+\ref{sec:zusammenhangskomponenten-inhaltlich} vorgenommen.
+
+\subsection{Netzwerkstatistiken der gr\"ossten starken
+  Zusammenhangskomponente}
+\label{sec:kennz-des-graph}
+
+Der induzierte Teilgraph der gr\"ossten starken
+Zusammenhangskomponente besteht aus 44952 Knoten und 442960
+gerichteten Kanten.
+
+\begin{figure}[th!]
+  \centering
+  \subfloat[]{\label{fig:indeg-dist} \includegraphics[scale=0.42]{images/indegree-dist.pdf}}
+  \subfloat[]{\label{fig:outdeg-dist} \includegraphics[scale=0.42]{images/outdegree-dist.pdf}}
+  \caption{Verteilung der eingehenden \subref{fig:indeg-dist} und
+    ausgehenden \subref{fig:outdeg-dist} Knotengrade in der gr\"ossten
+    starken Zusammenhangskomponente}
+  \label{fig:comsizedist}
+\end{figure}
+
+(Kein reines powerlaw).
+
+Unabh\"angig von der konkreten Verteilung kann aber festgehalten
+werden, dass es eine (kleine) Anzahl von Knoten mit sehr hohem Grad
+gibt. (weiter ausf\"uhren, was das f\"ur das Netzwerk bedeutet -- Hubs
+usw.) Orientieren an (Newman -- Email, Bele -- Email). Spekulieren, ob
+das mit the rich get richer zu tun hat -- verbinden mit Modell aus
+Capkun-Paper.
+
+Es gibt viele Knoten mit geringem Grad, vor allem mit Grad 1. F\"ur
+diese Knoten gilt, dass sie nur eine M\"oglichkeit haben, um
+Signaturketten zu bauen. Warum ist das schlecht? Weil diese Knoten
+zumindest f\"ur die ersten Schritte in der Signaturkette keine
+Redundanz haben. Wenn sie dem ersten Knoten nicht vertrauen, kommen
+sie nirgendwohin. F\"ur die Knoten mit indegree=1 gilt andersherum,
+dass keine redundanten Signaturketten dorthin m\"oglich sind. Dem
+einzigen Knoten, der sie ihn signiert hat, muss vertraut werden, oder
+der Schl\"ussel kann \"uberhaupt nicht verifiziert werden. Ausserdem
+gilt f\"ur diese Knoten, dass das Expiren eines einzigen Knoten (wie
+viele Knoten mit expiredate gibt es?) sie komplett vom Netz abtrennen
+w\"urde.
+
+\begin{figure}[th!]
+  \centering
+  \includegraphics[scale=0.6]{images/neighbourhood-cdf.pdf}
+  \caption{Kumulative Verteilungsfunktion der Nachbarschaften}
+  \label{fig:neighbourhood-cdf}
+\end{figure}
+
+Hier geht es um die Frage, wie \emph{n\"utzlich} das Netzwerk f\"ur
+seinen Zweck, n\"amlich die Verifizierung von Schl\"usseln durch
+Signaturketten, eigentlich ist.
+
+\begin{figure}[th!]
+  \centering
+  \subfloat[]{\label{fig:avg-pathlen}\includegraphics[scale=0.3]{images/pathlen-dist.pdf}}
+  \subfloat[]{\label{fig:eccentricity}\includegraphics[scale=0.3]{images/ecc-dist.pdf}}
+  \caption{Verteilung der durschnittlichen Pfadl\"angen
+    \subref{fig:avg-pathlen} und der Eccentricity
+    \subref{fig:eccentricity} in der gr\"ossten starken Zusammenhangskomponente}
+  \label{fig:pathlen-dist}
+\end{figure}
+
+
+\subsection{Betweeness Centrality}
+\label{sec:betw-centr}
+
+\subsection{Struktur der starken Zusammenhangskomponenten}
+\label{sec:struktur-der-starken}
+
+
 
 \section{Eigenschaften einzelner Schl\"ussel, zeitliche Entwicklung}
 \label{sec:result-key-properties}
+
+\cite{Stevens2009}
 
 \begin{figure}[th!]
   \centering
   \subfloat[]{\label{fig:size-dev-whole} \includegraphics[scale=0.3]{images/whole-size-time.pdf}}
   \subfloat[]{\label{fig:size-dev-mscc} \includegraphics[scale=0.3]{images/mscc-size-time.pdf}}
   \caption{Zeitliche Entwicklung der Gr\"osse des gesamten
-    Schl\"usselbestandes (\subref{fig:size-dev-whole}) und der
-      gr\"ossten starken Zusammenhangskomponente (\subref{fig:size-dev-mscc})}
+    Schl\"usselbestandes \subref{fig:size-dev-whole} und der
+      gr\"ossten starken Zusammenhangskomponente \subref{fig:size-dev-mscc}}
   \label{fig:size-dev}
 \end{figure}
 
 
+\begin{figure}[th!]
+  \centering
+  \subfloat[]{\label{fig:pkalg-whole} \includegraphics[scale=0.4]{images/whole-pkalg-use.pdf}}
+  \subfloat[]{\label{fig:pkalg-mscc} \includegraphics[scale=0.4]{images/mscc-pkalg-use.pdf}}
+  \caption{Zeitliche Entwicklung der Gr\"osse des gesamten
+    Schl\"usselbestandes \subref{fig:size-dev-whole} und der
+      gr\"ossten starken Zusammenhangskomponente \subref{fig:size-dev-mscc}}
+  \label{fig:size-dev}
+\end{figure}
 
 \section{Zusammenhangskomponenten und Communities}
 \label{sec:result-zusamm-und-comm}
@@ -656,6 +781,29 @@ so dass diese Struktur nicht mehr auffindbar ist.
 
 \subsection{Inhaltliche Analyse der Zusammenhangskomponenten}
 \label{sec:zusammenhangskomponenten-inhaltlich}
+
+Starke Zusammenhangskomponenten k\"onnen als ein Extremfall von
+Communities betrachtet werden, also Mengen von Knoten, die intern
+st\"arker vernetzt sind als extern. 
+
+\begin{itemize}
+\item strange Komponenten mit unklarer Funktion: kaos.org,
+  ethereal.com, ...
+
+\item Bei den kleineren (<20): Viele Komponenten, die mehrere
+  Schluessel einer Person enthalten oder nur aus einer Person
+  bestehen
+\item Komponente aus einer einzelnen Firma, keine weitere
+  Vernetzung. Schl\"ussel werden vermutlich nur intern benutzt. Stellt
+  aber einen effektiven Ersatz f\"ur eine CA zur Absicherung der
+  internen Kommunikation dar (Serco, ponl).
+\end{itemize}
+
+Ergebniss: bei den kleineren Komponenten handelt es sich entweder um
+komplett geschlossene ``Communities'', deren Teilnehmer von vornherein
+nur an der Community selbst interessiert sind oder um Gruppen, die so
+inaktiv sind, dass es f\"ur eine weitere Vernetzung nicht gereicht
+hat.
 
 
 
