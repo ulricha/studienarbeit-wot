@@ -119,7 +119,20 @@ L\"ange erreichbaren Knoten beschr\"ankt. Kann die gr\"osste
 Komponente nur indirekt \"uber andere Knoten erreicht werden,
 reduziert sich diese Menge noch weiter. Gleiches gilt auch f\"ur die
 Erreichbarkeit der Menge von ca. 92000 Knoten, zu denen eine Kante von
-Knoten der gr\"ossten Komponente aus besteht.
+Knoten der gr\"ossten Komponente aus besteht. Beachtet werden muss
+allerdings die Existenz von zentralen Certificate Authorities im
+eigentlich dezentralen Web of Trust. Mit den drei seit 1997 im Rahmen der
+``Krypto-Kampagne'' der Zeitschrift c't (siehe Abschnitt
+\ref{sec:sozi-komp-des}) verwendeten Zertifizierungsschl\"usseln
+wurden insgesamt 23813 derzeit g\"ultige Schl\"ussel
+unterschrieben. Von diesen liegen nur 2578 Schl\"ussel innerhalb der
+gr\"ossten Komponente. Wenn also nur dem verwendeten
+Zertifizierungsprozess und damit diesen drei
+Zertifizierungsschl\"usseln vertraut wird, sind immerhin etwa 20000
+Schl\"ussel aussserhalb der gr\"ossten Komponente verifizierbar. Es
+zeigt sich hier auch die Flexibilit\"at des Web of Trust-Konzeptes,
+dass die Integration von zentralen Komponenten in das eigentlich
+dezentrale Netz erlaubt.
 
 Insgesamt lassen diese Daten den Schluss zu, dass ausschliesslich die
 gr\"osste starke Zusammenhangskomponente Schl\"ussel von Personen
@@ -549,7 +562,6 @@ Modularity-Maximierung betroffen zu sein und bieten daher nicht die
 notwendige Aufl\"osung, um die Communities besser inhaltlich
 analysieren zu k\"nnen.
 
-
 Insgesamt ist eine tats\"achliche Zuordnung anhand des
 80\%-Schwellwerts nur f\"ur sehr wenige Communities von geringer
 Gr\"osse m\"oglich. F\"ur den 40\%-Schwellwert und die zeitliche
@@ -569,17 +581,21 @@ nicht-deutschsprachige -- ccTLDs deutlich schw\"acher vertreten
 sind. Das zeigt einerseits einen \"uberraschend hohen Anteil von
 deutschen oder deutschsprachigen Benutzern am Gesamtnetzwerk. Die 8879
 Schl\"ussel sind nat\"urlich nur eine Untergrenze, da auch in einer
-Vielzahl weiterer Communities deutsche Teilnehmer
-vorkommen. Andererseits l\"asst dies den Schluss zu, dass die
-enthaltenen Knoten eben nicht willk\"urlich zusammengepackt wurden,
-sondern neben ihrer topographischen N\"ahe auch eine ``inhaltliche''
-Gemeinsamkeit aufweisen. Darauf weist auch hin, dass in dieser
-Community eine relativ zu anderen SLDs sehr grosse Anzahl von
-Schl\"usseln von Mitgliedern des Debian-Projekts enthalten ist. Diese
-Community enth\"alt nicht nur knapp die H\"alfte der Schl\"ussel,
-sondern mit ca. 260000 Kanten den Grossteil der \"uberhaupt
-vorhandenen Kanten. Sie ist also anscheinend intern sehr dicht
-vernetzt. Daher scheint es fraglich, ob sie intern wieder eine
+Vielzahl weiterer Communities deutsche Teilnehmer vorkommen. Ein Grund
+f\"ur diese hohe Anzahl deutscher Schl\"ussel k\"onnte in der in
+Abschnitt \ref{sec:sozi-komp-des} erw\"ahnten ``Krypto-Kampagne'' der
+Zeitschrift c't liegen, die das Bewusstsein f\"ur die Notwendigkeit
+der Authentifizierung von Schl\"usseln im deutschsprachigen Raum
+deutlich gesteigert haben d\"urfte. Andererseits l\"asst dies den
+Schluss zu, dass die enthaltenen Knoten eben nicht willk\"urlich
+zusammengepackt wurden, sondern neben ihrer topographischen N\"ahe
+auch eine ``inhaltliche'' Gemeinsamkeit aufweisen. Darauf weist auch
+hin, dass in dieser Community eine relativ zu anderen SLDs sehr grosse
+Anzahl von Schl\"usseln von Mitgliedern des Debian-Projekts enthalten
+ist. Diese Community enth\"alt nicht nur knapp die H\"alfte der
+Schl\"ussel, sondern mit ca. 260000 Kanten den Grossteil der
+\"uberhaupt vorhandenen Kanten. Sie ist also anscheinend intern sehr
+dicht vernetzt. Daher scheint es fraglich, ob sie intern wieder eine
 schlecht aufgel\"oste modulare Struktur wie in Abbildung
 \ref{fig:large-community-modular} hat, die sich in sinnvolle
 Untereinheiten zerlegen l\"asst.
