@@ -148,7 +148,49 @@ Zusammenhangskomponenten enthaltenen Schl\"ussel wird in Abschnitt
 
 Der induzierte Teilgraph der gr\"ossten starken
 Zusammenhangskomponente besteht aus 44952 Knoten und 442960
-gerichteten Kanten.
+gerichteten Kanten. Dieser Teilgraph ist deutlich gr\"osser als die
+bisher in der Literatur verwendeten PGP-Netzwerke:  ein gerichtetes
+Netzwerk von ca. 12000 Knoten bei \cite{Capkun2002} und ein Netzwerk
+von 10700 Knoten, bei dem alle einseitigen Signaturen gel\"oscht
+wurden bei \cite{Boguna2004} und \cite{Gregory2010}. Beide Netzwerke
+stellen die gr\"osste starke Zusammenhangskomponente dar und wurden im
+Jahr 2001 extrahiert.
+
+Der \emph{Reciprocity}-Wert eines gerichteten Graphen gibt den Anteil
+von Kanten an, die in beide Richtungen verlaufen. F\"ur die gr\"osste
+Komponente ist dieser Wert 0,510. Das bedeutet, dass es f\"ur eine
+gegebene Kante eine Chance von 51\% gibt, dass eine entsprechende
+``Gegenkante'' in umgekehrter Richtung existiert. Die Reciprocity
+eines zuf\"alligen Graphen, der \"uber die \emph{gleiche Gradsequenz}
+wie die gr\"osste Komponente verf\"ugt, hat im Vergleich eine
+Reciprocity von nur 0,006. Dass der reale Wert deutlich gr\"osser ist,
+ist nicht verwunderlich: Das Web of Trust ist eben kein Produkt eines
+zuf\"alligen Prozesses, sondern von konkreten Mechanismen, n\"amlich
+gegenseitigen Signierungen von Schl\"usseln. Eher erstaunlich ist,
+dass der Wert nicht noch h\"oher ist, dass also nicht noch mehr
+Signaturen auf Gegenseitigkeit beruhen. In Abschnitt
+\ref{sec:sozi-komp-des} wurde dargestellt, dass die Signierung bei
+Keysigning-Parties und privaten Treffen \"ublicherweise gegenseitig
+verl\"auft, dass also beide Signaturpartner den Schl\"ussel des
+jeweils anderen unterschreiben. Es ist eine Reihe von Gr\"unden
+denkbar, die dazu f\"uhren, dass der Anteil einseitiger Signaturen so
+hoch ist: Eine Rolle k\"onnten dabei Certificate Authorities
+spielen. Diese signieren zwar eine Vielzahl von Schl\"usseln,
+empfangen im Allgemeinen aber selbst kaum oder keine
+Signaturen. Ausserdem k\"onnen Signaturen aus verschiedenen Gr\"unden
+nicht vorgenommen werden oder nicht auf Keyserver hochgeladen
+werden. Schlussendlich kann nicht davon ausgegangen werden, dass
+hinter jeder Signatur ein sinnvoller Prozess der
+Identit\"ats\"uberpr\"ufung steht. Teilnehmer k\"onnten etwa andere
+Schl\"ussel ``zum Experimentieren'' unterschreiben. PGP und GnuPG
+zeigen eine Warnung an, wenn die E-Mail-Signatur eines Schl\"ussels
+\"uberpr\"uft wird, der nicht als \emph{valide} eingestuft
+wird. Teilnehmer k\"onnten dann versucht sein, Schl\"ussel zu
+unterschreiben, deren Authentizit\"at sie nicht \"uberpr\"uft haben,
+um diese Warnung zu unterdr\"ucken, selbst wenn dadurch der Sinn des
+Web of Trust untergraben wird.
+
+
 
 \begin{figure}[th!]
   \centering
@@ -182,26 +224,101 @@ gilt f\"ur diese Knoten, dass das Expiren eines einzigen Knoten (wie
 viele Knoten mit expiredate gibt es?) sie komplett vom Netz abtrennen
 w\"urde.
 
-\begin{figure}[th!]
-  \centering
-  \includegraphics[scale=0.6]{images/neighbourhood-cdf.pdf}
-  \caption{Kumulative Verteilungsfunktion der Nachbarschaften}
-  \label{fig:neighbourhood-cdf}
-\end{figure}
 
-Hier geht es um die Frage, wie \emph{n\"utzlich} das Netzwerk f\"ur
-seinen Zweck, n\"amlich die Verifizierung von Schl\"usseln durch
-Signaturketten, eigentlich ist.
+
+Klar ist, dass in einer starken Zusammenhangskomponente jeder Knoten
+jeden anderen Knoten erreichen kann. Eine Mindestvorraussetzung f\"ur
+die Verfizierung eines Schl\"ussels ist, dass eine Signaturkette zu
+diesem Schl\"ussel aufgebaut werden kann, dass also der Knoten im
+Graph erreicht werden kann. Allerdings ist die Erreichbarkeit an sich
+hier nicht von Bedeutung. Vielmehr muss die Erreichbarkeit unter den
+Beschr\"ankungen des PGP/GnuPG-Vertrauensmodells (siehe Abschnitt
+\ref{sec:das-gnupg-vertrauensmodell}) betrachtet werden. Hier gilt
+insbesondere die Einschr\"ankung, dass Signaturketten maximal die
+L\"ange 5 haben d\"urfen. Es stellt sich hier die Frage nach der
+N\"utzlichkeit des Netzwerkes f\"ur dessen eigentlichen Zweck, die
+Verifizierung von Schl\"usseln. Diese ist dann hoch, wenn f\"ur viele
+Knoten eine hohe Zahl von Knoten verifizierbar
+ist. Selbstverst\"andlich bedeutet das Vorhandensein einer
+Signaturkette von hinreichend geringer L\"ange noch nicht, dass ein
+Schl\"ussel tats\"achlich verifizierbar ist. Zus\"atzlich muss noch
+jedem Glied dieser Kette \emph{vertraut} werden. Wird Personen nur
+\emph{geringf\"ugig} vertraut, sind zus\"atzlich noch weitere
+redundaten Signaturen n\"otig. Da diese
+Vertrauensinformationen aber nicht \"offentlich verf\"ugbar sind, wird
+hier als obere Grenze f\"ur die Anzahl verifizierbarer Schl\"ussel nur
+die maximale Pfadl\"ange verwendet.
 
 \begin{figure}[th!]
   \centering
   \subfloat[]{\label{fig:avg-pathlen}\includegraphics[scale=0.3]{images/pathlen-dist.pdf}}
   \subfloat[]{\label{fig:eccentricity}\includegraphics[scale=0.3]{images/ecc-dist.pdf}}
-  \caption{Verteilung der durschnittlichen Pfadl\"angen
+  \caption{Verteilung der durchschnittlichen Distanzen 
     \subref{fig:avg-pathlen} und der Eccentricity
     \subref{fig:eccentricity} in der gr\"ossten starken Zusammenhangskomponente}
   \label{fig:pathlen-dist}
 \end{figure}
+
+Aus Abbildung \ref{fig:eccentricity} ist ersichtlich, dass die
+Eccentricity, also die \emph{maximale} Distanz zu irgendeinem Knoten,
+zwischen dem Minumum 16 (dem \emph{Radius} des Graphen) und dem
+Maximum 36 (dem \emph{Durchmesser} des Graphen) liegt. F\"ur die
+meisten Knoten liegt sie bei 26 bis 31. Damit wird die maximale
+Pfadl\"ange deutlich \"uberschritten. F\"ur alle Knoten gilt also,
+dass die am weitesten entfernten Knoten grunds\"atzlich nicht
+erreichbar sind. Aber auch schon die \emph{durchschnittliche} Distanz
+(Abbildung \ref{fig:pathlen-dist}) ist f\"ur eine erhebliche Anzahl
+von Knoten gr\"osser als die maximal erlaubte L\"ange. Klar ist also,
+dass f\"ur die Mehrzahl der Knoten l\"angst nicht alle Knoten unter
+der Beschr\"ankung der Pfadl\"ange erreichbar sind.
+
+
+Die Gr\"osse der 5-Nachbarschaft eines Knotens gibt die Anzahl der
+Knoten an, die unter dieser Beschr\"ankung erreichbar sind. Allerdings
+macht es Sinn, nicht nur die 5-Nachbarschaft, sondern auch die
+$n$-Nachbarschaften f\"ur $n=2,\dots,4$, also k\"urzere
+Signaturketten, zu betrachten. Da jedem einzelnen Glied einer
+Signaturkette vertraut werden muss, steigt mit der L\"ange der Kette
+auch die Wahrscheinlichkeit, dass dieses Vertrauen eben nicht in alle
+Glieder vorhanden ist. Da das Web of Trust ein soziales Netzwerk
+darstellt, kann angenommen werden, dass im Allgemeinen mit der
+Entfernung zu einem Knoten im Graph auch die soziale und geographische
+Entfernung zu der entsprechenden Person steigt. Damit sinkt auch die
+Wahrscheinlichkeit, dass weiter entfernten Personen aufgrund von
+pers\"onlicher Bekanntschaft vertraut werden kann. Dass einer Person,
+deren Schl\"ussel selbst signiert wurde, vertraut wird, ist
+wahrscheinlicher als dass einer Person vertraut wird, deren
+Schl\"ussel nicht selbst signiert wurde. Je l\"anger also
+eine Signaturkette, desto niedriger die Chance, dass sie tats\"achlich
+benutzbar ist. 
+
+\begin{figure}[th!]
+  \centering
+  \includegraphics[scale=0.6]{images/neighbourhood-cdf.pdf}
+  \caption{Kumulative Verteilungsfunktion der Nachbarschaftsgr\"ossen
+    in der gr\"ossten starken Zusammenhangskomponente}
+  \label{fig:neighbourhood-cdf}
+\end{figure}
+
+Abbildung \ref{fig:neighbourhood-cdf} zeigt die kumulative
+Verteilungsfunktion der Gr\"osse dieser Nachbarschaften. Auff\"allig
+ist hier zun\"achst das steile Wachstum der Kurve f\"ur die
+2-Nachbarschaft, woraus geschlossen werden kann, dass diese
+Nachbarschaft f\"ur fast alle Knoten sehr klein ist. In der Tat liegt
+das 2. Quantil bei 30 und das 3. Quantil bei 160. F\"ur die Mehrzahl
+der Schl\"ussel ist also die Menge der Schl\"ussel, f\"ur deren
+Verifizierung nur einer Person voll vertraut werden muss, sehr
+gering. Immerhin steigt die Gr\"osse der Nachbarschaften mit
+wachsender Distanz deutlich: F\"ur $n=3$ liegt das 3. Quantil bereits
+bei 3371. F\"ur $n=4$ und $n=5$ betr\"agt es 16340 bzw. 30530. Mittels
+l\"angerer Signaturketten kann also die Mehrzahl der Teilnehmer einen
+signifikanten Anteil der in der gr\"ossten Zusammenhangskomponente
+vorhandenen Schl\"ussel \emph{potentiell}
+erreichen. Interessanterweise liegt das Maximum der
+Nachbarschaftsgr\"ossen f\"ur $n=5$ bei nur 40180. Nicht einmal f\"ur
+die am besten vernetzten Schl\"ussel sind also alle Schl\"ussel mit
+beschr\"ankter Kettenl\"ange erreichbar.
+
 
 
 \subsection{Betweeness Centrality}
