@@ -15,7 +15,11 @@ let main () =
   let dbh = PGOCaml.connect ~database:Sys.argv.(1) () in
     print_endline "connected to db";
     let (g, scc_list) = Component_helpers.load_scc_list Sys.argv.(2) in
-    let scc_list = List.filter (fun c -> (List.length c) > 1) scc_list in
+
+      let sum = List.fold_left (fun sum c -> sum + c) 0 in
+      let nodes = sum (List.map (fun c -> List.length c) scc_list) in
+      Printf.printf "scc count %d graph nodes %d scc nodes %d\n" (List.length scc_list) (G.nb_vertex g) nodes;
+    (* let scc_list = List.filter (fun c -> (List.length c) > 1) scc_list in *)
     let cids_per_key = 
       List.mapi (fun i c -> List.map (fun keyid -> (keyid, (Int32.of_int i))) c) 
 	scc_list 

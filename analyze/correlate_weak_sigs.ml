@@ -18,6 +18,9 @@ let main () =
   let g_mscc = C.graph_from_node_list mscc g in
   let records = Db_interface.divide_et_impera (Db_interface.get_key_records dbh) mscc in
     print_endline "records loaded";
+    Printf.printf "keys %d records %d\n" (List.length mscc) (List.length records);
+    flush stdout;
+    
   let records = 
     List.fold_left
       (fun m (keyid, _, _, _, alg, keylen) ->
@@ -44,7 +47,7 @@ let main () =
 	       (out_512, out_768, out_1024)
 	 with
 	     Not_found -> 
-	       print_endline "did not find key in db";
+	       (* print_endline "did not find key in db"; *)
 	       (out_512, out_768, out_1024))
       ([], [], [])
       mscc
