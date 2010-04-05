@@ -272,7 +272,6 @@ von Knoten gr\"osser als die maximal erlaubte L\"ange. Klar ist also,
 dass f\"ur die Mehrzahl der Knoten l\"angst nicht alle Knoten unter
 der Beschr\"ankung der Pfadl\"ange erreichbar sind.
 
-
 Die Gr\"osse der 5-Nachbarschaft eines Knotens gibt die Anzahl der
 Knoten an, die unter dieser Beschr\"ankung erreichbar sind. Allerdings
 macht es Sinn, nicht nur die 5-Nachbarschaft, sondern auch die
@@ -319,7 +318,22 @@ Nachbarschaftsgr\"ossen f\"ur $n=5$ bei nur 40180. Nicht einmal f\"ur
 die am besten vernetzten Schl\"ussel sind also alle Schl\"ussel mit
 beschr\"ankter Kettenl\"ange erreichbar.
 
-
+Wie bereits erw\"ahnt, enth\"alt die gr\"osste Zusammenhangskomponente
+die Schl\"ussel mehrerer zentraler Certificate
+Authorities. Interessant ist eine Absch\"atzung, wie sehr das
+eigentlich dezentrale Web of Trust auf diese zentralen Komponenten
+aufbaut. Um dies festzustellen wurden die Schl\"ussel der gr\"osseren
+Certificate Authorities (siehe Abschnitt \ref{sec:sozi-komp-des}) aus
+der gr\"ossten Komponente entfernt. Diese CA-Schl\"ussel haben
+zusammen in dieser Komponente 4256 Schl\"ussel signiert. Nach der
+Entfernung der CA-Schl\"ussel zerfiel die gr\"osste Komponente in eine
+Reihe von starken Zusammenhangskomponenten: Eine gr\"osste Komponente
+mit 42455 Schl\"usseln und 1058 sehr kleine Komponenten. Daraus ergibt
+sich, dass die CA-Schl\"ussel die gr\"osste Komponente zwar nicht
+fundamental zusammenhalten. F\"ur immerhin 2497 Schl\"ussel in der
+gr\"ossten Zusammenhangskomponente ist aber das Vorhandensein und die
+Benutzung der CA-Schl\"ussel entscheidend, da sie andernfalls nicht
+erreichbar sind.
 
 \subsection{Betweeness Centrality}
 \label{sec:betw-centr}
