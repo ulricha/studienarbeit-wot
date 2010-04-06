@@ -217,7 +217,8 @@ Web of Trust untergraben wird.
   \label{fig:comsizedist}
 \end{figure}
 
-(Kein reines powerlaw).
+FIXME Hier fehlt noch ca. eine Seite zu Small-World, Clustering
+coefficient, Power-law und Scale-free.
 
 Unabh\"angig von der konkreten Verteilung kann aber festgehalten
 werden, dass es eine (kleine) Anzahl von Knoten mit sehr hohem Grad
@@ -225,6 +226,8 @@ gibt. (weiter ausf\"uhren, was das f\"ur das Netzwerk bedeutet -- Hubs
 usw.) Orientieren an (Newman -- Email, Bele -- Email). Spekulieren, ob
 das mit the rich get richer zu tun hat -- verbinden mit Modell aus
 Capkun-Paper.
+
+\cite{Clauset2009}
 
 Die gr\"osste Komponente enth\"alt eine erhebliche Anzahl von Knoten
 mit einem ausgehenden Knotengrad von 1. Ein solch niedriger Grad
@@ -257,14 +260,22 @@ benutzbar, wird $A$ vom Netz getrennt.
   \label{fig:without}
 \end{figure}
 
+\cite{Barabasi1999}
+\cite{Li2005}
+
 In diesem Zusammenhang stellt sich auch die Frage nach der
-\emph{Robustheit} des Netzwerkes. Einf\"uhrung mit Verweis auf
-Scale-Free. [zuf\"allige Knoten kein Problem, high-deg schon].
+\emph{Robustheit} des Netzwerkes. Albert et al. haben gezeigt, dass
+Skalenfreie Netzwerke, also Netzerke mit einer heavy-tail in der
+Gradverteilung, \"ublicherweise auf eine spezielle Art auf die
+Entfernung von Knoten reagieren: W\"ahrend die Entfernung zuf\"allig
+ausgew\"ahlter Knoten kaum Schaden anrichtet, reagiert das Netzwerk
+sehr verwundbar auf die Entfernung von Knoten, die sehr gut vernetzt
+sind \cite{Albert2000}.
 
 Dieser Unterschied kann aufgefasst werden als der Unterschied zwischen
 einem gerichteten \emph{Angriff} und einer zuf\"alligen
-Sch\"adigung. Ein Angreifer mit der Intention, das Netz an sich zu
-sch\"adigen, wird solche Knoten ausw\"ahlen, deren Entfernung einen
+\emph{Sch\"adigung}. Ein Angreifer mit der Intention, das Netz an sich
+zu sch\"adigen, wird solche Knoten ausw\"ahlen, deren Entfernung einen
 m\"oglichst grossen Effekt hat. Demgegen\"uber kann angenommen werden,
 dass die Wahrscheinlichkeit einer zuf\"alligen Sch\"adigung in etwa
 gleichverteilt \"uber alle Schl\"ussel ist. Ein Angreifer k\"onnte
@@ -304,7 +315,7 @@ Aufl\"osung des Netzwerkes. Aber auch hier richtet die Entfernung
 \emph{einzelner} Knoten noch keinen signifikanten Schaden an. Erst ab
 etwa 100 Knoten -- was der Entfernung aller Knoten mit einem
 ausgehenden Grad gr\"osser 250 entspricht -- sinkt die Gr\"osse der
-Komponent erheblich. Die M\"glichkeiten eines Angreifers d\"urften
+Komponent erheblich. Die M\"oglichkeiten eines Angreifers d\"urften
 sich eher im Entfernen einzelner Knoten ersch\"opfen, so dass der zu
 erwartende Schaden gering ist.
 
@@ -315,9 +326,12 @@ zuf\"alliger Reihenfolge stabil verh\"alt, muss nicht bedeuten, dass
 sich die durchschnittlichen Distanzen nicht deutlich
 vergr\"ossern. Vergr\"ossern sich die Distanzen und verl\"angern sich
 damit die n\"otigen Signaturketten, so sinkt die N\"utzlichkeit des
-Netzwerkes (siehe Abschnitt \ref{sec:nutzlichkeit}). Aufgrund des
-notwendigen Rechenaufwandes konnte dies im Rahmen dieser Arbeit aber
-nicht durchgef\"uhrt werden.
+Netzwerkes (siehe Abschnitt \ref{sec:nutzlichkeit}). F\"ur die
+Entfernung von Knoten anhand des Grades wird aufgrund der
+\"Ahnlichkeit zu skalenfreien Netzwerken erwartet, dass sich die
+Distanzen schon durch die Entfernung weniger Knoten merklich
+erh\"ohen. Aufgrund des notwendigen Rechenaufwandes konnte dies im
+Rahmen dieser Arbeit aber nicht durchgef\"uhrt werden.
 
 Der Grad eines Knoten ist nicht unbedingt das geeignetste Mass f\"ur
 die globale ``Wichtigkeit'' des Knotens. Durch eine Konzentration auf
@@ -330,10 +344,10 @@ relativ kurze Wege zu vielen Schl\"usseln. Allerdings haben sie
 gleichzeitig einen niedrigen eingehenden Grad, weil ein CA-Schl\"ussel
 \"ublicherweise nicht mit einer Person direkt verbunden ist, und damit
 das \"ubliche Verifizieren der Identit\"at wenig Sinn macht. Damit
-tauchen CA-Schl\"ussel nur auf relativ wenigen k\"urzesten Pfaden
-auf. Ihre Entfernung richtet also -- zumindest in Bezug auf die
-Distanzen -- einen relativ geringen Schaden an.
-
+tauchen CA-Schl\"ussel nur auf relativ wenigen k\"urzesten Pfaden auf,
+da sie selbst eher schlecht erreichbar sind. Ihre Entfernung richtet
+also -- zumindest in Bezug auf die Distanzen -- einen relativ geringen
+Schaden an.
 
 \subsection{N\"utzlichkeit}
 \label{sec:nutzlichkeit}
@@ -356,10 +370,10 @@ Signaturkette von hinreichend geringer L\"ange noch nicht, dass ein
 Schl\"ussel tats\"achlich verifizierbar ist. Zus\"atzlich muss noch
 jedem Glied dieser Kette \emph{vertraut} werden. Wird Personen nur
 \emph{geringf\"ugig} vertraut, sind zus\"atzlich noch weitere
-redundaten Signaturen n\"otig. Da diese
-Vertrauensinformationen aber nicht \"offentlich verf\"ugbar sind, wird
-hier als obere Grenze f\"ur die Anzahl verifizierbarer Schl\"ussel nur
-die maximale Pfadl\"ange verwendet.
+redundante Signaturen n\"otig. Da diese Vertrauensinformationen aber
+nicht \"offentlich verf\"ugbar sind, wird hier als obere Grenze f\"ur
+die Anzahl verifizierbarer Schl\"ussel nur die maximale Pfadl\"ange
+verwendet.
 
 \begin{figure}[th!]
   \centering
@@ -526,9 +540,104 @@ d\"urfte also etwas ``tr\"ager'' auf Ver\"anderungen reagieren.
 \subsection{Public-Key- und Hashalgorithmen}
 \label{sec:public-key-und}
 
-\cite{Stevens2009}
+\begin{table}[ht!]
+  \footnotesize
+  \centering
+  \subfloat{
+    \label{tab:hash}
+    \begin{tabular}[ht!]{l|c}
+      Alg. & Anzahl \\
+      \hline
+      MD5 & 41700 \\
+      SHA-1 & 398849 \\
+      RIPE-MD/160 & 122 \\
+      SHA256 & 5031 \\
+      SHA385 & 2 \\
+      SHA512 & 2472 \\
+      SHA224 & 532
+    \end{tabular}
+  }\quad
+  \subfloat{
+  \label{tab:algs}
+    \begin{tabular}{l|c}
+      Alg. & Anzahl \\
+      \hline
+      RSA-512 & 203 \\
+      RSA-768 & 257 \\
+      RSA-1024 & 3903 \\
+      RSA-2048 & 2408 \\
+      RSA-3072 & 96 \\
+      RSA-4096 & 1198 \\
+      DSA & 36555
+    \end{tabular}
+  }\quad
+  \subfloat{
+    \label{tab:cert}
+    \begin{tabular}{l|c}
+      Cert Level & Anzahl \\
+      \hline
+      Generic & 299518 \\
+      Persona & 904 \\
+      Casual & 28718 \\
+      Positive & 119575 
+    \end{tabular}
+  }
+  \caption{Foo}
+\end{table}
 
-Es ist zu erwarten, dass sich der Anteil von RSA-Schl\"usseln mit
+In Tabelle \ref{tab:algs} sind schlussendlich noch einige Statistiken
+\"uber Eigenschaften einzelner Schl\"ussel aufgef\"uhrt. 
+
+Die einzelnen Cert level (siehe Abschnitt
+\ref{ch:Grundlagen:sec:OpenPGP} werden durchaus verwendet (Tabelle
+\ref{tab:certs}). Zwar ist
+die Mehrheit der Signaturen mit dem Standardwert Generic versehen, der
+keine weitere Aussage macht. Allerdings verf\"ugt \"uber 25\% der
+Signaturen \"uber den h\"ochsten Wert Positive. Da die einzelnen Cert
+level keine im Standard festgelegte klare Semantik haben, ist die
+Aussagekraft dieser Werte nat\"urlich begrenzt. Sie k\"onnen aber
+zumindest dahingehend interpretiert werden, dass \emph{mindestens} die
+Personen, die von Generic abweichende Werte vergeben, den
+Signaturprozess durchaus ernstnehmen.
+
+Wie zu erwarten basiert die grosse Mehrheit der Signaturen in der
+gr\"ossten starken Zusammenhangskomponente auf SHA1. Neben einzelnen
+Signaturen mit Vertretern der SHA2-Familie findet sich aber auch noch
+eine \"uberraschend hohe Anzahl von MD5-Signaturen: 41700 Signaturen,
+d.h. 10\% basieren auf MD5. Die Sicherheit von MD5 muss inzwischen als
+ernsthaft kompromittiert eingestuft werden. 2008 gelang es einer
+Gruppe, durch eine Chosen-Prefix-Kollision ein von einer kommerziellen
+CA signiertes ``b\"osartiges'' Certification-Authority-Zertifikat
+f\"ur SSL zu erhalten \cite{Stevens2009}. GnuPG warnt zwar vor der
+Verwendung von MD5-Signaturen, erlaubt ihre Verwendung aber noch. Die
+Bedeutung der MD5-Signaturen f\"ur den Zusammenhalt der gr\"ossten
+Komponente ist nicht unwesentlich: Werden diese Signaturen entfernt,
+reduziert sich die Gr\"osse der Komponente auf 37599 Schl\"ussel,
+d.h. es werden ca. 8000 Schl\"ussel abgetrennt. 
+
+
+RSA-Schl\"ussel mit einer L\"ange von h\"ochstens 768 bit und weniger
+m\"ussen ebenfalls als praktikabel brechbar betrachtet werden. Dies
+wurde durch die Faktorisierung der Zahl RSA-768 demonstriert
+\cite{Kleinjung2010}. Kleinjung et al. sch\"atzen den
+Zeitrahmen f\"ur die Faktorisierung einer 1024-bit-Zahl innerhalb
+eines \emph{akadaemischen Rahmens} auf 5 bis 10 Jahre. Die Menge der
+in der gr\"ossten Komponente vorhandenen RSA-Schl\"ussel mit 512
+bzw. 768 bit ist mit insgesamt 450 Schl\"usseln gering. Ihre
+Entfernung trennt nur etwa weitere 300 Knoten von der Komponente
+ab. Die Anzahl von RSA-Schl\"usseln mit 1024 bit ist aber deutlich
+gr\"osser. Die Entfernung aller ca. 4500 RSA-Schl\"ussel, deren
+L\"ange h\"ochstens 1024 bit betr\"agt, reduziert die Gr\"osse der
+Komponente um insgesamt ca. 8500 Knoten, trennt also weitere 4000
+Knoten vom Netz ab. Es ist anzunehmen, dass sich die
+durchschnittlichen Distanzen ebenfalls erh\"ohen. Da
+Standardorganisationen eine Abkehr von RSA-1024 empfehlen [cite NIST]
+und praktikable Angriffe wohl nur eine Frage weniger Jahre sind, ist
+damit wie durch die MD5-Signaturen eine erhebliche Beeintr\"achtigung
+der gr\"ossten Komponente absehbar.
+
+Es ist zu erwarten, dass sich durch die Umstellung der
+Standardeinstellung in GnuPG der Anteil von RSA-Schl\"usseln mit
 einer L\"ange von mindestens 2048 bit in n\"achster Zeit deutlich
 erh\"oht.
 
@@ -1091,6 +1200,8 @@ so dass diese Struktur nicht mehr auffindbar ist.
 
 \subsection{Inhaltliche Analyse der Zusammenhangskomponenten}
 \label{sec:zusammenhangskomponenten-inhaltlich}
+
+Nicht interessant $\Rightarrow$ fliegt raus.
 
 Starke Zusammenhangskomponenten k\"onnen als ein Extremfall von
 Communities betrachtet werden, also Mengen von Knoten, die intern
