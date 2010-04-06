@@ -1,0 +1,5 @@
+md5 mscc size 37599 nr sccs 6230
+rsa768 mscc size 44062 nr sccs 208
+rsa1024 mscc size 37684 nr sccs 1495
+ca_keys mscc size 42455 nr sccs 1058
+usage: simple_stats db
