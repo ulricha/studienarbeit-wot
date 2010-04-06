@@ -27,29 +27,35 @@ let calculate_multiple g =
   let c = ref 0 in
   let rec f keys results =
     match keys with
-      | [] -> 
+      | []
+      | _ when (G.nb_vertex g) <= 12 ->
 	  c := 0;
 	  List.rev results
       | l -> 
 	  incr c;
-	  Printf.printf "take 5 -> %d (%d)\n" !c (G.nb_vertex g);
 	  flush stdout;
 	  let ids = List.take 5 l in
 	    remove_vertices g ids;
 	    let sccs = C.scc_list g in
 	    let sccs = list_list_sort_reverse sccs in
-	    let mscc_size = List.length (List.hd sccs) in
-	    let nr_sccs = List.length sccs in
-	    let i = !c * 5 in
-	      f (List.drop 5 keys) ((i, mscc_size, nr_sccs) :: results)
+	    let mscc_size = 
+	      try
+		List.length (List.hd sccs) 
+	      with _ -> 0 
+	    in
+	      Printf.printf "take 5 -> %d (%d -> %d)\n" !c (G.nb_vertex g) mscc_size;
+	      let nr_sccs = List.length sccs in
+	      let i = !c * 5 in
+		f (List.drop 5 keys) ((i, mscc_size, nr_sccs) :: results)
   in
   let fst (a,_,_) = a in
   let second (_, b, _) = b in
   let third (_, _, c) = c in
-  let results = f random [] in
+(*  let results = f random [] in
     write_int_values_to_file (List.enum (List.map fst results)) "random_i";
     write_int_values_to_file (List.enum (List.map second results)) "random_mscc";
-    write_int_values_to_file (List.enum (List.map third results)) "random_sccs";
+    write_int_values_to_file (List.enum (List.map third results))
+    "random_sccs"; *)
     let results = f by_outdeg [] in
       write_int_values_to_file (List.enum (List.map fst results)) "outdeg_i";
       write_int_values_to_file (List.enum (List.map second results)) "outdeg_mscc";

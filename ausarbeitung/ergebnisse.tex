@@ -49,6 +49,11 @@ Schl\"ussel \"uber einen Zeitraum von 20 Jahren angesammelt haben.
 \section{Allgemeine Merkmale des Netzwerkes}
 \label{sec:result-allg-merkm-des}
 
+Der so erhaltene Graph ist ein \emph{gerichteter} Graph. Er ist
+\emph{schlicht}, d.h. er enth\"alt keine \emph{Selbstkanten} und keine
+\emph{Mehrfachkanten}. Dies ergibt sich, da w\"ahrend der Extraktion
+Selbstsignaturen nicht beachtet und bei mehreren Signaturen des
+gleichen Schl\"ussels nur die neueste verwendet wurde.
 \subsection{Starke Zusammenhangskomponenten}
 \label{sec:result-komponentenstruktur}
 
@@ -59,7 +64,7 @@ Schl\"ussel \"uber einen Zeitraum von 20 Jahren angesammelt haben.
   \label{fig:component-size}
 \end{figure}
 
-Der so erhaltene Graph wurde zun\"achst in seine 240382 starken
+Der Graph wurde zun\"achst in seine 240382 starken
 Zusammenhangskomponenten zerlegt. Die Verteilung der
 Komponentengr\"ossen in Abbildung \ref{fig:component-size} zeigt dabei
 zwei Extreme: Es existiert eine einzelne gigantische Komponente mit
@@ -146,6 +151,18 @@ Zusammenhangskomponenten enthaltenen Schl\"ussel wird in Abschnitt
   Zusammenhangskomponente}
 \label{sec:kennz-des-graph}
 
+Die weitere Untersuchung der Topologie des Graphen konzentriert sich
+auf die gr\"osste starke Zusammenhangskomponente. Starke
+Zusammenhangskomponenten als Einheit der Betrachtung machen Sinn, weil
+die Verwendung des Graphen f\"ur die Verifizierung von Schl\"usseln
+gerade die Erreichbarkeit vorraussetzt und weil eine Reihe von
+Netzwerkstatistiken nur definiert sind, wenn zwischen allen Paaren von
+Knoten Pfade existieren. Da im vorherigen Abschnitt argumentiert
+wurde, dass die gr\"osste starke Zusammenhangskomponente die einzige
+ist, die in gr\"osserem Massstab vernetzt ist und in der
+Signaturaktivit\"aten stattfinden, scheint eine Untersuchung der
+restlichen Komponenten nicht sinnvoll.
+
 Der induzierte Teilgraph der gr\"ossten starken
 Zusammenhangskomponente besteht aus 44952 Knoten und 442960
 gerichteten Kanten. Dieser Teilgraph ist deutlich gr\"osser als die
@@ -190,8 +207,6 @@ unterschreiben, deren Authentizit\"at sie nicht \"uberpr\"uft haben,
 um diese Warnung zu unterdr\"ucken, selbst wenn dadurch der Sinn des
 Web of Trust untergraben wird.
 
-
-
 \begin{figure}[th!]
   \centering
   \subfloat[]{\label{fig:indeg-dist} \includegraphics[scale=0.42]{images/indegree-dist.pdf}}
@@ -211,20 +226,117 @@ usw.) Orientieren an (Newman -- Email, Bele -- Email). Spekulieren, ob
 das mit the rich get richer zu tun hat -- verbinden mit Modell aus
 Capkun-Paper.
 
-Es gibt viele Knoten mit geringem Grad, vor allem mit Grad 1. F\"ur
-diese Knoten gilt, dass sie nur eine M\"oglichkeit haben, um
-Signaturketten zu bauen. Warum ist das schlecht? Weil diese Knoten
-zumindest f\"ur die ersten Schritte in der Signaturkette keine
-Redundanz haben. Wenn sie dem ersten Knoten nicht vertrauen, kommen
-sie nirgendwohin. F\"ur die Knoten mit indegree=1 gilt andersherum,
-dass keine redundanten Signaturketten dorthin m\"oglich sind. Dem
-einzigen Knoten, der sie ihn signiert hat, muss vertraut werden, oder
-der Schl\"ussel kann \"uberhaupt nicht verifiziert werden. Ausserdem
-gilt f\"ur diese Knoten, dass das Expiren eines einzigen Knoten (wie
-viele Knoten mit expiredate gibt es?) sie komplett vom Netz abtrennen
-w\"urde.
+Die gr\"osste Komponente enth\"alt eine erhebliche Anzahl von Knoten
+mit einem ausgehenden Knotengrad von 1. Ein solch niedriger Grad
+stellt eine erhebliche Einschr\"ankung f\"ur die Benutzbarkeit dieses
+Schl\"ussels f\"ur die Verifizierung von anderen Schl\"usseln dar. Da
+ein Schl\"ussel $A$ mit ausgehendem Grad 1 nur einen Schl\"ussel $B$
+signiert hat, gibt es auch nur genau einen Schl\"ussel, \"uber den
+eine Signaturkette aufgebaut werden kann. Nat\"urlich wird dadurch die
+Menge insgesamt erreihbarer Knoten stark eingeschr\"ankt. Ausserdem
+aber existiert damit keine Redundanz. Der Besitzer des Schl\"ussels
+$A$ muss dem Besitzer des Schl\"ussels $B$ vertrauen, wenn er irgend
+eine Signaturkette benutzen will. $B$ stellt einen \emph{Single point
+  of failure} dar, da $A$ vom Netz getrennt wird, wenn $B$ etwa
+abl\"auft oder zur\"uckgezogen wird. \"Aquivalent ist die
+Verifizierbarkeit eines Knotens $A$ stark eingeschr\"ankt, wenn er
+einen eingehenden Grad von 1 hat und nur von einem einzigen
+Schl\"ussel $B$ signiert wurde. F\"ur die Verifizierung von $A$ muss
+zwingend dem Besitzer von $B$ vertraut werden. Ist $B$ nicht mehr
+benutzbar, wird $A$ vom Netz getrennt.
+
+\subsection{Robustheit}
+\label{sec:robustheit}
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[scale=0.45]{images/without.pdf}
+  \caption{Entwicklung der Gr\"osse der gr\"ossten starken
+    Zusammenhangskomponente, wenn Knoten zuf\"allig oder nach absteigender
+    Gr\"osse entfernt werden}
+  \label{fig:without}
+\end{figure}
+
+In diesem Zusammenhang stellt sich auch die Frage nach der
+\emph{Robustheit} des Netzwerkes. Einf\"uhrung mit Verweis auf
+Scale-Free. [zuf\"allige Knoten kein Problem, high-deg schon].
+
+Dieser Unterschied kann aufgefasst werden als der Unterschied zwischen
+einem gerichteten \emph{Angriff} und einer zuf\"alligen
+Sch\"adigung. Ein Angreifer mit der Intention, das Netz an sich zu
+sch\"adigen, wird solche Knoten ausw\"ahlen, deren Entfernung einen
+m\"oglichst grossen Effekt hat. Demgegen\"uber kann angenommen werden,
+dass die Wahrscheinlichkeit einer zuf\"alligen Sch\"adigung in etwa
+gleichverteilt \"uber alle Schl\"ussel ist. Ein Angreifer k\"onnte
+beispielsweise versuchen, Knoten zu entfernen, indem er den
+Schl\"ussel an sich kompromittiert oder den Zugriff auf das
+Schl\"usselmaterial unm\"oglich macht, so dass der Schl\"ussel
+widerrufen werden muss. Demgegen\"uber k\"onnen Schl\"ussel auf
+``normalem'' Wege aus dem Netz verschwinden, wenn sie ablaufen oder
+beispielsweise aufgrund des Verlusts der Passphrase widerrufen werden
+m\"ussen.
+
+Eine offensichtliche Metrik f\"ur die Wichtigkeit eines Knotens und
+damit eine Strategie f\"ur die Auswahl des Zielknotens ist der
+Knotengrad. Je h\"oher der Grad eines Knotens, desto wichtiger ist er
+potentiell f\"ur das Netzwerk. Um die Robustheit unter dieser
+Auswahlstrategie zu testen, wurden aus der gr\"ossten starken
+Zusammenhangskomponente sukzessive Knoten in der Reihenfolge
+absteigender ausgehender Grade bzw. in einer zuf\"alligen Reihenfolge
+entfernt. Abbildung \ref{fig:without} zeigt die Entwicklung der
+Gr\"osse der gr\"ossten Komponente, wenn mehr und mehr Knoten entfernt
+werden. Bei der Entfernung zuf\"allig ausgew\"ahlter Knoten ist das
+Netzwerk ausgesprochen stabil. Die gr\"osste Komponente schrumpft fast
+im gleichen Masse, wie Knoten entfernt werden. Dieses Ergebnis ist
+nicht \"uberraschend. Da ein hoher Anteil der Knoten einen sehr
+niedrigen Grad hat, ist bei zuf\"alliger Auswahl die Chance, einen
+solchen Knoten zu treffen, hoch. Das Verschwinden von Schl\"usseln
+durch Ablaufen ist ein normaler und h\"aufiger Prozess. So verf\"ugen
+etwa 5700 Schl\"ussel in der gr\"ossten starken
+Zusammenhangskomponente \"uber ein Ablaufdatum, werden also irgendwann
+aus dem Netz verschwinden. Dieser Fall richtet also kaum globalen
+Schaden im Netzwerk an.
+
+Der Schaden durch die Entfernung von Knoten mit hohem ausgehendem Grad
+ist deutlich gr\"osser. Hier f\"uhrt schon die Entfernung von deutlich
+weniger Knoten zu einem raschen Verfall bis hin zur v\"olligen
+Aufl\"osung des Netzwerkes. Aber auch hier richtet die Entfernung
+\emph{einzelner} Knoten noch keinen signifikanten Schaden an. Erst ab
+etwa 100 Knoten -- was der Entfernung aller Knoten mit einem
+ausgehenden Grad gr\"osser 250 entspricht -- sinkt die Gr\"osse der
+Komponent erheblich. Die M\"glichkeiten eines Angreifers d\"urften
+sich eher im Entfernen einzelner Knoten ersch\"opfen, so dass der zu
+erwartende Schaden gering ist.
+
+Angemerkt werden muss, dass neben der Gr\"osse der Komponente auch
+eine Betrachtung der Entwicklung der Distanzen in der Komponente
+sinnvoll w\"are. Dass die Komponentengr\"osse sich im Fall
+zuf\"alliger Reihenfolge stabil verh\"alt, muss nicht bedeuten, dass
+sich die durchschnittlichen Distanzen nicht deutlich
+vergr\"ossern. Vergr\"ossern sich die Distanzen und verl\"angern sich
+damit die n\"otigen Signaturketten, so sinkt die N\"utzlichkeit des
+Netzwerkes (siehe Abschnitt \ref{sec:nutzlichkeit}). Aufgrund des
+notwendigen Rechenaufwandes konnte dies im Rahmen dieser Arbeit aber
+nicht durchgef\"uhrt werden.
+
+Der Grad eines Knoten ist nicht unbedingt das geeignetste Mass f\"ur
+die globale ``Wichtigkeit'' des Knotens. Durch eine Konzentration auf
+\emph{zentrale} Knoten, also etwa solche mit einer hohen Betweeness
+Centrality, l\"asst sich m\"oglicherweise mehr Schaden anrichten. Dies
+l\"asst sich am Beispiel von Certificate Authorities im Web of Trust
+illustrieren: CA-Schl\"ussel haben zwar \"ublicherweise einen hohen
+ausgehenden Grad, haben also viele Schl\"ussel signiert und damit
+relativ kurze Wege zu vielen Schl\"usseln. Allerdings haben sie
+gleichzeitig einen niedrigen eingehenden Grad, weil ein CA-Schl\"ussel
+\"ublicherweise nicht mit einer Person direkt verbunden ist, und damit
+das \"ubliche Verifizieren der Identit\"at wenig Sinn macht. Damit
+tauchen CA-Schl\"ussel nur auf relativ wenigen k\"urzesten Pfaden
+auf. Ihre Entfernung richtet also -- zumindest in Bezug auf die
+Distanzen -- einen relativ geringen Schaden an.
 
 
+\subsection{N\"utzlichkeit}
+\label{sec:nutzlichkeit}
 
 Klar ist, dass in einer starken Zusammenhangskomponente jeder Knoten
 jeden anderen Knoten erreichen kann. Eine Mindestvorraussetzung f\"ur
@@ -335,18 +447,11 @@ gr\"ossten Zusammenhangskomponente ist aber das Vorhandensein und die
 Benutzung der CA-Schl\"ussel entscheidend, da sie andernfalls nicht
 erreichbar sind.
 
-\subsection{Betweeness Centrality}
-\label{sec:betw-centr}
-
-\subsection{Struktur der starken Zusammenhangskomponenten}
-\label{sec:struktur-der-starken}
-
-
-
 \section{Eigenschaften einzelner Schl\"ussel, zeitliche Entwicklung}
 \label{sec:result-key-properties}
 
-\cite{Stevens2009}
+\subsection{Zeitliche Entwicklung}
+\label{sec:zeitl-entw}
 
 \begin{figure}[th!]
   \centering
@@ -358,16 +463,74 @@ erreichbar sind.
   \label{fig:size-dev}
 \end{figure}
 
+Da die verwendete Datenbank alle jemals auf einen Keyserver geladenen
+Schl\"ussel enth\"alt es m\"oglich, den Zustand des
+Schl\"usselbestandes zu einem beliebigen Zeitpunkt zu berechnen. In
+Abbildung \ref{fig:size-dev-whole} wird die Entwicklung der Gr\"osse
+des gesamten Schl\"usselbestandes und in \ref{fig:size-dev-mscc} die
+Entwicklung der Gr\"osse der gr\"ossten starken
+Zusammenhangskomponente dargestellt. Als Beginn wurde das Jahr 1991
+gew\"ahlt, weil dort die erste Version von PGP vorgestellt
+wurde\cite{wiki:pgp}. Sowohl der gesamte Schl\"usselbestand als auch
+die gr\"osste starke Zusammenhangskomponente zeigen nennenswertes
+Wachstum erst etwa ab dem Jahr 1997. Dieser Zeitpunkt korreliert unter
+anderem mit der Gr\"undung des Unternehmens \emph{PGP Inc.}, der
+Ver\"offentlichung einer neuen Version 5 der PGP-Software und in
+Deutschland dem Start der bereits erw\"ahnten
+``Krypto-Kampagne''. Gr\"unde f\"ur das deutlich langsamere Wachstum
+des gesamten Schl\"usselbestandes etwa ab dem Jahr 2001 und der
+gr\"ossten starken Zusammenhangskomponente mit einer Verz\"ogerung
+etwa ab dem Jahr 2005 sind nicht bekannt.
 
 \begin{figure}[th!]
   \centering
   \subfloat[]{\label{fig:pkalg-whole} \includegraphics[scale=0.4]{images/whole-pkalg-use.pdf}}
   \subfloat[]{\label{fig:pkalg-mscc} \includegraphics[scale=0.4]{images/mscc-pkalg-use.pdf}}
-  \caption{Zeitliche Entwicklung der Gr\"osse des gesamten
-    Schl\"usselbestandes \subref{fig:size-dev-whole} und der
-      gr\"ossten starken Zusammenhangskomponente \subref{fig:size-dev-mscc}}
+  \caption{Rate neuer PGP-Schl\"ussel, die RSA oder DSA benutzen,
+    f\"ur den gesamten Schl\"usselbestand \subref{fig:pkalg-whole} und
+    die gr\"osste starke Zusammenhangskomponente
+    \subref{fig:pkalg-mscc} in monatlichen Abst\"anden}
   \label{fig:size-dev}
 \end{figure}
+
+Abbildung \ref{fig:size-dev} zeigt die Rate neuer Schl\"ussel,
+abh\"angig von dem verwendeten Public-Key-Algorithmus. Die
+DSA-Schl\"ussel machen zu jedem Zeitpunkt den gr\"ossten Anteil
+aus. Ihre Entwicklung spiegelt im Wesentlichen die
+Gr\"ossenentwicklung insgesamt aus Abbildung \ref{fig:size-dev}
+wieder. Demgegen\"uber ist die Zuwachsrate von RSA-Schl\"usseln bis
+zum Jahr 2008 konstant niedrig. Der Grund daf\"ur ist vermutlich, dass
+die PGP-Implementierungen in diesem Zeitraum in der
+Standardeinstellung DSA-Schl\"ussel erzeugten, was wiederum unter
+anderem in dem bis ins Jahr 2000 bestehenden Patentschutz des
+RSA-Algorithmus begr\"undet ist.  Die Rate neuer DSA-Schl\"ussel sinkt
+ab dem Jahr 2009 deutlich ab, w\"ahrend die Rate neuer RSA-Schl\"ussel
+gleichzeitig deutlich ansteigt. Vermutlich ist dies darauf
+zur\"uckzuf\"uhren, dass seit dem Jahr 2009 neue Schl\"ussel, die mit
+GnuPG erzeugt werden, in der Standardeinstellung RSA statt DSA
+verwenden. Diese Umstellung wurde in der Entwicklerversion von GnuPG
+am
+17.05.2009\footnote{http://lists.gnupg.org/pipermail/gnupg-devel/2009-May/025079.html}
+aufgrund von Berichten \"uber verbesserte Angriffe auf die
+Hashfunktion SHA-1\cite{McDonald2009}, auf der DSA basiert,
+vorgenommen. Warum diese Entwicklung nicht ebenfalls in der gr\"ossten
+starken Zusammenhangskomponente sichtbar ist, ist nicht
+klar. M\"oglicherweise liegt dies daran, dass f\"ur die Aufnahme in
+diese Teilmenge nicht nur das Erzeugen eines Schl\"ussels, sondern
+auch zus\"atzliche Aktitiv\"at in Form der Vernetzung mit anderen
+Schl\"usseln notwendig ist. Neue Schl\"ussel werden also vermutlich im
+Allgemeinen nicht sofort in die Zusammenhangskomponente aufgenommen,
+sondern erst mit einiger Verz\"ogerung. Die Zusammenhangskomponente
+d\"urfte also etwas ``tr\"ager'' auf Ver\"anderungen reagieren.
+
+\subsection{Public-Key- und Hashalgorithmen}
+\label{sec:public-key-und}
+
+\cite{Stevens2009}
+
+Es ist zu erwarten, dass sich der Anteil von RSA-Schl\"usseln mit
+einer L\"ange von mindestens 2048 bit in n\"achster Zeit deutlich
+erh\"oht.
 
 \section{Zusammenhangskomponenten und Communities}
 \label{sec:result-zusamm-und-comm}
