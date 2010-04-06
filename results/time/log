@@ -1,0 +1,641 @@
+fetch sigs 30.4.1992
+month 30.4.1992 graph size 9 mscc size 2
+fetch sigs 31.5.1992
+month 31.5.1992 graph size 9 mscc size 2
+fetch sigs 30.6.1992
+month 30.6.1992 graph size 9 mscc size 2
+fetch sigs 31.7.1992
+month 31.7.1992 graph size 13 mscc size 2
+fetch sigs 31.8.1992
+month 31.8.1992 graph size 14 mscc size 2
+fetch sigs 30.9.1992
+month 30.9.1992 graph size 28 mscc size 4
+fetch sigs 31.10.1992
+month 31.10.1992 graph size 53 mscc size 5
+fetch sigs 30.11.1992
+month 30.11.1992 graph size 68 mscc size 5
+fetch sigs 31.12.1992
+month 31.12.1992 graph size 80 mscc size 15
+fetch sigs 31.1.1993
+month 31.1.1993 graph size 101 mscc size 17
+fetch sigs 28.2.1993
+month 28.2.1993 graph size 111 mscc size 27
+fetch sigs 31.3.1993
+month 31.3.1993 graph size 132 mscc size 35
+fetch sigs 30.4.1993
+month 30.4.1993 graph size 156 mscc size 45
+fetch sigs 31.5.1993
+month 31.5.1993 graph size 165 mscc size 22
+fetch sigs 30.6.1993
+month 30.6.1993 graph size 175 mscc size 45
+fetch sigs 31.7.1993
+month 31.7.1993 graph size 183 mscc size 46
+fetch sigs 31.8.1993
+month 31.8.1993 graph size 200 mscc size 53
+fetch sigs 30.9.1993
+month 30.9.1993 graph size 216 mscc size 44
+fetch sigs 31.10.1993
+month 31.10.1993 graph size 249 mscc size 46
+fetch sigs 30.11.1993
+month 30.11.1993 graph size 301 mscc size 71
+fetch sigs 31.12.1993
+month 31.12.1993 graph size 360 mscc size 75
+fetch sigs 31.1.1994
+month 31.1.1994 graph size 418 mscc size 75
+fetch sigs 28.2.1994
+month 28.2.1994 graph size 481 mscc size 87
+fetch sigs 31.3.1994
+month 31.3.1994 graph size 559 mscc size 89
+fetch sigs 30.4.1994
+month 30.4.1994 graph size 635 mscc size 94
+fetch sigs 31.5.1994
+month 31.5.1994 graph size 746 mscc size 97
+fetch sigs 30.6.1994
+month 30.6.1994 graph size 919 mscc size 123
+fetch sigs 31.7.1994
+month 31.7.1994 graph size 1021 mscc size 143
+fetch sigs 31.8.1994
+month 31.8.1994 graph size 1155 mscc size 151
+fetch sigs 30.9.1994
+month 30.9.1994 graph size 1288 mscc size 178
+fetch sigs 31.10.1994
+month 31.10.1994 graph size 1382 mscc size 181
+fetch sigs 30.11.1994
+month 30.11.1994 graph size 1473 mscc size 199
+fetch sigs 31.12.1994
+month 31.12.1994 graph size 1599 mscc size 236
+fetch sigs 31.1.1995
+month 31.1.1995 graph size 1755 mscc size 256
+fetch sigs 28.2.1995
+month 28.2.1995 graph size 1922 mscc size 297
+fetch sigs 31.3.1995
+month 31.3.1995 graph size 2078 mscc size 345
+fetch sigs 30.4.1995
+month 30.4.1995 graph size 2278 mscc size 369
+fetch sigs 31.5.1995
+month 31.5.1995 graph size 2483 mscc size 424
+fetch sigs 30.6.1995
+month 30.6.1995 graph size 2682 mscc size 463
+fetch sigs 31.7.1995
+month 31.7.1995 graph size 2894 mscc size 623
+fetch sigs 31.8.1995
+month 31.8.1995 graph size 3099 mscc size 645
+fetch sigs 30.9.1995
+month 30.9.1995 graph size 3330 mscc size 719
+fetch sigs 31.10.1995
+month 31.10.1995 graph size 3584 mscc size 789
+fetch sigs 30.11.1995
+month 30.11.1995 graph size 3782 mscc size 832
+fetch sigs 31.12.1995
+month 31.12.1995 graph size 4002 mscc size 886
+fetch sigs 31.1.1996
+month 31.1.1996 graph size 4236 mscc size 920
+fetch sigs 29.2.1996
+month 29.2.1996 graph size 4541 mscc size 964
+fetch sigs 31.3.1996
+month 31.3.1996 graph size 4846 mscc size 1136
+fetch sigs 30.4.1996
+month 30.4.1996 graph size 5178 mscc size 1186
+fetch sigs 31.5.1996
+month 31.5.1996 graph size 5532 mscc size 1284
+fetch sigs 30.6.1996
+month 30.6.1996 graph size 5814 mscc size 1329
+fetch sigs 31.7.1996
+month 31.7.1996 graph size 6135 mscc size 1400
+fetch sigs 31.8.1996
+month 31.8.1996 graph size 6497 mscc size 1489
+fetch sigs 30.9.1996
+month 30.9.1996 graph size 6806 mscc size 1526
+fetch sigs 31.10.1996
+month 31.10.1996 graph size 7168 mscc size 1567
+fetch sigs 30.11.1996
+month 30.11.1996 graph size 7530 mscc size 1615
+fetch sigs 31.12.1996
+month 31.12.1996 graph size 7849 mscc size 1693
+fetch sigs 31.1.1997
+month 31.1.1997 graph size 8332 mscc size 1761
+fetch sigs 28.2.1997
+month 28.2.1997 graph size 8777 mscc size 1821
+fetch sigs 31.3.1997
+month 31.3.1997 graph size 9463 mscc size 1934
+fetch sigs 30.4.1997
+month 30.4.1997 graph size 10255 mscc size 1997
+fetch sigs 31.5.1997
+month 31.5.1997 graph size 11292 mscc size 2134
+fetch sigs 30.6.1997
+month 30.6.1997 graph size 13888 mscc size 2249
+fetch sigs 31.7.1997
+month 31.7.1997 graph size 19335 mscc size 2414
+fetch sigs 31.8.1997
+month 31.8.1997 graph size 24232 mscc size 2563
+fetch sigs 30.9.1997
+month 30.9.1997 graph size 28803 mscc size 2690
+fetch sigs 31.10.1997
+month 31.10.1997 graph size 33444 mscc size 2910
+fetch sigs 30.11.1997
+month 30.11.1997 graph size 36791 mscc size 3044
+fetch sigs 31.12.1997
+month 31.12.1997 graph size 40884 mscc size 3180
+fetch sigs 31.1.1998
+month 31.1.1998 graph size 44621 mscc size 3304
+fetch sigs 28.2.1998
+month 28.2.1998 graph size 47582 mscc size 3461
+fetch sigs 31.3.1998
+month 31.3.1998 graph size 51599 mscc size 3604
+fetch sigs 30.4.1998
+month 30.4.1998 graph size 55757 mscc size 3808
+fetch sigs 31.5.1998
+month 31.5.1998 graph size 58864 mscc size 3992
+fetch sigs 30.6.1998
+month 30.6.1998 graph size 61466 mscc size 4202
+fetch sigs 31.7.1998
+month 31.7.1998 graph size 63882 mscc size 4301
+fetch sigs 31.8.1998
+month 31.8.1998 graph size 66982 mscc size 4424
+fetch sigs 30.9.1998
+month 30.9.1998 graph size 69794 mscc size 4562
+fetch sigs 31.10.1998
+month 31.10.1998 graph size 72798 mscc size 4718
+fetch sigs 30.11.1998
+month 30.11.1998 graph size 75729 mscc size 4895
+fetch sigs 31.12.1998
+month 31.12.1998 graph size 78422 mscc size 4985
+fetch sigs 31.1.1999
+month 31.1.1999 graph size 81125 mscc size 5176
+fetch sigs 28.2.1999
+month 28.2.1999 graph size 84051 mscc size 5318
+fetch sigs 31.3.1999
+month 31.3.1999 graph size 87259 mscc size 5502
+fetch sigs 30.4.1999
+month 30.4.1999 graph size 90239 mscc size 5688
+fetch sigs 31.5.1999
+month 31.5.1999 graph size 92725 mscc size 5845
+fetch sigs 30.6.1999
+month 30.6.1999 graph size 95836 mscc size 6035
+fetch sigs 31.7.1999
+month 31.7.1999 graph size 98481 mscc size 6205
+fetch sigs 31.8.1999
+month 31.8.1999 graph size 101024 mscc size 6490
+fetch sigs 30.9.1999
+month 30.9.1999 graph size 103641 mscc size 6614
+fetch sigs 31.10.1999
+month 31.10.1999 graph size 106675 mscc size 6685
+fetch sigs 30.11.1999
+month 30.11.1999 graph size 109511 mscc size 6813
+fetch sigs 31.12.1999
+month 31.12.1999 graph size 111649 mscc size 6906
+fetch sigs 31.1.2000
+month 31.1.2000 graph size 114173 mscc size 7001
+fetch sigs 29.2.2000
+month 29.2.2000 graph size 117287 mscc size 7148
+fetch sigs 31.3.2000
+month 31.3.2000 graph size 120935 mscc size 7414
+fetch sigs 30.4.2000
+month 30.4.2000 graph size 123906 mscc size 7546
+fetch sigs 31.5.2000
+month 31.5.2000 graph size 126990 mscc size 7670
+fetch sigs 30.6.2000
+month 30.6.2000 graph size 129836 mscc size 7825
+fetch sigs 31.7.2000
+month 31.7.2000 graph size 132864 mscc size 8019
+fetch sigs 31.8.2000
+month 31.8.2000 graph size 135666 mscc size 8177
+fetch sigs 30.9.2000
+month 30.9.2000 graph size 138442 mscc size 8309
+fetch sigs 31.10.2000
+month 31.10.2000 graph size 140776 mscc size 8397
+fetch sigs 30.11.2000
+month 30.11.2000 graph size 142169 mscc size 8504
+fetch sigs 31.12.2000
+month 31.12.2000 graph size 142658 mscc size 8580
+fetch sigs 31.1.2001
+month 31.1.2001 graph size 144612 mscc size 8632
+fetch sigs 28.2.2001
+month 28.2.2001 graph size 147867 mscc size 8799
+fetch sigs 31.3.2001
+month 31.3.2001 graph size 150812 mscc size 9033
+fetch sigs 30.4.2001
+month 30.4.2001 graph size 153632 mscc size 9248
+fetch sigs 31.5.2001
+month 31.5.2001 graph size 156481 mscc size 9438
+fetch sigs 30.6.2001
+month 30.6.2001 graph size 159523 mscc size 9675
+fetch sigs 31.7.2001
+month 31.7.2001 graph size 161817 mscc size 10096
+fetch sigs 31.8.2001
+month 31.8.2001 graph size 163682 mscc size 10376
+fetch sigs 30.9.2001
+month 30.9.2001 graph size 165589 mscc size 10760
+fetch sigs 31.10.2001
+month 31.10.2001 graph size 167798 mscc size 11033
+fetch sigs 30.11.2001
+month 30.11.2001 graph size 169678 mscc size 11301
+fetch sigs 31.12.2001
+month 31.12.2001 graph size 170621 mscc size 11484
+fetch sigs 31.1.2002
+month 31.1.2002 graph size 172135 mscc size 11694
+fetch sigs 28.2.2002
+month 28.2.2002 graph size 173472 mscc size 11871
+fetch sigs 31.3.2002
+month 31.3.2002 graph size 174811 mscc size 12136
+fetch sigs 30.4.2002
+month 30.4.2002 graph size 177593 mscc size 12475
+fetch sigs 31.5.2002
+month 31.5.2002 graph size 180129 mscc size 12757
+fetch sigs 30.6.2002
+month 30.6.2002 graph size 182112 mscc size 13084
+fetch sigs 31.7.2002
+month 31.7.2002 graph size 183985 mscc size 13494
+fetch sigs 31.8.2002
+month 31.8.2002 graph size 186397 mscc size 14367
+fetch sigs 30.9.2002
+month 30.9.2002 graph size 188343 mscc size 14732
+fetch sigs 31.10.2002
+month 31.10.2002 graph size 190566 mscc size 15149
+fetch sigs 30.11.2002
+month 30.11.2002 graph size 192661 mscc size 15445
+fetch sigs 31.12.2002
+month 31.12.2002 graph size 194034 mscc size 15750
+fetch sigs 31.1.2003
+month 31.1.2003 graph size 195802 mscc size 16183
+fetch sigs 28.2.2003
+month 28.2.2003 graph size 197802 mscc size 16684
+fetch sigs 31.3.2003
+month 31.3.2003 graph size 199612 mscc size 17231
+fetch sigs 30.4.2003
+month 30.4.2003 graph size 201706 mscc size 17628
+fetch sigs 31.5.2003
+month 31.5.2003 graph size 203907 mscc size 18654
+fetch sigs 30.6.2003
+month 30.6.2003 graph size 205993 mscc size 19051
+fetch sigs 31.7.2003
+month 31.7.2003 graph size 207750 mscc size 19535
+fetch sigs 31.8.2003
+month 31.8.2003 graph size 209648 mscc size 19965
+fetch sigs 30.9.2003
+month 30.9.2003 graph size 212337 mscc size 20325
+fetch sigs 31.10.2003
+month 31.10.2003 graph size 214556 mscc size 20780
+fetch sigs 30.11.2003
+month 30.11.2003 graph size 216749 mscc size 21133
+fetch sigs 31.12.2003
+month 31.12.2003 graph size 217977 mscc size 21522
+fetch sigs 31.1.2004
+month 31.1.2004 graph size 220034 mscc size 21962
+fetch sigs 29.2.2004
+month 29.2.2004 graph size 222351 mscc size 22489
+fetch sigs 31.3.2004
+month 31.3.2004 graph size 224676 mscc size 22926
+fetch sigs 30.4.2004
+month 30.4.2004 graph size 226718 mscc size 23377
+fetch sigs 31.5.2004
+month 31.5.2004 graph size 229010 mscc size 23818
+fetch sigs 30.6.2004
+month 30.6.2004 graph size 230628 mscc size 24133
+fetch sigs 31.7.2004
+month 31.7.2004 graph size 233188 mscc size 24627
+fetch sigs 31.8.2004
+month 31.8.2004 graph size 234648 mscc size 24983
+fetch sigs 30.9.2004
+month 30.9.2004 graph size 236559 mscc size 25361
+fetch sigs 31.10.2004
+month 31.10.2004 graph size 238406 mscc size 25897
+fetch sigs 30.11.2004
+month 30.11.2004 graph size 240529 mscc size 26308
+fetch sigs 31.12.2004
+month 31.12.2004 graph size 242401 mscc size 26851
+fetch sigs 31.1.2005
+month 31.1.2005 graph size 245392 mscc size 27327
+fetch sigs 28.2.2005
+month 28.2.2005 graph size 247727 mscc size 28166
+fetch sigs 31.3.2005
+month 31.3.2005 graph size 250395 mscc size 28883
+fetch sigs 30.4.2005
+month 30.4.2005 graph size 252429 mscc size 29312
+fetch sigs 31.5.2005
+month 31.5.2005 graph size 254420 mscc size 30193
+fetch sigs 30.6.2005
+month 30.6.2005 graph size 256713 mscc size 30181
+fetch sigs 31.7.2005
+month 31.7.2005 graph size 258215 mscc size 30604
+fetch sigs 31.8.2005
+month 31.8.2005 graph size 260791 mscc size 31443
+fetch sigs 30.9.2005
+month 30.9.2005 graph size 260804 mscc size 31229
+fetch sigs 31.10.2005
+month 31.10.2005 graph size 261978 mscc size 31520
+fetch sigs 30.11.2005
+month 30.11.2005 graph size 263585 mscc size 31829
+fetch sigs 31.12.2005
+month 31.12.2005 graph size 264984 mscc size 32432
+fetch sigs 31.1.2006
+month 31.1.2006 graph size 265901 mscc size 32520
+fetch sigs 28.2.2006
+month 28.2.2006 graph size 267347 mscc size 32815
+fetch sigs 31.3.2006
+month 31.3.2006 graph size 268685 mscc size 33236
+fetch sigs 30.4.2006
+month 30.4.2006 graph size 269929 mscc size 33520
+fetch sigs 31.5.2006
+month 31.5.2006 graph size 271427 mscc size 33972
+fetch sigs 30.6.2006
+month 30.6.2006 graph size 272580 mscc size 34100
+fetch sigs 31.7.2006
+month 31.7.2006 graph size 273707 mscc size 34423
+fetch sigs 31.8.2006
+month 31.8.2006 graph size 274828 mscc size 34615
+fetch sigs 30.9.2006
+month 30.9.2006 graph size 276067 mscc size 34930
+fetch sigs 31.10.2006
+month 31.10.2006 graph size 277281 mscc size 35109
+fetch sigs 30.11.2006
+month 30.11.2006 graph size 278673 mscc size 35354
+fetch sigs 31.12.2006
+month 31.12.2006 graph size 279577 mscc size 35522
+fetch sigs 31.1.2007
+month 31.1.2007 graph size 280773 mscc size 35963
+fetch sigs 28.2.2007
+month 28.2.2007 graph size 281984 mscc size 36224
+fetch sigs 31.3.2007
+month 31.3.2007 graph size 283427 mscc size 36423
+fetch sigs 30.4.2007
+month 30.4.2007 graph size 285007 mscc size 36846
+fetch sigs 31.5.2007
+month 31.5.2007 graph size 286514 mscc size 37037
+fetch sigs 30.6.2007
+month 30.6.2007 graph size 287964 mscc size 37426
+fetch sigs 31.7.2007
+month 31.7.2007 graph size 289186 mscc size 37766
+fetch sigs 31.8.2007
+month 31.8.2007 graph size 290320 mscc size 38017
+fetch sigs 30.9.2007
+month 30.9.2007 graph size 291717 mscc size 38205
+fetch sigs 31.10.2007
+month 31.10.2007 graph size 293276 mscc size 38549
+fetch sigs 30.11.2007
+month 30.11.2007 graph size 294943 mscc size 38967
+fetch sigs 31.12.2007
+month 31.12.2007 graph size 295958 mscc size 39182
+fetch sigs 31.1.2008
+month 31.1.2008 graph size 297761 mscc size 39391
+fetch sigs 29.2.2008
+month 29.2.2008 graph size 298905 mscc size 39626
+fetch sigs 31.3.2008
+month 31.3.2008 graph size 300157 mscc size 39984
+fetch sigs 30.4.2008
+month 30.4.2008 graph size 301618 mscc size 40276
+fetch sigs 31.5.2008
+month 31.5.2008 graph size 302964 mscc size 40613
+fetch sigs 30.6.2008
+month 30.6.2008 graph size 304567 mscc size 40996
+fetch sigs 31.7.2008
+month 31.7.2008 graph size 305978 mscc size 41215
+fetch sigs 31.8.2008
+month 31.8.2008 graph size 306960 mscc size 41393
+fetch sigs 30.9.2008
+month 30.9.2008 graph size 308185 mscc size 41703
+fetch sigs 31.10.2008
+month 31.10.2008 graph size 309763 mscc size 41986
+fetch sigs 30.11.2008
+month 30.11.2008 graph size 311158 mscc size 42317
+fetch sigs 31.12.2008
+month 31.12.2008 graph size 312165 mscc size 42487
+fetch sigs 31.1.2009
+month 31.1.2009 graph size 313519 mscc size 42724
+fetch sigs 28.2.2009
+month 28.2.2009 graph size 314926 mscc size 42992
+fetch sigs 31.3.2009
+month 31.3.2009 graph size 316109 mscc size 43183
+fetch sigs 30.4.2009
+month 30.4.2009 graph size 317177 mscc size 43282
+fetch sigs 31.5.2009
+month 31.5.2009 graph size 318768 mscc size 43457
+fetch sigs 30.6.2009
+month 30.6.2009 graph size 319769 mscc size 43768
+fetch sigs 31.7.2009
+month 31.7.2009 graph size 320763 mscc size 44062
+fetch sigs 31.8.2009
+month 31.8.2009 graph size 321774 mscc size 44290
+fetch sigs 30.9.2009
+month 30.9.2009 graph size 326993 mscc size 45574
+get_keys_per_period
+get interval 30.4.1992 keys 3
+get interval 31.5.1992 keys 6
+get interval 30.6.1992 keys 12
+get interval 31.7.1992 keys 5
+get interval 31.8.1992 keys 61
+get interval 30.9.1992 keys 50
+get interval 31.10.1992 keys 41
+get interval 30.11.1992 keys 47
+get interval 31.12.1992 keys 56
+get interval 31.1.1993 keys 44
+get interval 28.2.1993 keys 68
+get interval 31.3.1993 keys 67
+get interval 30.4.1993 keys 78
+get interval 31.5.1993 keys 59
+get interval 30.6.1993 keys 67
+get interval 31.7.1993 keys 63
+get interval 31.8.1993 keys 84
+get interval 30.9.1993 keys 112
+get interval 31.10.1993 keys 140
+get interval 30.11.1993 keys 173
+get interval 31.12.1993 keys 197
+get interval 31.1.1994 keys 202
+get interval 28.2.1994 keys 221
+get interval 31.3.1994 keys 232
+get interval 30.4.1994 keys 339
+get interval 31.5.1994 keys 379
+get interval 30.6.1994 keys 302
+get interval 31.7.1994 keys 332
+get interval 31.8.1994 keys 327
+get interval 30.9.1994 keys 271
+get interval 31.10.1994 keys 279
+get interval 30.11.1994 keys 360
+get interval 31.12.1994 keys 540
+get interval 31.1.1995 keys 536
+get interval 28.2.1995 keys 575
+get interval 31.3.1995 keys 584
+get interval 30.4.1995 keys 603
+get interval 31.5.1995 keys 633
+get interval 30.6.1995 keys 652
+get interval 31.7.1995 keys 740
+get interval 31.8.1995 keys 738
+get interval 30.9.1995 keys 783
+get interval 31.10.1995 keys 678
+get interval 30.11.1995 keys 717
+get interval 31.12.1995 keys 1188
+get interval 31.1.1996 keys 1123
+get interval 29.2.1996 keys 1090
+get interval 31.3.1996 keys 1091
+get interval 30.4.1996 keys 1269
+get interval 31.5.1996 keys 1127
+get interval 30.6.1996 keys 1411
+get interval 31.7.1996 keys 1297
+get interval 31.8.1996 keys 1361
+get interval 30.9.1996 keys 1523
+get interval 31.10.1996 keys 1465
+get interval 30.11.1996 keys 1577
+get interval 31.12.1996 keys 2179
+get interval 31.1.1997 keys 1917
+get interval 28.2.1997 keys 2506
+get interval 31.3.1997 keys 2088
+get interval 30.4.1997 keys 3748
+get interval 31.5.1997 keys 9890
+get interval 30.6.1997 keys 24212
+get interval 31.7.1997 keys 22855
+get interval 31.8.1997 keys 22183
+get interval 30.9.1997 keys 21193
+get interval 31.10.1997 keys 19250
+get interval 30.11.1997 keys 24545
+get interval 31.12.1997 keys 26336
+get interval 31.1.1998 keys 19825
+get interval 28.2.1998 keys 29574
+get interval 31.3.1998 keys 29844
+get interval 30.4.1998 keys 30821
+get interval 31.5.1998 keys 25453
+get interval 30.6.1998 keys 23634
+get interval 31.7.1998 keys 28849
+get interval 31.8.1998 keys 29056
+get interval 30.9.1998 keys 31735
+get interval 31.10.1998 keys 29688
+get interval 30.11.1998 keys 26613
+get interval 31.12.1998 keys 30916
+get interval 31.1.1999 keys 29877
+get interval 28.2.1999 keys 33565
+get interval 31.3.1999 keys 30634
+get interval 30.4.1999 keys 29166
+get interval 31.5.1999 keys 32506
+get interval 30.6.1999 keys 31884
+get interval 31.7.1999 keys 32495
+get interval 31.8.1999 keys 33050
+get interval 30.9.1999 keys 37170
+get interval 31.10.1999 keys 35960
+get interval 30.11.1999 keys 30028
+get interval 31.12.1999 keys 41353
+get interval 31.1.2000 keys 43774
+get interval 29.2.2000 keys 42622
+get interval 31.3.2000 keys 39490
+get interval 30.4.2000 keys 35890
+get interval 31.5.2000 keys 40372
+get interval 30.6.2000 keys 40307
+get interval 31.7.2000 keys 42146
+get interval 31.8.2000 keys 40397
+get interval 30.9.2000 keys 40747
+get interval 31.10.2000 keys 14140
+get interval 30.11.2000 keys 8620
+get interval 31.12.2000 keys 20891
+get interval 31.1.2001 keys 35262
+get interval 28.2.2001 keys 38761
+get interval 31.3.2001 keys 31136
+get interval 30.4.2001 keys 30759
+get interval 31.5.2001 keys 30058
+get interval 30.6.2001 keys 11916
+get interval 31.7.2001 keys 9736
+get interval 31.8.2001 keys 11049
+get interval 30.9.2001 keys 11961
+get interval 31.10.2001 keys 9684
+get interval 30.11.2001 keys 8155
+get interval 31.12.2001 keys 10055
+get interval 31.1.2002 keys 9470
+get interval 28.2.2002 keys 14351
+get interval 31.3.2002 keys 18625
+get interval 30.4.2002 keys 19111
+get interval 31.5.2002 keys 17016
+get interval 30.6.2002 keys 17443
+get interval 31.7.2002 keys 14856
+get interval 31.8.2002 keys 13089
+get interval 30.9.2002 keys 15850
+get interval 31.10.2002 keys 14749
+get interval 30.11.2002 keys 12649
+get interval 31.12.2002 keys 13887
+get interval 31.1.2003 keys 11183
+get interval 28.2.2003 keys 14533
+get interval 31.3.2003 keys 12573
+get interval 30.4.2003 keys 12331
+get interval 31.5.2003 keys 11109
+get interval 30.6.2003 keys 10894
+get interval 31.7.2003 keys 10644
+get interval 31.8.2003 keys 11974
+get interval 30.9.2003 keys 13335
+get interval 31.10.2003 keys 12299
+get interval 30.11.2003 keys 10832
+get interval 31.12.2003 keys 12546
+get interval 31.1.2004 keys 13084
+get interval 29.2.2004 keys 15399
+get interval 31.3.2004 keys 12095
+get interval 30.4.2004 keys 12433
+get interval 31.5.2004 keys 11353
+get interval 30.6.2004 keys 9999
+get interval 31.7.2004 keys 9498
+get interval 31.8.2004 keys 11424
+get interval 30.9.2004 keys 12721
+get interval 31.10.2004 keys 12983
+get interval 30.11.2004 keys 13672
+get interval 31.12.2004 keys 17652
+get interval 31.1.2005 keys 14118
+get interval 28.2.2005 keys 17535
+get interval 31.3.2005 keys 14139
+get interval 30.4.2005 keys 12693
+get interval 31.5.2005 keys 10831
+get interval 30.6.2005 keys 9954
+get interval 31.7.2005 keys 9745
+get interval 31.8.2005 keys 8970
+get interval 30.9.2005 keys 9917
+get interval 31.10.2005 keys 10165
+get interval 30.11.2005 keys 9460
+get interval 31.12.2005 keys 10861
+get interval 31.1.2006 keys 10040
+get interval 28.2.2006 keys 11485
+get interval 31.3.2006 keys 10378
+get interval 30.4.2006 keys 10609
+get interval 31.5.2006 keys 10050
+get interval 30.6.2006 keys 8477
+get interval 31.7.2006 keys 8363
+get interval 31.8.2006 keys 8423
+get interval 30.9.2006 keys 9303
+get interval 31.10.2006 keys 9110
+get interval 30.11.2006 keys 8146
+get interval 31.12.2006 keys 9440
+get interval 31.1.2007 keys 8937
+get interval 28.2.2007 keys 10710
+get interval 31.3.2007 keys 10705
+get interval 30.4.2007 keys 10636
+get interval 31.5.2007 keys 10372
+get interval 30.6.2007 keys 8797
+get interval 31.7.2007 keys 8695
+get interval 31.8.2007 keys 9263
+get interval 30.9.2007 keys 11079
+get interval 31.10.2007 keys 11468
+get interval 30.11.2007 keys 9311
+get interval 31.12.2007 keys 11959
+get interval 31.1.2008 keys 9997
+get interval 29.2.2008 keys 10940
+get interval 31.3.2008 keys 10770
+get interval 30.4.2008 keys 10356
+get interval 31.5.2008 keys 10073
+get interval 30.6.2008 keys 9121
+get interval 31.7.2008 keys 8597
+get interval 31.8.2008 keys 9242
+get interval 30.9.2008 keys 10517
+get interval 31.10.2008 keys 10801
+get interval 30.11.2008 keys 8753
+get interval 31.12.2008 keys 12560
+get interval 31.1.2009 keys 10340
+get interval 28.2.2009 keys 11480
+get interval 31.3.2009 keys 10017
+get interval 30.4.2009 keys 10516
+get interval 31.5.2009 keys 8793
+get interval 30.6.2009 keys 8514
+get interval 31.7.2009 keys 8027
+get interval 31.8.2009 keys 8308
+get interval 30.9.2009 keys 10053
+get_keys_per_period
+get interval 30.4.1992 keys 0
+get interval 31.5.1992 keys 0
+get interval 30.6.1992 keys 3
+get interval 31.7.1992 keys 1
+get interval 31.8.1992 keys 16
+get interval 30.9.1992 keys 16
+get interval 31.10.1992 keys 15
+get interval 30.11.1992 keys 12
+get interval 31.12.1992 keys 12

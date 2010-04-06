@@ -1,0 +1,7 @@
+i <- scan("dev/studienarbeit-wot/results/without/random_i")
+random_mscc <- scan("dev/studienarbeit-wot/results/without/random_mscc")
+outdeg_mscc <- scan("dev/studienarbeit-wot/results/without/outdeg_mscc")
+plot(i, random_mscc, xlab="Anzahl entfernter Knoten", ylab="Grösse MSCC", type="l", lty=3)
+lines(outdeg_mscc, lty=1)
+legend("topright", c("zufällig", "nach Grad"), lty=c(3,1))
+quartz.save("/Users/ulricha/dev/studienarbeit-wot/ausarbeitung/images/without.pdf", type="pdf")
