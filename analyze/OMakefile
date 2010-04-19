@@ -144,6 +144,7 @@ OCamlProgram(basic_properties_mpi, basic_properties_mpi $(AUXFILES) mpi_framewor
 OCamlProgram(basic_properties, basic_properties $(AUXFILES))
 OCamlProgram(correlate_weak_sigs, correlate_weak_sigs $(AUXFILES))
 OCamlProgram(without, without $(AUXFILES))
+OCamlProgram(correlate_deg, correlate_deg $(AUXFILES))
 
 EXE[] = 
 	dump_sql
@@ -164,6 +165,7 @@ EXE[] =
 	basic_properties_mpi
 	without
 	correlate_weak_sigs
+	correlate_deg
 
 .DEFAULT: $(EXE)
 

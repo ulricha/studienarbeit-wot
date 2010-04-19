@@ -143,9 +143,7 @@ Insgesamt lassen diese Daten den Schluss zu, dass ausschliesslich die
 gr\"osste starke Zusammenhangskomponente Schl\"ussel von Personen
 enth\"alt, die sich durch regelm\"assige Signaturaktivit\"aten am Web
 of Trust beteiligen und es zur Verifizierung von Schl\"usseln
-benutzen. Eine weitergehende Analyse der in den kleineren
-Zusammenhangskomponenten enthaltenen Schl\"ussel wird in Abschnitt
-\ref{sec:zusammenhangskomponenten-inhaltlich} vorgenommen.
+benutzen. 
 
 \subsection{Netzwerkstatistiken der gr\"ossten starken
   Zusammenhangskomponente}
@@ -193,19 +191,32 @@ jeweils anderen unterschreiben. Es ist eine Reihe von Gr\"unden
 denkbar, die dazu f\"uhren, dass der Anteil einseitiger Signaturen so
 hoch ist: Eine Rolle k\"onnten dabei Certificate Authorities
 spielen. Diese signieren zwar eine Vielzahl von Schl\"usseln,
-empfangen im Allgemeinen aber selbst kaum oder keine
-Signaturen. Ausserdem k\"onnen Signaturen aus verschiedenen Gr\"unden
-nicht vorgenommen werden oder nicht auf Keyserver hochgeladen
-werden. Schlussendlich kann nicht davon ausgegangen werden, dass
-hinter jeder Signatur ein sinnvoller Prozess der
-Identit\"ats\"uberpr\"ufung steht. Teilnehmer k\"onnten etwa andere
-Schl\"ussel ``zum Experimentieren'' unterschreiben. PGP und GnuPG
-zeigen eine Warnung an, wenn die E-Mail-Signatur eines Schl\"ussels
-\"uberpr\"uft wird, der nicht als \emph{valide} eingestuft
-wird. Teilnehmer k\"onnten dann versucht sein, Schl\"ussel zu
-unterschreiben, deren Authentizit\"at sie nicht \"uberpr\"uft haben,
-um diese Warnung zu unterdr\"ucken, selbst wenn dadurch der Sinn des
-Web of Trust untergraben wird.
+empfangen aber selbst weniger Signaturen\footnote{Beispielsweise
+  verf\"ugt ein CA-Schl\"ussel, der 1684 Schl\"ussel in der gr\"ossten
+  Komponente unterschrieben hat, selbst nur \"uber 683 Signaturen von
+  Schl\"usseln aus dieser Komponente}. Ausserdem k\"onnen Signaturen
+aus verschiedenen Gr\"unden nicht vorgenommen werden oder nicht auf
+Keyserver hochgeladen werden. Schlussendlich kann nicht davon
+ausgegangen werden, dass hinter jeder Signatur ein sinnvoller Prozess
+der Identit\"ats\"uberpr\"ufung steht. Teilnehmer k\"onnten etwa
+andere Schl\"ussel ``zum Experimentieren'' unterschreiben. PGP und
+GnuPG zeigen eine Warnung an, wenn die E-Mail-Signatur eines
+Schl\"ussels \"uberpr\"uft wird, der nicht als \emph{valide}
+eingestuft wird. Teilnehmer k\"onnten dann versucht sein, Schl\"ussel
+zu unterschreiben, deren Authentizit\"at sie nicht \"uberpr\"uft
+haben, um diese Warnung zu unterdr\"ucken, selbst wenn dadurch der
+Sinn des Web of Trust untergraben wird.
+
+Abbildung \ref{fig:inoutcorr} zeigt die Verteilungsfunktion des
+Verh\"altnisses von ausgehendem zu eingehendem Grad f\"ur alle Knoten
+$u$ in der gr\"ossten starken Zusammenhangskomponente, also
+$\frac{d^+(u)}{d^-(u)}$. Aus dieser Verteilung ergibt sich, dass eine
+positive Korrelation zwischen dem eingehendem und dem ausgehendem Grad
+eines Knotens besteht. F\"ur etwa die H\"alfte der Knoten (21817)
+unterscheidet sich der eingehende Grad um maximal 20\% vom ausgehenden
+Grad. Diese Korrelation folgt aus der hohen Anzahl gegenseitiger
+Kanten und der Natur des Signaturprozesses, bei dem Schl\"ussel
+\"ublicherweise gegenseitig signiert werden.
 
 \begin{figure}[th!]
   \centering
@@ -217,36 +228,100 @@ Web of Trust untergraben wird.
   \label{fig:comsizedist}
 \end{figure}
 
+
 FIXME Hier fehlt noch ca. eine Seite zu Small-World, Clustering
-coefficient, Power-law und Scale-free.
+coefficient.
 
-Unabh\"angig von der konkreten Verteilung kann aber festgehalten
-werden, dass es eine (kleine) Anzahl von Knoten mit sehr hohem Grad
-gibt. (weiter ausf\"uhren, was das f\"ur das Netzwerk bedeutet -- Hubs
-usw.) Orientieren an (Newman -- Email, Bele -- Email). Spekulieren, ob
-das mit the rich get richer zu tun hat -- verbinden mit Modell aus
-Capkun-Paper.
+\subsection{Verteilung der Grade, Skalenfreiheit}
+\label{sec:verteilung-der-grade}
 
-\cite{Clauset2009}
+Der durchschnittliche ausgehende Grad (und damit auch der
+durchschnittliche eingehende Grad) betr\"agt 9,29. Allerdings zeigen
+Abbildung \ref{fig:indeg-dist} und \ref{fig:outdeg-dist}, dass dieser
+Durchschnitt auf h\"ochst ungleichm\"assige Weise zustande
+kommt. W\"ahrend eine Mehrheit der Knoten einen sehr kleinen ein-
+bzw. ausgehenden Grad hat, existiert eine signifikante Anzahl von
+Knoten, deren Grad deutlich \"uber dem Durchschnitt liegt. Dieses
+Verhalten ist konsistent mit einer Power-Law-Verteilung der Grade und
+die in etwa geraden Linien im doppelt logarithmischen Plot der
+Verteilungen legen dies zus\"atzlich nahe. Allerdings wird in
+\cite{Clauset2009} argumentiert, dass ein ``Nachweis'' einer
+Power-Law-Verteilung und insbesondere die Berechnung des
+Power-Law-Koeffizienten etwa mit linearer Regression auf einem doppelt
+logarithmischen Plot (vorgeschlagen etwa bei \cite{Brinkmeier2004}) zu
+stark verf\"alschten Ergebnissen f\"uhren kann. Stattdessen wird hier
+die von Clauset et al. vorgeschlagene Vorgehensweise benutzt, die
+beste Power-Law-Anpassung mittels der Maximum-Likelihood-Methode zu
+berechnen. Damit ergibt sich f\"ur die Verteilung der ein-
+bzw. ausgehenden Grade ein Power-Law-Koeffizient von XX bzw. XY. Diese
+Werte liegen im \"ublichen Rahmen f\"ur Netzwerke, die aus sozialen
+Interaktionen entstehen (FIXME: cite). Allerdings ergibt die
+\"Uberpr\"ufung der Qualit\"at der Anpassung mittels des
+Kolmogorov-Smirnov-Tests Werte, die mit $p = 0,012$ und $p = 0,011$
+deutlich unter dem in \cite{Clauset2009} empfohlenen Schwellwert von
+$p=0,1$ liegen und damit ein Power-Law als plausible Hypothese f\"ur
+die Verteilung ausschliessen.
 
-Die gr\"osste Komponente enth\"alt eine erhebliche Anzahl von Knoten
-mit einem ausgehenden Knotengrad von 1. Ein solch niedriger Grad
-stellt eine erhebliche Einschr\"ankung f\"ur die Benutzbarkeit dieses
-Schl\"ussels f\"ur die Verifizierung von anderen Schl\"usseln dar. Da
-ein Schl\"ussel $A$ mit ausgehendem Grad 1 nur einen Schl\"ussel $B$
-signiert hat, gibt es auch nur genau einen Schl\"ussel, \"uber den
-eine Signaturkette aufgebaut werden kann. Nat\"urlich wird dadurch die
-Menge insgesamt erreihbarer Knoten stark eingeschr\"ankt. Ausserdem
-aber existiert damit keine Redundanz. Der Besitzer des Schl\"ussels
-$A$ muss dem Besitzer des Schl\"ussels $B$ vertrauen, wenn er irgend
-eine Signaturkette benutzen will. $B$ stellt einen \emph{Single point
-  of failure} dar, da $A$ vom Netz getrennt wird, wenn $B$ etwa
-abl\"auft oder zur\"uckgezogen wird. \"Aquivalent ist die
-Verifizierbarkeit eines Knotens $A$ stark eingeschr\"ankt, wenn er
-einen eingehenden Grad von 1 hat und nur von einem einzigen
-Schl\"ussel $B$ signiert wurde. F\"ur die Verifizierung von $A$ muss
-zwingend dem Besitzer von $B$ vertraut werden. Ist $B$ nicht mehr
-benutzbar, wird $A$ vom Netz getrennt.
+\begin{figure}[th!]
+  \centering
+  \subfloat[]{\label{fig:inoutcorr} \includegraphics[scale=0.55]{images/inoutcorr.pdf}}
+  \subfloat[]{\label{fig:knn} \includegraphics[scale=0.55]{images/knn.pdf}}
+  \caption{Kumulative Verteilungsfunktion von $\frac{d^+(u)}{d^-(u)}$
+    f\"ur alle Knoten $u$ in der MSCC
+    \subref{fig:inoutcorr}. Verteilung von $k_{nn}$ \"uber alle
+    ausgehenden Grade \subref{fig:knn}.}
+  \label{fig:comsizedist}
+\end{figure}
+
+Es handelt sich bei dem vorliegenden Netzwerk also nicht um ein
+skalenfreies Netzwerk im engeren Sinne. Es stellt sich allerdings die
+Frage, ob das \"uberhaupt relevant ist. Zum einen zeigt die Verteilung
+der Grade Merkmale, die mit charakteristischen Merkmalen einer
+Power-Law-Verteilung \"ubereinstimmen, n\"amlich die hohe
+Variabilit\"at der Grade und insbesondere die Anwesenheit einer
+signifikaten Anzahl von Knoten mit hohem Grad. Eine zentrale Rolle bei
+den Eigenschaften, die skalenfreien Netzwerken zugeschrieben werden,
+spielt die Existenz eines Kerns bestehend aus ``Hubs'', also Knoten mit
+hohem Grad, die untereinander verbunden sind. Knoten mit niedrigem
+Grad sind prim\"ar mit diesen Hubs verbunden. Dieser Kern h\"alt das
+Netzwerk zusammen und sorgt f\"ur geringe Distanzen. Allerdings haben
+Li et al. \cite{Li2005} gezeigt, dass die Existenz einer
+Power-Law-Verteilung nicht ausreicht, um die Existenz von Hubs
+nachzuweisen. Es existieren Netzwerke, die zwar eine
+Power-Law-Verteilung der Grade haben, bei denen die Knoten mit hohem
+Grad aber eher an der \emph{Peripherie} liegen und keine zentrale
+Rolle im Sinne von Hubs \"ubernehmen.  Hubs ergeben sich erst dann,
+wenn Knoten mit hohem Grad prim\"ar mit Knoten vernetzt sind, die
+wiederum einen hohen Grad haben. Im Umkehrschluss kann angenommen
+werden, dass ein Netzwerk, welches in charakteristischen Aspekten
+einem skalenfreien Netzwerk \emph{\"ahnelt}, auch \"ahnliche
+Eigenschaften aufweisen \emph{kann}.
+
+Um zu \"uberpr\"ufen, ob die gut vernetzten Knoten als Hubs fungieren,
+wurde zun\"achst die Korrelationsfunktion $k_{nn}$ berechnet. Diese
+verbindet f\"ur gerichtete Graphen einen Grad $d$ mit dem Durchschnitt
+des Grads der Nachbarn der Knoten, die diesen Grad $d$ haben. Sie
+misst also, wie hoch der Grad von Knoten ist, die mit Knoten vom Grad
+$d$ verbunden sind. Abbildung \ref{fig:knn} zeigt die Verteilung von
+$k_{nn}$ \"uber alle Grade $d$. Aus der ansteigenden Kurve f\"ur
+ansteigende Grade kann geschlossen werden, dass Knoten mit hohem Grad
+dazu tendieren, zu anderen Knoten mit hohem Grad verbunden zu
+sein. Diese Knoten scheinen also in der Tat einen \emph{Kern} des
+Netzwerkes zu bilden. Um dies zu untermauern, wurde zus\"atzlich noch
+der Assortativity-Koeffizient $r$ (siehe Abschnitt
+\ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Statistiken})
+berechnet. Es ergibt sich ein Wert $r = 0,113$. Aus diesem positiven
+Wert folgt ebenfalls, dass Knoten tendenziell mit Knoten verbunden
+sind, die einen \"ahnlichen Grad haben. Der $r$-Wert \"ahnelt den
+Werten, die f\"ur andere soziale Netzwerke berechnet
+wurden\cite{newman:167}.
+
+Zwar scheint die in \cite{Li2005} definierte $s$-Metrik ein besser
+geeignetes Mass f\"ur die Charakterisierung der Korrelation von Graden
+benachbarter Knoten zu sein als der Assortativity-Koeffizient
+$r$. Diese wurde hier aber nicht verwendet, da die Implementierung des
+Algorithmus f\"ur die Berechung des Normalisierungswertes $s_{max}$ zu
+aufw\"andig war.
 
 \subsection{Robustheit}
 \label{sec:robustheit}
@@ -260,17 +335,15 @@ benutzbar, wird $A$ vom Netz getrennt.
   \label{fig:without}
 \end{figure}
 
-\cite{Barabasi1999}
-\cite{Li2005}
 
 In diesem Zusammenhang stellt sich auch die Frage nach der
-\emph{Robustheit} des Netzwerkes. Albert et al. haben gezeigt, dass
-Skalenfreie Netzwerke, also Netzerke mit einer heavy-tail in der
-Gradverteilung, \"ublicherweise auf eine spezielle Art auf die
-Entfernung von Knoten reagieren: W\"ahrend die Entfernung zuf\"allig
-ausgew\"ahlter Knoten kaum Schaden anrichtet, reagiert das Netzwerk
-sehr verwundbar auf die Entfernung von Knoten, die sehr gut vernetzt
-sind \cite{Albert2000}.
+\emph{Robustheit} des Netzwerkes.  Eine Eigenschaft, die skalenfreien
+Netzwerken \"ublicherweise zugeschrieben wird\cite{Albert2000}, ist
+eine typische Reaktion auf das Entfernen von Knoten: W\"ahrend die
+Entfernung zuf\"allig ausgew\"ahlter Knoten kaum Schaden anrichtet,
+reagiert das Netzwerk sehr verwundbar auf die Entfernung von Knoten,
+die sehr gut vernetzt sind. Schon die Entfernung weniger sehr gut
+vernetzter Knoten f\"uhrt dazu, dass das Netzwerk zerf\"allt.
 
 Dieser Unterschied kann aufgefasst werden als der Unterschied zwischen
 einem gerichteten \emph{Angriff} und einer zuf\"alligen
@@ -317,7 +390,14 @@ etwa 100 Knoten -- was der Entfernung aller Knoten mit einem
 ausgehenden Grad gr\"osser 250 entspricht -- sinkt die Gr\"osse der
 Komponent erheblich. Die M\"oglichkeiten eines Angreifers d\"urften
 sich eher im Entfernen einzelner Knoten ersch\"opfen, so dass der zu
-erwartende Schaden gering ist.
+erwartende Schaden gering ist. Trotzdem ist die Abh\"angigkeit des
+Netzwerks von wenigen Knoten bemerkenswert. Der rasche Verfall bei der
+Entfernung dieser Knoten illustriert die Wichtigkeit dieser zentralen
+Knoten, die als ``Hubs'' das Netzwerk zusammenhalten.
+
+Dieses Verhalten ist konsistent mit dem Verhalten, dass viele --
+insbesondere soziale -- Netzwerke aus der realen Welt zeigen, die als
+skalenfrei eingeordnet werden FIXME cite. 
 
 Angemerkt werden muss, dass neben der Gr\"osse der Komponente auch
 eine Betrachtung der Entwicklung der Distanzen in der Komponente
@@ -351,6 +431,24 @@ Schaden an.
 
 \subsection{N\"utzlichkeit}
 \label{sec:nutzlichkeit}
+Die gr\"osste Komponente enth\"alt eine erhebliche Anzahl von Knoten
+mit einem ausgehenden Knotengrad von 1. Ein solch niedriger Grad
+stellt eine erhebliche Einschr\"ankung f\"ur die Benutzbarkeit dieses
+Schl\"ussels f\"ur die Verifizierung von anderen Schl\"usseln dar. Da
+ein Schl\"ussel $A$ mit ausgehendem Grad 1 nur einen Schl\"ussel $B$
+signiert hat, gibt es auch nur genau einen Schl\"ussel, \"uber den
+eine Signaturkette aufgebaut werden kann. Nat\"urlich wird dadurch die
+Menge insgesamt erreihbarer Knoten stark eingeschr\"ankt. Ausserdem
+aber existiert damit keine Redundanz. Der Besitzer des Schl\"ussels
+$A$ muss dem Besitzer des Schl\"ussels $B$ vertrauen, wenn er irgend
+eine Signaturkette benutzen will. $B$ stellt einen \emph{Single point
+  of failure} dar, da $A$ vom Netz getrennt wird, wenn $B$ etwa
+abl\"auft oder zur\"uckgezogen wird. \"Aquivalent ist die
+Verifizierbarkeit eines Knotens $A$ stark eingeschr\"ankt, wenn er
+einen eingehenden Grad von 1 hat und nur von einem einzigen
+Schl\"ussel $B$ signiert wurde. F\"ur die Verifizierung von $A$ muss
+zwingend dem Besitzer von $B$ vertraut werden. Ist $B$ nicht mehr
+benutzbar, wird $A$ vom Netz getrennt.
 
 Klar ist, dass in einer starken Zusammenhangskomponente jeder Knoten
 jeden anderen Knoten erreichen kann. Eine Mindestvorraussetzung f\"ur
@@ -386,17 +484,17 @@ verwendet.
 \end{figure}
 
 Aus Abbildung \ref{fig:eccentricity} ist ersichtlich, dass die
-Eccentricity, also die \emph{maximale} Distanz zu irgendeinem Knoten,
-zwischen dem Minumum 16 (dem \emph{Radius} des Graphen) und dem
-Maximum 36 (dem \emph{Durchmesser} des Graphen) liegt. F\"ur die
-meisten Knoten liegt sie bei 26 bis 31. Damit wird die maximale
-Pfadl\"ange deutlich \"uberschritten. F\"ur alle Knoten gilt also,
-dass die am weitesten entfernten Knoten grunds\"atzlich nicht
-erreichbar sind. Aber auch schon die \emph{durchschnittliche} Distanz
-(Abbildung \ref{fig:pathlen-dist}) ist f\"ur eine erhebliche Anzahl
-von Knoten gr\"osser als die maximal erlaubte L\"ange. Klar ist also,
-dass f\"ur die Mehrzahl der Knoten l\"angst nicht alle Knoten unter
-der Beschr\"ankung der Pfadl\"ange erreichbar sind.
+Eccentricity, also die \emph{maximale} Distanz eines Knotens zu
+irgendeinem anderen Knoten, zwischen dem Minumum 16 (dem \emph{Radius}
+des Graphen) und dem Maximum 36 (dem \emph{Durchmesser} des Graphen)
+liegt. F\"ur die meisten Knoten liegt sie bei 26 bis 31. Damit wird
+die maximale Pfadl\"ange deutlich \"uberschritten. F\"ur alle Knoten
+gilt also, dass die am weitesten entfernten Knoten grunds\"atzlich
+nicht erreichbar sind. Aber auch schon die \emph{durchschnittliche}
+Distanz (Abbildung \ref{fig:pathlen-dist}) ist f\"ur eine erhebliche
+Anzahl von Knoten gr\"osser als die maximal erlaubte L\"ange. Klar ist
+also, dass f\"ur die Mehrzahl der Knoten l\"angst nicht alle Knoten
+unter der Beschr\"ankung der Pfadl\"ange erreichbar sind.
 
 Die Gr\"osse der 5-Nachbarschaft eines Knotens gibt die Anzahl der
 Knoten an, die unter dieser Beschr\"ankung erreichbar sind. Allerdings
@@ -619,22 +717,21 @@ d.h. es werden ca. 8000 Schl\"ussel abgetrennt.
 RSA-Schl\"ussel mit einer L\"ange von h\"ochstens 768 bit und weniger
 m\"ussen ebenfalls als praktikabel brechbar betrachtet werden. Dies
 wurde durch die Faktorisierung der Zahl RSA-768 demonstriert
-\cite{Kleinjung2010}. Kleinjung et al. sch\"atzen den
-Zeitrahmen f\"ur die Faktorisierung einer 1024-bit-Zahl innerhalb
-eines \emph{akadaemischen Rahmens} auf 5 bis 10 Jahre. Die Menge der
-in der gr\"ossten Komponente vorhandenen RSA-Schl\"ussel mit 512
-bzw. 768 bit ist mit insgesamt 450 Schl\"usseln gering. Ihre
-Entfernung trennt nur etwa weitere 300 Knoten von der Komponente
-ab. Die Anzahl von RSA-Schl\"usseln mit 1024 bit ist aber deutlich
-gr\"osser. Die Entfernung aller ca. 4500 RSA-Schl\"ussel, deren
-L\"ange h\"ochstens 1024 bit betr\"agt, reduziert die Gr\"osse der
-Komponente um insgesamt ca. 8500 Knoten, trennt also weitere 4000
-Knoten vom Netz ab. Es ist anzunehmen, dass sich die
-durchschnittlichen Distanzen ebenfalls erh\"ohen. Da
-Standardorganisationen eine Abkehr von RSA-1024 empfehlen [cite NIST]
-und praktikable Angriffe wohl nur eine Frage weniger Jahre sind, ist
-damit wie durch die MD5-Signaturen eine erhebliche Beeintr\"achtigung
-der gr\"ossten Komponente absehbar.
+\cite{Kleinjung2010}. Kleinjung et al. sch\"atzen den Zeitrahmen bis
+zur Faktorisierung einer 1024-bit-Zahl innerhalb eines
+\emph{akademischen Rahmens} auf 5 bis 10 Jahre. Die Menge der in der
+gr\"ossten Komponente vorhandenen RSA-Schl\"ussel mit 512 bzw. 768 bit
+ist mit insgesamt 450 Schl\"usseln gering. Ihre Entfernung trennt nur
+etwa weitere 300 Knoten von der Komponente ab. Die Anzahl von
+RSA-Schl\"usseln mit 1024 bit ist aber deutlich gr\"osser. Die
+Entfernung aller ca. 4500 RSA-Schl\"ussel, deren L\"ange h\"ochstens
+1024 bit betr\"agt, reduziert die Gr\"osse der Komponente um insgesamt
+ca. 8500 Knoten, trennt also weitere 4000 Knoten vom Netz ab. Es ist
+anzunehmen, dass sich die durchschnittlichen Distanzen ebenfalls
+erh\"ohen. Da Standardorganisationen eine Abkehr von RSA-1024
+empfehlen [cite NIST] und praktikable Angriffe wohl nur eine Frage
+weniger Jahre sind, ist damit wie durch die MD5-Signaturen eine
+erhebliche Beeintr\"achtigung der gr\"ossten Komponente absehbar.
 
 Es ist zu erwarten, dass sich durch die Umstellung der
 Standardeinstellung in GnuPG der Anteil von RSA-Schl\"usseln mit
@@ -1197,36 +1294,6 @@ existierenden Community im Web of Trust wiederspiegelt. Selbst wenn viele
 Debian-Entwickler mit vielen anderen Projektmitgliedern vernetzt sind,
 so verf\"ugen sie offensichtlich \"uber gen\"ugend andere Kontakte,
 so dass diese Struktur nicht mehr auffindbar ist.
-
-\subsection{Inhaltliche Analyse der Zusammenhangskomponenten}
-\label{sec:zusammenhangskomponenten-inhaltlich}
-
-Nicht interessant $\Rightarrow$ fliegt raus.
-
-Starke Zusammenhangskomponenten k\"onnen als ein Extremfall von
-Communities betrachtet werden, also Mengen von Knoten, die intern
-st\"arker vernetzt sind als extern. 
-
-\begin{itemize}
-\item strange Komponenten mit unklarer Funktion: kaos.org,
-  ethereal.com, ...
-
-\item Bei den kleineren (<20): Viele Komponenten, die mehrere
-  Schluessel einer Person enthalten oder nur aus einer Person
-  bestehen
-\item Komponente aus einer einzelnen Firma, keine weitere
-  Vernetzung. Schl\"ussel werden vermutlich nur intern benutzt. Stellt
-  aber einen effektiven Ersatz f\"ur eine CA zur Absicherung der
-  internen Kommunikation dar (Serco, ponl).
-\end{itemize}
-
-Ergebniss: bei den kleineren Komponenten handelt es sich entweder um
-komplett geschlossene ``Communities'', deren Teilnehmer von vornherein
-nur an der Community selbst interessiert sind oder um Gruppen, die so
-inaktiv sind, dass es f\"ur eine weitere Vernetzung nicht gereicht
-hat.
-
-
 
 %%% Local Variables: 
 %%% mode: latex

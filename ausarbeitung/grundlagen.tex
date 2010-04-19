@@ -149,19 +149,145 @@ wichtige Rolle in der Kultur des Projekts zu spielen.
 \subsection{Unterschiede v3}
 \label{ch:Grundlagen:sec:OpenPGP:subsec:v3Format}
 
-\section{Graphentheorie allgemein}
+In einem schlichten Graphen haben Kreise mindestens 3 verschiedene
+Knoten. Kreise der L\"ange 1 werden durch Schleifen, Kreise der
+L\"ange 2 durch Mehrfachkanten gebildet.
+
+\section{Graphentheorie und Netzwerkanalyse}
+\label{sec:graph-und-netzw}
+
+\subsection{Graphentheorie allgemein}
 \label{ch:Grundlagen:sec:Graphentheorie}
 
-\section{Netzwerkanalyse}
-\label{ch:Grundlagen:sec:Netzwerkanalyse}
+Dieser Abschnitt f\"uhrt einige grundlegende graphentheroretische
+Begriffe nach \cite{DBLP:conf/dagstuhl/BrandesE04a} ein.
+  
+Ein \emph{Netzwerk} bezeichnet eine Ansammlung von Objekten, zwischen
+denen bilaterale Beziehungen bestehen. Das hier betrachtete Netzwerk
+besteht aus einer Ansammlung von OpenPGP-Schl\"usseln, zwischen denen
+Beziehungen in Form von Signaturen bestehen. Ein Netzwerk kann durch einen
+Graphen repr\"asentiert werden.
+
+Ein \emph{Graph} $G=(V, E)$ besteht aus einer endlichen Menge $V$ von
+\emph{Knoten} und einer endlichen Menge $E$ von \emph{Kanten}, die je
+zwei Knoten miteinander verbinden. Die Anzahl $|V$ der Knoten wird mit
+$n$ und die Anzahl der Kanten mit $m$ bezeichnet. Zwei durch eine
+Kante verbundene, \emph{benachbarte} Knoten heissen
+\emph{adjazent}. In einem \emph{ungerichteten} Graphen ist $E$ eine
+Teilmenge von $V\times V$, also eine Menge von Kanten $\{u, v\}$, die
+zwei Knoten $u \in V$ und $v\in V$ verbinden. In einem
+\emph{gerichteten} Graphen besteht eine Kante aus einem geordneten
+Paar $(u, v)$ von Knoten. Eine gerichtete Kante $(u, v)$ f\"uhrt vom
+\emph{Ursprung} $u$ zum \emph{Ziel} $v$.
+
+Der \emph{Grad} $d(v)$ eines Knotens $v$ in einem ungerichteten
+Graphen bezeichnet die Anzahl der Kanten, die diesen Knoten
+enthalten. Die \emph{Nachbarschaft} $N(v)$ bezeichnet die Menge der
+Knoten, die zu $v$ adjazent sind. In einem gerichteten Graphen
+bezeichnet der \emph{eingehende Grad} $d^{-}(v)$ die Anzahl der
+Kanten, die den Knoten $v$ als Ziel enthalten, und der
+\emph{ausgehende Grad} $d^{+}(v)$ die Anzahl der Kanten, die $v$ als
+Ursprung enthalten.
+
+Ein \emph{Kantenzug} zwischen Knoten $v_0$ und $v_k$ in einem Graphen
+$G=(V, E)$ ist eine alternierende Folge $(v_0, e_1, v_1, e_2, \dots,
+v_{k-1}, e_k, v_k)$, wobei $v_i \in V$, $e_i \in E$, sowie $e_i =
+\{v_{i-1}, v_{i}\}$ in einem ungerichteten Graphen bzw. $e_i =
+(v_{i-1}, v_{i})$ in einem gerichteten Graphen. Der Kantenzug hat die
+\emph{L\"ange} $i$. Ein Kantenzug heisst \emph{einfach}, wenn $e_i \ne
+e_j$ f\"ur $i \ne j$ gilt.  Ein einfacher Kantenzug heisst
+\emph{Pfad}, wenn $v_0, \dots, v_k$ paarweise verschieden sind. Die
+\emph{Distanz} $d(u, v)$ von einem Knoten $u$ zu einem Knoten $v$ ist die
+L\"ange eines k\"urzesten Pfades zwischen $u$ und $v$.
+
+Ein Graph $G' = (V', E')$ ist ein \emph{Teilgraph} eines Graphen $G =
+(V, E)$, wenn $E' \subseteq E$ und $V' \subseteq V$ gelten. Ein
+Teilgraph $G' = (V', E')$ eines Graphen $G$ ist durch eine eine
+Knotenmenge $V'$ \emph{induziert}, wenn $E' = \{(u, v) : u \in V, v
+\in V, (u, v) \in E\}$ gilt.
+
+Eine Partitionierung eines Graphen bezeichnet eine Zerlegung der
+Knotenmenge in disjunkte Teilmengen.
+
+Ein ungerichteter Graph heisst \emph{zusammenh\"angend}, wenn es
+zwischen allen Knotenpaaren $u, v$ einen Pfad gibt. Eine
+\emph{Zusammenhangskomponente} eines Graphen $G$ ist ein
+\emph{maximaler}, zusammenh\"angender induzierter Teilgraph von
+$G$. Ein gerichteter Graph ist \emph{stark zusammenh\"angend}, wenn es
+f\"ur Knoten einen gerichteten Pfad zu jedem anderen Knoten gibt. Eine
+\emph{starke Zusammenhangskomponente} eines Graphen $G$ ist dann ein
+maximaler, stark zusammenh\"angender induzierter Teilgraph von $G$.
 
 \subsection{Netzwerkstatistiken}
 \label{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Statistiken}
 
+In diesem Abschnitt werden einige Kennzahlen nach
+\cite{Brinkmeier2004} definiert, die die Struktur eines Graphen
+charakterisieren.
+
+Die Distanz zwischen zwei Knoten wurde bereits im vorherigen Abschnitt
+definiert. Ausgehend davon k\"onnen die Distanzen \emph{eines Knotens}
+durch die durchschnittliche Distanz dieses Knotens zu allen anderen
+Knoten charakterisiert werden:
+
+\begin{equation}
+  \label{eq:1}
+  \bar{d}(u) = \frac{1}{n-1} \sum_{v \ne u} d(u, v)
+\end{equation}
+
+F\"ur einen gesamten Graphen gibt die \emph{charakteristische oder
+  durchschnittliche Distanz} den Durchschnitt aller Distanzen in
+diesem Graphen an:
+
+\begin{equation}
+  \label{eq:2}
+  \bar{d} = \frac{1}{n^2 - n} \sum_{u \ne v \in V} d(u, v)
+\end{equation}
+
+Die \emph{Eccentricity} eines Knotens $u$ ist definiert als die
+maximale Distanz zu irgend einem anderen Knoten, also
+
+\begin{equation}
+  \label{eq:3}
+  \epsilon(u) = \max\{d(u,v) | v \in V\}
+\end{equation}
+
+Davon ausgehend  wird der \emph{Durchmesser} eines Graphen als Maximum
+und der Radius als Minimum \"uber die Eccentricity aller Knoten
+definiert. Durchmesser und Radius geben also die Ober-
+bzw. Untergrenze der Pfadl\"ange an, mit der ein Knoten alle anderen
+Knoten erreichen kann. Bemerkt werden muss, dass alle auf Distanzen
+basierenden Kennzahlen im Falle eines nicht (stark)
+zusammenh\"angenden Graphen unendlich sind. Dieses Problem wird im
+weiteren vermieden, indem diese Kennzahlen nur f\"ur (starke)
+Zusammenhangskomponenten berechnet werden.
+
+Als Verallgemeinerung der Nachbarschaft eines Knotens wird die
+\emph{h-Nachbarschaft} eines Knotens als
+\begin{equation}
+  \label{eq:4}
+  N_h(v) = \{ u \in V | d(v, u) \le h \}
+\end{equation}
+definiert, d.h. die Menge der Knoten, zu denen die Distanz von $v$ aus
+h\"ochstens $h$ betr\"agt.
+
+
+Assortativity Coefficient \cite{PhysRevLett.89.208701}.
+\subsection{Netzwerkmodelle}
+\label{sec:netzwerkmodelle}
+
+\cite{Barabasi1999} 
+baz
+
 \subsection{Communities}
 \label{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities}
 
-\subsection{Modularity}
+\subsubsection{Grundlegende Begriffe}
+\label{sec:grundl-begr}
+
+foo 
+
+\subsubsection{Modularity}
 \label{sec:modularity}
 
 \begin{equation}
@@ -169,6 +295,11 @@ wichtige Rolle in der Kultur des Projekts zu spielen.
   Q =
   \frac{1}{2m}\sum_{ij}\left(A_{ij}-\frac{d_id_j}{2m}\right)\delta(c_i, c_j)
 \end{equation}
+
+\subsubsection{Algorithmen}
+\label{sec:algorithmen}
+
+[1. Algorithmus von Newman: Edge-Betweeness]
 
 Seit der Arbeit von Newman wurde eine Vielzahl weiterer Methoden zur
 Erkennung von Communities vorgestellt. An dieser Stelle werden 3

@@ -1,0 +1,82 @@
+all keys:
+total number of keys 2365882 (not expired and not revoked)
+number of revoked keys 100071
+number of rsa keys 187830
+number of dsa keys 2177243
+number of keys with other pk algorithms 809
+number of 512-bit rsa keys 2777
+number of 768-bit rsa keys 5754
+number of 1024-bit rsa keys 63309
+number of 2048-bit rsa keys 90450
+number of 3072-bit rsa keys 510
+number of 4096-bit rsa keys 18769
+number of rsa keys with unusual key lengths 127
+number of 512-bit dsa keys 416
+number of 768-bit dsa keys 5497
+number of 1024-bit dsa keys 2169224
+number of 2048-bit dsa keys 1334
+number of 3072-bit dsa keys 640
+number of 4096-bit dsa keys 5
+number of dsa keys with unusual key lengths 6261
+keys with expire dates 130274
+average number of uids per key 1.156712 (unreliable)
+
+ mscc keys:
+ some_key_stats overall
+ total number of keys 45085
+ number of rsa keys 8422
+ number of dsa keys 36652
+ number of keys with other pk algorithms 11
+ number of 512-bit rsa keys 203
+ number of 768-bit rsa keys 257
+ number of 1024-bit rsa keys 3903
+ number of 2048-bit rsa keys 2408
+ number of 3072-bit rsa keys 96
+ number of 4096-bit rsa keys 1198
+ number of rsa keys with unusual key lengths 0
+ number of 512-bit dsa keys 4
+ number of 768-bit dsa keys 12
+ number of 1024-bit dsa keys 36555
+ number of 2048-bit dsa keys 42
+ number of 3072-bit dsa keys 38
+ number of 4096-bit dsa keys 1
+ number of dsa keys with unusual key lengths 0
+ keys with expire dates 23
+ average number of uids per key 2.319190 (unreliable)
+ reachable set 11654
+ reaching set 4254
+
+ all sigs:
+ total number of sigs 1145337
+ total number of revoked sigs 6800
+ total number of valid sigs with expire dates 0
+ total number of valid sigs 818984 (valid sigs = not expired and not revoked and signer and signee are valid)
+ total number of valid sigs with cert level 0x10 (generic) 607819
+ total number of valid sigs with cert level 0x11 (persona) 1630
+ total number of valid sigs with cert level 0x12 (casual) 37562
+ total number of valid sigs with cert level 0x13 (positive) 171973
+ total number of valid sigs with hash algorithm MD5 (be cautious) 85471
+ total number of valid sigs with hash algorithm SHA1 (be cautious) 723303
+ total number of valid sigs with hash algorithm RIPE-MD/160 (be cautious) 384
+ total number of valid sigs with hash algorithm SHA256 (be cautious) 6354
+ total number of valid sigs with hash algorithm SHA256 (be cautious) 8
+ total number of valid sigs with hash algorithm SHA512 (be cautious) 2772
+ total number of valid sigs with hash algorithm SHA224 (be cautious) 643
+
+ mscc sigs:
+ total number of sigs in mscc 466165
+ total number of revoked sigs in mscc 557
+ total number of valid sigs in mscc with expire dates 0
+ total number of valid sigs in mscc 448715 (valid sigs = not expired and not revoked and signer and signee are valid)
+ total number of valid sigs with cert level 0x10 (generic) 299518
+ total number of valid sigs in mscc with cert level 0x11 (persona) 904
+ total number of valid sigs in mscc with cert level 0x12 (casual) 28718
+ total number of valid sigs in mscc with cert level 0x13 (positive) 119575
+ total number of valid sigs in mscc with hash algorithm MD5 (be cautious) 41700
+ total number of valid sigs in mscc with hash algorithm SHA1 (be cautious) 398849
+ total number of valid sigs in mscc with hash algorithm RIPE-MD/160 (be cautious) 122
+ total number of valid sigs in mscc with hash algorithm SHA256 (be cautious) 5031
+ total number of valid sigs in mscc with hash algorithm SHA256 (be cautious) 2
+ total number of valid sigs in mscc with hash algorithm SHA512 (be cautious) 2472
+ total number of valid sigs in mscc with hash algorithm SHA224 (be cautious) 532
+
