@@ -27,24 +27,26 @@ dass ein erheblicher Teil der (g\"ultigen) Schl\"ussel nicht oder kaum
 vernetzt ist. In der Tat verbleiben nach Abzug von Schl\"usseln, die
 weder ein- noch ausgehende Signaturen haben, nur 325410 g\"ultige
 Schl\"ussel und 816785 zugeh\"orige g\"ultige Kanten, die den Graphen
-ausmachen. Die grosse Mehrheit der im Keyserver-Netzwerk vorhandenen
-Schl\"ussel ist also komplett unvernetzt und nimmt von vorneherein
-nicht am Web of Trust teil. Die \"Uberpr\"ufung der Authentizit\"at
-dieser Schl\"ussel anhand \"offentlich verf\"ugbarer Informationen ist
-nicht m\"oglich. Die Besitzer dieser Schl\"ussel haben --
-sofern sie die Schl\"ussel \"uberhaupt einsetzen -- ebenfalls keine
-M\"oglichkeit, die Authentizit\"at anderer Schl\"ussel zu
-pr\"ufen. \"Uber die Gr\"unde f\"ur diese geringe Vernetzung kann hier nur
-spekuliert werden. M\"oglich ist etwa, dass die Benutzer schlichtweg
-keine Notwendigkeit in der Authentifizierung von Schl\"usseln sehen,
-weil ihnen Man-in-the-middle und \"ahnliche Angriffe nicht bekannt
-sind, oder das im Web of Trust verwendete Modell zur Verifizierung von
+ausmachen. 
+
+Die grosse Mehrheit der im Keyserver-Netzwerk vorhandenen Schl\"ussel
+ist also komplett unvernetzt und nimmt von vorneherein nicht am Web of
+Trust teil. Die \"Uberpr\"ufung der Authentizit\"at dieser Schl\"ussel
+anhand \"offentlich verf\"ugbarer Informationen ist nicht
+m\"oglich. Die Besitzer dieser Schl\"ussel haben -- sofern sie die
+Schl\"ussel \"uberhaupt einsetzen -- ebenfalls keine M\"oglichkeit,
+die Authentizit\"at anderer Schl\"ussel zu pr\"ufen. \"Uber die
+Gr\"unde f\"ur diese geringe Vernetzung kann hier nur spekuliert
+werden. M\"oglich ist etwa, dass die Benutzer schlichtweg keine
+Notwendigkeit in der Authentifizierung von Schl\"usseln sehen, weil
+ihnen Man-in-the-middle und \"ahnliche Angriffe nicht bekannt sind,
+oder das im Web of Trust verwendete Modell zur Verifizierung von
 Schl\"usseln zu komplex erscheint. Es kann selbstverst\"andlich nicht
 ausgeschlossen werden, dass die Verfizierung \"uber Signaturen
 l\"auft, die nicht auf \"offentliche Keyserver geladen
 wurden. Beachtet werden muss auch, dass der Datensatz keine pr\"azise
-Angabe \"uber die momentane Anzahl von PGP-Benutzern erlaubt, da sich die
-Schl\"ussel \"uber einen Zeitraum von 20 Jahren angesammelt haben.
+Angabe \"uber die momentane Anzahl von PGP-Benutzern erlaubt, da sich
+die Schl\"ussel \"uber einen Zeitraum von 20 Jahren angesammelt haben.
 
 \section{Allgemeine Merkmale des Netzwerkes}
 \label{sec:result-allg-merkm-des}
@@ -225,7 +227,7 @@ Kanten und der Natur des Signaturprozesses, bei dem Schl\"ussel
   \caption{Verteilung der eingehenden \subref{fig:indeg-dist} und
     ausgehenden \subref{fig:outdeg-dist} Knotengrade in der gr\"ossten
     starken Zusammenhangskomponente}
-  \label{fig:comsizedist}
+  \label{fig:degree-dist}
 \end{figure}
 
 
@@ -270,7 +272,7 @@ die Verteilung ausschliessen.
     f\"ur alle Knoten $u$ in der MSCC
     \subref{fig:inoutcorr}. Verteilung von $k_{nn}$ \"uber alle
     ausgehenden Grade \subref{fig:knn}.}
-  \label{fig:comsizedist}
+  \label{fig:degree-correlation}
 \end{figure}
 
 Es handelt sich bei dem vorliegenden Netzwerk also nicht um ein
@@ -297,18 +299,20 @@ werden, dass ein Netzwerk, welches in charakteristischen Aspekten
 einem skalenfreien Netzwerk \emph{\"ahnelt}, auch \"ahnliche
 Eigenschaften aufweisen \emph{kann}.
 
+
 Um zu \"uberpr\"ufen, ob die gut vernetzten Knoten als Hubs fungieren,
-wurde zun\"achst die Korrelationsfunktion $k_{nn}$ berechnet. Diese
-verbindet f\"ur gerichtete Graphen einen Grad $d$ mit dem Durchschnitt
-des Grads der Nachbarn der Knoten, die diesen Grad $d$ haben. Sie
-misst also, wie hoch der Grad von Knoten ist, die mit Knoten vom Grad
-$d$ verbunden sind. Abbildung \ref{fig:knn} zeigt die Verteilung von
-$k_{nn}$ \"uber alle Grade $d$. Aus der ansteigenden Kurve f\"ur
-ansteigende Grade kann geschlossen werden, dass Knoten mit hohem Grad
-dazu tendieren, zu anderen Knoten mit hohem Grad verbunden zu
-sein. Diese Knoten scheinen also in der Tat einen \emph{Kern} des
-Netzwerkes zu bilden. Um dies zu untermauern, wurde zus\"atzlich noch
-der Assortativity-Koeffizient $r$ (siehe Abschnitt
+wurde zun\"achst die Korrelationsfunktion $k_{nn}$
+berechnet\cite{PhysRevLett.87.258701}. Diese verbindet f\"ur
+gerichtete Graphen einen Grad $d$ mit dem Durchschnitt des Grads der
+Nachbarn der Knoten, die diesen Grad $d$ haben. Sie misst also, wie
+hoch der Grad von Knoten ist, die mit Knoten vom Grad $d$ verbunden
+sind. Abbildung \ref{fig:knn} zeigt die Verteilung von $k_{nn}$ \"uber
+alle Grade $d$. Aus der ansteigenden Kurve f\"ur ansteigende Grade
+kann geschlossen werden, dass Knoten mit hohem Grad dazu tendieren, zu
+anderen Knoten mit hohem Grad verbunden zu sein. Diese Knoten scheinen
+also in der Tat einen \emph{Kern} des Netzwerkes zu bilden. Um dies zu
+untermauern, wurde zus\"atzlich noch der Assortativity-Koeffizient $r$
+(siehe Abschnitt
 \ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Statistiken})
 berechnet. Es ergibt sich ein Wert $r = 0,113$. Aus diesem positiven
 Wert folgt ebenfalls, dass Knoten tendenziell mit Knoten verbunden
@@ -334,7 +338,6 @@ aufw\"andig war.
     Gr\"osse entfernt werden}
   \label{fig:without}
 \end{figure}
-
 
 In diesem Zusammenhang stellt sich auch die Frage nach der
 \emph{Robustheit} des Netzwerkes.  Eine Eigenschaft, die skalenfreien
@@ -452,7 +455,7 @@ benutzbar, wird $A$ vom Netz getrennt.
 
 Klar ist, dass in einer starken Zusammenhangskomponente jeder Knoten
 jeden anderen Knoten erreichen kann. Eine Mindestvorraussetzung f\"ur
-die Verfizierung eines Schl\"ussels ist, dass eine Signaturkette zu
+die Verifizierung eines Schl\"ussels ist, dass eine Signaturkette zu
 diesem Schl\"ussel aufgebaut werden kann, dass also der Knoten im
 Graph erreicht werden kann. Allerdings ist die Erreichbarkeit an sich
 hier nicht von Bedeutung. Vielmehr muss die Erreichbarkeit unter den
@@ -602,7 +605,7 @@ etwa ab dem Jahr 2005 sind nicht bekannt.
     f\"ur den gesamten Schl\"usselbestand \subref{fig:pkalg-whole} und
     die gr\"osste starke Zusammenhangskomponente
     \subref{fig:pkalg-mscc} in monatlichen Abst\"anden}
-  \label{fig:size-dev}
+  \label{fig:pkalg}
 \end{figure}
 
 Abbildung \ref{fig:size-dev} zeigt die Rate neuer Schl\"ussel,
@@ -644,13 +647,13 @@ d\"urfte also etwas ``tr\"ager'' auf Ver\"anderungen reagieren.
   \subfloat{
     \label{tab:hash}
     \begin{tabular}[ht!]{l|c}
-      Alg. & Anzahl \\
+      Algorithmus & Anzahl \\
       \hline
+      Signaturen gesamt & 446325 \\
       MD5 & 41700 \\
       SHA-1 & 398849 \\
       RIPE-MD/160 & 122 \\
       SHA256 & 5031 \\
-      SHA385 & 2 \\
       SHA512 & 2472 \\
       SHA224 & 532
     \end{tabular}
@@ -658,8 +661,9 @@ d\"urfte also etwas ``tr\"ager'' auf Ver\"anderungen reagieren.
   \subfloat{
   \label{tab:algs}
     \begin{tabular}{l|c}
-      Alg. & Anzahl \\
+      Algorithmus & Anzahl \\
       \hline
+      Schl\"ussel gesamt & 44952 \\
       RSA-512 & 203 \\
       RSA-768 & 257 \\
       RSA-1024 & 3903 \\
@@ -680,8 +684,12 @@ d\"urfte also etwas ``tr\"ager'' auf Ver\"anderungen reagieren.
       Positive & 119575 
     \end{tabular}
   }
-  \caption{Foo}
+  \caption{Verwendung von Hashalgorithmen 
+    \subref{tab:hash}, Public-Key-Algorithmen \subref{tab:algs} und
+    Cert-Leveln \subref{tab:certs} in der gr\"ossten starken
+    Zusammenhangskomponente}
 \end{table}
+
 
 In Tabelle \ref{tab:algs} sind schlussendlich noch einige Statistiken
 \"uber Eigenschaften einzelner Schl\"ussel aufgef\"uhrt. 
@@ -728,17 +736,19 @@ Entfernung aller ca. 4500 RSA-Schl\"ussel, deren L\"ange h\"ochstens
 1024 bit betr\"agt, reduziert die Gr\"osse der Komponente um insgesamt
 ca. 8500 Knoten, trennt also weitere 4000 Knoten vom Netz ab. Es ist
 anzunehmen, dass sich die durchschnittlichen Distanzen ebenfalls
-erh\"ohen. Da Standardorganisationen eine Abkehr von RSA-1024
-empfehlen [cite NIST] und praktikable Angriffe wohl nur eine Frage
+erh\"ohen. Da Standardorganisationen eine Abkehr von RSA-1024 ab dem
+Jahr 2010
+empfehlen\cite{NIST2007} und praktikable Angriffe wohl nur eine Frage
 weniger Jahre sind, ist damit wie durch die MD5-Signaturen eine
 erhebliche Beeintr\"achtigung der gr\"ossten Komponente absehbar.
+
 
 Es ist zu erwarten, dass sich durch die Umstellung der
 Standardeinstellung in GnuPG der Anteil von RSA-Schl\"usseln mit
 einer L\"ange von mindestens 2048 bit in n\"achster Zeit deutlich
 erh\"oht.
 
-\section{Zusammenhangskomponenten und Communities}
+\section{Communities}
 \label{sec:result-zusamm-und-comm}
 
 \subsection{Communities}
@@ -942,7 +952,7 @@ ist rund um die zentrale Community der Gr\"osse ca. 19000 angeordnet
 und im wesentlichen nur mit dieser vernetzt. Diese Struktur weist
 gewisse \"Ahnlichkeiten zur Struktur der starken
 Zusammenhangskomponenten auf (siehe Abschnitt
-\ref{sec:struktur-der-starken}). Diese sind ebenfalls sternf\"ormig um
+\ref{sec:result-komponentenstruktur}). Diese sind ebenfalls sternf\"ormig um
 eine zentrale Komponente angeordnet, die die Gr\"osse der anderen um
 mehrere Gr\"ossenordnungen \"ubertrifft. Allerdings sind im Fall der
 Community-Struktur noch eine Reihe mittelgrosser Communities
@@ -1274,7 +1284,7 @@ die sehr grosse zentrale Community die Mehrzahl der aktiveren
 Teilnehmer enth\"alt. Hier ergibt sich eine \"Ahnlichkeit zur Struktur
 der Zusammenhangskomponenten, bei denen die gr\"osste alle aktiven
 einigermassen aktiven Teilnehmer zu enthalten scheint (siehe Abschnitt
-\ref{sec:zusammenhangskomponenten-inhaltlich}).
+\ref{sec:result-komponentenstruktur}).
 
 Diese Punkte k\"onnen anhand des Beispiels von Debian illustriert
 werden: Das Debian-Projekt als tats\"achliche Community, in der
