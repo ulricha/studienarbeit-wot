@@ -32,6 +32,10 @@ kann.
 \subsubsection{Web of Trust}
 \label{ch:Grundlagen:sec:PublicKeyCrypto:subsec:KeyAuth:subsubsec:WOT}
 
+Zu beachten ist, dass im Rest dieser Arbeit der Begriff
+``Schl\"ussel'' ausschliesslich im Sinne des \"offentlichen Teils
+eines Schl\"usselpaares verwendet wird.
+
 \section{PGP/GnuPG}
 \label{ch:Grundlagen:sec:PGP}
 
@@ -198,7 +202,9 @@ v_{k-1}, e_k, v_k)$, wobei $v_i \in V$, $e_i \in E$, sowie $e_i =
 e_j$ f\"ur $i \ne j$ gilt.  Ein einfacher Kantenzug heisst
 \emph{Pfad}, wenn $v_0, \dots, v_k$ paarweise verschieden sind. Die
 \emph{Distanz} $d(u, v)$ von einem Knoten $u$ zu einem Knoten $v$ ist die
-L\"ange eines k\"urzesten Pfades zwischen $u$ und $v$.
+L\"ange eines k\"urzesten Pfades zwischen $u$ und $v$. Besteht kein
+Pfad von $u$ nach $v$, so wird $d(u,v) = \infty$ definiert.
+
 
 Ein Graph $G' = (V', E')$ ist ein \emph{Teilgraph} eines Graphen $G =
 (V, E)$, wenn $E' \subseteq E$ und $V' \subseteq V$ gelten. Ein
@@ -272,7 +278,7 @@ definiert, d.h. die Menge der Knoten, zu denen die Distanz von $v$ aus
 h\"ochstens $h$ betr\"agt.
 
 
-Assortativity Coefficient \cite{PhysRevLett.89.208701}.
+Assortativity Coefficient .
 \subsection{Netzwerkmodelle}
 \label{sec:netzwerkmodelle}
 
@@ -290,11 +296,18 @@ foo
 \subsubsection{Modularity}
 \label{sec:modularity}
 
+
+Eine solche hierarchische Zerlegung macht noch keine Aussage
+dar\"uber, wie gut die Zerlegung auf einer bestimmten Ebene die
+tats\"achliche Community-Struktur wiedergibt. Um diese Frage zu
+beantworten, wurde ebenfalls von Newman als Mass f\"ur die Qualit\"at
+einer Zerlegung die sogenannte \emph{Modularity}
 \begin{equation}
   \label{eq:modularity}
   Q =
-  \frac{1}{2m}\sum_{ij}\left(A_{ij}-\frac{d_id_j}{2m}\right)\delta(c_i, c_j)
+  \frac{1}{2m}\sum_{u, v \in V}\left(A_{uv}-\frac{d_id_j}{2m}\right)\delta(c_u, c_v)
 \end{equation}
+eingef\"uhrt.
 
 \subsubsection{Algorithmen}
 \label{sec:algorithmen}
@@ -315,8 +328,11 @@ Fortunato \cite{Fortunato2010}.
 \subsection{Analysen des OpenPGP-Web of Trust}
 \label{ch:Grundlagen:sec:RelatedWork:subsec:wot-analysis}
 
-\subsection{Community-Strukturen allgemein}
-\label{ch:Grundlagen:sec:RelatedWork:subsec:community-analysis}
+An dieser Stelle wird nur auf Arbeiten eingegangen, die sich mit der
+Netzwerkstruktur des Web of Trust bei PGP besch\"aftigen. F\"ur einen
+\"Uberblick \"uber Arbeiten zur Struktur von anderen Netzwerken sei
+auf \cite{newman:167}und f\"ur Arbeiten zur Community-Struktur von
+anderen Netzwerken auf \cite{Fortunato2010} verwiesen.
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "diplarb"

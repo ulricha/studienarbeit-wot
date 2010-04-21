@@ -173,6 +173,9 @@ wurden bei \cite{Boguna2004} und \cite{Gregory2010}. Beide Netzwerke
 stellen die gr\"osste starke Zusammenhangskomponente dar und wurden im
 Jahr 2001 extrahiert.
 
+\subsubsection{Gegenseitigkeit von Kanten}
+\label{sec:gegens-von-kant}
+
 Der \emph{Reciprocity}-Wert eines gerichteten Graphen gibt den Anteil
 von Kanten an, die in beide Richtungen verlaufen. F\"ur die gr\"osste
 Komponente ist dieser Wert 0,510. Das bedeutet, dass es f\"ur eine
@@ -230,11 +233,76 @@ Kanten und der Natur des Signaturprozesses, bei dem Schl\"ussel
   \label{fig:degree-dist}
 \end{figure}
 
+\subsubsection{Clustering und Small-World}
+\label{sec:clustering-und-small}
 
-FIXME Hier fehlt noch ca. eine Seite zu Small-World, Clustering
-coefficient.
+F\"ur die Berechnung des Clustering-Koeffizienten wurde der eigentlich
+gerichtete Graph als ungerichteter Graph betrachtet, da es keine
+anerkannte Definition des Clustering-Koeffizienten f\"ur gerichtete
+Graphen zu geben scheint. Diese Vorgehensweise scheint die in der
+Literatur \"ubliche zu sein. Selbstverst\"andlich ist anzunehmen, dass
+das Ergebnis verf\"alscht wird, wenn gerichtete Kanten als
+ungerichtete Kanten betrachtet werden. Allerdings wurde bereits
+gezeigt, dass ein erheblicher Anteil der Kanten symmetrisch ist, also
+in beide Richtungen verl\"auft, und eine positive Korrelation zwischen
+dem ausgehendem und dem eingehenden Grad von Knoten besteht. Der
+Schaden sollte sich also in Grenzen halten.
 
-\subsection{Verteilung der Grade, Skalenfreiheit}
+Der durchschnittliche Clustering-Koeffizient f\"ur die MSCC betr\"agt
+$C = 0,460$. Das bedeutet, dass \emph{im Durchschnitt} etwa die
+H\"alfte der Nachbarn eines Knoten wieder verbunden sind. Der Graph
+zeigt also ein erhebliches Mass an Clustering. Zum Vergleich betr\"agt
+der Clustering-Koeffizient f\"ur ein \emph{zuf\"alliges} Netzwerk mit
+der gleichen Anzahl von Knoten und Kanten $C = 0,00025$ und f\"ur ein
+zuf\"alliges Netzwerk, dass ausserdem \"uber die gleiche Sequenz von
+Graden verf\"ugt, $C = 0,013$. In der MSCC findet sich also wesentlich
+mehr Clustering, als in einem zuf\"allig entstandenen Netzwerk zu
+erwarten w\"are.
+
+Newman und Park bemerken, dass ein hohes Mass an Clustering
+charakteristisch f\"ur soziale Netzwerke ist und sie von vielen
+nicht-sozialen Netzwerken unterscheidet\cite{PhysRevE.68.036122}. Als
+m\"oglichen Grund geben sie an, dass sich die Knoten in sozialen
+Netzwerken \"ublicherweise in \emph{Communities} einteilen lassen,
+also Gruppen von Knoten, die untereinander st\"arker vernetzt sind als
+nach aussen. Intuitiv ist naheliegend, dass in einer solchen Community
+die Wahrscheinlichkeit, dass zwei Nachbarn eines Knoten durch eine
+Kante verbunden sind, hoch ist. In Abschnitt
+\ref{sec:result-zusamm-und-comm} wird gezeigt, dass der vorliegende
+Graph \"uber eine markante Community-Struktur verf\"ugt.
+
+Der Durchschnitt aller Distanzen in der gr\"ossten starken
+Zusammenhangskomponente betr\"agt 12,14 (siehe auch Abbildung
+\ref{fig:avg-pathlen} f\"ur die Verteilung der durchschnittlichen
+Distanzen pro Knoten). Dieser Wert ist in Relation zur Anzahl der
+Knoten im Netzwerk gering und zeigt, dass der Graph den
+``Small-World''-Effekt aufweist, dass also jedes Paar von Knoten mit
+hoher Wahrscheinlichkeit durch einen Pfad von geringer L\"ange
+verbunden ist. Dieser Effekt tritt in vielen untersuchten Netzwerken
+auf und ist insbesondere typisch f\"ur soziale Netzwerke
+\cite{newman:167}.
+
+Interessant ist die geringe Distanz auch, weil die Teilnehmer des Web
+of Trust aus verschiedensten L\"andern und damit aus verschiedensten
+geographischen Regionen stammen. Die \"ubliche Prozedur f\"ur das
+Signieren von Schl\"usseln setzt ein direktes, d.h. r\"aumliches
+Treffen der teilnehmenden Personen vorraus. Eine Interpretation der
+geringen Distanz w\"are, dass eine Anzahl von Teilnehmern geographisch
+so mobil ist, dass sich Signierungen an weit auseinanderliegenden
+Orten ergeben, die f\"ur die Verbindungen zwischen geographisch
+eigentlich weit entfernten Bereichen im Netzwerk sorgen. Allerdings
+wurde hier nur der Durchschnitt der Distanzen betrachtet. Es kann
+nicht ausgeschlossen werden, dass sich der niedrige Durchschnitt f\"ur
+die einzelnen Knoten nur ergibt, weil die Knoten aus dem eigenen Land
+bzw. der eigenen geographischen Region auch im Netzwerk sehr nahe
+liegen. In Abschnitt \ref{sec:result-zusamm-und-comm} wird gezeigt,
+dass sich die meisten Communities anhand von Top-Level-Domains einem
+Land oder Sprachraum zuordnen lassen. Interessant w\"are an dieser
+Stelle eine Untersuchung, inwiefern sich die geographische Distanz der
+L\"ander auch in der Distanz im Netzwerk der entsprechenden
+Communities wiederspiegelt.
+
+\subsubsection{Verteilung der Grade, Skalenfreiheit}
 \label{sec:verteilung-der-grade}
 
 Der durchschnittliche ausgehende Grad (und damit auch der
@@ -281,15 +349,16 @@ Frage, ob das \"uberhaupt relevant ist. Zum einen zeigt die Verteilung
 der Grade Merkmale, die mit charakteristischen Merkmalen einer
 Power-Law-Verteilung \"ubereinstimmen, n\"amlich die hohe
 Variabilit\"at der Grade und insbesondere die Anwesenheit einer
-signifikaten Anzahl von Knoten mit hohem Grad. Eine zentrale Rolle bei
-den Eigenschaften, die skalenfreien Netzwerken zugeschrieben werden,
-spielt die Existenz eines Kerns bestehend aus ``Hubs'', also Knoten mit
-hohem Grad, die untereinander verbunden sind. Knoten mit niedrigem
-Grad sind prim\"ar mit diesen Hubs verbunden. Dieser Kern h\"alt das
-Netzwerk zusammen und sorgt f\"ur geringe Distanzen. Allerdings haben
-Li et al. \cite{Li2005} gezeigt, dass die Existenz einer
-Power-Law-Verteilung nicht ausreicht, um die Existenz von Hubs
-nachzuweisen. Es existieren Netzwerke, die zwar eine
+signifikaten Anzahl von Knoten mit hohem Grad. Die Verteilung
+\emph{\"ahnelt} also immerhin einer Power-Law-Verteilung. Eine
+zentrale Rolle bei den Eigenschaften, die skalenfreien Netzwerken
+zugeschrieben werden, spielt die Existenz eines Kerns bestehend aus
+``Hubs'', also Knoten mit hohem Grad, die untereinander verbunden
+sind. Knoten mit niedrigem Grad sind prim\"ar mit diesen Hubs
+verbunden. Dieser Kern h\"alt das Netzwerk zusammen und sorgt f\"ur
+geringe Distanzen. Allerdings haben Li et al. \cite{Li2005} gezeigt,
+dass die Existenz einer Power-Law-Verteilung nicht ausreicht, um die
+Existenz von Hubs nachzuweisen. Es existieren Netzwerke, die zwar eine
 Power-Law-Verteilung der Grade haben, bei denen die Knoten mit hohem
 Grad aber eher an der \emph{Peripherie} liegen und keine zentrale
 Rolle im Sinne von Hubs \"ubernehmen.  Hubs ergeben sich erst dann,
@@ -298,7 +367,6 @@ wiederum einen hohen Grad haben. Im Umkehrschluss kann angenommen
 werden, dass ein Netzwerk, welches in charakteristischen Aspekten
 einem skalenfreien Netzwerk \emph{\"ahnelt}, auch \"ahnliche
 Eigenschaften aufweisen \emph{kann}.
-
 
 Um zu \"uberpr\"ufen, ob die gut vernetzten Knoten als Hubs fungieren,
 wurde zun\"achst die Korrelationsfunktion $k_{nn}$
@@ -311,11 +379,12 @@ alle Grade $d$. Aus der ansteigenden Kurve f\"ur ansteigende Grade
 kann geschlossen werden, dass Knoten mit hohem Grad dazu tendieren, zu
 anderen Knoten mit hohem Grad verbunden zu sein. Diese Knoten scheinen
 also in der Tat einen \emph{Kern} des Netzwerkes zu bilden. Um dies zu
-untermauern, wurde zus\"atzlich noch der Assortativity-Koeffizient $r$
-(siehe Abschnitt
-\ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Statistiken})
-berechnet. Es ergibt sich ein Wert $r = 0,113$. Aus diesem positiven
-Wert folgt ebenfalls, dass Knoten tendenziell mit Knoten verbunden
+untermauern, wurde zus\"atzlich noch der Assortativity-Koeffizient $r$ \cite{PhysRevLett.89.208701}
+berechnet, welcher zwischen -1 und 1 liegt. Ein positiver Wert von $r$
+bedeutet, dass eine positive Korrelation zwischen den Graden der
+Knoten besteht. Im gegens\"atzlichen Fall einer negativen Korrelation
+ist $r$ negativ. Es ergibt sich ein Wert $r = 0,113$. Aus diesem positiven
+Wert folgt also ebenfalls, dass Knoten tendenziell mit Knoten verbunden
 sind, die einen \"ahnlichen Grad haben. Der $r$-Wert \"ahnelt den
 Werten, die f\"ur andere soziale Netzwerke berechnet
 wurden\cite{newman:167}.
@@ -480,7 +549,7 @@ verwendet.
   \centering
   \subfloat[]{\label{fig:avg-pathlen}\includegraphics[scale=0.3]{images/pathlen-dist.pdf}}
   \subfloat[]{\label{fig:eccentricity}\includegraphics[scale=0.3]{images/ecc-dist.pdf}}
-  \caption{Verteilung der durchschnittlichen Distanzen 
+  \caption{Verteilung der (gerundeten) durchschnittlichen Distanzen 
     \subref{fig:avg-pathlen} und der Eccentricity
     \subref{fig:eccentricity} in der gr\"ossten starken Zusammenhangskomponente}
   \label{fig:pathlen-dist}
@@ -690,7 +759,6 @@ d\"urfte also etwas ``tr\"ager'' auf Ver\"anderungen reagieren.
     Zusammenhangskomponente}
 \end{table}
 
-
 In Tabelle \ref{tab:algs} sind schlussendlich noch einige Statistiken
 \"uber Eigenschaften einzelner Schl\"ussel aufgef\"uhrt. 
 
@@ -721,7 +789,6 @@ Komponente ist nicht unwesentlich: Werden diese Signaturen entfernt,
 reduziert sich die Gr\"osse der Komponente auf 37599 Schl\"ussel,
 d.h. es werden ca. 8000 Schl\"ussel abgetrennt. 
 
-
 RSA-Schl\"ussel mit einer L\"ange von h\"ochstens 768 bit und weniger
 m\"ussen ebenfalls als praktikabel brechbar betrachtet werden. Dies
 wurde durch die Faktorisierung der Zahl RSA-768 demonstriert
@@ -742,7 +809,6 @@ empfehlen\cite{NIST2007} und praktikable Angriffe wohl nur eine Frage
 weniger Jahre sind, ist damit wie durch die MD5-Signaturen eine
 erhebliche Beeintr\"achtigung der gr\"ossten Komponente absehbar.
 
-
 Es ist zu erwarten, dass sich durch die Umstellung der
 Standardeinstellung in GnuPG der Anteil von RSA-Schl\"usseln mit
 einer L\"ange von mindestens 2048 bit in n\"achster Zeit deutlich
@@ -750,9 +816,6 @@ erh\"oht.
 
 \section{Communities}
 \label{sec:result-zusamm-und-comm}
-
-\subsection{Communities}
-\label{sec:result-communities}
 
 Die Zerlegung des gerichteten Graphen mit dem Algorithmus von Rosval
 et al. lieferte keine verwertbaren Ergebnisse. Zwar wurde eine
