@@ -269,7 +269,7 @@ nach aussen. Intuitiv ist naheliegend, dass in einer solchen Community
 die Wahrscheinlichkeit, dass zwei Nachbarn eines Knoten durch eine
 Kante verbunden sind, hoch ist. In Abschnitt
 \ref{sec:result-zusamm-und-comm} wird gezeigt, dass der vorliegende
-Graph \"uber eine markante Community-Struktur verf\"ugt.
+Graph in der Tat \"uber eine markante Community-Struktur verf\"ugt.
 
 Der Durchschnitt aller Distanzen in der gr\"ossten starken
 Zusammenhangskomponente betr\"agt 12,14 (siehe auch Abbildung
@@ -301,7 +301,6 @@ Land oder Sprachraum zuordnen lassen. Interessant w\"are an dieser
 Stelle eine Untersuchung, inwiefern sich die geographische Distanz der
 L\"ander auch in der Distanz im Netzwerk der entsprechenden
 Communities wiederspiegelt.
-
 \subsubsection{Verteilung der Grade, Skalenfreiheit}
 \label{sec:verteilung-der-grade}
 
@@ -948,6 +947,12 @@ gerechtfertigt, eine Zeichnung eines Graphen (Force-directed) mit
 markanten dichten Bereichen als Indiz f\"ur eine modulare Struktur
 dieses Graphen zu betrachten.
 
+Die Verteilungen der Community-Gr\"ossen aus allen Berechnungen sind
+in einer Hinsicht konsistent: Neben einer grossen Zahl von kleinen
+Communities gibt es eine signifikante Anzahl von gr\"osseren bis sehr
+grossen Communities. Es scheint also keine charakteristische Gr\"osse
+der Communities zu geben.
+
 \begin{table}[t]
   \centering
   \footnotesize
@@ -1004,7 +1009,9 @@ sondern liefern Ergebnisse, die sich qualitativ stark unterscheiden.
 
 Der insgesamt recht hohe Modularity-Wert weist darauf hin, dass der
 Graph in der Tat eine ausgepr\"agte modulare Struktur hat, wie dies
-von einem sozialen Netzwerk erwartet wird.
+von einem sozialen Netzwerk erwartet wird. Newman et al. geben an,
+dass ein Modularity-Wert $C \ge 0.3$ in der Praxis auf eine
+signifikante Community-Struktur schliessen l\"asst\cite{Clauset2004}.
 
 Die Abbildungen \ref{fig:metagraph-com-copra} und
 \ref{fig:metagraph-com-blondel2} zeigen die Struktur der Communities
