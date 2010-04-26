@@ -483,7 +483,7 @@ entstehen, die sich v\"ollig unbekannt sind und in keiner Beziehung
 zueinander stehen. Stattdessen wird in dieser Arbeit davon
 ausgegangen, dass sich Signaturen in den meisten F\"allen anhand von
 bereits bestehenden sozialen Kontakten zwischen den Besitzern der
-Schl\"ussel ergeben. Das Sprektum m\"oglicher Beziehungen ist dabei
+Schl\"ussel ergeben\cite{Capkun2002}. Das Sprektum m\"oglicher Beziehungen ist dabei
 nat\"urlich sehr weit und umfasst mindestens alle Gruppen von
 Personen, die potentiell ein Interesse an vertraulicher und
 authentifizierter E-Mail-Kommunikation haben: Es kann sich dabei um
@@ -584,7 +584,7 @@ Methoden n\"aher beschrieben, die in dieser Arbeit verwendet
 werden. Einen Gesamt\"uberblick bietet ein \"Ubersichtsartikel von
 Fortunato \cite{Fortunato2010}.
 
-\paragraph{Algorithmus von Girvan und Newman (CNM)}
+\paragraph{Algorithmus von Clauset et al.  (CNM)}
 \label{sec:algor-von-girv}
 
 \paragraph{Algorithmus von Blondel et al.}
@@ -609,6 +609,35 @@ Netzwerkstruktur des Web of Trust bei PGP besch\"aftigen. F\"ur einen
 \"Uberblick \"uber Arbeiten zur Struktur von anderen Netzwerken sei
 auf \cite{newman:167}und f\"ur Arbeiten zur Community-Struktur von
 anderen Netzwerken auf \cite{Fortunato2010} verwiesen.
+
+Capkun et al. \cite{Capkun2002} untersuchten strukturelle Aspekte der
+gr\"ossten starken Zusammenhangskomponente eines PGP-Netzwerkes aus
+dem Jahr 2001. Dieses Netzwerk zeigte eine geringe charakteristische
+Distanz und einen hohen Clustering-Koeffizient. Ausserdem stimmte die
+Verteilung der aus- und eingehenden Grade mit einem Power-Law
+\"uberein. Die Autoren argumentieren, dass Netzwerke, die aus
+Zertifikatsbeziehungen entstehen, naturgem\"ass den Small-World-Effekt
+zeigen, da sich die Zertifikate anhand schon bestehender
+Vertrauensbeziehungen ergeben. Die Autoren geben ausserdem noch ein
+Netzwerkmodell an, dass Graphen erzeugen soll, die in den
+beschriebenen Charakteristiken dem PGP-Netzwerk \"ahneln.
+
+Arenas et al. \cite{Boguna2004} analysierten ein PGP-Netzwerk aus dem
+gleichen Jahr. Das Netzwerk wurde von vornherein in ein ungerichtetes
+Netzwerk umgewandelt, indem nicht gegenseitige Kanten entfernt
+wurden. Sie betrachteten die Gradverteilung, den
+Clustering-Koeffizienten und die Korrelation von Graden benachbarter
+Knoten. Dabei folgt die Verteilung der Knotengrade einem Power-Law mit
+einem exponentiellen Cutoff FIXME. Der Clustering-Koeffizient des
+Netzwerkes betr\"agt $C=0.4$, ist also recht hoch. Die Grade
+benachbarter Knoten sind positiv korreliert. Ausserdem benutzten die
+Autoren den in Abschnitt \ref{sec:grundl-begr}erw\"ahnten Algorithmus
+von Girvan und Newman, um eine Community-Zerlegung des Netzwerks zu
+berechnen. Die Verteilung der Gr\"osse dieser Communities folgt wieder
+einem Power-Law.
+
+Webzeugs (henning -> pgp.cs.uu.nl?, wotsap)
+
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "diplarb"
