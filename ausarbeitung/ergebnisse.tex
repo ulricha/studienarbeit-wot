@@ -5,29 +5,29 @@
 In Abschnitt \ref{sec:datensatz} wird zun\"achst der berechnete
 Datensatz allgemein charakterisiert. 
 
-\subsection{Datensatz}
+\section{Datensatz}
 \label{sec:datensatz}
 
-Die Extraktion der hier verwendeten Daten wurde auf einem vom
+Die Extraktion der hier verwendeten Daten wurde, wie in Abschnitt
+\ref{sec:datenextraktion} beschrieben, auf einem vom
 Verfasser betriebenen Keyserver am 02.12.2009 vorgenommen. Die
 Datenbank des Keyservers war zu diesem Zeitpunkt mit dem Rest des
 Keyserver-Netzwerkes vollst\"andig abgeglichen. Der berechnete
-Datensatz enth\"alt 2725504 Schl\"ussel und 1145337 zugeh\"orige
-Signaturen, wobei hier keine Selbstsignaturen enthalten sind. 52000
+Datensatz enth\"alt 2.725.504 Schl\"ussel und 1.145.337 zugeh\"orige
+Signaturen, wobei hier keine Selbstsignaturen enthalten sind. 52.000
 Schl\"ussel wurden w\"ahrend der Extraktion als defekt verworfen. Eine
-Stichprobe von 30 verworfenen Schl\"ussel ergab, dass diese auch
-von GnuPG nicht akzeptiert werden, weil sie entweder \"uber keine
+Stichprobe von 30 verworfenen Schl\"ussel ergab, dass diese auch von
+GnuPG nicht akzeptiert werden, weil sie entweder \"uber keine
 UserID-Pakete verf\"ugen oder aus anderen Gr\"unden keine
-standardkonformen 
-OpenPGP-Schl\"ussel darstellen. Von den nicht-defekten
-Schl\"usseln sind 417163 Schl\"ussel abgelaufen und 100071
-Schl\"ussel wurden zur\"uckgezogen. Die in Relation zur Anzahl der
-Schl\"ussel niedrige Anzahl von Signaturen weist schon darauf hin,
+standardkonformen OpenPGP-Schl\"ussel darstellen. Von den
+nicht-defekten Schl\"usseln sind 417.163 Schl\"ussel abgelaufen und
+100.071 Schl\"ussel wurden zur\"uckgezogen. Die in Relation zur Anzahl
+der Schl\"ussel niedrige Anzahl von Signaturen weist schon darauf hin,
 dass ein erheblicher Teil der (g\"ultigen) Schl\"ussel nicht oder kaum
 vernetzt ist. In der Tat verbleiben nach Abzug von Schl\"usseln, die
-weder ein- noch ausgehende Signaturen haben, nur 325410 g\"ultige
-Schl\"ussel und 816785 zugeh\"orige g\"ultige Kanten, die den Graphen
-ausmachen. 
+weder ein- noch ausgehende Signaturen haben, nur 325.410 g\"ultige
+Schl\"ussel und 816.785 zugeh\"orige g\"ultige Kanten, die den Graphen
+ausmachen.
 
 Die grosse Mehrheit der im Keyserver-Netzwerk vorhandenen Schl\"ussel
 ist also komplett unvernetzt und nimmt von vorneherein nicht am Web of
@@ -51,11 +51,6 @@ die Schl\"ussel \"uber einen Zeitraum von 20 Jahren angesammelt haben.
 \section{Allgemeine Merkmale des Netzwerkes}
 \label{sec:result-allg-merkm-des}
 
-Der so erhaltene Graph ist ein \emph{gerichteter} Graph. Er ist
-\emph{schlicht}, d.h. er enth\"alt keine \emph{Selbstkanten} und keine
-\emph{Mehrfachkanten}. Dies ergibt sich, da w\"ahrend der Extraktion
-Selbstsignaturen nicht beachtet und bei mehreren Signaturen des
-gleichen Schl\"ussels nur die neueste verwendet wurde.
 \subsection{Starke Zusammenhangskomponenten}
 \label{sec:result-komponentenstruktur}
 
@@ -66,14 +61,14 @@ gleichen Schl\"ussels nur die neueste verwendet wurde.
   \label{fig:component-size}
 \end{figure}
 
-Der Graph wurde zun\"achst in seine 240382 starken
+Der Graph wurde zun\"achst in seine 240.382 starken
 Zusammenhangskomponenten zerlegt. Die Verteilung der
 Komponentengr\"ossen in Abbildung \ref{fig:component-size} zeigt dabei
 zwei Extreme: Es existiert eine einzelne gigantische Komponente mit
 ca. 45000 Knoten. Demgegen\"uber steht eine geringe Anzahl von kleinen
-Komponenten bis zur Gr\"osse 3 , insbesondere aber \"uber 100000
+Komponenten bis zur Gr\"osse 3 , insbesondere aber \"uber 100.000
 einelementige Komponenten, also einzelne Knoten, die nur
-\emph{entweder} ein- oder ausgehende Kanten haben, und \"uber 10000
+\emph{entweder} ein- oder ausgehende Kanten haben, und \"uber 10.000
 zweielementige Komponenten, also durch zwei Kanten verbundene
 Knotenpaare. Ein erheblicher Anteil der \"uberhaupt vernetzten Knoten
 ist also wiederum nur sehr wenig vernetzt.
@@ -81,9 +76,10 @@ ist also wiederum nur sehr wenig vernetzt.
 \begin{figure}[th!]
   \centering
   \includegraphics[scale=0.7]{images/component-metagraph-8.pdf}
-  \caption{Struktur der starken Zusammenhangskomponenten bis zur
-    Grösse 6 (rot = Grösse 6-10, grün = Grösse 11-20, blau = Grösse
-    21-30, violett = Grösse $>= 31$, gelb = MSCC)}
+  \caption{Sternf\"ormige Struktur der starken
+    Zusammenhangskomponenten bis zur Grösse 6 (rot = Grösse 6-10, grün
+    = Grösse 11-20, blau = Grösse 21-30, violett = Grösse $>= 31$,
+    gelb = MSCC)}
   \label{fig:komponenten-struktur}
 \end{figure}
 
@@ -92,15 +88,20 @@ Zusammenhangskomponenten bis zur Gr\"osse 6, die mit anderen
 Komponenten verbunden sind. Es ergibt sich eine sternf\"ormige
 Struktur, bei der die kleineren Komponenten fast ausschliesslich mit
 der gr\"ossten Komponente verbunden sind und es so gut wie keine
-weitere Vernetzung gibt. Um zwei starke Zusammenhangskomponenten
-verschmelzen zu lassen, ist nur genau eine Kante in jede Richtung
-n\"otig. Es kann also davon ausgegangen werden, dass die Komponenten
-nur durch einzelne Kanten, die eben nur in eine Richtung verlaufen
-k\"onnen, verbunden sind. Daraus ergibt sich, dass die Mitglieder
-der kleinen Komponenten nur eine sehr geringe Signaturaktivit\"at
-aufweisen k\"onnen, da andernfalls die Wahrscheinlichkeit f\"ur das Verschmelzen
-von Komponenten hoch w\"are und die Anzahl sehr kleiner Komponenten
-geringer sein m\"usste.
+weitere Vernetzung gibt. Der Aufwand, der n\"otig ist, um zwei starke
+Zusammenhangskomponenten verschmelzen zu lassen, ist sehr gering: dazu
+ist nur genau eine Kante in jede Richtung n\"otig. Je mehr Kanten
+(also Signaturen) in eine Richtung verlaufen, desto wahrscheinlicher
+ist es, dass es zu einer dieser Kanten auch eine Gegenkante, also eine
+entsprechende Signatur in Gegenrichtung, gibt. Es kann also davon
+ausgegangen werden, dass die Komponenten nur durch sehr wenige Kanten,
+die eben nur in eine Richtung verlaufen k\"onnen, verbunden
+sind. Daraus ergibt sich, dass die Mitglieder der kleinen Komponenten
+nur eine sehr geringe Signaturaktivit\"at aufweisen k\"onnen. W\"urde
+eine nennenswerte Anzahl von Signaturen entstehen, so w\"are die
+Wahrscheinlichkeit f\"ur das Verschmelzen von Komponenten sehr
+hoch. Die Anzahl kleiner Komponenten m\"usste in diesem Fall deutlich
+geringer sein.
 
 Die \emph{N\"utzlichkeit} des Web of Trust f\"ur die Teilnehmer, deren
 Schl\"ussel nicht in der gr\"ossten starken Zusammenhangskomponente
@@ -164,11 +165,11 @@ Signaturaktivit\"aten stattfinden, scheint eine Untersuchung der
 restlichen Komponenten nicht sinnvoll.
 
 Der induzierte Teilgraph der gr\"ossten starken
-Zusammenhangskomponente besteht aus 44952 Knoten und 442960
+Zusammenhangskomponente besteht aus 44.952 Knoten und 442.960
 gerichteten Kanten. Dieser Teilgraph ist deutlich gr\"osser als die
 bisher in der Literatur verwendeten PGP-Netzwerke:  ein gerichtetes
-Netzwerk von ca. 12000 Knoten bei \cite{Capkun2002} und ein Netzwerk
-von 10700 Knoten, bei dem alle einseitigen Signaturen gel\"oscht
+Netzwerk von ca. 12.000 Knoten bei \cite{Capkun2002} und ein Netzwerk
+von 10.700 Knoten, bei dem alle einseitigen Signaturen gel\"oscht
 wurden bei \cite{Boguna2004} und \cite{Gregory2010}. Beide Netzwerke
 stellen die gr\"osste starke Zusammenhangskomponente dar und wurden im
 Jahr 2001 extrahiert.
@@ -217,7 +218,7 @@ Verh\"altnisses von ausgehendem zu eingehendem Grad f\"ur alle Knoten
 $u$ in der gr\"ossten starken Zusammenhangskomponente, also
 $\frac{d^+(u)}{d^-(u)}$. Aus dieser Verteilung ergibt sich, dass eine
 positive Korrelation zwischen dem eingehendem und dem ausgehendem Grad
-eines Knotens besteht. F\"ur etwa die H\"alfte der Knoten (21817)
+eines Knotens besteht. F\"ur etwa die H\"alfte der Knoten (21.817)
 unterscheidet sich der eingehende Grad um maximal 20\% vom ausgehenden
 Grad. Diese Korrelation folgt aus der hohen Anzahl gegenseitiger
 Kanten und der Natur des Signaturprozesses, bei dem Schl\"ussel
@@ -348,7 +349,7 @@ Frage, ob das \"uberhaupt relevant ist. Zum einen zeigt die Verteilung
 der Grade Merkmale, die mit charakteristischen Merkmalen einer
 Power-Law-Verteilung \"ubereinstimmen, n\"amlich die hohe
 Variabilit\"at der Grade und insbesondere die Anwesenheit einer
-signifikaten Anzahl von Knoten mit hohem Grad. Die Verteilung
+signifikanten Anzahl von Knoten mit hohem Grad. Die Verteilung
 \emph{\"ahnelt} also immerhin einer Power-Law-Verteilung. Eine
 zentrale Rolle bei den Eigenschaften, die skalenfreien Netzwerken
 zugeschrieben werden, spielt die Existenz eines Kerns bestehend aus
@@ -362,10 +363,10 @@ Power-Law-Verteilung der Grade haben, bei denen die Knoten mit hohem
 Grad aber eher an der \emph{Peripherie} liegen und keine zentrale
 Rolle im Sinne von Hubs \"ubernehmen.  Hubs ergeben sich erst dann,
 wenn Knoten mit hohem Grad prim\"ar mit Knoten vernetzt sind, die
-wiederum einen hohen Grad haben. Im Umkehrschluss kann angenommen
-werden, dass ein Netzwerk, welches in charakteristischen Aspekten
-einem skalenfreien Netzwerk \emph{\"ahnelt}, auch \"ahnliche
-Eigenschaften aufweisen \emph{kann}.
+wiederum einen hohen Grad haben. Umgekehrt kann angenommen werden,
+dass ein Netzwerk, welches in charakteristischen Aspekten einem
+skalenfreien Netzwerk \emph{\"ahnelt}, auch \"ahnliche Eigenschaften
+aufweisen \emph{kann}.
 
 Um zu \"uberpr\"ufen, ob die gut vernetzten Knoten als Hubs fungieren,
 wurde zun\"achst die Korrelationsfunktion $k_{nn}$
@@ -502,6 +503,32 @@ Schaden an.
 
 \subsection{N\"utzlichkeit}
 \label{sec:nutzlichkeit}
+Dieser Abschnitt betrachtet die N\"utzlichkeit des Netzwerkes f\"ur
+seinen eigentlichen Zweck, die Verifizierung von Schl\"usseln. Diese
+N\"utzlichkeit ist dann hoch, wenn f\"ur viele Knoten eine hohe Zahl
+von Knoten potentiell verifizierbar ist.
+
+Eine Mindestvoraussetzung f\"ur die Verifizierung eines Schl\"ussels
+ist, dass eine Signaturkette zu diesem Schl\"ussel aufgebaut werden
+kann, dass also der Knoten im Graph erreicht werden kann. Dies ist in
+einer starken Zusammenhangskomponente der Fall, da laut Definition ein
+Pfad von jedem Knoten zu jedem anderem Knoten besteht. Allerdings ist
+die Erreichbarkeit an sich hier nicht von Bedeutung. Vielmehr muss die
+Erreichbarkeit unter den Beschr\"ankungen des
+PGP/GnuPG-Vertrauensmodells (siehe Abschnitt
+\ref{sec:das-gnupg-vertrauensmodell}) betrachtet werden. Hier gilt
+insbesondere die Einschr\"ankung, dass Signaturketten in der
+Standardeinstellung maximal die L\"ange 5 haben
+d\"urfen. Selbstverst\"andlich bedeutet das Vorhandensein einer
+Signaturkette von hinreichend geringer L\"ange noch nicht, dass ein
+Schl\"ussel tats\"achlich verifizierbar ist. Zus\"atzlich muss noch
+jedem Glied dieser Kette \emph{vertraut} werden. Wird Personen nur
+\emph{geringf\"ugig} vertraut, sind zus\"atzlich noch weitere
+redundante Signaturen n\"otig. Da diese Vertrauensinformationen aber
+nicht \"offentlich verf\"ugbar sind, wird hier als obere Grenze f\"ur
+die Anzahl verifizierbarer Schl\"ussel nur die maximale Pfadl\"ange
+verwendet.
+
 Die gr\"osste Komponente enth\"alt eine erhebliche Anzahl von Knoten
 mit einem ausgehenden Knotengrad von 1. Ein solch niedriger Grad
 stellt eine erhebliche Einschr\"ankung f\"ur die Benutzbarkeit dieses
@@ -520,30 +547,6 @@ einen eingehenden Grad von 1 hat und nur von einem einzigen
 Schl\"ussel $B$ signiert wurde. F\"ur die Verifizierung von $A$ muss
 zwingend dem Besitzer von $B$ vertraut werden. Ist $B$ nicht mehr
 benutzbar, wird $A$ vom Netz getrennt.
-
-Klar ist, dass in einer starken Zusammenhangskomponente jeder Knoten
-jeden anderen Knoten erreichen kann. Eine Mindestvorraussetzung f\"ur
-die Verifizierung eines Schl\"ussels ist, dass eine Signaturkette zu
-diesem Schl\"ussel aufgebaut werden kann, dass also der Knoten im
-Graph erreicht werden kann. Allerdings ist die Erreichbarkeit an sich
-hier nicht von Bedeutung. Vielmehr muss die Erreichbarkeit unter den
-Beschr\"ankungen des PGP/GnuPG-Vertrauensmodells (siehe Abschnitt
-\ref{sec:das-gnupg-vertrauensmodell}) betrachtet werden. Hier gilt
-insbesondere die Einschr\"ankung, dass Signaturketten maximal die
-L\"ange 5 haben d\"urfen. Es stellt sich hier die Frage nach der
-N\"utzlichkeit des Netzwerkes f\"ur dessen eigentlichen Zweck, die
-Verifizierung von Schl\"usseln. Diese ist dann hoch, wenn f\"ur viele
-Knoten eine hohe Zahl von Knoten verifizierbar
-ist. Selbstverst\"andlich bedeutet das Vorhandensein einer
-Signaturkette von hinreichend geringer L\"ange noch nicht, dass ein
-Schl\"ussel tats\"achlich verifizierbar ist. Zus\"atzlich muss noch
-jedem Glied dieser Kette \emph{vertraut} werden. Wird Personen nur
-\emph{geringf\"ugig} vertraut, sind zus\"atzlich noch weitere
-redundante Signaturen n\"otig. Da diese Vertrauensinformationen aber
-nicht \"offentlich verf\"ugbar sind, wird hier als obere Grenze f\"ur
-die Anzahl verifizierbarer Schl\"ussel nur die maximale Pfadl\"ange
-verwendet.
-
 \begin{figure}[th!]
   \centering
   \subfloat[]{\label{fig:avg-pathlen}\includegraphics[scale=0.3]{images/pathlen-dist.pdf}}
@@ -556,7 +559,7 @@ verwendet.
 
 Aus Abbildung \ref{fig:eccentricity} ist ersichtlich, dass die
 Eccentricity, also die \emph{maximale} Distanz eines Knotens zu
-irgendeinem anderen Knoten, zwischen dem Minumum 16 (dem \emph{Radius}
+einem anderen Knoten, zwischen dem Minumum 16 (dem \emph{Radius}
 des Graphen) und dem Maximum 36 (dem \emph{Durchmesser} des Graphen)
 liegt. F\"ur die meisten Knoten liegt sie bei 26 bis 31. Damit wird
 die maximale Pfadl\"ange deutlich \"uberschritten. F\"ur alle Knoten
@@ -604,12 +607,12 @@ der Schl\"ussel ist also die Menge der Schl\"ussel, f\"ur deren
 Verifizierung nur einer Person voll vertraut werden muss, sehr
 gering. Immerhin steigt die Gr\"osse der Nachbarschaften mit
 wachsender Distanz deutlich: F\"ur $n=3$ liegt das 3. Quantil bereits
-bei 3371. F\"ur $n=4$ und $n=5$ betr\"agt es 16340 bzw. 30530. Mittels
+bei 3.371. F\"ur $n=4$ und $n=5$ betr\"agt es 16.340 bzw. 30.530. Mittels
 l\"angerer Signaturketten kann also die Mehrzahl der Teilnehmer einen
 signifikanten Anteil der in der gr\"ossten Zusammenhangskomponente
 vorhandenen Schl\"ussel \emph{potentiell}
 erreichen. Interessanterweise liegt das Maximum der
-Nachbarschaftsgr\"ossen f\"ur $n=5$ bei nur 40180. Nicht einmal f\"ur
+Nachbarschaftsgr\"ossen f\"ur $n=5$ bei nur 40.180. Nicht einmal f\"ur
 die am besten vernetzten Schl\"ussel sind also alle Schl\"ussel mit
 beschr\"ankter Kettenl\"ange erreichbar.
 
@@ -620,12 +623,12 @@ eigentlich dezentrale Web of Trust auf diese zentralen Komponenten
 aufbaut. Um dies festzustellen wurden die Schl\"ussel der gr\"osseren
 Certificate Authorities (siehe Abschnitt \ref{sec:sozi-komp-des}) aus
 der gr\"ossten Komponente entfernt. Diese CA-Schl\"ussel haben
-zusammen in dieser Komponente 4256 Schl\"ussel signiert. Nach der
+zusammen in dieser Komponente 4.256 Schl\"ussel signiert. Nach der
 Entfernung der CA-Schl\"ussel zerfiel die gr\"osste Komponente in eine
 Reihe von starken Zusammenhangskomponenten: Eine gr\"osste Komponente
-mit 42455 Schl\"usseln und 1058 sehr kleine Komponenten. Daraus ergibt
+mit 42455 Schl\"usseln und 1.058 sehr kleine Komponenten. Daraus ergibt
 sich, dass die CA-Schl\"ussel die gr\"osste Komponente zwar nicht
-fundamental zusammenhalten. F\"ur immerhin 2497 Schl\"ussel in der
+fundamental zusammenhalten. F\"ur immerhin 2.497 Schl\"ussel in der
 gr\"ossten Zusammenhangskomponente ist aber das Vorhandensein und die
 Benutzung der CA-Schl\"ussel entscheidend, da sie andernfalls nicht
 erreichbar sind.
@@ -647,14 +650,14 @@ erreichbar sind.
 \end{figure}
 
 Da die verwendete Datenbank alle jemals auf einen Keyserver geladenen
-Schl\"ussel enth\"alt es m\"oglich, den Zustand des
+Schl\"ussel enth\"alt, ist es m\"oglich, den Zustand des
 Schl\"usselbestandes zu einem beliebigen Zeitpunkt zu berechnen. In
 Abbildung \ref{fig:size-dev-whole} wird die Entwicklung der Gr\"osse
 des gesamten Schl\"usselbestandes und in \ref{fig:size-dev-mscc} die
 Entwicklung der Gr\"osse der gr\"ossten starken
 Zusammenhangskomponente dargestellt. Als Beginn wurde das Jahr 1991
-gew\"ahlt, weil dort die erste Version von PGP vorgestellt
-wurde\cite{wiki:pgp}. Sowohl der gesamte Schl\"usselbestand als auch
+gew\"ahlt, da in diesem Jahr die erste Version von PGP vorgestellt
+wurde (siehe Abschnitt \ref{ch:Grundlagen:sec:PGP}. Sowohl der gesamte Schl\"usselbestand als auch
 die gr\"osste starke Zusammenhangskomponente zeigen nennenswertes
 Wachstum erst etwa ab dem Jahr 1997. Dieser Zeitpunkt korreliert unter
 anderem mit der Gr\"undung des Unternehmens \emph{PGP Inc.}, der
@@ -776,7 +779,7 @@ Signaturprozess durchaus ernstnehmen.
 Wie zu erwarten basiert die grosse Mehrheit der Signaturen in der
 gr\"ossten starken Zusammenhangskomponente auf SHA1. Neben einzelnen
 Signaturen mit Vertretern der SHA2-Familie findet sich aber auch noch
-eine \"uberraschend hohe Anzahl von MD5-Signaturen: 41700 Signaturen,
+eine \"uberraschend hohe Anzahl von MD5-Signaturen: 41.700 Signaturen,
 d.h. 10\% basieren auf MD5. Die Sicherheit von MD5 muss inzwischen als
 ernsthaft kompromittiert eingestuft werden. 2008 gelang es einer
 Gruppe, durch eine Chosen-Prefix-Kollision ein von einer kommerziellen
@@ -785,8 +788,8 @@ f\"ur SSL zu erhalten \cite{Stevens2009}. GnuPG warnt zwar vor der
 Verwendung von MD5-Signaturen, erlaubt ihre Verwendung aber noch. Die
 Bedeutung der MD5-Signaturen f\"ur den Zusammenhalt der gr\"ossten
 Komponente ist nicht unwesentlich: Werden diese Signaturen entfernt,
-reduziert sich die Gr\"osse der Komponente auf 37599 Schl\"ussel,
-d.h. es werden ca. 8000 Schl\"ussel abgetrennt. 
+reduziert sich die Gr\"osse der Komponente auf 37.599 Schl\"ussel,
+d.h. es werden ca. 8.000 Schl\"ussel abgetrennt. 
 
 RSA-Schl\"ussel mit einer L\"ange von h\"ochstens 768 bit und weniger
 m\"ussen ebenfalls als praktikabel brechbar betrachtet werden. Dies
@@ -798,15 +801,15 @@ gr\"ossten Komponente vorhandenen RSA-Schl\"ussel mit 512 bzw. 768 bit
 ist mit insgesamt 450 Schl\"usseln gering. Ihre Entfernung trennt nur
 etwa weitere 300 Knoten von der Komponente ab. Die Anzahl von
 RSA-Schl\"usseln mit 1024 bit ist aber deutlich gr\"osser. Die
-Entfernung aller ca. 4500 RSA-Schl\"ussel, deren L\"ange h\"ochstens
+Entfernung aller ca. 4.500 RSA-Schl\"ussel, deren L\"ange h\"ochstens
 1024 bit betr\"agt, reduziert die Gr\"osse der Komponente um insgesamt
-ca. 8500 Knoten, trennt also weitere 4000 Knoten vom Netz ab. Es ist
+ca. 8.500 Knoten, trennt also weitere 4000 Knoten vom Netz ab. Es ist
 anzunehmen, dass sich die durchschnittlichen Distanzen ebenfalls
-erh\"ohen. Da Standardorganisationen eine Abkehr von RSA-1024 ab dem
-Jahr 2010
-empfehlen\cite{NIST2007} und praktikable Angriffe wohl nur eine Frage
-weniger Jahre sind, ist damit wie durch die MD5-Signaturen eine
-erhebliche Beeintr\"achtigung der gr\"ossten Komponente absehbar.
+erh\"ohen. Da Standardisierungsorganisationen eine Abkehr von RSA-1024
+ab dem Jahr 2010 empfehlen\cite{NIST2007} und praktikable Angriffe
+wohl nur eine Frage weniger Jahre sind, ist damit wie durch die
+MD5-Signaturen eine erhebliche Beeintr\"achtigung der gr\"ossten
+Komponente absehbar.
 
 Es ist zu erwarten, dass sich durch die Umstellung der
 Standardeinstellung in GnuPG der Anteil von RSA-Schl\"usseln mit
@@ -815,6 +818,10 @@ erh\"oht.
 
 \section{Communities}
 \label{sec:result-zusamm-und-comm}
+
+Dieser Abschnitt analysiert die Community-Struktur der gr\"ossten
+starken Zusammenhangskomponente nach der in Abschnitt
+\ref{sec:community-analyse} beschriebenen Vorgehensweise.
 
 Die Zerlegung des gerichteten Graphen mit dem Algorithmus von Rosval
 et al. lieferte keine verwertbaren Ergebnisse. Zwar wurde eine
@@ -842,8 +849,8 @@ Algorithmus zur\"uckgeht, ist nicht bekannt.
 
 F\"ur die restlichen Methoden wurde der Graph auf einen ungerichteten
 Graphen reduziert. Dazu wurde jede einzelne gerichtete Kante in eine
-ungerichte Kante umgewandelt. Aus dem gerichteten Graphen mit 446326
-Kanten ergab sich so ein ungerichteter Graph mit 295425 Kanten.
+ungerichte Kante umgewandelt. Aus dem gerichteten Graphen mit 44.6326
+Kanten ergab sich so ein ungerichteter Graph mit 295.425 Kanten.
 
 F\"ur die COPRA-Berechnung wurden -- wie in \cite{Gregory2010}
 vorgeschlagen -- Berechnungen mit unterschiedlichen Werten $v$
@@ -1173,7 +1180,7 @@ auch eine ``inhaltliche'' Gemeinsamkeit aufweisen. Darauf weist auch
 hin, dass in dieser Community eine relativ zu anderen SLDs sehr grosse
 Anzahl von Schl\"usseln von Mitgliedern des Debian-Projekts enthalten
 ist. Diese Community enth\"alt nicht nur knapp die H\"alfte der
-Schl\"ussel, sondern mit ca. 260000 Kanten den Grossteil der
+Schl\"ussel, sondern mit ca. 260.000 Kanten den Grossteil der
 \"uberhaupt vorhandenen Kanten. Sie ist also anscheinend intern sehr
 dicht vernetzt. Daher scheint es fraglich, ob sie intern wieder eine
 schlecht aufgel\"oste modulare Struktur wie in Abbildung
@@ -1357,23 +1364,24 @@ einigermassen aktiven Teilnehmer zu enthalten scheint (siehe Abschnitt
 \ref{sec:result-komponentenstruktur}).
 
 Diese Punkte k\"onnen anhand des Beispiels von Debian illustriert
-werden: Das Debian-Projekt als tats\"achliche Community, in der
-PGP und das Web of Trust eine besonders wichtige Rolle spielen (siehe
+werden: Das Debian-Projekt als tats\"achliche Community, in der PGP
+und das Web of Trust eine besonders wichtige Rolle spielen (siehe
 Abschnitt \ref{sec:sozi-komp-des}) findet sich in den Zerlegungen
 nicht als eigene abgregrenzte Einheit wieder. Statt dessen finden sich
 sehr grosse Communities, in denen Debian-Entwickler einen signifikaten
 Anteil der Schl\"ussel stellen. Im Fall der COPRA-Zerlegung ist dies
-die bereits erw\"ahnte Community mit ca. 21000 Mitgliedern. Von diesen
-verf\"ugen 1247 \"uber eine E-Mail-Adresse in der Domain debian.org
-und sind damit offensichtlich Mitglieder des Debian-Projekts. Daneben
-finden sich Mitglieder des Debian-Projekts in einer Vielzahl von
-kleineren Communities aller Gr\"ossen. Die Mitgliedschaft im
-Debian-Projekt scheint hier also f\"ur die Vernetzung keine so
-wesentliche Rolle zu spielen, dass sie die Struktur dieser real
-existierenden Community im Web of Trust wiederspiegelt. Selbst wenn viele
-Debian-Entwickler mit vielen anderen Projektmitgliedern vernetzt sind,
-so verf\"ugen sie offensichtlich \"uber gen\"ugend andere Kontakte,
-so dass diese Struktur nicht mehr auffindbar ist.
+die bereits erw\"ahnte Community mit ca. 21.000 Mitgliedern. Von
+diesen verf\"ugen 1.247 \"uber eine E-Mail-Adresse in der Domain
+debian.org und sind damit offensichtlich Mitglieder des
+Debian-Projekts. Daneben finden sich Mitglieder des Debian-Projekts in
+einer Vielzahl von kleineren Communities aller Gr\"ossen. Die
+Mitgliedschaft im Debian-Projekt scheint hier also f\"ur die
+Vernetzung keine so wesentliche Rolle zu spielen, dass sie die
+Struktur dieser real existierenden Community im Web of Trust
+wiederspiegelt. Selbst wenn viele Debian-Entwickler mit vielen anderen
+Projektmitgliedern vernetzt sind, so verf\"ugen sie offensichtlich
+\"uber gen\"ugend andere Kontakte, so dass diese Struktur nicht mehr
+auffindbar ist.
 
 %%% Local Variables: 
 %%% mode: latex

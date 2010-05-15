@@ -136,7 +136,8 @@ Software zur Extraktion und Analyse des Web of Trust. Abschnitt
 \ref{ch:Grundlagen:sec:Design:subsec:der-sks-keyserver} beschreibt
 zunächst die Keyserver-Software \emph{SKS}, auf die %FIXME
 der Extraktionsteil aufbaut. Abschnitt
-\ref{ch:Grundlagen:sec:Design:subsec:der-sks-keyserver} beschreibt
+\ref{ch:Grundlagen:sec:Design:subsec:eigene-software}
+beschreibt
 dann die entwickelte Software selbst und begründet das Design.
 
 \subsection{Der SKS Keyserver}
@@ -157,7 +158,7 @@ abgefragt werden.
 
 Im Unterschied dazu kommunizieren SKS-Keyserver zur Synchronisation
 direkt (ohne Umwege über Mailserver) miteinander.  Dazu wird ein
-binäres "`Gossip"'-Protokoll benutzt, dass auf einem effizienten
+binäres "`Gossip"'-Protokoll benutzt, das auf einem effizienten
 Algorithmus zum Abgleich von Datensätzen beruht
 \cite{Minsky2003}. SKS unterstützt alle Bestandteile des
 OpenPGP-Standards.
@@ -178,10 +179,9 @@ Die im Rahmen dieser Arbeit entwickelte Software besteht aus zwei
 Teilen: Der Extraktionsteil liesst Schlüssel aus der Datenbank eines
 Keyservers aus, parst sie, reduziert sie dabei auf die benötigten
 Daten und speichert sie in einer Datei ab. Die reduzierten Daten
-werden in einer SQL-Datenbank (PostgreSQL FIXME cite) abgelegt und
-können dort abgefragt werden. Der zweite Teil besteht aus einer Reihe
-von Werkzeugen zur Analyse dieser Daten entsprechend der Zielsetzung
-dieser Arbeit.
+werden in einer SQL-Datenbank abgelegt und können dort abgefragt
+werden. Der zweite Teil besteht aus einer Reihe von Werkzeugen zur
+Analyse dieser Daten entsprechend der Zielsetzung dieser Arbeit.
 
 \subsubsection{Datenextraktion}
 \label{sec:datenextraktion}
@@ -236,7 +236,7 @@ enthaltenen Schlüssel. Jeder Schlüssel wird durch die in SKS
 enthaltenen Funktionen geparst. Der Extraktionsteil FIXME muss dann
 noch
 \begin{itemize}
-\item Entscheiden, ob der Schlüssel zurückgezogen oder abgelaufen
+\item entscheiden, ob der Schlüssel zurückgezogen oder abgelaufen
   ist. Dazu werden die Selbstsignaturen auf den einzelnen UserIDs
   betrachtet. Falls zu einer UserID mehrere Selbstsignaturen
   vorliegen, wird entsprechend der Empfehlung im OpenPGP-Standard nur
@@ -249,17 +249,17 @@ noch
   bei der neuesten Signatur um eine Rückrufsignatur, wird das Datum
   des Rückrufs gespeichert und zusätzlich die nächstältere Signatur
   gesucht, auf die sich der Rückruf bezieht.
-\item Den Schlüssel und jede Fremdsignatur auf die benötigten Daten
+\item den Schlüssel und jede Fremdsignatur auf die benötigten Daten
   reduzieren. Für den Schlüssel sind dies (falls vorhanden) Rückzugs-
   und Ablaufdatum, die KeyID, die Liste aller UserIDs und die
   Information, welche davon die primäre UserID ist, das
   Erstellungsdatum des Schlüssels und der verwendete
   Public-Key-Algorithmus sowie dessen Schlüssellänge.
 
-  Eine Fremdsignatur wird reduziert auf die KeyID des Unterzeichners
-  FIXME, den Zertifizierungslevel, das Erstellungsdatum der Signatur,
-  falls vorhanden Ablauf- und Rückzugsdatum, der verwendete
-  Signaturalgorithmus und der verwendete Public-Key-Algorithmus.
+  Eine Fremdsignatur wird reduziert auf die KeyID des Unterzeichners, 
+  den Zertifizierungslevel, das Erstellungsdatum der Signatur,
+  falls vorhanden Ablauf- und Rückzugsdatum, den verwendeten
+  Signaturalgorithmus und den verwendeten Public-Key-Algorithmus.
 \end{itemize}
 
 Grundsätzlich werden Schlüssel nur dann verworfen, wenn sie nicht
@@ -276,7 +276,7 @@ Sind alle Schlüssel extrahiert, werden noch solche Signaturen
 entfernt, deren erstellender Schlüssel im Datenbestand nicht vorhanden
 ist. Ausserdem werden für Signaturen, die von einem Unterschlüssel
 erstellt wurden, die KeyID des signierenden Schlüssels auf die des
-"`Oberschlüssels"' geändert. Dies ist notwendig, weil das hier
+Hauptschl\"ussels geändert. Dies ist notwendig, weil das hier
 verwendete Datenmodell keine Informationen über Unterschlüssel
 enthält.
 
@@ -295,7 +295,7 @@ wirkliches Angriffspotential bietet. Eine Möglichkeit für den
 Extraktionsteil bestünde darin, die Signaturen jedes
 OpenPGP-Schlüssels mit GnuPG verifizieren zu lassen. Dagegen sprechen
 zwei Gründe: Einerseits wäre der Aufruf von GnuPG sehr
-zeitaufwendig. Für jeden Schlüssel müssten der Schlüssel in einen
+zeitaufwendig. Für jeden Schlüssel müsste der Schlüssel in einen
 GnuPG-Schlüsselring eingefügt werden. Zusätzlich müssten noch alle
 Schlüssel, die den jeweiligen Schlüssel signiert haben, einzeln in der
 SKS-Datenbank gesucht und in den Schlüsselring eingefügt werden, um
@@ -310,67 +310,21 @@ erreichen. Eine grosse Zahl solcher Pakete scheint aber
 unwahrscheinlich, da zumindest unter Sicherheitsaspekten ein Angreifer
 damit keinen offensichtlichen Gewinn erreichen kann.
 
-Die so extrahierten Daten werden auf einem beliebigen Recher in einer
-SQL-Datenbank (PostgresQL) abgelegt. Auf diese Weise kann darauf
-verzichtet werden, eigene Selektionsmechanismen zu
-implementieren. Stattdessen kann die gewünschte Datenmenge einfach als
-SQL-Abfrage formuliert werden. Auf diese Weise ergibt sich eine
-deutlich flexiblere Abfragemöglichkeit. Die Ablage in der Datenbank
-ist zwar etwas langsamer als die Daten im Speicher zu
-halten. Andererseits müssen die Daten aber nicht jedesmal komplett in
-den Speicher geladen und dort gehalten werden. Ausserdem werden
-effiziente Indexstrukturen der Datenbank genutzt und müssen nicht
-selbst implementiert werden.
-
-Die Tabellen sind wie folgt strukturiert: TODO
-
-Die Zuordnung einzelner Schlüssel zu ihren starken
-Zusammenhangskomponenten erfolgt über die Tabelle
-\emph{component\_ids}. Diese wird erst in einem separaten Schritt
-befüllt, nachdem die Komponentenstruktur berechnet wurde.
-
-\begin{figure}[h]
-\centering
-{\scriptsize
-\begin{lstlisting}[language=SQL]
-(SELECT signer, signee
-   FROM sigs INNER JOIN keys on sigs.signer = keys.keyid 
-   WHERE 
-     (keys.revoktime IS NULL OR keys.revoktime > $timestamp) 
-     AND (keys.exptime IS NULL OR keys.exptime > $timestamp)
-     AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) 
-     AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp)) 
-INTERSECT 
-(SELECT signer, signee 
-   FROM sigs INNER JOIN keys on sigs.signee = keys.keyid
-   WHERE 
-   (keys.revoktime IS NULL OR keys.revoktime > $timestamp) 
-   AND (keys.exptime IS NULL OR keys.exptime > $timestamp) 
-   AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) 
-   AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp))"
-\end{lstlisting}
-}
-\caption{Abfrage aller zum Zeitpunkt \$timestamp gültigen Signaturen}
-  \label{fig:all-valid-keys}
-\end{figure}
-
-Als Beispiel gibt Abb. \ref{fig:all-valid-keys} ein SQL-Statement an,
-mit dem alle gültigen (d.h. nicht zurückgezogenen oder abgelaufenen)
-Signaturen zu einem bestimmten Zeitpunkt abgerufen werden können.
-
-Wie beschrieben wird in einem Durchlauf der gesamte Datenbestand
-extrahiert. Aufgrund der Integration in SKS wäre es auch problemlos
-möglich, den Extraktionsteil nicht als eigenständigen Prozess zu
-implementieren, sondern den \emph{db}-Prozess entsprechend zu
-erweitern, so dass jeder neue oder geänderte Schlüssel direkt in der
-SQL-Datenbank abgelegt wird. Auf diese Weise könnte ein jederzeit
-aktueller Datenbestand erhalten werden, ohne dass er ständig komplett
-neu berechnet werden muss.
+Die so extrahierten Daten werden in einer SQL-Datenbank (PostgresQL)
+abgelegt. Auf diese Weise kann darauf verzichtet werden, eigene
+Selektionsmechanismen zu implementieren. Stattdessen kann die
+gewünschte Datenmenge einfach als SQL-Abfrage formuliert werden. Auf
+diese Weise ergibt sich eine deutlich flexiblere
+Abfragemöglichkeit. Die Ablage in der Datenbank ist zwar etwas
+langsamer als die Daten im Speicher zu halten. Andererseits müssen die
+Daten aber nicht jedesmal komplett in den Speicher geladen und dort
+gehalten werden. Ausserdem werden effiziente Indexstrukturen der
+Datenbank genutzt und müssen nicht selbst implementiert werden.
 
 \subsubsection{Datenauswertung}
 \label{sec:datenauswertung}
 
-Der Teil zur Datenauswertung besteht aus einer Reihe von unabhängigen
+Die Datenauswertung besteht aus einer Reihe von unabhängigen
 Werkzeugen, die die jeweiligen Analyseaufgaben implementieren. Diese
 sind als Kommandozeilenprogramme in eigenen Prozessen realisiert. Die
 Aufgaben der einzelnen Werkzeuge sind in Tab. \ref{tab:tools}
@@ -451,7 +405,7 @@ Gruppe entstanden ist, deutlich geringer ist. In diesem Fall ist zu
 erwarten, dass sich soziale Gruppen und die Ergebnisse von
 Keysigning-Parties als Gruppen von Knoten im Netzwerk wiederfinden,
 die untereinander eine hohe Anzahl von Kanten hat, d.h. \emph{dicht}
-vernetzt ist, w\"arend sich zu Knoten ausserhalb der Gruppe nur
+vernetzt ist, w\"ahrend sich zu Knoten ausserhalb der Gruppe nur
 relativ wenige Kanten finden. Diese Eigenschaft entspricht exakt der
 in Abschnitt
 \ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities}
@@ -545,7 +499,7 @@ Implementierungen \"offentlich mit Sourcecode verf\"ugbar
 sind. Ausserdem existieren Algorithmen, die zwar f\"ur kleinere
 Graphen bessere Ergebnisse liefern als die hier verwendeten, aufgrund
 ihrer Berechnungskomplexit\"at f\"ur grosse Graphen wie den hier
-vorliegenden nicht geeignet sind.
+vorliegenden aber nicht geeignet sind.
 
 Eine Zuordnung von einer Person zu genau einer sozialen Gruppe scheint
 unrealistisch. Statt dessen ist davon auszugehen, dass eine Person im

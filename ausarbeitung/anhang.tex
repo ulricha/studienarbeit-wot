@@ -1,0 +1,40 @@
+\begin{appendix}
+  \chapter{Schema der Tabellen}
+  \label{sec:schema-der-tabellen}
+
+  FIXME Schema der Tabellen...
+
+  Die Zuordnung einzelner Schlüssel zu ihren starken
+  Zusammenhangskomponenten erfolgt über die Tabelle
+  \emph{component\_ids}. Diese wird erst in einem separaten Schritt
+  befüllt, nachdem die Komponentenstruktur berechnet wurde.
+
+  \begin{figure}[h]
+    \centering
+    {\scriptsize
+      \begin{lstlisting}[language=SQL]
+        (SELECT signer, signee
+        FROM sigs INNER JOIN keys on sigs.signer = keys.keyid 
+        WHERE 
+        (keys.revoktime IS NULL OR keys.revoktime > $timestamp) 
+        AND (keys.exptime IS NULL OR keys.exptime > $timestamp)
+        AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) 
+        AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp)) 
+        INTERSECT 
+        (SELECT signer, signee 
+        FROM sigs INNER JOIN keys on sigs.signee = keys.keyid
+        WHERE 
+        (keys.revoktime IS NULL OR keys.revoktime > $timestamp) 
+        AND (keys.exptime IS NULL OR keys.exptime > $timestamp) 
+        AND (sigs.revoktime IS NULL OR sigs.revoktime > $timestamp) 
+        AND (sigs.exptime IS NULL OR sigs.exptime > $timestamp))"
+      \end{lstlisting}
+    }
+    \caption{Abfrage aller zum Zeitpunkt \$timestamp gültigen Signaturen}
+    \label{fig:all-valid-keys}
+  \end{figure}
+
+  Als Beispiel gibt Abb. \ref{fig:all-valid-keys} ein SQL-Statement an,
+  mit dem alle gültigen (d.h. nicht zurückgezogenen oder abgelaufenen)
+  Signaturen zu einem bestimmten Zeitpunkt abgerufen werden können.
+\end{appendix}
