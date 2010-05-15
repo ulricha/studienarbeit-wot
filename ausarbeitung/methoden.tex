@@ -37,11 +37,11 @@ hinausgehenden Daten, die über Schlüssel und Signaturen gespeichert
 werden, sind dabei auf ein Minimum reduziert: Für Schlüssel werden
 ausschliesslich die KeyID und die primäre UserID gespeichert, für
 Signaturen der Cert level und die Schlüssel. Diese Reduktion erlaubt
-zwar eine sehr kompakte Speicherung der Daten, macht es aber für eine
-Auswertung weiterer Eigenschaften von Schlüsseln und Signaturen
-unbrauchbar. Das verwendete Dateiformat ist ausserdem recht unflexibel
-und lässt eine Speicherung weiterer Daten nur mit grösserem Aufwand
-zu.
+zwar eine sehr kompakte Speicherung der Daten, macht den Datensatz
+aber für eine Auswertung weiterer Eigenschaften von Schlüsseln und
+Signaturen unbrauchbar. Das verwendete Dateiformat ist ausserdem recht
+unflexibel und lässt eine Speicherung weiterer Daten nur mit grösserem
+Aufwand zu.
 
 Die \emph{wotsap}-Daten beinhalten nur die zum jeweiligen Zeitpunkt
 gültigen Schlüssel und Signaturen. Dieser "`Schnappschuss"' reicht für
@@ -64,13 +64,13 @@ verwendeten Keyserver verursacht: Die grösste starke
 Zusammenhangskomponente die durch XXX berechnet %FIXME
 wurde (MSCC-1), enthält mit dem Stand vom 02.12.2009 ca. 44900
 Schlüssel, während der \emph{wotsap}-Datensatz (MSCC-2) vom gleichen
-Tag nur ca. 42130 Schlüssel enthält. Diep Differenz zwischen den
+Tag nur ca. 42130 Schlüssel enthält. Die Differenz zwischen den
 Datensätzen ergibt einerseits, dass ca. 1000 Schlüssel in MSCC-1
 fehlen, die in MSCC-2 vorhanden sind. Eine stichprobenartige Analyse
 von 20 Schlüsseln zeigt, dass diese Schlüssel überwiegend durch
 Signaturketten an die MSCC angebunden sind, die aufgrund von
 widerrufenen Schlüsseln oder Schlüsselteilen unterbrochen sind. Dabei
-treten u.a. Signaturen auf komplett widerrufenen Schlüsseln und
+treten unter anderem Signaturen auf komplett widerrufenen Schlüsseln und
 Signaturen auf widerrufenen UserIDs auf. \emph{wotsap} benutzt GnuPG,
 um die OpenPGP-Pakete eines Schlüssels zu parsen. Der Code zum Parsen
 der GnuPG-Ausgabe ist fehlerhaft und führt dazu, dass \emph{wotsap}
