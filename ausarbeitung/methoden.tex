@@ -326,53 +326,84 @@ Datenbank genutzt und müssen nicht selbst implementiert werden.
 
 Die Datenauswertung besteht aus einer Reihe von unabhängigen
 Werkzeugen, die die jeweiligen Analyseaufgaben implementieren. Diese
-sind als Kommandozeilenprogramme in eigenen Prozessen realisiert. Die
-Aufgaben der einzelnen Werkzeuge sind in Tab. \ref{tab:tools}
-aufgeführt.
+sind als Kommandozeilenprogramme in separaten Prozessen
+realisiert. Eine \"Ubersicht \"uber die Aufteilung der Aufgaben auf
+die einzelnen Werkzeuge findet sich in Anhang
+\ref{cha:analysewerkzeuge}.
 
-\begin{table}
+Die zur Community-Analyse verwendeten Algorithmen (siehe Abschnitt
+\ref{sec:community-analyse}) wurden aus Zeitgr\"unden nicht selbst
+implementiert. F\"ur Fastmod FIXME wurde die Implementierung aus dem
+Softwarepaket igraph\cite{Csardi2006} verwendet. F\"ur die restlichen
+Algorithmen wurden Implementierungen der jeweiligen Autoren verwendet.
 
-  \begin{tabular}[h]{|l|p{9cm}|}
-    \hline
-    basic-properties-mpi & Verteilung von Eingangs- und Ausgangsgraden,
-    Komponentengrössen, Nachbarschaften, Durchmesser, Radius,
-    durschnittliche Pfadlängen (parallelisiert mittels
-    MPI\\
-    \hline
-    betweeness-mpi & Berechnung der Betweeness-Zentralität
-    (parallelisiert mittels MPI) \\
-    \hline
-    clustering-coefficient-mpi & Berechnung des Clustering Coefficient
-    (parallelisiert mittels MPI) \\
-    \hline
-    export & Export des Graphen in verschiedene Dateiformate (igraph,
-    Cytoscape) \\
-    \hline
-    meta-graph & Zeichnung der Struktur der starken
-    Zusammenhangskomponenten \\
-    \hline
-    db-scc-information & Befüllt die SQL-Datenbank mit der Zuordnung
-    von Knoten zu Zusammenhangskomponenten \\
-    \hline
-    dump-sql & Legt die extrahierten Daten einmalig in der
-    SQL-Datenbank ab \\
-    \hline 
-    investigate-component & Untersucht einzelne
-    Zusammenhangskomponente in Bezug auf Herkunft der UserIDs
-    (Domains) und den Zeitraum der Entstehung der Signaturen \\
-    \hline
-    mscc-size & Entwicklung der Schlüsselanzahl der grössten starken
-    Zusammenhangskomponente \\
-    \hline
-    simple-stats & Statistiken über die Verwendung bestimmter
-    Schlüsseleigenschaften (Algorithmen, Schlüssellängen usw.) \\
-    time & Entwicklung der Verwendung von Signatur- und
-    Public-Key-Algorithmen und deren Schlüssellängen\\
-    \hline
-  \end{tabular}
-  \caption{Foobar}
-  \label{tab:tools}
-\end{table}
+\paragraph{Parallelisierung mit MPI}
+\label{sec:parall-mitt-mpi}
+
+Die in Abschnitt
+\ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Statistiken} definierten
+Kennzahlen Eccentricity, Durchmesser, Radius, $h$-Nachbarschaften und
+charakteristische Distanz ergeben sich s\"amtlich aus den Distanzen in
+einem Graphen. Der \"ubliche Ansatz zur Berechnung dieser Kennzahlen
+ist, die Distanzmatrix
+\begin{equation}
+  \label{eq:7}
+  D = (d(u, v))_{u, v\in V}
+\end{equation}
+zu berechnen, die die Distanz $d(u, v)$ in Zeile $u$ und Spalte $v$
+enth\"alt\cite{Brinkmeier2004}. Aus dieser Matrix aller Distanzen im
+Graphen lassen sich offensichtlich alle oben angef\"uhrten Kennzahlen
+berechnen. $D$ kann berechnet werden, indem das
+single-source-shortest-path-Problem (SSSP) f\"ur alle $n$ Knoten oder
+das all-pairs-shortest-path-Problem (APSP) gel\"ost werden. F\"ur den
+vorliegenden Fall eines ungewichteten Graphen l\"asst sich SSSP in
+$\mathcal{O}(n)$ durch Breitensuche l\"osen. F\"ur die Berechnung der
+Distanzmatrix ergibt sich dann eine Komplexit\"at von
+$\mathcal{O}(nm)$. 
+
+Dieser Ansatz ist hier aufgrund der Gr\"osse des vorliegenden Graphen
+nicht geeignet. F\"ur diesen gilt $m > n$, so dass die Berechnung
+quadratisch in der Anzahl der Knoten ist. Das sequentielle L\"osen von
+SSSP f\"ur jeden Knoten auf der zur Verf\"ugung stehenden Hardware
+h\"atte einen Zeitaufwand von ca. 32 Stunden erfordert. Das Vorhalten
+der quadratischen Distanzmatrix erfordert eine erhebliche Menge
+Speicher (ca. 8 GiB, wenn Distanzen durch 4-Byte-Ganzzahlen
+repr\"asentiert werden.
+
+Allerdings ist es nicht notwendig, die gesamte Distanzmatrix
+vorzuhalten. Eccentricity, $h$-Nachbarschaften und die
+durchschnittliche Distanz eines Knotens sind bestimmbar, wenn SSSP
+\emph{f\"ur diesen Knoten} gel\"ost wurde. Durchmesser und Radius
+ergeben sich allein aus den Eccentricity-Werten f\"ur alle Knoten. Die
+Berechnung kann also trivial parallelisiert werden, indem die
+Knotenmenge $V$ in Teilmengen $V_1, \dots, V_k$ aufgeteilt wird, die
+jeweils einer Berechnungseinheit zugewiesen werden. Jede
+Berechnungseinheit $i$ l\"ost dann SSSP f\"ur alle Knoten aus
+$V_i$. Die Ergebnisse m\"ussen dann nur noch kombiniert werden, um
+Radius, Durchmesser und charakteristische Distanz des Graphen zu
+bestimmen. 
+
+Dieser Ansatz wurde auf einem Cluster realisiert, dessen Knoten
+mittels Message-Passing-Interface (MPI) kommunizieren. Eine zentrale
+\emph{Master}-Instanz zerlegt die Knotenmenge des Graphen und schickt
+jeder der $k$ \emph{Worker}-Instanzen die Menge $V_k$, f\"ur die diese
+zust\"andig ist. Jede \emph{Worker}-Instanz $k$ l\"ost SSSP f\"ur alle
+Knoten aus $V_k$ sequentiell und berechnet damit die gesuchten
+Kennzahlen. Die Ergebnisse werden an die \emph{Master}-Instanz
+\"ubermittelt, die sie kombiniert.
+
+Da die Berechnung f\"ur die einzelnen Knotenmengen $V_k$ komplett
+unabh\"angig l\"auft, beschr\"ankt sich die notwendige Kommunikation
+zwischen den Instanzen auf das Zuteilen der Knotenmenge zu einer
+\emph{Worker}-Instanz und die \"Ubertragung der Ergebnisse zu der
+zentralen \emph{Master}-Instanz. Dieser Ansatz skaliert also
+ann\"ahernd linear in der Anzahl der Berechnungseinheiten.
+
+Die Berechnung wurde mit 24 \emph{Worker}-Instanzen durchgef\"uhrt,
+wobei eine Worker-Instanz auf einem Core einer Quad-Core-Xeon-CPU
+ausgef\"uhrt wird. Insgesamt wurden also 7 Clusterknoten benutzt. Die
+notwendige Zeit f\"ur das Berechnen s\"amtlicher oben angef\"uhrter
+Kennzahlen reduzierte sich damit auf ca. 20 Minuten.
 
 \section{Community-Analyse}
 \label{sec:community-analyse}

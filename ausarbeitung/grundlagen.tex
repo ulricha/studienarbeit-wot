@@ -133,12 +133,18 @@ geringfügigem Vertrauen unterschrieben und sind deshalb nicht voll
 sondern nur eingeschränkt gültig. $G$ wurde zwar von einem voll
 gültigen Schlüssel mit vollem Vertrauen unterschrieben. Allerdings
 überschreitet die Signaturkette zu $A$ die maximale Länge von 5 und
-wird deshalb nicht betrachtet.
+wird deshalb nicht benutzt.
 
 Ein öffentlicher Schlüssel, der anhand dieser Regeln nicht als
 authentisch verifiziert werden kann, kann trotzdem zur Verschlüsselung
 und zur Verifizierung von Signaturen verwendet werden. Allerdings
 warnt GnuPG in diesem Fall vor der Verwendung.
+
+\subsection{Das Keyserver-Netzwerk}
+\label{sec:das-keys-netzw}
+
+Hier: wie wie werden Signaturen bekannt gemacht? Wie kommen Benutzer
+an Signaturen?
 
 \subsection{Zustandekommen von Signaturen im Web of Trust}
 \label{sec:sozi-komp-des}

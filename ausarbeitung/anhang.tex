@@ -34,7 +34,56 @@
     \label{fig:all-valid-keys}
   \end{figure}
 
+
   Als Beispiel gibt Abb. \ref{fig:all-valid-keys} ein SQL-Statement an,
   mit dem alle gültigen (d.h. nicht zurückgezogenen oder abgelaufenen)
   Signaturen zu einem bestimmten Zeitpunkt abgerufen werden können.
+
+\chapter{Analysewerkzeuge}
+\label{cha:analysewerkzeuge}
+
+
+\begin{table}
+
+  \begin{tabular}[h]{|l|p{9cm}|}
+    \hline
+    basic-properties-mpi & Verteilung von Eingangs- und Ausgangsgraden,
+    Komponentengrössen, Nachbarschaften, Durchmesser, Radius,
+    durschnittliche Pfadlängen (parallelisiert mittels
+    MPI\\
+    \hline
+    betweeness-mpi & Berechnung der Betweeness-Zentralität
+    (parallelisiert mittels MPI) \\
+    \hline
+    clustering-coefficient-mpi & Berechnung des Clustering Coefficient
+    (parallelisiert mittels MPI) \\
+    \hline
+    export & Export des Graphen in verschiedene Dateiformate (igraph,
+    Cytoscape) \\
+    \hline
+    meta-graph & Zeichnung der Struktur der starken
+    Zusammenhangskomponenten \\
+    \hline
+    db-scc-information & Befüllt die SQL-Datenbank mit der Zuordnung
+    von Knoten zu Zusammenhangskomponenten \\
+    \hline
+    dump-sql & Legt die extrahierten Daten einmalig in der
+    SQL-Datenbank ab \\
+    \hline 
+    investigate-component & Untersucht einzelne
+    Zusammenhangskomponente in Bezug auf Herkunft der UserIDs
+    (Domains) und den Zeitraum der Entstehung der Signaturen \\
+    \hline
+    mscc-size & Entwicklung der Schlüsselanzahl der grössten starken
+    Zusammenhangskomponente \\
+    \hline
+    simple-stats & Statistiken über die Verwendung bestimmter
+    Schlüsseleigenschaften (Algorithmen, Schlüssellängen usw.) \\
+    time & Entwicklung der Verwendung von Signatur- und
+    Public-Key-Algorithmen und deren Schlüssellängen\\
+    \hline
+  \end{tabular}
+  \caption{Foobar}
+  \label{tab:tools}
+\end{table}
 \end{appendix}
