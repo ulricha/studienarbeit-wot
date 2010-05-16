@@ -11,36 +11,137 @@
 %% ==============================
 \label{ch:Grundlagen:sec:PublicKeyCrypto}
 
+Dieser Abschnitt erl\"autert zun\"achst die Prinzipien symmetrischer
+und asymmetrischer Kryptographie, geht dann auf das Problem der
+Schl\"usselverteilung bei asymmetrischer Verschl\"usselung ein und
+f\"uhrt zu dessen L\"osung die Konzepte Public Key Infrastructure
+(PKI) und Web of Trust (WoT) ein. Die Darstellung beruht auf
+\cite{Menezes1996}.
+
+\subsection{Ziele von Kryptographie}
+\label{sec:ziele-von-krypt}
+
+Wir betrachten den Fall einer Nachricht, die \"uber einen Kanal
+transportiert wird. Im Kontext von Computernetzwerken, insbesondere
+des Internets, muss im Allgemeinen davon ausgegangen werden, dass
+unberechtigte Dritte in der Lage sind, Nachrichten auf einem Kanal
+abzuh\"oren, zur\"uckzuhalten und zu ver\"andern. Menezes et
+al. \cite{Menezes1996} definieren essentielle Ziele von
+Informationssicherheit, die in diesem Fall relevant sind:
+
+\begin{description}
+\item[Vertraulichkeit] Es soll sichergestellt werden, dass der Inhalt
+  einer Nachricht nur berechtigten Kommunikationspartnern zug\"anglich
+  ist.
+\item[Authentizit\"at] Eine Nachricht ist dann authentisch, wenn sie
+  zweifelsfrei ihrem Absender zugeordnet werden
+  kann. Authentifizierung betrifft also die Verifizierung des
+  Ursprungs oder des Urhebers einer Nachricht. Dieses Problem betrifft
+  nicht nur die Nachricht selbst, sondern auch Schl\"usselmaterial.
+\item[Integrit\"at] Es soll sichergestellt werden, dass eine Nachricht
+  w\"arend des Transportes nicht ver\"andert wurde, bzw. dass eine
+  Ver\"anderung nicht unbemerkt m\"oglich ist.
+\end{description}
+
 \subsection{Prinzip}
 \label{ch:Grundlagen:sec:PublicKeyCrypto:subsec:Prinzip}
 
-Klassische Kryptographie basiert auf einem \emph{Geheimnis} oder
-\emph{privaten Schl\"ussel}, der beiden Kommunikationspartnern bekannt
-ist. 
+\emph{Symmetrische Kryptographie} basiert auf einem \emph{Geheimnis}
+oder \emph{Schl\"ussel}, der sowohl dem Absender als auch dem
+Empf\"anger bekannt ist. Der gleiche Schl\"ussel wird dazu benutzt,
+eine Nachricht zu verschl\"usseln und sie zu entschl\"usseln. Diese
+Vorg\"ange k\"onnen von jedem durchgef\"uhrt werden, der im Besitz des
+Schl\"ussels ist.  Die Teilnehmer m\"ussen also sicherstellen, dass
+keine unberechtigten Dritten in den Besitz des Schl\"ussels gelangen
+k\"onnen. Ein Schl\"ussel kann nat\"urlich bei einem direkten Treffen
+ausgetauscht werden. Die Verteilung oder Vereinbarung eines
+Schl\"ussels zwischen den Kommunikationspartnern ist aber dann
+schwierig, wenn ein direkter Austausch beispielsweise aufgrund von
+geographischer Entfernung nicht m\"oglich ist und zwischen den
+Kommunikationspartnern noch kein sicherer Kanal\footnote{ein sicherer
+  Kanal bezeichnet einen Kanal, auf dem die oben definierten
+  Eigenschaften Vertraulichkeit, Authentizit\"at und Integrit\"at
+  gew\"ahrleistet sind} existiert. Dieses Problem wird als
+\emph{Schl\"usselverteilungsproblem} bezeichnet\cite{Menezes1996}. 
+
+Eine Methode, um das Problem der Schl\"usselverteilung \"uber einen
+unsicheren Kanal zu l\"osen, bietet \emph{asymmetrische Kryptographie}
+oder \emph{Public-Key-Kryptographie}. Dabei gibt es keinen einzelnen
+Schl\"ussel, \"uber den alle Kommunikationspartner
+verf\"ugen. Stattdessen verf\"ugt jeder Teilnehmer \"uber ein
+\emph{Schl\"usselpaar}, das aus einem \emph{privatem} und einem
+\emph{\"offentlichen} Schl\"ussel besteht. Zwischen diesen beiden
+Schl\"usseln muss zwar ein mathematischer Zusammenhang bestehen. Der
+private Schl\"ussel darf allerdings nicht mit akzeptablem Aufwand aus
+dem \"offentlichen Schl\"ussel ableitbar sein. Das entscheidende
+Merkmal eines asymmetrischen Kryptographieschemas ist, dass der
+Schl\"ussel, mit dem eine Nachricht verschl\"usselt wird, nicht mit
+dem Schl\"ussel identisch ist, mit dem sie wieder entschl\"usselt
+werden kann.
+
+Asymmetrische Kryptographie kann benutzt werden, um die in Abschnitt
+\ref{sec:ziele-von-krypt} definierten Ziele zu
+gew\"ahrleisten. Vertraulichkeit wird erreicht, indem der Absender
+einer Nachricht diese mit dem \"offentlichen Schl\"ussel des
+Empf\"angers verschl\"usselt. Diese Nachricht kann dann nur mit dem
+entsprechenden privaten Schl\"ussel des Empf\"angers entschl\"usselt
+werden. Um Authentizit\"at, Integrit\"at und Nicht-Abstreitbarkeit zu
+gew\"ahrleisten, werden \emph{digitale Signaturen} verwendet, die von
+einem Geheimnis (dem privaten Schl\"ussel) und der zu signierenden
+Nachricht abh\"angen. Ein digitales Signaturschema besteht aus einer
+Signaturverifizierungsfunktion und einer
+Signaturerzeugungsfunktion. Gegeben ein asymmetrisches Schl\"usselpaar
+mit einem \"offentlichen Schl\"ussel $k$ und einem privaten
+Schl\"ussel $k^{-1}$ sowie eine Nachricht $m$ wird eine digitale
+Signatur $d$ erzeugt, indem die Signaturerzeugungsfunktion auf
+$k^{-1}$ und $m$ angewandt wird. Um die Signatur $d$ zur Nachricht $m$
+zu \"uberpr\"ufen, wird die Verifizierungsfunktion auf $d$, $m$ und
+den \"offentlichen Schl\"ussel $k$ angewandt. Sie gibt an, ob es sich
+um eine g\"ultige Signatur bez\"uglich des zugeh\"origen privaten
+Schl\"ussels $k^{-1}$ handelt oder nicht.
+
+Der \"offentliche Schl\"ussel kann \"offentlich beliebig verf\"ugbar
+gemacht und \"uber einen unsicheren Kanal transportiert werden. Der
+private Schl\"ussel hingegen darf nur dem Besitzer bekannt sein, da
+nur mit ihm die Operationen Entschl\"usselung und Erstellung von
+digitalen Signaturen m\"oglich sind.
 
 \subsection{Authentisierung von Schlüsseln}
 \label{ch:Grundlagen:sec:PublicKeyCrypto:subsec:KeyAuth}
+Die Verteilung von \"offentlichen Schl\"usseln \"uber unsichere
+Kan\"ale l\"ost zwar zun\"achst das Schl\"usselverteilungsproblem. 
+
+Aktiver Angreifer...
 
 Zweck von PKI oder Web of Trust ist es, die Authentizit\"at der
 Bindung von Schl\"ussel/Zertifikat und Identit\"at zu etablieren. Und
 das eben auch dann, wenn man selbst diese Bindung nicht \"uberpr\"ufen
 kann.
 
-\subsubsection{Zentrale PKI}
+\subsubsection{Zentrale PKI (besser: hierarchisch)}
 \label{ch:Grundlagen:sec:PublicKeyCrypto:subsec:KeyAuth:subsubsec:PKI}
 
 zentral im Sinne von: Es muss einer einzigen zentralen
 Authorit\"at/Instanz vertraut werden.
 
+kommerziell oder staatlich.
+
 \subsubsection{Web of Trust}
 \label{ch:Grundlagen:sec:PublicKeyCrypto:subsec:KeyAuth:subsubsec:WOT}
 
+Nach kohlas: authentication/certificate graph. ein certificate graph,
+der trust-werte enth\"halt, ist ein web of trust.
+
 Zu beachten ist, dass im Rest dieser Arbeit der Begriff
 ``Schl\"ussel'' ausschliesslich im Sinne des \"offentlichen Teils
-eines Schl\"usselpaares verwendet wird.
+eines OpenPGP-Schl\"usselpaares verwendet wird.
 
 \section{PGP/GnuPG}
 \label{ch:Grundlagen:sec:PGP}
+
+PGP ist hybride Verschl\"usselung (asymmetrisch: Aushandlung eines
+symmetrischen Keys), ist hier aber nicht relevant, da es nur um die
+Authentifizierung der \"offentlichen Schl\"ussel geht.
 
 \cite{wiki:pgp}
 
@@ -59,9 +160,10 @@ Standardisierung durch OpenPGP \cite{Callas1998} \cite{Callas2007}
 Öffentliche PGP-Schlüssel werden oft nicht in einer Weise übergeben,
 die die sofortige Verifikation des Schlüssels zulässt, beispielsweise
 bei einem persönlichen Treffen. Stattdessen werden Schlüssel häufig
-per E-Mail, über einen Keyserver oder andere elektronische Wege
-ausgetauscht.  Überprüfung der Authentizität eines Schlüssels ist
-deswegen von grosser Bedeutung.
+per E-Mail, über einen Keyserver (siehe Abschnitt
+\ref{sec:das-keys-netzw}) oder andere elektronische Wege ausgetauscht.
+Überprüfung der Authentizität eines Schlüssels ist deswegen von
+grosser Bedeutung.
 
 Unterschied Trust und Signatur. Was bedeutet Trust?
 Trustdatenbank. Trust ist individuell. \footnote{Die Rede von ``dem''
@@ -69,6 +171,13 @@ Trustdatenbank. Trust ist individuell. \footnote{Die Rede von ``dem''
   jeder Teilnehmer \"uber sein pers\"onliches Web of Trust, dass sich
   aus seiner pers\"onlichen Vertrauensdatenbank und dem Netzwerk von
   Signaturen ergibt.}
+
+Das Vertrauensmodell (Trust model -- besserer Begriff?) ist der
+Algorithmus, mit dem PGP bzw. GnuPG entscheiden, ob ein Schl\"ussel
+anhand eines Web of Trust, also eines Zertifikatsgraphen mit
+Vertrauenswerten, als g\"ultig betrachtet wird. G\"ultig meint an
+dieser Stelle, dass die Zugeh\"origkeit des Schl\"ussels zu dem
+angeblichen Besitzer best\"atigt wurde.
 
 Ein Schlüssel wird von GnuPG genau dann als gültig (\emph{valid})
 betrachtet, wenn er die folgenden Bedingungen erfüllt:
@@ -601,9 +710,6 @@ Fortunato \cite{Fortunato2010}.
 
 \paragraph{COPRA}
 \label{sec:copra}
-
-\paragraph{Infomap}
-\label{sec:infomap}
 
 %% ==============================
 \section{Verwandte Arbeiten}
