@@ -23,7 +23,7 @@
 ***** Authentizitaet
 ***** 
 **** Terminologie: Hier meint Schlüssel einen Schlüssel im Allgemeinen, später ein OpenPGP-Schlüsselpaar.
-n**** Funktionsprinzip
+**** Funktionsprinzip
 ***** symmetrische Krypto: Alice und Bob verfügen über ein shared secret. Der gleiche Key wird für Ver- und Entschlüsselung benutzt.
 ****** Symmetrische Krypto hat Schlüsselverteilungsproblem: 
 ******* muss sicherstellen, dass kein dritter den schlüssel bei der verteilung erhalten kann
@@ -49,7 +49,6 @@ n**** Funktionsprinzip
 ******* Schlüssel gehört der Person/Entität, die angegeben ist
 ***** Zentrale PKI
 ***** Web of Trust
-
 *** PGP/GnuPG
 **** Geschichte von PGP/PGP.com und GnuPG
 **** Eigenschaften/Fähigkeiten der Implementierungen allgemein
