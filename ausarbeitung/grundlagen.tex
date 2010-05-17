@@ -224,7 +224,7 @@ deutlich schneller sind als asymmetrische Verfahren.
 
 PGP und GnuPG implementieren eine Vielzahl von symmetrischen und
 asymmetrischen sowie Hashalgorithmen. Nachdem GnuPG seit 1999 in der
-Standardeinstellung DSA-Schl\"ussel erzeugte, werden seit 2009
+Standardeinstellung DSA/ElGamal-Schl\"ussel erzeugte, werden seit 2009
 standardm\"assig RSA-Schl\"ussel erzeugt (siehe Abschnitt
 \ref{sec:result-key-properties}).
 
@@ -322,11 +322,13 @@ zugewiesen. M\"ogliche Werte sind
 Der Vertrauenswert eines Schl\"ussels beschreibt, wie sehr der
 Besitzer des Schl\"usselrings dem Besitzer des Schl\"ussels vertraut,
 zuverl\"assig korrekte Zertifikate zu erzeugen, also die Bindung von
-\"offentlichen Schl\"usseln an Personen zu verifizieren. Nur ein
-Schl\"ussel, dem mindestens \emph{geringf\"ugig} vertraut wird, kann
-als TTP fungieren. \emph{Ultimativ} wird ausschliesslich implizit dem
-Besitzer des Schl\"usselrings selbst vertraut. Es muss bemerkt werden,
-dass den einzelnen Werten keine festgelegte Semantik zugeordnet
+\"offentlichen Schl\"usseln an Personen zu verifizieren.  Zur
+\"Uberprf\"ufung der Authentizit\"at eines Schl\"ussels werden von
+GnuPG nur Signaturen betrachtet, die von Schl\"usseln erzeugt wurden,
+deren Besitzern mindestens \emph{geringf\"ugig} vertraut
+wird. \emph{Ultimativ} wird ausschliesslich implizit dem Besitzer des
+Schl\"usselrings selbst vertraut. Es muss bemerkt werden, dass den
+einzelnen Vertrauenswerten keine festgelegte Semantik zugeordnet
 ist. Ihre Bedeutung ergibt sich eher anhand ihrer Auswirkungen im
 Algorithmus (siehe unten). Jeder Benutzer muss selbst entscheiden,
 anhand welcher Kriterien er welchen Personen wie stark vertraut. Diese
@@ -383,7 +385,7 @@ praktischen Benutzbarkeit getroffen werden.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[scale=1.0]{images/trust-beispiel.pdf}
+  \includegraphics[scale=0.7]{images/trust-beispiel.pdf}
   \caption{Beispiel für die Berechnung der Gültigkeit von Schlüsseln}
   \label{fig:trust-beispiel}
 \end{figure}
