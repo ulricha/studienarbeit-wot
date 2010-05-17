@@ -190,11 +190,13 @@ eines OpenPGP-Schl\"usselpaares verwendet wird.
 
 \section{PGP/GnuPG}
 \label{ch:Grundlagen:sec:PGP}
-
-PGP ist hybride Verschl\"usselung (asymmetrisch: Aushandlung eines
-symmetrischen Keys), ist hier aber nicht relevant, da es nur um die
-Authentifizierung der \"offentlichen Schl\"ussel geht.
-
+Wie die meisten kryptographischen Systeme, die asymmetrische Verfahren
+benutzen, ist PGP/GnuPG ein hybrides System. Die asymmetrischen
+Schl\"ussel werden nur benutzt, um einen symmetrischen
+Sitzungsschl\"ussel zu verschl\"usseln, mit dem wiederum der
+eigentliche Nachrichteninhalt verschl\"usselt wird. Der Grund daf\"ur
+liegt unter anderem darin, dass symmetrische Verfahren in der Regel
+deutlich schneller sind als asymmetrische Verfahren.
 
 \cite{wiki:pgp}
 
@@ -204,12 +206,49 @@ Authentifizierung der \"offentlichen Schl\"ussel geht.
 \subsection{Eigenschaften/Fähigkeiten der Implementierungen}
 \label{ch:Grundlagen:sec:PGP:subsec:Eigenschaften}
 
+pgp wird meistens dazu benutzt, emails zu verschl\"usseln und zu
+signieren. es kann aber auch daf\"ur benutzt werden, beliebige Dateien
+und Dokumente zu verschl\"usseln und zu signieren.
+
+von zimmerman erfunden; inzwischen kommerziell; aber freie
+implementierung gnupg verf\"ugbar;
 Standardisierung durch OpenPGP \cite{Callas1998} \cite{Callas2007}
 
+pgp benutzt Web of Trust als TTP. Abschnitt xx beschreibt detailliert
+den ALgorithmus, nach dem in der Standardeinstellung die
+Authentizit\"at von Schl\"usseln anhand eines Netzwerks von
+Zertifikaten bewertet wird. Da Web of Trust eine Verallgemeinerung von
+hierarchischem PKI darstellt, kann aber auch eine hierarchische PKI in
+PGP implementiert werden. Zumindest GnuPG erlaubt die Verwendung
+verschiedener solcher Algorithmen.
+
+\subsubsection{Struktur von OpenPGP-Paketen}
+\label{sec:structure-openpgp}
 An dieser Stelle wird in groben Z\"ugen beschrieben, wie ein
 OpenPGP-Schl\"ussel aufgebaut ist. F\"ur Details wird auf den
 OpenPGP-Standard\cite{Callas2007} verwiesen.
 
+Ein OpenPGP-Schl\"ussel besteht aus einer Reihe von
+\emph{Paketen}. Unterschiedliche Funktionen werden von
+unterschiedlichen Pakettypen wahrgenommen. Ein \"offentlicher
+OpenPGP-Schl\"ussel enth\"alt zun\"achst ein \emph{Public-Key-Paket},
+dass das eigentliche Schl\"usselmaterial enth\"alt. Weiterhin
+enth\"alt ein Schl\"ussel eine Reihe von \emph{UserID}-Paketen, wobei
+mindestens ein solches Paket vorhanden sein muss. UserID-Pakete
+enthalten im Wesentlichen eine UserID bestehend aus einem Namen und
+einer E-Mail-Adresse. Sie geben also eine Identit\"at an. Zu jedem
+UserID-Paket geh\"ort eine Reihe von \emph{Signature}-Paketen. Diese
+bestehen aus einer digitalen Signatur \"uber dem Public-Key-Paket und
+dem UserID-Paket. Eine Signatur auf einer UserID bindet den
+Schl\"ussel an diese Identit\"at. Jede UserID verf\"ugt \"uber
+mindestens eine Selbstsignatur, die mit dem Schl\"ussel selbst
+erstellt wurde. Nach der obigen Definition eines Zertifikats stellt
+also jeder (\"offentliche) OpenPGP-Schl\"ussel, auch wenn er keine
+Signaturen von Dritten enth\"alt, ein selbstsigniertes Zertifikat
+dar. Werden zus\"atzliche Signaturen auf dem Schl\"ussel angebracht,
+ergibt sich gewissermassen ein Zertifikat mit mehreren Signaturteilen
+oder mehrere Zertifikate, die sich auf einen gemeinsamen Datenteil
+beziehen.
 
 \subsection{Das GnuPG-Vertrauensmodell}
 \label{sec:das-gnupg-vertrauensmodell}
@@ -222,17 +261,6 @@ per E-Mail, über einen Keyserver (siehe Abschnitt
 Überprüfung der Authentizität eines Schlüssels ist deswegen von
 grosser Bedeutung.
 
-Unterschied Trust und Signatur. Was bedeutet Trust?
-
-Verschiedene Level von Trust: no, marginal, full, ultimate. Keine
-definierte Semantik.
-
-Trustdatenbank. Trust ist individuell. \footnote{Die Rede von ``dem''
-  Web of Trust ist insofern missverst\"andlich. Eigentlich verf\"ugt
-  jeder Teilnehmer \"uber sein pers\"onliches Web of Trust, dass sich
-  aus seiner pers\"onlichen Vertrauensdatenbank und dem Netzwerk von
-  Signaturen ergibt.}
-
 Das Vertrauensmodell (Trust model -- besserer Begriff?) ist der
 Algorithmus, mit dem PGP bzw. GnuPG entscheiden, ob ein Schl\"ussel
 anhand eines Web of Trust, also eines Zertifikatsgraphen mit
@@ -240,15 +268,44 @@ Vertrauenswerten, als g\"ultig betrachtet wird. G\"ultig meint an
 dieser Stelle, dass die Zugeh\"origkeit des Schl\"ussels zu dem
 angeblichen Besitzer best\"atigt wurde.
 
-Ein Schlüssel wird von GnuPG genau dann als gültig (\emph{valid})
-betrachtet, wenn er die folgenden Bedingungen erfüllt:
+PGP speichert Schl\"ussel in einem \emph{Sch\"usselring}. Jedem
+Schl\"ussel in einem Schl\"usselring wird ein \emph{Vertrauenswert}
+zugewiesen. M\"ogliche Werte sind
+\begin{itemize}
+\item Kein Vertrauen
+\item geringf\"ugiges Vertrauen
+\item volles Vertrauen
+\item ultimatives Vertrauen
+\end{itemize}
+Der Vertrauenswert eines Schl\"ussels beschreibt, wie sehr der
+Besitzer des Schl\"usselrings dem Besitzer des Schl\"ussels vertraut,
+zuverl\"assig korrekte Zertifikate zu erzeugen, also die Bindung von
+\"offentlichen Schl\"usseln an Personen zu verifizieren. Nur ein
+Schl\"ussel, dem mindestens \emph{geringf\"ugig} vertraut wird, kann
+als TTP fungieren. \emph{Ultimativ} wird ausschliesslich implizit dem
+Besitzer des Schl\"usselrings selbst vertraut. Es muss bemerkt werden,
+dass den einzelnen Werten keine festgelegte Semantik zugeordnet
+ist. Ihre Bedeutung ergibt sich eher anhand ihrer Auswirkungen im
+Algorithmus (siehe unten). Jeder Benutzer muss selbst entscheiden,
+anhand welcher Kriterien er welchen Personen wie stark vertraut. Diese
+Vertrauenswerte sind individuell. Jeder Benutzer verf\"ugt \"uber
+seine eigene, lokale Datenbank von Vertrauenswerten, die nicht mit
+anderen Benutzern geteilt werden\footnote{Die Rede von ``dem'' Web of
+  Trust ist insofern missverst\"andlich. Eigentlich verf\"ugt jeder
+  Teilnehmer \"uber sein pers\"onliches Web of Trust, dass sich aus
+  seiner pers\"onlichen Vertrauensdatenbank und dem Netzwerk von
+  Signaturen ergibt.}. Vertrauen ist also insbesondere nicht
+transitiv.
+
+Ein Schlüssel wird von GnuPG genau dann als gültig betrachtet, wenn er
+die folgenden Bedingungen erfüllt:
 
 \begin{enumerate}
 \item Der Schlüssel wurde von ausreichend vielen \emph{gültigen} Schlüsseln
   unterschrieben, d.h. er wurde mindestens entweder von
   \begin{itemize}
   \item dem Besitzer des Schlüsselrings selbst (d.h. von einem
-    Schlüssel mit \emph{ultimate trust}) unterschrieben
+    Schlüssel mit \emph{ultimativem Vertrauen}) unterschrieben
   \item mindestens $N$ gültigen Schlüsseln, denen voll vertraut wird, unterschrieben
   \item mindestens $M$ gültigen Schlüsseln, denen geringfügig
     vertraut wird, unterschrieben
@@ -259,9 +316,8 @@ betrachtet, wenn er die folgenden Bedingungen erfüllt:
 
 Ein Schlüssel, der von weniger voll bzw. geringfügig
 vertrauenswürdigen Schlüsseln als notwendig unterschrieben wurde, wird
-als eingeschränkt gültig (\emph{marginally valid})
-angesehen. Allerdings werden Schlüssel dieser Kategorie von GnuPG
-genauso wie nicht gültige Schlüssel behandelt.
+als eingeschränkt gültig angesehen. Allerdings werden Schlüssel dieser
+Kategorie von GnuPG genauso wie nicht gültige Schlüssel behandelt.
 
 GnuPG verwendet in der Standardeinstellung die Werte $N=1$, $M=3$ und
 $L=5$. Damit wird \emph{ein} Zertifikat, dass von einem Schl\"ussel
@@ -309,6 +365,12 @@ Ein öffentlicher Schlüssel, der anhand dieser Regeln nicht als
 authentisch verifiziert werden kann, kann trotzdem zur Verschlüsselung
 und zur Verifizierung von Signaturen verwendet werden. Allerdings
 warnt GnuPG in diesem Fall vor der Verwendung.
+
+Es muss bemerkt werden, dass keine direkte Verbindung zwischen dem
+Vertrauenswert und dem G\"ultigkeitswert eines Schl\"ussels
+besteht. Ein Schl\"ussel, dem voll vertraut wird, kann trotzdem
+aufgrund von fehlenden Signaturketten ung\"ultig sein. Signaturen
+dieses Schl\"ussels k\"onnen dann nicht benutzt werden.
 
 \subsection{Das Keyserver-Netzwerk}
 \label{sec:das-keys-netzw}
