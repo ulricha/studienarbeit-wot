@@ -161,6 +161,12 @@ dem Schl\"ussel vermerkt ist. Ausserdem muss sichergestellt werden,
 dass diese Person auch im Besitz des entsprechenden privaten
 Schl\"ussels ist.
 
+Selbstverst\"andlich kann die Authentizit\"at des \"offentlichen
+Schl\"ussels einer TTP wiederum durch ein Zertifikat sichergestellt
+werden. Auf diese Weise ergeben sich Pfade von Zertifikaten, die im
+Allgemeinen einen \emph{gerichteten Graphen} formen. Dieser wird als
+\emph{Zertifikatsgraph} bezeichnet.
+
 \subsubsection{Zentrale PKI (besser: hierarchisch)}
 \label{ch:Grundlagen:sec:PublicKeyCrypto:subsec:KeyAuth:subsubsec:PKI}
 
@@ -173,7 +179,7 @@ kommerziell oder staatlich.
 Certificate Authority von Benutzern nicht direkt
 \"uberpr\"uft. Stattdessen werden authentische Schl\"ussel der
 Certificate Authorities auf einem (mehr oder weniger) sicheren Weg an
-die Benutzer verteilt (beispielsweise als Teil des Betriebssytems oder
+die Benutzer verteilt (beispielsweise als Teil des Betriebssystems oder
 des Webbrowsers).
 
 \subsubsection{Web of Trust}
@@ -181,6 +187,8 @@ des Webbrowsers).
 
 WoT verallgemeinert den Baum von PKI auf gerichtete Graphen (siehe
 Handbook 13.4.2). Jeder Teilnehmer stellt eine potentielle TTP dar.
+Rede vom Web of Trust ist irref\"uhrend, da das Netz keine
+Vertrauenswerte enth\"alt, sondern nur Zertifikate.
 Nach kohlas: authentication/certificate graph. ein certificate graph,
 der trust-werte enth\"halt, ist ein web of trust.
 
@@ -190,6 +198,27 @@ eines OpenPGP-Schl\"usselpaares verwendet wird.
 
 \section{PGP/GnuPG}
 \label{ch:Grundlagen:sec:PGP}
+
+Die urspr\"ungliche Version von PGP wurde von Phil Zimmerman
+entwickelt. Der Quellcode von PGP wurde von Anfang an der
+Allgemeinheit zur Verf\"ugung gestellt. PGP wird seit 1996 als
+kommerzielles Produkt vertrieben, blieb aber trotzdem kostenlos
+verf\"ugbar\cite{wiki:pgp}. Seit 1998 ist das verwendete Nachrichten-
+und Schl\"usselformat durch den RFC 2440\cite{Callas1998} und seit
+2007 durch den \"uberarbeiteten RFC 4880\cite{Callas2007}
+standardisiert. Seit 1999 existiert mit GnuPG\cite{Gnupg2010} eine
+freie Implementierung von OpenPGP unter der GNU General Public
+Licence, deren Entwicklung zeitweise vom deutschen Bundesministerium
+f\"ur Wirtschaft und Techologie gef\"ordert wurde. GnuPG scheint
+inzwischen die verbreitetste OpenPGP-Implementierung zu sein.
+
+PGP benutzt asymmetrische Kryptographie f\"ur Verschl\"usselung und
+digitale Signaturen und bietet damit ein Werkzeug, um Vertraulichkeit,
+Authentizit\"at etc von Nachrichten zu erreichen. Die h\"aufigste
+Anwendung von PGP ist die Verschl\"usselung und Signierung von
+E-Mail-Nachrichten. Es kann aber auch benutzt werden, um beliebige
+Dokumente und Dateien zu verschl\"usseln und zu signieren.
+
 Wie die meisten kryptographischen Systeme, die asymmetrische Verfahren
 benutzen, ist PGP/GnuPG ein hybrides System. Die asymmetrischen
 Schl\"ussel werden nur benutzt, um einen symmetrischen
@@ -198,22 +227,13 @@ eigentliche Nachrichteninhalt verschl\"usselt wird. Der Grund daf\"ur
 liegt unter anderem darin, dass symmetrische Verfahren in der Regel
 deutlich schneller sind als asymmetrische Verfahren.
 
-\cite{wiki:pgp}
+PGP und GnuPG implementieren eine Vielzahl von symmetrischen und
+asymmetrischen sowie Hashalgorithmen. Nachdem GnuPG seit 1999 in der
+Standardeinstellung DSA-Schl\"ussel erzeugte, werden seit 2009
+standardm\"assig RSA-Schl\"ussel erzeugt (siehe Abschnitt
+\ref{sec:result-key-properties}).
 
-\subsection{Geschichte von PGP und GnuPG}
-\label{ch:Grundlagen:sec:PGP:subsec:Geschichte}
-
-\subsection{Eigenschaften/Fähigkeiten der Implementierungen}
-\label{ch:Grundlagen:sec:PGP:subsec:Eigenschaften}
-
-pgp wird meistens dazu benutzt, emails zu verschl\"usseln und zu
-signieren. es kann aber auch daf\"ur benutzt werden, beliebige Dateien
-und Dokumente zu verschl\"usseln und zu signieren.
-
-von zimmerman erfunden; inzwischen kommerziell; aber freie
-implementierung gnupg verf\"ugbar;
-Standardisierung durch OpenPGP \cite{Callas1998} \cite{Callas2007}
-
+FIXME 
 pgp benutzt Web of Trust als TTP. Abschnitt xx beschreibt detailliert
 den ALgorithmus, nach dem in der Standardeinstellung die
 Authentizit\"at von Schl\"usseln anhand eines Netzwerks von
@@ -222,7 +242,21 @@ hierarchischem PKI darstellt, kann aber auch eine hierarchische PKI in
 PGP implementiert werden. Zumindest GnuPG erlaubt die Verwendung
 verschiedener solcher Algorithmen.
 
-\subsubsection{Struktur von OpenPGP-Paketen}
+OpenPGP-Schl\"ussel k\"onnen mit einem Ablaufdatum versehen
+werden. Auch einzelne Teile eines Schl\"ussels, etwa einzelne UserIDs
+oder Signaturen, k\"onnen ein Ablaufdatum erhalten. Ein Schl\"ussel
+kann aus verschiedenen Gr\"unden nicht mehr benutzbar sein: Er kann
+kompromittiert worden sein, dass Schl\"usselmaterial oder eine
+Passphrase k\"onnen verloren gegangen sein und er kann schlichtweg
+durch einen anderen Schl\"ussel ersetzt worden sein. In solchen
+F\"allen kann ein Schl\"ussel \emph{widerrufen} werden, indem eine
+spezielle Widerrufssignatur durch den Besitzer auf dem Schl\"ussel
+angebracht wird. Ein abgelaufener oder widerrufener Schl\"ussel kann
+zwar noch benutzt werden, um Nachrichten zu entschl\"usseln und
+Signaturen zu verifizieren. Er ist aber nicht mehr f\"ur
+Verschl\"usselungs- und Signierungsoperationen verwendbar.
+
+\subsection{Struktur von OpenPGP-Paketen}
 \label{sec:structure-openpgp}
 An dieser Stelle wird in groben Z\"ugen beschrieben, wie ein
 OpenPGP-Schl\"ussel aufgebaut ist. F\"ur Details wird auf den
