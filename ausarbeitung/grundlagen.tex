@@ -553,19 +553,50 @@ dieses Schl\"ussels k\"onnen dann nicht benutzt werden.
 \subsection{Das Keyserver-Netzwerk}
 \label{sec:das-keys-netzw}
 
-Hier: wie wie werden Signaturen bekannt gemacht? Wie kommen Benutzer
-an Signaturen?
+Die Verbreitung von \"offentlichen Schl\"usseln ist auf beliebigen
+Wegen m\"oglich, etwa per E-Mail oder auf Webseiten. Ein zentraler
+Ablageort f\"ur \"offentliche Schl\"ussel erleichtert das Auffinden
+derselben aber erheblich. Im Kontext von PGP wird diese Aufgabe von
+\emph{Keyservern} \"ubernommen. Dabei handelt es sich im wesentlichen
+um Datenbanken von OpenPGP-Schl\"usseln, die nach verschiedenen
+Kriterien (etwa nach KeyID oder UserID) durchsucht werden
+k\"onnen. Benutzer k\"onnen ihre \"offentlichen auf diese Keyserver
+laden, um sie der \"Offentlichkeit zur Verf\"ugung zu stellen.
+
+Schl\"ussel k\"onnen von beliebigen Personen auf Keyserver geladen
+werden, nicht nur durch die Benutzer. Auf diesem Weg werden auch
+Signaturen (also Zertifikate), die durch einen Zertifizierer auf einem
+Schl\"ussel angebracht wurden, verbreitet. Der Zertifizierer l\"adt
+den ver\"anderten Schl\"ussel auf einen Keyserver. Dieser f\"ugt die
+neuen Signaturpakete dem bisherigen Schl\"ussel hinzu. Dabei werden
+stets nur Pakete zu Schl\"usseln hinzugef\"ugt, nicht \"uberschrieben
+oder gel\"oscht. Auf diese Weise machen Keyserver den
+Zertifikatsgraphen zug\"anglich. Selbstverst\"andlich k\"onnen
+Zertifikate auch auf anderen (eventuell privaten) Wegen ausgetauscht
+werden.
+
+Um Lastverteilung und Fehlertoleranz zu erreichen, existieren mehrere
+Keyserver. Diese sind als Netzwerk organisiert und synchronisieren
+ihren Datenbestand st\"andig untereinander. Benutzer finden also auf
+allen Keyservern des Netzwerks mit sehr geringer Verz\"ogerung den
+gleichen Datenbestand\footnote{In Tests des Autoren dauerte es
+  normalerweise weniger als 10 Sekunden, bis neue Schl\"ussel auf alle
+  Keyserver des Verbundes propagiert waren.}. Das \"offentliche
+Keyserver-Netzwerk besteht derzeit (Mai 2010) aus 48
+Keyservern\cite{SKS}. Die \"ublicherweise
+verwendete Keyserver-Software wird in Abschnitt
+\ref{ch:Grundlagen:sec:Design:subsec:der-sks-keyserver} beschrieben.
 
 Eine wichtige Eigenschaft des Keyserver-Netzwerks ist es, dass sich
 Schl\"ussel, die einmal auf einen der dazugeh\"origen Keyserver
 abgelegt wurden, nicht mehr aus dem Netzwerk entfernen lassen. Zwar
-kann ein Schl\"ussel aus der Datenbank von einzelnen Keyservern
-gel\"oscht werden. Allerdings wird er in diesem Fall durch die
-Synchronisierung mit anderen Keyservern des Netzwerks wieder
-auftauchen. Das Keyserver-Netzwerk insgesamt sieht keine Prozedur
-f\"ur die Entfernung von Schl\"usseln vor. Das bedeutet, dass das
-\"offentliche Keyserver-Netzwerk alle\footnote{Es kann nicht
-  ausgeschlossen werden, dass einzelne Schl\"ussel durch
+kann ein Schl\"ussel oder ein einzelnes OpenPGP-Paket aus der
+Datenbank von einzelnen Keyservern gel\"oscht werden. Allerdings wird
+er in diesem Fall durch die Synchronisierung mit anderen Keyservern
+des Netzwerks wieder auftauchen. Das Keyserver-Netzwerk insgesamt
+sieht keine Prozedur f\"ur die Entfernung von Schl\"usseln vor. Das
+bedeutet, dass das \"offentliche Keyserver-Netzwerk alle\footnote{Es
+  kann nicht ausgeschlossen werden, dass einzelne Schl\"ussel durch
   Softwarefehler verloren gingen. Die zahlreichen Kopien des
   Datenbestandes auf den einzelnen Keyservern und die st\"andige
   Synchronisation machen dies jedoch unwahrscheinlich.} jemals dort
