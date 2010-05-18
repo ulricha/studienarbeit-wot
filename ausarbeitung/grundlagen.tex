@@ -62,7 +62,13 @@ Kommunikationspartnern noch kein sicherer Kanal\footnote{ein sicherer
   Kanal bezeichnet einen Kanal, auf dem die oben definierten
   Eigenschaften Vertraulichkeit, Authentizit\"at und Integrit\"at
   gew\"ahrleistet sind} existiert. Dieses Problem wird als
-\emph{Schl\"usselverteilungsproblem} bezeichnet\cite{Menezes1996}. 
+\emph{Schl\"usselverteilungsproblem} bezeichnet\cite{Menezes1996}.
+Ausserdem stellt sich das Problem, dass f\"ur jede Menge von
+Kommunikationspartnern ein unterschiedlicher Schl\"ussel ben\"otigt
+wird. Wenn davon ausgegangen wird, dass nur jeweils zwei
+Kommunikationspartner miteinander kommunizieren, w\"achst die Anzahl
+der ben\"tigten Schl\"ussel also quadratisch mit der Anzahl der
+Teilnehmer.
 
 Eine Methode, um das Problem der Schl\"usselverteilung \"uber einen
 unsicheren Kanal zu l\"osen, bietet \emph{asymmetrische Kryptographie}
@@ -106,17 +112,24 @@ private Schl\"ussel hingegen darf nur dem Besitzer bekannt sein, da
 nur mit ihm die Operationen Entschl\"usselung und Erstellung von
 digitalen Signaturen m\"oglich sind.
 
+Asymmetrische Kryptographie l\"ost das oben angesprochene
+Skalierungsproblem, da nicht mehr ein Schl\"ussel f\"ur jedes Paar von
+Kommunikationspartnern ben\"otigt wird, sondern nur noch ein
+Schl\"sselpaar f\"ur jeden Teilnehmer.
+
 \subsection{Authentisierung von Schlüsseln}
 \label{ch:Grundlagen:sec:PublicKeyCrypto:subsec:KeyAuth}
 Die Verteilung von \"offentlichen Schl\"usseln \"uber unsichere
-Kan\"ale l\"ost zwar zun\"achst das
-Schl\"usselverteilungsproblem. \"Offentliche Schl\"ussel k\"onnen
-\"uber beliebige Wege verteilt werden, etwa per E-Mail, auf Webseiten
-oder auf Kesyservern (Abschnitt \ref{sec:das-keys-netzw}). Allerdings
-tritt dann ein weiteres Problem auf: Wie kann sichergestellt werden,
-dass ein \"offentlicher Schl\"ussel authentisch ist, er also
-tats\"achlich von dem vorgeblichen Besitzer stammt und dieser das
-Schl\"usselmaterial kontrolliert?
+Kan\"ale scheint zwar zun\"achst zwar zun\"achst das
+Schl\"usselverteilungsproblem zu l\"osen. \"Offentliche Schl\"ussel
+k\"onnen \"uber beliebige Wege verteilt werden, etwa per E-Mail, auf
+Webseiten oder auf Kesyservern (Abschnitt
+\ref{sec:das-keys-netzw}). Allerdings tritt dann ein weiteres Problem
+auf: Wie kann sichergestellt werden, dass ein \"offentlicher
+Schl\"ussel authentisch ist, er also tats\"achlich von dem
+vorgeblichen Besitzer stammt und dieser das Schl\"usselmaterial
+kontrolliert? Die L\"osung des Verteilungsproblems wird nur auf eine
+andere Ebene verschoben.
 
 Sei angenommen, dass Benutzer $B$ den \"offentlichen Schl\"ussel von
 Benutzer $A$ \"uber einen unsicheren Kanal bezieht und dass keine
@@ -173,12 +186,21 @@ wird.
 \subsubsection{Zentrale PKI (besser: hierarchisch)}
 \label{ch:Grundlagen:sec:PublicKeyCrypto:subsec:KeyAuth:subsubsec:PKI}
 
+lassen sich dahingehend unterscheiden, welche Identit\"aten f\"ur das
+Ausstellen von Zertifikaten zust\"andig sind. 
+
+Ein bla bla bla ist eine Public-Key-Infrastruktur (PKI) nach dem
+X.509-Standard. In einer solchen PKI sind Certificate Authorities
+hierarchisch in einem Baum angeordnet. Jede CA zertifiziert diejenigen
+CAs, die in diesem Baum unterhalb von ihr liegen. 
 zentral im Sinne von: Es muss einer einzigen zentralen
 Authorit\"at/Instanz vertraut werden.
 
 kommerziell oder staatlich.
 
 Zertifikatsgraph wird auf einen Baum beschr\"ankt.
+
+
 
 \"Ublicherweise wird die Authentizit\"at des Schl\"ussels einer
 Certificate Authority von Benutzern nicht direkt
@@ -234,7 +256,7 @@ standardisiert. Seit 1999 existiert mit GnuPG\cite{Gnupg2010} eine
 freie Implementierung von OpenPGP unter der GNU General Public
 Licence, deren Entwicklung zeitweise vom deutschen Bundesministerium
 f\"ur Wirtschaft und Techologie gef\"ordert wurde. GnuPG scheint
-inzwischen die verbreitetste OpenPGP-Implementierung zu sein.
+inzwischen die am meisten verbreitete OpenPGP-Implementierung zu sein.
 
 PGP benutzt asymmetrische Kryptographie f\"ur Verschl\"usselung und
 digitale Signaturen und bietet damit ein Werkzeug, um Vertraulichkeit,
@@ -274,24 +296,69 @@ Verschl\"usselungs- und Signierungsoperationen verwendbar.
 \subsection{Web of Trust}
 \label{ch:Grundlagen:sec:PublicKeyCrypto:subsec:KeyAuth:subsubsec:WOT}
 
-FIXME 
-pgp benutzt Web of Trust als TTP. Abschnitt xx beschreibt detailliert
-den ALgorithmus, nach dem in der Standardeinstellung die
-Authentizit\"at von Schl\"usseln anhand eines Netzwerks von
-Zertifikaten bewertet wird. Da Web of Trust eine Verallgemeinerung von
-hierarchischem PKI darstellt, kann aber auch eine hierarchische PKI in
-PGP implementiert werden. Zumindest GnuPG erlaubt die Verwendung
-verschiedener solcher Algorithmen.
+F\"ur die Authentifizierung von \"offentlichen Schl\"usseln benutzt
+PGP eine dezentrale Alternative zu dem in Abschnitt
+\ref{ch:Grundlagen:sec:PublicKeyCrypto:subsec:KeyAuth:subsubsec:PKI}
+beschriebenen hierarchischem und zentralem Modell. Die F\"ahigkeit,
+Zertifikate auszustellen, ist dabei nicht auf Certificate Authorities
+beschr\"ankt. Stattdessen ist jeder Benutzer in der Lage, Zertifikate
+f\"ur \"offentliche Schl\"ussel auszustellen. Ein \"offentlicher
+Schl\"ussel kann von beliebig vielen Teilnehmern zertifiziert
+werden. Damit ergibt sich f\"ur die Zertifikate nicht nur ein Baum,
+sondern tats\"achlich ein allgemeiner gerichteter
+Zertifikatsgraph. Dieser Graph wird als \emph{Web of Trust}\footnote{Dieser Begriff ist irref\"uhrend, da der
+  Zertifikatsgraph zun\"achst keine Informationen \"uber Vertrauen
+  enth\"alt, sondern tats\"achlich nur aus Zertifikaten besteht. Er
+  wird in dieser Arbeit trotzdem benutzt, da er in der Literatur
+  etabliert ist.} bezeichnet.
 
-WoT verallgemeinert den Baum von PKI auf gerichtete Graphen (siehe
-Handbook 13.4.2). Jeder Teilnehmer stellt eine potentielle TTP dar.
-Rede vom Web of Trust ist irref\"uhrend, da das Netz keine
-Vertrauenswerte enth\"alt, sondern nur Zertifikate.
-Nach kohlas: authentication/certificate graph. ein certificate graph,
-der trust-werte enth\"halt, ist ein web of trust.
+Da jeder Teilnehmer Zertifikate ausstellen kann, stellt jeder
+Teilnehmer potentiell eine Trusted Third Party dar. Allerdings kann
+nat\"urlich nicht jedem Teilnehmer dahingehend vertraut werden,
+korrekte Zertifikate auszustellen. W\"ahrend im Fall von X.509 das
+Vertrauen in die Certificate Authorities \"ublicherweise von
+vornherein festgelegt ist, muss im Fall des Web of Trust jeder
+Teilnehmer selbst entscheiden, welchen anderen Teilnehmern er
+vertraut. Er muss aufgrund von Vorwissen und Annahmen absch\"atzen, ob
+ein anderer Teilnehmer zuverl\"assig korrekte Zertifikate
+ausstellt. 
+
+Im Vergleich zu zentralen Modellen wird dem einzelnen Teilnehmern hier
+eine erheblich gr\"ossere Verantwortung und ein deutlich gr\"osserer
+Aufwand zugewiesen, da er sowohl f\"ur die \"Uberpr\"ufung der
+Authentizit\"at von Schl\"usseln, f\"ur die er Zertifikate ausstellt,
+als auch f\"ur die Einsch\"atzung der Zuverl\"assigkeit anderer
+Teilnehmer zust\"andig ist. Allerdings ergibt sich damit gleichzeitig
+ein erheblicher Gewinn an Flexibilit\"at. Ein Teilnehmer ist eben
+nicht darauf angewiesen, sich auf zentrale Authorit\"aten zu
+verlassen. In zentralen Modellen hat er \"ublicherweise wenig Einfluss
+auf die Auswahl der als vertrauensw\"urdig angesehenen Certificate
+Authorities und er hat keine andere Wahl, als der Certificate
+Authority zu vertrauen, die ein bestimmtes Zertifikat ausgestellt
+hat. Vertraut er einer CA pers\"onlich nicht, hat er keine direkte
+M\"oglichkeit, die von dieser zertifizierten Schl\"ussel zu
+authentifizieren. Im Web of Trust spielt es keine Rolle, ob ein
+\"offentlicher Schl\"ussel von unvertrauensw\"urdigen Teilnehmern
+zertifiziert wurde, solange sich \emph{ein} Zertifikatspfad mit
+vertrauensw\"urdigen Teilnehmern ergibt.
+
+Der gerichtete Zertifikatsgraph stellt eine Verallgemeinerung des
+Zertifikatsbaums von hierarchischen und zentralen Modellen
+dar. Tats\"achlich kann das Modell des Web of Trust als eine
+Verallgemeinerung solcher Modelle angesehen werden. Es spricht
+zun\"achst nichts dagegen, mit den Mitteln des Web of Trust ein
+hierarchisches Modell auszudr\"ucken und zu implementieren (siehe auch
+Abschnitt \ref{sec:cert-auth-im}).. Die aktuelle Version des
+OpenPGP-Standards sieht einen Mechanismus vor, um einen Baum von
+Certificate Authorities kryptographisch sicher auszudr\"ucken
+(sog. \emph{trust signatures}).
 
 Bei PGP: Signatur entspricht Zertifikat.
 
+Der konkrete Algorithmus, mit dem PGP/GnuPG anhand eines
+Zertifikatsgraphen und einer Vertrauensdatenbank die G\"ultigkeit
+eines Schl\"ussels entscheiden, wird in Abschnitt
+\ref{sec:das-gnupg-vertrauensmodell} detailliert beschrieben.
 
 \subsection{Struktur von OpenPGP-Paketen}
 \label{sec:structure-openpgp}
@@ -367,8 +434,9 @@ anderen Benutzern geteilt werden\footnote{Die Rede von ``dem'' Web of
   Trust ist insofern missverst\"andlich. Eigentlich verf\"ugt jeder
   Teilnehmer \"uber sein pers\"onliches Web of Trust, dass sich aus
   seiner pers\"onlichen Vertrauensdatenbank und dem Netzwerk von
-  Signaturen ergibt.}. Vertrauen ist also insbesondere nicht
-transitiv.
+  Signaturen ergibt. Der Begriff ``Web of Trust'' wird im Rest dieser
+  Arbeit aber nur im Sinne des Zertifikatsgraphen
+  verwendet.}. Vertrauen ist also insbesondere nicht transitiv.
 
 Ein Schlüssel wird von GnuPG genau dann als gültig betrachtet, wenn er
 die folgenden Bedingungen erfüllt:
@@ -451,14 +519,22 @@ dieses Schl\"ussels k\"onnen dann nicht benutzt werden.
 Hier: wie wie werden Signaturen bekannt gemacht? Wie kommen Benutzer
 an Signaturen?
 
+Der Widderuf eines Schl\"ussels oder einzelner Schl\"usselbestandteile
+durch seinen Besitzer kann nur effektiv erfolgen, wenn die Information
+\"uber den Widerruf an alle Personen verteilt wird, die den
+entsprechenden \"offentlichen Schl\"ussel potentiell
+benutzen. Keyserver bieten die M\"oglichkeit, die Information \"uber
+den Widerruf von Schl\"usseln zentral und \"offentlich verf\"ugbar zu
+machen, indem das Widerrufszertifikat auf den Keyservern verf\"ugbar
+gemacht wird. 
+
 Indem ein Benutzer Signaturen auf einem Keyserver zur Verf\"ugung
 stellt, macht er Informationen \"uber seine Beziehungen f\"ur die
 \"Offentlichkeit sichtbar. In Abschnitt \ref{sec:soziale-netzwerke}
 wird argumentiert, dass die Signaturbeziehungen einer Person ein
-Abbild sozialer Beziehungen von unterschiedlicher Art sind. Wie unter
-anderem in Abschnitt \ref{sec:result-zusamm-und-comm} gezeigt wird,
-erlaubt die rein topologische Information eines sozialen Netzwerks
-detaillierte Aussagen \"uber die Rolle einzelner Personen im
+Abbild sozialer Beziehungen von unterschiedlicher Art sind. Die rein
+topologische Information eines sozialen Netzwerks erlaubt detaillierte
+Aussagen \"uber die Rolle einzelner Personen im
 Netzwerk\cite{Carrington2005}. Benutzer m\"ussen sich daher bewusst
 sein, dass die Benutzung \"offentlicher Keyserver einen Verlust von
 Privatsp\"are mit sich bringt und m\"ussen dies gegen\"uber einem
