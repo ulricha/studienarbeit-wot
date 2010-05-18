@@ -191,6 +191,35 @@ Zu beachten ist, dass im Rest dieser Arbeit der Begriff
 ``Schl\"ussel'' ausschliesslich im Sinne des \"offentlichen Teils
 eines OpenPGP-Schl\"usselpaares verwendet wird.
 
+Vielleicht Soghoyan (sp?) zitieren: X.509 wie es derzeit im
+Browser-Kontext verwendet wird, hilft nicht gegen MiTM.
+
+\subsection{Kryptographische Hashfunktionen}
+\label{sec:krypt-hashf}
+
+Eine grundlegende kryptographische Primitive sind
+\emph{kryptographische Hashfunktionen}. Kryptographische
+Hashfunktionen sind unter anderem ein entscheidender Baustein f\"ur
+digitale Signaturschemata.
+
+Eine Hashfunktion $h$ ist eine Abbildung von Bin\"arstrings beliebiger
+L\"ange auf Bin\"arstrings einer festen L\"ange $n$. Die Ausgabe
+$h(x)$ eines Bin\"arstrings $x$ wird als \emph{Hashwert} (oder als
+\emph{Fingerabdruck}) von $x$ bezeichnet. \"Ubliche Kriterien f\"ur
+eine gute Hashfunktion sind eine ann\"ahernde Gleichverteilung der
+Hashwerte und eine m\"oglichst geringe Wahrscheinlichkeit von
+Kollisionen. Eine Kollision tritt dann auf, wenn $h(x) = h(y)$ f\"ur
+zwei Eingaben $x$ und $y$ gilt.
+
+F\"ur eine kryptographische Hashfunktion werden zus\"atzliche
+Eigenschaften gefordert. Es darf nicht mit akzeptablem
+Berechnungsaufwand m\"oglich sein, zwei Bin\"arstrings $x_1$ und $x_2$
+zu berechnen, so dass $h(x_1) = h(x_2)$ gilt. Diese Eigenschaft wird
+als \emph{Kollisionsresistenz} bezeichnet. Ausserdem muss die Funktion
+resistent gegen \emph{Urbild-Attacken}, sein, d.h. es darf mit
+akzeptablem Aufwand nicht m\"oglich sein, zu einem Hashwert $y$ einen
+Bin\"arstring $x$ zu berechnen, so dass $h(x) = y$ gilt.
+
 \section{PGP/GnuPG}
 \label{ch:Grundlagen:sec:PGP}
 
