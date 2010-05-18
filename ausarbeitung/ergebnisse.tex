@@ -681,8 +681,13 @@ etwa ab dem Jahr 2005 sind nicht bekannt.
 
 Abbildung \ref{fig:size-dev} zeigt die Rate neuer Schl\"ussel,
 abh\"angig von dem verwendeten Public-Key-Algorithmus. Die
-DSA-Schl\"ussel machen zu jedem Zeitpunkt den gr\"ossten Anteil
-aus. Ihre Entwicklung spiegelt im Wesentlichen die
+DSA-Schl\"ussel\footnote{Mit DSA-Schl\"ussel sind hier \"offentliche
+  OpenPGP-Schl\"ussel gemeint, deren Public-Key-Paket
+  DSA-Schl\"usselmaterial enth\"alt. Da DSA nicht zur
+  Verschl\"usselung benutzt werden kann, enthalten diese Schl\"ussel
+  noch einen Unterschl\"ussel mit ElGamal-Schl\"usselmaterial, der zum
+  Verschl\"usseln benutzt wird.} machen zu jedem Zeitpunkt den
+gr\"ossten Anteil aus. Ihre Entwicklung spiegelt im Wesentlichen die
 Gr\"ossenentwicklung insgesamt aus Abbildung \ref{fig:size-dev}
 wieder. Demgegen\"uber ist die Zuwachsrate von RSA-Schl\"usseln bis
 zum Jahr 2008 konstant niedrig. Der Grund daf\"ur ist vermutlich, dass
@@ -764,17 +769,17 @@ d\"urfte also etwas ``tr\"ager'' auf Ver\"anderungen reagieren.
 In Tabelle \ref{tab:algs} sind schlussendlich noch einige Statistiken
 \"uber Eigenschaften einzelner Schl\"ussel aufgef\"uhrt. 
 
-Die einzelnen Cert level (siehe Abschnitt
-\ref{ch:Grundlagen:sec:OpenPGP} werden durchaus verwendet (Tabelle
-\ref{tab:certs}). Zwar ist
-die Mehrheit der Signaturen mit dem Standardwert Generic versehen, der
-keine weitere Aussage macht. Allerdings verf\"ugt \"uber 25\% der
-Signaturen \"uber den h\"ochsten Wert Positive. Da die einzelnen Cert
-level keine im Standard festgelegte klare Semantik haben, ist die
-Aussagekraft dieser Werte nat\"urlich begrenzt. Sie k\"onnen aber
-zumindest dahingehend interpretiert werden, dass \emph{mindestens} die
-Personen, die von Generic abweichende Werte vergeben, den
-Signaturprozess durchaus ernstnehmen.
+Die einzelnen ``certification level'' (siehe Abschnitt
+\ref{sec:das-gnupg-vertrauensmodell}) werden durchaus verwendet
+(Tabelle \ref{tab:certs}). Zwar ist die Mehrheit der Signaturen mit
+dem Standardwert ``Generic'' versehen, der keine weitere Aussage
+macht. Allerdings verf\"ugt \"uber 25\% der Signaturen \"uber den
+h\"ochsten Wert ``Positive''. Da die Level keine im Standard
+festgelegte klare Semantik haben, ist die Aussagekraft dieser Werte
+nat\"urlich begrenzt. Sie k\"onnen aber zumindest dahingehend
+interpretiert werden, dass \emph{mindestens} die Personen, die von
+``Generic'' abweichende Werte vergeben, den Signaturprozess durchaus
+ernstnehmen.
 
 Wie zu erwarten basiert die grosse Mehrheit der Signaturen in der
 gr\"ossten starken Zusammenhangskomponente auf SHA1. Neben einzelnen

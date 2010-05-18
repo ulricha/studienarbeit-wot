@@ -352,14 +352,13 @@ ist, die Distanzmatrix
 \end{equation}
 zu berechnen, die die Distanz $d(u, v)$ in Zeile $u$ und Spalte $v$
 enth\"alt\cite{Brinkmeier2004}. Aus dieser Matrix aller Distanzen im
-Graphen lassen sich offensichtlich alle oben angef\"uhrten Kennzahlen
-berechnen. $D$ kann berechnet werden, indem das
-single-source-shortest-path-Problem (SSSP) f\"ur alle $n$ Knoten oder
-das all-pairs-shortest-path-Problem (APSP) gel\"ost werden. F\"ur den
-vorliegenden Fall eines ungewichteten Graphen l\"asst sich SSSP in
-$\mathcal{O}(n)$ durch Breitensuche l\"osen. F\"ur die Berechnung der
-Distanzmatrix ergibt sich dann eine Komplexit\"at von
-$\mathcal{O}(nm)$. 
+Graphen lassen sich alle oben angef\"uhrten Kennzahlen berechnen. $D$
+kann berechnet werden, indem das single-source-shortest-path-Problem
+(SSSP) f\"ur alle $n$ Knoten oder das all-pairs-shortest-path-Problem
+(APSP) gel\"ost werden. F\"ur den vorliegenden Fall eines
+ungewichteten Graphen l\"asst sich SSSP in $\mathcal{O}(n)$ durch
+Breitensuche l\"osen. F\"ur die Berechnung der Distanzmatrix ergibt
+sich dann eine Komplexit\"at von $\mathcal{O}(nm)$.
 
 Dieser Ansatz ist hier aufgrund der Gr\"osse des vorliegenden Graphen
 nicht geeignet. F\"ur diesen gilt $m > n$, so dass die Berechnung
@@ -375,13 +374,12 @@ vorzuhalten. Eccentricity, $h$-Nachbarschaften und die
 durchschnittliche Distanz eines Knotens sind bestimmbar, wenn SSSP
 \emph{f\"ur diesen Knoten} gel\"ost wurde. Durchmesser und Radius
 ergeben sich allein aus den Eccentricity-Werten f\"ur alle Knoten. Die
-Berechnung kann also trivial parallelisiert werden, indem die
-Knotenmenge $V$ in Teilmengen $V_1, \dots, V_k$ aufgeteilt wird, die
-jeweils einer Berechnungseinheit zugewiesen werden. Jede
-Berechnungseinheit $i$ l\"ost dann SSSP f\"ur alle Knoten aus
-$V_i$. Die Ergebnisse m\"ussen dann nur noch kombiniert werden, um
-Radius, Durchmesser und charakteristische Distanz des Graphen zu
-bestimmen. 
+Berechnung kann also parallelisiert werden, indem die Knotenmenge $V$
+in Teilmengen $V_1, \dots, V_k$ aufgeteilt wird, die jeweils einer
+Berechnungseinheit zugewiesen werden. Jede Berechnungseinheit $i$
+l\"ost dann SSSP f\"ur alle Knoten aus $V_i$. Die Ergebnisse m\"ussen
+dann nur noch kombiniert werden, um Radius, Durchmesser und
+charakteristische Distanz des Graphen zu bestimmen.
 
 Dieser Ansatz wurde auf einem Cluster realisiert, dessen Knoten
 mittels Message-Passing-Interface (MPI) kommunizieren. Eine zentrale

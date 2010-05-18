@@ -340,7 +340,13 @@ M\"oglichkeit, die von dieser zertifizierten Schl\"ussel zu
 authentifizieren. Im Web of Trust spielt es keine Rolle, ob ein
 \"offentlicher Schl\"ussel von unvertrauensw\"urdigen Teilnehmern
 zertifiziert wurde, solange sich \emph{ein} Zertifikatspfad mit
-vertrauensw\"urdigen Teilnehmern ergibt.
+vertrauensw\"urdigen Teilnehmern ergibt. Wird ein Schl\"ussel von
+mehreren als vertrauensw\"urdig eingesch\"atzten Teilnehmern
+zertifiziert, kann diese Zertifizierung als sicherer angesehen
+werden. Selbst wenn ein Angreifer einen Teilnehmer \"uberlisten
+sollte, ein falsches Zertifikat auszustellen, ist die
+Wahrscheinlichkeit, dass er dies f\"ur mehrere Teilnehmer schafft,
+deutlich geringer.
 
 Der gerichtete Zertifikatsgraph stellt eine Verallgemeinerung des
 Zertifikatsbaums von hierarchischen und zentralen Modellen
@@ -353,7 +359,8 @@ OpenPGP-Standards sieht einen Mechanismus vor, um einen Baum von
 Certificate Authorities kryptographisch sicher auszudr\"ucken
 (sog. \emph{trust signatures}).
 
-Bei PGP: Signatur entspricht Zertifikat.
+Statt vom Ausstellen eines Zertifikats wird im Kontext von PGP
+\"ublicherweise vom \emph{Signieren eines Schl\"ussels} gesprochen.
 
 Der konkrete Algorithmus, mit dem PGP/GnuPG anhand eines
 Zertifikatsgraphen und einer Vertrauensdatenbank die G\"ultigkeit
@@ -480,6 +487,36 @@ können, und damit die Anzahl verifizierbarer Schlüssel. Es muss also
 eine Abwägung zwischen dem Sicherheitsbedürfnis des Nutzers und der
 praktischen Benutzbarkeit getroffen werden.
 
+OpenPGP-Signaturpakete werden in Typen (auch ``certification
+level'') unterschieden, die angeben, wie gr\"undlich der Ersteller der
+Signatur die Identit\"at des Besitzers des signierten Schl\"ussels
+verifiziert hat. Diesen Typen wird durch den OpenPGP-Standard
+absichtlich keine klar definierte Semantik zugeschrieben, es werden
+lediglich Vorschl\"age f\"ur deren Bedeutung gemacht. Die m\"oglichen
+Typen sind
+
+\begin{description}
+\item[Generic] Der Ersteller der Signatur macht keine Aussage
+  dar\"uber, wie er \"uberpr\"uft hat, dass der Besitzer des
+  Schl\"ussels die Person ist, die durch die UserID benannt wird.
+\item[Persona] Der Ersteller hat die Identit\"at des
+  Schl\"usselinhabers nicht verifiziert.
+\item[Casual] Der Ersteller hat die Identit\"at des
+  Schl\"usselinhabers informell verifiziert.
+\item[Positive] Der Ersteller hat die Identit\"at des
+  Schl\"usselinhabers gr\"undlich\footnote{Es wird generell
+    angenommen, dass mit diesem Typ eine Verifizierungsmethode wie in
+    Abschnitt \ref{sec:ubliche-zert} beschrieben verbunden ist}
+  verifiziert.
+\end{description}
+
+Mit den Standardeinstellungen werden Signaturen vom Typ ``Generic''
+erzeugt. Diese Typen werden bei der Berechnung der G\"ultigkeit von
+Schl\"usseln nur insofern verwendet, als Signaturen vom Typ
+``Persona'' nicht beachtet werden. Die restlichen Typen werden gleich
+behandelt. Sie bieten aber die M\"oglichkeit, die Aussagekraft von
+Signaturen feiner zu untergliedern.
+
 \begin{figure}[t]
   \centering
   \includegraphics[scale=0.7]{images/trust-beispiel.pdf}
@@ -519,6 +556,29 @@ dieses Schl\"ussels k\"onnen dann nicht benutzt werden.
 Hier: wie wie werden Signaturen bekannt gemacht? Wie kommen Benutzer
 an Signaturen?
 
+Eine wichtige Eigenschaft des Keyserver-Netzwerks ist es, dass sich
+Schl\"ussel, die einmal auf einen der dazugeh\"origen Keyserver
+abgelegt wurden, nicht mehr aus dem Netzwerk entfernen lassen. Zwar
+kann ein Schl\"ussel aus der Datenbank von einzelnen Keyservern
+gel\"oscht werden. Allerdings wird er in diesem Fall durch die
+Synchronisierung mit anderen Keyservern des Netzwerks wieder
+auftauchen. Das Keyserver-Netzwerk insgesamt sieht keine Prozedur
+f\"ur die Entfernung von Schl\"usseln vor. Das bedeutet, dass das
+\"offentliche Keyserver-Netzwerk alle\footnote{Es kann nicht
+  ausgeschlossen werden, dass einzelne Schl\"ussel durch
+  Softwarefehler verloren gingen. Die zahlreichen Kopien des
+  Datenbestandes auf den einzelnen Keyservern und die st\"andige
+  Synchronisation machen dies jedoch unwahrscheinlich.} jemals dort
+ver\"offentlichten Schl\"ussel enth\"alt. Dieses Verhalten stellt
+f\"ur Benutzer kein wirkliches Problem dar. Der korrekte Weg, um einen
+Schl\"ussel, der aus beliebigen Gr\"unden nicht mehr benutzbar ist,
+unbrauchbar zu machen, ist der Widerruf des Schl\"ussels. Umgekehrt
+w\"urde eine M\"oglichkeit zur L\"oschung von Schl\"usseln einem
+Angreifer die M\"oglichkeit er\"offnen, einzelne Schl\"usselteile --
+beispielsweise Signaturpakete mit Widerrufssignaturen -- zu entfernen
+und dadurch eigentlich widerrufene kompromittierte Schl\"ussel wieder
+g\"ultig erscheinen zu lassen.
+
 Der Widderuf eines Schl\"ussels oder einzelner Schl\"usselbestandteile
 durch seinen Besitzer kann nur effektiv erfolgen, wenn die Information
 \"uber den Widerruf an alle Personen verteilt wird, die den
@@ -526,7 +586,11 @@ entsprechenden \"offentlichen Schl\"ussel potentiell
 benutzen. Keyserver bieten die M\"oglichkeit, die Information \"uber
 den Widerruf von Schl\"usseln zentral und \"offentlich verf\"ugbar zu
 machen, indem das Widerrufszertifikat auf den Keyservern verf\"ugbar
-gemacht wird. 
+gemacht wird. Allerdings kann dieses Vorgehen nat\"urlich nur
+funktionieren, wenn Benutzer ihren Schl\"usselring regelm\"assig mit
+den Informationen eines Keyservers aktualisieren. Im Fall der
+Kompromittierung eines Schl\"ussels ist die Information aber
+zeitkritisch. Anwender sollten dann direkt informiert werden.
 
 Indem ein Benutzer Signaturen auf einem Keyserver zur Verf\"ugung
 stellt, macht er Informationen \"uber seine Beziehungen f\"ur die
