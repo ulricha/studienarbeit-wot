@@ -24,6 +24,12 @@ grundlegenden Begriff des Graphen und einige verwandte Begriffe und
 f\"uhrt dann die xxx aus dem Bereich der Netzwerkanalyse ein, mit
 denen die Struktur des Web of Trust untersucht wird.
 
+Zu beachten ist, dass im Kapitel \ref{ch:Grundlagen} der Begriff
+``Schl\"ussel'' einen kryptographischen Schl\"ussel im Allgemeinen
+bezeichet, w\"ahrend ab Kapitel \ref{ch:Methoden} damit
+ausschliesslich der \"offentliche Teil eines OpenPGP-Schl\"usselpaares
+gemeint ist..
+
 %% ==============================
 \section{Kryptographie mit öffentlichen Schlüsseln}
 %% ==============================
@@ -201,38 +207,41 @@ existieren. Auf diese Weise ergibt sich im Allgemeinen ein
 \emph{gerichteter Graph} der als \emph{Zertifikatsgraph} bezeichnet
 wird.
 
-\subsubsection{Zentrale PKI (besser: hierarchisch)}
+\subsubsection{Hierarchische Public-Key-Infrastruktur mit X.509}
 \label{ch:Grundlagen:sec:PublicKeyCrypto:subsec:KeyAuth:subsubsec:PKI}
 
-lassen sich dahingehend unterscheiden, welche Identit\"aten f\"ur das
-Ausstellen von Zertifikaten zust\"andig sind. 
+Infrastrukturen f\"ur die sichere Verteilung von \"offentlichen
+Schl\"usseln (Public-Key-Infrastrukturen -- PKI) lassen sich
+dahingehend unterscheiden, welche Instanzen f\"ur das Ausstellen von
+Zertifikaten zust\"andig sind. Eine M\"oglichkeit besteht darin, diese
+Funktion exklusiv zentralen, Instanzen, sogenannten \emph{Certificate
+  Autorities}, zuzuwweisen. Diese stellen bei der Ausstellung eines
+Zertifikates sicher, dass der tats\"achliche Besitzer des Schl\"ussels
+mit dem angegebenen Besitzer identisch ist. In einem solchen Modell
+sind die Teilnehmer hierarchisch angeordnet. 
 
-Ein bla bla bla ist eine Public-Key-Infrastruktur (PKI) nach dem
-X.509-Standard. In einer solchen PKI sind Certificate Authorities
-hierarchisch in einem Baum angeordnet. Jede CA zertifiziert diejenigen
-CAs, die in diesem Baum unterhalb von ihr liegen. 
-zentral im Sinne von: Es muss einer einzigen zentralen
-Authorit\"at/Instanz vertraut werden.
+Ein Beispiel f\"ur ein solches Modell ist eine
+Public-Key-Infrastruktur nach dem X.509-Standard. In einer solchen PKI
+sind Certificate Authorities hierarchisch in einem Baum
+angeordnet. Jede CA zertifiziert diejenigen CAs, die in diesem Baum
+unterhalb von ihr liegen und jede CA zertifiziert die ihr
+\"ubergeordnete CA. Normale Benutzer stellen selbst keine Zertifikate
+aus, ihre \"offentlichen Schl\"ussel bilden in diesem Baum also die
+Bl\"atter.
 
-kommerziell oder staatlich.
+Certificate Authorities muss nat\"urlich vertraut werden. Allerdings
+haben einzelne Benutzer im Kontext von X.509-PKIs \"ublicherweise
+wenig Einfluss darauf, welche CAs als vertrauensw\"urdig betrachtet
+werden. In einer Organisation kann eine Richtlinie bestimmen, welche
+Certificate Authorities Zertifikate austellen d\"urfen. Diese CAs sind
+dann implizit vertrauensw\"urdig. Die meisten Anwender m\"ussen jenen
+Certificate Authorities vertrauen, deren Wurzelzertifikate als Teil
+des Webbrowsers oder des Betriebssystems ausgeliefert werden.
 
-Zertifikatsgraph wird auf einen Baum beschr\"ankt.
-
-
-
-\"Ublicherweise wird die Authentizit\"at des Schl\"ussels einer
-Certificate Authority von Benutzern nicht direkt
-\"uberpr\"uft. Stattdessen werden authentische Schl\"ussel der
-Certificate Authorities auf einem (mehr oder weniger) sicheren Weg an
-die Benutzer verteilt (beispielsweise als Teil des Betriebssystems oder
-des Webbrowsers).
-
-Zu beachten ist, dass im Rest dieser Arbeit der Begriff
-``Schl\"ussel'' ausschliesslich im Sinne des \"offentlichen Teils
-eines OpenPGP-Schl\"usselpaares verwendet wird.
-
-Vielleicht Soghoyan (sp?) zitieren: X.509 wie es derzeit im
-Browser-Kontext verwendet wird, hilft nicht gegen MiTM.
+Im Kontext von X.509 werden Certificate Authorities meistens von
+staatlichen Organisationen oder Unternehmen betrieben, deren
+Gesch\"aftsmodell aus der Ausstellung von Zertifikaten gegen
+Geb\"uhren besteht. 
 
 \subsection{Kryptographische Hashfunktionen}
 \label{sec:krypt-hashf}
@@ -260,21 +269,25 @@ resistent gegen \emph{Urbild-Attacken}, sein, d.h. es darf mit
 akzeptablem Aufwand nicht m\"oglich sein, zu einem Hashwert $y$ einen
 Bin\"arstring $x$ zu berechnen, so dass $h(x) = y$ gilt.
 
+
 \section{PGP/GnuPG}
 \label{ch:Grundlagen:sec:PGP}
 
-Die urspr\"ungliche Version von PGP wurde von Phil Zimmerman
-entwickelt. Der Quellcode von PGP wurde von Anfang an der
-Allgemeinheit zur Verf\"ugung gestellt. PGP wird seit 1996 als
-kommerzielles Produkt vertrieben, blieb aber trotzdem kostenlos
-verf\"ugbar\cite{wiki:pgp}. Seit 1998 ist das verwendete Nachrichten-
-und Schl\"usselformat durch den RFC 2440\cite{Callas1998} und seit
-2007 durch den \"uberarbeiteten RFC 4880\cite{Callas2007}
-standardisiert. Seit 1999 existiert mit GnuPG\cite{Gnupg2010} eine
-freie Implementierung von OpenPGP unter der GNU General Public
-Licence, deren Entwicklung zeitweise vom deutschen Bundesministerium
-f\"ur Wirtschaft und Techologie gef\"ordert wurde. GnuPG scheint
-inzwischen die am meisten verbreitete OpenPGP-Implementierung zu sein.
+PGP ist ein Softwarepaket, das unterschiedliche kryptographische
+Methoden mit einem Fokus auf asymmetrischer Kryptographie zur
+Verschl\"usselung von E-Mails implementiert.  Die urspr\"ungliche
+Version von PGP wurde von Phil Zimmerman entwickelt. Der Quellcode von
+PGP wurde von Anfang an der Allgemeinheit zur Verf\"ugung
+gestellt. PGP wird seit 1996 als kommerzielles Produkt vertrieben,
+blieb aber trotzdem kostenlos verf\"ugbar\cite{wiki:pgp}. Seit 1998
+ist das verwendete Nachrichten- und Schl\"usselformat durch den RFC
+2440\cite{Callas1998} und seit 2007 durch den \"uberarbeiteten RFC
+4880\cite{Callas2007} standardisiert. Seit 1999 existiert mit
+GnuPG\cite{Gnupg2010} eine freie Implementierung von OpenPGP unter der
+GNU General Public Licence, deren Entwicklung zeitweise vom deutschen
+Bundesministerium f\"ur Wirtschaft und Techologie gef\"ordert
+wurde. GnuPG scheint inzwischen die am meisten verbreitete
+OpenPGP-Implementierung zu sein.
 
 PGP benutzt asymmetrische Kryptographie f\"ur Verschl\"usselung und
 digitale Signaturen und bietet damit ein Werkzeug, um Vertraulichkeit,
@@ -317,7 +330,7 @@ Verschl\"usselungs- und Signierungsoperationen verwendbar.
 F\"ur die Authentifizierung von \"offentlichen Schl\"usseln benutzt
 PGP eine dezentrale Alternative zu dem in Abschnitt
 \ref{ch:Grundlagen:sec:PublicKeyCrypto:subsec:KeyAuth:subsubsec:PKI}
-beschriebenen hierarchischem und zentralem Modell. Die F\"ahigkeit,
+beschriebenen hierarchischem und zentralem Modell\cite{Ashley1999}. Die F\"ahigkeit,
 Zertifikate auszustellen, ist dabei nicht auf Certificate Authorities
 beschr\"ankt. Stattdessen ist jeder Benutzer in der Lage, Zertifikate
 f\"ur \"offentliche Schl\"ussel auszustellen. Ein \"offentlicher
@@ -424,12 +437,11 @@ per E-Mail, über einen Keyserver (siehe Abschnitt
 Überprüfung der Authentizität eines Schlüssels ist deswegen von
 grosser Bedeutung.
 
-Das Vertrauensmodell (Trust model -- besserer Begriff?) ist der
-Algorithmus, mit dem PGP bzw. GnuPG entscheiden, ob ein Schl\"ussel
-anhand eines Web of Trust, also eines Zertifikatsgraphen mit
-Vertrauenswerten, als g\"ultig betrachtet wird. G\"ultig meint an
-dieser Stelle, dass die Zugeh\"origkeit des Schl\"ussels zu dem
-angeblichen Besitzer best\"atigt wurde.
+Das Vertrauensmodell ist der Algorithmus, mit dem PGP bzw. GnuPG
+entscheiden, ob ein Schl\"ussel anhand des Web of Trust als g\"ultig
+betrachtet wird\cite{Ashley1999}. G\"ultig meint an dieser Stelle,
+dass die Zugeh\"origkeit des Schl\"ussels zu dem angeblichen Besitzer
+best\"atigt wurde.
 
 PGP speichert Schl\"ussel in einem \emph{Sch\"usselring}. Jedem
 Schl\"ussel in einem Schl\"usselring wird ein \emph{Vertrauenswert}
@@ -1148,6 +1160,8 @@ Autoren den in Abschnitt \ref{sec:grundl-begr}erw\"ahnten Algorithmus
 von Girvan und Newman, um eine Community-Zerlegung des Netzwerks zu
 berechnen. Die Verteilung der Gr\"osse dieser Communities folgt wieder
 einem Power-Law.
+
+\cite{Warren2007}
 
 Webzeugs (henning -> pgp.cs.uu.nl?, wotsap)
 
