@@ -982,11 +982,10 @@ Sachverhalt aus wie der in dieser Arbeit verwendete
 Clustering-Koeffizient, ist aber nicht \"aquivalent zu diesem und
 sollte nicht verwechselt werden.
 
-\subsection{Netzwerkmodelle}
-\label{sec:netzwerkmodelle}
+knn
 
-\cite{Barabasi1999} 
-baz
+Assortative mixing
+
 
 \subsection{Soziale Netzwerke}
 \label{sec:soziale-netzwerke}
@@ -1037,6 +1036,37 @@ einer Gruppe zuordnenbar ist (z.B. im Fall der
 immerhin um eine Gruppe von Personen, die \"uber ein gemeinsames
 Interessengebiet verf\"ugen (beispielsweise im Fall der
 ``LinuxTag''-Keysigning-Parties).
+
+\subsection{Small-World-Effekt}
+\label{sec:small-world-effekt}
+
+Milgram bahnbrechendes Experiment... (kurze Beschreibung, Zitat)
+Dieses Verhalten wird als Small-World-Effekt bezeichnet. Tritt in
+vielen Netzwerken auf, insbesondere in sozialen Netzwerken (Zitat).
+
+Strogan/Watts: Klasse von Netzwerken mit geringer durchschnittlicher
+Distanz und viel Clustering. Modell, um solche Netzwerke zu erzeugen
+(Zitat).
+
+\subsection{Skalenfreie Netzwerke}
+\label{sec:skal-netzw}
+
+Definition einer Power-Law-Verteilung. Verbindung mit Netzwerken:
+Power-Law in Gradverteilung. Barabasi: Skale free. Netzwerke mit
+dieser Eigenschaft \"uberall gefunden (bsp: sozial, biologisch,
+technisch). allerdings f\"ur viele dieser netzwerke bestritten, dass
+es sich um ein wirkliches power-law handelt und dass
+preferential-attachment als erzeugungsmechanismus wirkt. Erzeugendes
+Modell vorgeschlagen, dass Graphen mit Power-law-Verteilung erzeugt ->
+preferential attachment.
+
+welche eigenschaften werden scale-free networks zugeschrieben? li et
+al. bemerken, dass konfusion herrscht, welche eigenschaften
+skalenfreie netzwerke ausmachen und welche daraus folgen. vielleicht
+auch biologen-essay zitieren.
+
+\cite{Barabasi1999} 
+baz
 
 \subsection{Communities}
 \label{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities}
@@ -1126,9 +1156,6 @@ Fortunato \cite{Fortunato2010}.
 %% ==============================
 \label{ch:Grundlagen:sec:RelatedWork}
 
-\subsection{Analysen des OpenPGP-Web of Trust}
-\label{ch:Grundlagen:sec:RelatedWork:subsec:wot-analysis}
-
 An dieser Stelle wird nur auf Arbeiten eingegangen, die sich mit der
 Netzwerkstruktur des Web of Trust bei PGP besch\"aftigen. F\"ur einen
 \"Uberblick \"uber Arbeiten zur Struktur von anderen Netzwerken sei
@@ -1161,9 +1188,26 @@ von Girvan und Newman, um eine Community-Zerlegung des Netzwerks zu
 berechnen. Die Verteilung der Gr\"osse dieser Communities folgt wieder
 einem Power-Law.
 
-\cite{Warren2007}
+Neben diesen akademischen Arbeiten gibt es mehrere Ans\"atze aus der
+PGP-Community, die Netzwerkstruktur zu untersuchen. Das
+Wotsap-Projekt\cite{Cederlof} stellt einen t\"aglich aktualisierten
+Datensatz bereit, der die Vernetzungsstruktur der gr\"ossten starken
+Zusammenhangskomponente des Web of Trust darstellt. Diese Daten werden
+werden f\"ur eine Webapplikation benutzt, die k\"urzeste Pfade
+zwischen Schl\"usseln berechnet und visualisiert und so bei der
+Nutzung von Zertifikatspfaden behilflich sein soll. In Abschnitt
+\ref{ch:Grundlagen:sec:WarumEigene} wird der Wotsap-Datensatz n\"aher
+betrachtet und begr\"undet, warum er in dieser Arbeit nicht verwendet
+wurde. 
 
-Webzeugs (henning -> pgp.cs.uu.nl?, wotsap)
+Henk P. Penning berechnet anhand der Wotsap-Daten regelm\"assig
+strukturelle Eigenschaften des Web of Trust bzw. von dessen gr\"osster
+starker Zusammenhangskomponente \cite{Penning}. Dies beinhaltet die
+Entwicklung der Gr\"osse dieser Komponente und der durchschnittlichen
+Distanzen \"uber die Zeit, die Verteilung der Knotengrade und die
+Verteilung durchschnittlicher Distanzen pro Knoten. Ausserdem wird die
+Robustheit des Netzwerkes bei der Entfernung von zuf\"allig
+ausgew\"ahlten bzw. besonders gut vernetzten Knoten simuliert.
 
 %%% Local Variables: 
 %%% mode: latex
