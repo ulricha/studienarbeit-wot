@@ -6,6 +6,24 @@
 \label{ch:Grundlagen}
 %% ==============================
 
+Dieses Kapitel f\"uhrt n\"otige Grundlagen ein, die f\"ur das
+Verst\"andnis der Arbeit notwendig sind. Dies sind zum einen die
+Kryptographie mit \"offentlichen Schl\"usseln und das sich daraus
+ergebende Problem der Authentifizierung \"offentlicher
+Schl\"ussel. Zum anderen wird auf die Funktionsweise der PGP-Software
+eingegangen.
+
+Da der Fokus dieser Arbeit auf der Netzwerkstruktur des Web of Trust
+liegt, werden die kryptographischen Grundlagen und die Funktionsweise
+der PGP-Software nur in dem Ausmass besprochen, dass f\"ur die weitere
+Arbeit n\"otig ist. F\"ur detailliertere Darstellungen wird auf
+entsprechende Literatur verwiesen.
+
+Abschnitt \ref{sec:graph-und-netzw} definiert zun\"achst den
+grundlegenden Begriff des Graphen und einige verwandte Begriffe und
+f\"uhrt dann die xxx aus dem Bereich der Netzwerkanalyse ein, mit
+denen die Struktur des Web of Trust untersucht wird.
+
 %% ==============================
 \section{Kryptographie mit öffentlichen Schlüsseln}
 %% ==============================
@@ -723,15 +741,15 @@ von dem in Abschnitt \ref{sec:ubliche-zert} beschriebenen Vorgehen.
 \end{itemize}
 
 Das Konzept einer Certificate Authority steht nicht grunds\"atzlich im
-Widerspruch zu einem Web of Trust. Eine Verifizierungsprozedur wie in
-Abschnitt \ref{sec:ubliche-zert} macht f\"ur einen Schl\"ussel einer
-Certificate Authority keinen Sinn, da er \"ublicherweise nicht mit
-einer einzelnen Person verbunden ist. Ein Benutzer muss sicherstellen,
-dass der CA-Schl\"ussel authentisch ist und entscheiden, ob er dem
-Betreiber dahingehend vertraut, die dokumentierte Policy FIXME
-zuverl\"assig umzusetzen. Zus\"atzlich muss allerdings der
-CA-Schl\"ussel signiert werden, um seine Signaturen benutzen zu
-k\"onnen. Werden diese Signaturen auf dem CA-Schl\"ussel
+Widerspruch zu dem des Web of Trust. Eine Verifizierungsprozedur wie
+in Abschnitt \ref{sec:ubliche-zert} macht f\"ur einen Schl\"ussel
+einer Certificate Authority keinen Sinn, da er \"ublicherweise nicht
+mit einer einzelnen Person verbunden ist. Ein Benutzer muss
+sicherstellen, dass der CA-Schl\"ussel authentisch ist und
+entscheiden, ob er dem Betreiber dahingehend vertraut, die
+dokumentierte Policy FIXME zuverl\"assig umzusetzen. Zus\"atzlich muss
+allerdings der CA-Schl\"ussel signiert werden, um seine Signaturen
+benutzen zu k\"onnen. Werden diese Signaturen auf dem CA-Schl\"ussel
 ver\"offentlicht, dann ergeben sich Signaturpfade, die zu diesem
 Schl\"ussel f\"uhren. Der CA-Schl\"ussel kann dann auch von
 Teilnehmern, die ihn nicht direkt unterschrieben haben, als Teil ganz
@@ -754,12 +772,12 @@ wird \"ublicherweise eine Anmeldung der Teilnehmer erwartet. F\"ur
 gr\"ossere Veranstaltungen hat sich eine Reihe von ``Protokollen''
 etabliert, um den Ablauf effizient zu organisieren\cite{Brennen2008}.
 
-Gr\"ossere Keysigning-Parties fanden im Jahr 2009 beispielsweise auf
-diesen Veranstaltungen statt:
+Gr\"ossere Keysigning-Parties Open-Source-Umfeld fanden im Jahr 2009
+beispielsweise auf diesen Veranstaltungen statt:
 \begin{itemize}
-\item Debconf (Konferenz des Debian-Projekts) mit XXX Teilnehmern
-\item FOSDEM (Open-Source-Konferenz) mit XXX Teilnehmern
-\item LinuxTag (Messe) mit XXX-Teilnehmern
+\item Debconf (Konferenz des Debian-Projekts) mit 113 Teilnehmern
+\item FOSDEM (Open-Source-Konferenz) mit 253 Teilnehmern
+\item LinuxTag (Messe) mit 132 Teilnehmern
 \end{itemize}
 
 Offensichtlich ist die Obergrenze der Signaturen, die aus einer
@@ -774,8 +792,7 @@ Teilnehmern Signaturen austauschen. Ein hervorstechendes Merkmal
 vieler Keysigning-Parties ist also eine (fast) vollst\"andige
 Vernetzung ihrer Teilnehmer.
 
-
-\subsubsection{Foobar FIXME}
+\subsubsection{PGP im Debian-Projekt}
 \label{sec:foobar-fixme}
 
 In einer Reihe von Open-Source-Projekten spielen PGP und das Web of
@@ -784,16 +801,17 @@ PGP-Schl\"ussel unter anderem benutzt, um alle bereitgestellten
 Softwarepakete durch den zust\"andigen Entwickler signieren zu
 lassen. Auf diese Weise wird \"uberpr\"uft, dass ein hochgeladenes
 Paket tats\"achlich von dem verantwortlichen Projektmitglied stammt
-und nicht ver\"andert wurde. Dazu muss jeder Debian-Entwickler \"uber
-einen Schl\"ussel verf\"ugen, der von mindestens einem anderen
-Debian-Entwickler verifiziert und unterschrieben wurde. Auf diese
-Weise bildet sich bereits innerhalb des Projekts ein Web of Trust,
-dass einen Teil des globalen Web of Trust darstellt. PGP scheint eine
-wichtige Rolle in der Kultur des Projekts zu spielen. Darauf weist
-beispielsweise hin, dass auf Treffen von Projektmitgliedern oft
-Keysigning-Parties abgehalten werden, um das Web of Trust zu
-st\"arken. Ausserdem signiert eine \"uberdurchschnittliche Anzahl von
-Debian-Entwicklern ihre E-Mails auf projektinternen Mailinglisten.
+und nicht ver\"andert wurde. Dazu muss jeder etwa 1000
+Debian-Entwickler \"uber einen Schl\"ussel verf\"ugen, der von
+mindestens einem anderen Debian-Entwickler verifiziert und
+unterschrieben wurde. Auf diese Weise bildet sich bereits innerhalb
+des Projekts ein Web of Trust, dass einen Teil des globalen Web of
+Trust darstellt. PGP scheint eine wichtige Rolle in der Kultur des
+Projekts zu spielen. Darauf weist beispielsweise hin, dass auf Treffen
+von Projektmitgliedern oft Keysigning-Parties abgehalten werden, um
+das Web of Trust zu st\"arken. Ausserdem signiert eine
+\"uberdurchschnittliche Anzahl von Debian-Entwicklern ihre E-Mails auf
+projektinternen Mailinglisten.
 
 \section{Graphentheorie und Netzwerkanalyse}
 \label{sec:graph-und-netzw}
@@ -846,15 +864,15 @@ e_j$ f\"ur $i \ne j$ gilt.  Ein einfacher Kantenzug heisst
 L\"ange eines k\"urzesten Pfades zwischen $u$ und $v$. Besteht kein
 Pfad von $u$ nach $v$, so wird $d(u,v) = \infty$ definiert.
 
-
 Ein Graph $G' = (V', E')$ ist ein \emph{Teilgraph} eines Graphen $G =
 (V, E)$, wenn $E' \subseteq E$ und $V' \subseteq V$ gelten. Ein
 Teilgraph $G' = (V', E')$ eines Graphen $G$ ist durch eine eine
 Knotenmenge $V'$ \emph{induziert}, wenn $E' = \{(u, v) : u \in V, v
 \in V, (u, v) \in E\}$ gilt.
 
-Eine Partitionierung eines Graphen bezeichnet eine Zerlegung der
-Knotenmenge in disjunkte Teilmengen.
+Eine \emph{Partitionierung} oder \emph{Zerlegung} eines Graphen
+bezeichnet Mengen $V_1, \dots, V_n$ mit $V_i \cap V_j = \emptyset
+\quad \forall 1 \le i, j \le n$ und $V_1 \cup \dots \cup V_n = V$.
 
 Ein ungerichteter Graph heisst \emph{zusammenh\"angend}, wenn es
 zwischen allen Knotenpaaren $u, v$ einen Pfad gibt. Eine
