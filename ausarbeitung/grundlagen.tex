@@ -330,14 +330,15 @@ Verschl\"usselungs- und Signierungsoperationen verwendbar.
 F\"ur die Authentifizierung von \"offentlichen Schl\"usseln benutzt
 PGP eine dezentrale Alternative zu dem in Abschnitt
 \ref{ch:Grundlagen:sec:PublicKeyCrypto:subsec:KeyAuth:subsubsec:PKI}
-beschriebenen hierarchischem und zentralem Modell\cite{Ashley1999}. Die F\"ahigkeit,
-Zertifikate auszustellen, ist dabei nicht auf Certificate Authorities
-beschr\"ankt. Stattdessen ist jeder Benutzer in der Lage, Zertifikate
-f\"ur \"offentliche Schl\"ussel auszustellen. Ein \"offentlicher
-Schl\"ussel kann von beliebig vielen Teilnehmern zertifiziert
-werden. Damit ergibt sich f\"ur die Zertifikate nicht nur ein Baum,
-sondern tats\"achlich ein allgemeiner gerichteter
-Zertifikatsgraph. Dieser Graph wird als \emph{Web of Trust}\footnote{Dieser Begriff ist irref\"uhrend, da der
+beschriebenen hierarchischen und zentralen
+Modell\cite{Ashley1999}. Die F\"ahigkeit, Zertifikate auszustellen,
+ist dabei nicht auf Certificate Authorities beschr\"ankt. Stattdessen
+ist jeder Benutzer in der Lage, Zertifikate f\"ur \"offentliche
+Schl\"ussel auszustellen. Ein \"offentlicher Schl\"ussel kann von
+beliebig vielen Teilnehmern zertifiziert werden. Damit ergibt sich
+f\"ur die Zertifikate nicht nur ein Baum, sondern tats\"achlich ein
+allgemeiner gerichteter Zertifikatsgraph. Dieser Graph wird als
+\emph{Web of Trust}\footnote{Dieser Begriff ist irref\"uhrend, da der
   Zertifikatsgraph zun\"achst keine Informationen \"uber Vertrauen
   enth\"alt, sondern tats\"achlich nur aus Zertifikaten besteht. Er
   wird in dieser Arbeit trotzdem benutzt, da er in der Literatur
@@ -852,6 +853,10 @@ zwei Knoten $u \in V$ und $v\in V$ verbinden. In einem
 Paar $(u, v)$ von Knoten. Eine gerichtete Kante $(u, v)$ f\"uhrt vom
 \emph{Ursprung} $u$ zum \emph{Ziel} $v$.
 
+Auf Kanten kann eine Funktion $w: E \rightarrow \mathbb{N}$ definiert
+sein, die jeder Kante ein \emph{Gewicht} zuordnet. Ein solcher Graph
+heisst dann \emph{gewichtet}.
+
 Ein Graph ist \emph{vollst\"andig}, wenn er alle m\"oglichen Kanten
 enth\"alt.
 
@@ -883,8 +888,13 @@ Knotenmenge $V'$ \emph{induziert}, wenn $E' = \{(u, v) : u \in V, v
 \in V, (u, v) \in E\}$ gilt.
 
 Eine \emph{Partitionierung} oder \emph{Zerlegung} eines Graphen
-bezeichnet Mengen $V_1, \dots, V_n$ mit $V_i \cap V_j = \emptyset
-\quad \forall 1 \le i, j \le n$ und $V_1 \cup \dots \cup V_n = V$.
+bezeichnet Mengen (auch: \emph{Cluster}) $V_1, \dots, V_n$ mit $V_i
+\cap V_j = \emptyset \quad \forall 1 \le i, j \le n$ und $V_1 \cup
+\dots \cup V_n = V$. Kanten $(u, v), u \in C_k, v \in C_k$, die
+innerhalb einer solchen Menge verlaufen, heissen
+\emph{Intraclusterkanten}. Kanten $(u, v), u \in C_k, v \in C_l, k \ne
+l$, die zwischen solchen Mengen verlaufen, heissen
+\emph{Interclusterkanten}.
 
 Ein ungerichteter Graph heisst \emph{zusammenh\"angend}, wenn es
 zwischen allen Knotenpaaren $u, v$ einen Pfad gibt. Eine
@@ -982,9 +992,8 @@ Sachverhalt aus wie der in dieser Arbeit verwendete
 Clustering-Koeffizient, ist aber nicht \"aquivalent zu diesem und
 sollte nicht verwechselt werden.
 
-Pastor-Satorras et al. gegen ein Mass f\"ur die Korrelation der
-Knotengrade in einem Netzwerk an\cite{PhysRevLett.87.258701}. Der Wert
-
+Pastor-Satorras et al. definieren ein Mass f\"ur die Korrelation der
+Knotengrade in einem Netzwerk\cite{PhysRevLett.87.258701}. Der Wert
 \begin{equation}
   \label{eq:9}
   <knn> = \sum_{k'} k'P_c (k'|k)
@@ -1111,7 +1120,7 @@ Dieser Abschnitt f\"uhrt den Begriff der \emph{Community} ein,
 definiert das G\"utemass \emph{Modularity} und beschreibt einige
 Algorithmen zur Erkennung von Communities in Netzwerken. Sofern nicht
 anders angegeben, wurde als Quelle ein \"Ubersichtsartikel von
-Fortunato \cite{Fortunato2010} benuzt.
+Fortunato \cite{Fortunato2010} benutzt.
 
 \subsubsection{Grundlegende Begriffe}
 \label{sec:grundl-begr}
@@ -1150,39 +1159,140 @@ Da ein Graph \"uber ein konkretes Netzwerk abstrahiert und nur noch
 die Struktur abbildet, werden auch bei der Community-Erkennung nur
 Informationen benutzt, die in der Topologie des Graphen kodiert sind. 
 
-\cite{Girvan2002}
+\subsubsection{Algorithmus von Girvan/Newman}
+\label{sec:algor-von-girv-1}
+
+An dieser Stelle wird der Algorithmus von Girvan
+und Newman\cite{Newman2004} zur Berechnung einer Community-Zerlegung
+beschrieben, da er den Startpunkt des grossen Interesses in
+Community-Algorithmen in den letzten Jahren darstellt.
+
+\emph{Edge betweeness} ist ein auf Kanten definiertes
+Zentralit\"atsmass, dass auf dem Zentralit\"atsmass \emph{Vertex
+  betweeness}\cite{Koschutzki2004a} basiert. Die vertex betweeness
+einer Kante gibt an, wie hoch der Anteil k\"urzester Pfade ist, die
+diese Kante beinhalten, wie wichtig also diese Kante f\"ur den
+Zusammenhalt und die Distanzen im Netzwerk ist.
+
+Der Algorithmus von Girvan und Newman basiert auf der folgenden Idee:
+Wenn Knoten in Communities organisiert sind, dann gibt es nur
+vergleichsweise wenige Kanten, die \emph{zwischen} Communities
+verlaufen. \"Uber diese Kanten m\"ussel alle k\"urzesten Pfade
+zwischen Knoten laufen, die in unterschiedlichen Communities
+liegen. Diese Kanten sollten also einen hohen betweeness-Wert
+haben. Eine Zerlegung in Communities kann dann berechnet werden, indem
+diejenigen Kanten entfernt werden, die Communities verbinden, also
+solche mit hoher edge betweeness.
+
+Der Algorithmus f\"uhrt iterativ die folgenden Schritte aus:
+
+\begin{enumerate}
+\item Berechne edge betweeness f\"ur alle vorhandenen Kanten.
+\item Entferne die Kante mit dem h\"ochsten betweeness-Wert.
+\item Kehre zur\"uck zu Schritt 1, solange Kanten vorhanden sind.
+\end{enumerate}
+
+Werden genug Kanten entfernt, zerf\"allt ein Graph in Komponenten, die
+\emph{m\"ogliche} Communities darstellen. Da jede Komponente selbst
+wieder unterteilt wird, ergibt sich so eine Hierarchie von
+Komponenten, die als Baum (ein sogennantes \emph{Dendrogramm})
+dargestellt werden k\"onnen. Ein horizontaler Schnitt durch diesen
+Baum auf einer beliebigen Ebene liefert eine Zerlegung des Graphen.
+
+Die Komplexit\"at des Algorithmus betr\"agt $\mathcal{O}(m^2n)$ f\"ur
+einen Graphen mit $n$ Knoten und $m$ Kanten. Er ist also f\"ur
+gr\"ossere Graphen nicht geeignet.
 
 \subsubsection{Modularity}
 \label{sec:modularity}
 
 Eine solche hierarchische Zerlegung macht noch keine Aussage
-dar\"uber, wie gut die Zerlegung auf einer bestimmten Ebene die
+dar\"uber, wie ``gut'' die Zerlegung auf einer bestimmten Ebene die
 tats\"achliche Community-Struktur wiedergibt. Um diese Frage zu
-beantworten, wurde ebenfalls von Newman als Mass f\"ur die Qualit\"at
-einer Zerlegung die sogenannte \emph{Modularity} definiert. Gegeben
-einen ungerichteten Graphen $G=(V, E)$ und eine Zerlegung dieses
-Graphen $\mathcal{C} = C_1, ..., C_n$ wird die Modularity $Q$
-definiert als
+beantworten, wurde ebenfalls von Girvan und Newman als Mass f\"ur die
+Qualit\"at einer Zerlegung die sogenannte \emph{Modularity}
+definiert\cite{Newman2004}. Gegeben einen ungerichteten Graphen $G=(V,
+E)$ und eine Zerlegung dieses Graphen $\mathcal{C} = C_1, ..., C_n$
+wird die Modularity $Q$ definiert als
 \begin{equation}
   \label{eq:modularity}
   Q =
-  \frac{1}{2m}\sum_{u, v \in V}\left(A_{uv}-\frac{d_id_j}{2m}\right)\delta(C_u, C_v)
+  \frac{1}{2m}\sum_{u, v \in
+    V}\left(A_{uv}-\frac{d(u)d(v)}{2m}\right)\delta\left(C_u, C_v\right)
 \end{equation}
+
+Dabei ist $A$ die Adjazenzmatrix von $G$. $C_u$ gibt die Community an,
+in der sich der Knoten $u$ befindet. Das Kronecker-Delta $\delta$
+ist 1 wenn $C_u = C_v$ gilt, ansonsten 0.
+
+Wenn der Term $\frac{d(u)d(v)}{2m}$ ignoriert wird, l\"auft die Summe
+\"uber alle Kanten, deren Endpunkte sich in der selben Community
+befinden. Der gesamte Term gibt dann den Anteil der Kanten an, die
+innerhalb einer Community verlaufen (Intraclusterkanten). Ist dieser Anteil gross, so gibt
+die Zerlegung die Community-Struktur des Graphen gut
+wieder. Allerdings wird das Maximum $Q = 1$ im trivialen Fall $C_1 =
+V$ erreicht. Aus diesem Grund wird die Anzahl der Kanten in
+Communities zus\"atzlich mit einem Nullmodell verglichen. Es wird
+davon ausgegangen, dass ein zuf\"alliger Graph keine ausgepr\"agte
+Community-Struktur hat. Als Nullmodell wird ein Graph gew\"ahlt, bei
+dem die Enden der Kanten zuf\"allig gew\"ahlt wurden, allerdings so,
+dass die Grade der einzelnen Knoten die gleichen wie in $G$ sind.  Die
+Wahrscheinlichkeit, dass in einem solchen Graph eine Kante zwischen
+Knoten $u$ und $v$ besteht, ist gerade $\frac{d(u)d(v)}{2m}$. $Q$ wird
+also dann gross, wenn die \emph{tats\"achliche} Anzahl der
+Intraclusterkanten h\"oher ist als die \emph{erwartetete}.
+
+Brandes et al. haben gezeigt, dass das Problem der Berechnung des
+Maximums von $Q$ f\"ur einen gegebenen Graphen NP-vollst\"andig
+ist\cite{DBLP:journals/tkde/BrandesDGGHNW08}. Eine direkte Berechnung
+einer Zerlegung eines Graphen mit maximaler Modularity ist also
+vermutlich nicht praktikabel.
 
 \subsubsection{Weitere Algorithmen}
 \label{sec:algorithmen}
 
-Seit der Arbeit von Newman wurde eine Vielzahl weiterer Methoden zur
-Erkennung von Communities vorgestellt. An dieser Stelle werden 3
-Methoden n\"aher beschrieben, die in dieser Arbeit verwendet
+Seit der Arbeit von Girvan und Newman wurde eine Vielzahl weiterer
+Methoden zur Erkennung von Communities vorgestellt. An dieser Stelle
+werden 2 Methoden n\"aher beschrieben, die in dieser Arbeit verwendet
 werden. Einen Gesamt\"uberblick bietet ein \"Ubersichtsartikel von
 Fortunato \cite{Fortunato2010}.
 
 \paragraph{Algorithmus von Blondel et al.}
 \label{sec:algor-von-blond}
 
+Blondel et al.\cite{Blondel2008} stellen einen Algorithmus vor, der
+auf \emph{gierige} Art die Modularity optimiert.  Als
+Bewertungsfunktion dient dabei ebenfalls Modularity. Der Algorithmus
+funktioniert auf gewichteten Graphen. Daf\"ur wird eine angepasste
+Definition der Modularity f\"ur gewichtete Graphen
+verwendet\cite{Newman2004a}.
+
+Der Algorithmus verl\"auft in Phasen, die in 2 Schritte aufgeteilt
+sind. Im Anfangszustand wird jedem Knoten eine eigene Community
+zugewiesen. In jeder Phase wird dann im ersten Schritt in einem
+sequentiellen Durchlauf dann jeder Knoten der Community desjenigen
+Nachbarn zugewiesen, f\"ur den sich der maximale Zugewinn an
+Modularity ergibt. Im zweiten Schritt wird jede der so erhaltenen
+Communities zu einem neuen \emph{Superknoten} verschmolzen. Zwischen
+zwei Superknoten gibt es genau dann eine Kante, wenn zwischen zwei
+urspr\"unglichen Knoten in den entsprechenden Communities eine Kante
+verl\"auft. Das \emph{Gewicht} dieser \emph{Superkante} ist die Summe
+der Gewichte der urspr\"unglichen Kanten. Die n\"achste Phase besteht
+aus der Anwendung derselben zwei Schritte auf den erhaltenenen
+\emph{Supergraphen}. Durch die Phasen ergibt sich wieder eine
+Hierarchie in Form eines Baumes. Im Unterschied zum Algorithmus von
+Girvan und Newman ist dieser Algorithmus allerdings nicht
+\emph{zerteilend}, sondern \emph{verschmelzend}, so dass der Baum von
+unten aufgebaut wird.
+
+Der Algorithmus hat eine Komplexit\"at von $O(m)$ und ist damit auch
+f\"ur sehr grosse Graphen geeignet.
+
 \paragraph{COPRA}
 \label{sec:copra}
+
+Ein g\"anzlich anderer Ansatz, der nicht auf der Optimierung des
+Modularity-Wertes beruht, wird von COPRA\cite{Gregory2010} verwendet.
 
 %% ==============================
 \section{Verwandte Arbeiten}
