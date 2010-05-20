@@ -984,8 +984,26 @@ sollte nicht verwechselt werden.
 
 knn
 
+\begin{equation}
+  \label{eq:9}
+  <knn> = \sum_{k'} k'P_c (k'|k)
+\end{equation}
+
 Assortative mixing
 
+\begin{equation}
+  \label{eq:8}
+  r = \frac{1}{\delta_{q}^{2}} \sum_{jk} \left(e_{jk} - q_jq_k\right)
+\end{equation}
+
+assortative mixing (uebersetzung?) in einem netzwerk mit assortative
+mixing sind knoten mit hohem Grad vor allem mit Knoten verbunden, die
+wiedderum hohen Grad haben. 
+Pearson-Correlation-Koeffizient f\"ur den Grad des Knotens am Anfang
+und am Ende einer Kante. Nach Newman
+
+newman: technologische und biologische netzwerke haben meist kein
+assortative mixing, soziale netzwerke schon.
 
 \subsection{Soziale Netzwerke}
 \label{sec:soziale-netzwerke}
@@ -1004,19 +1022,19 @@ werden. Allerdings ist dies keine Eins-zu-eins-Beziehung, da eine
 Person \"uber beliebig viele Schl\"ussel verf\"ugen kann. Die
 Beziehung dieser Personen im Web of Trust repr\"asentiert zun\"achst
 nur eine Signatur, also eine Zusicherung \"uber die Bindung zwischen
-dem signierten Schl\"ussel und dem Besitzer. Es scheint allerdings
-recht unwahrscheinlich, dass solche Signaturen zwischen Personen
-entstehen, die sich v\"ollig unbekannt sind und in keiner Beziehung
-zueinander stehen. Stattdessen wird in dieser Arbeit davon
-ausgegangen, dass sich Signaturen in den meisten F\"allen anhand von
-bereits bestehenden sozialen Kontakten zwischen den Besitzern der
-Schl\"ussel ergeben\cite{Capkun2002}. Das Sprektum m\"oglicher Beziehungen ist dabei
-nat\"urlich sehr weit und umfasst mindestens alle Gruppen von
-Personen, die potentiell ein Interesse an vertraulicher und
-authentifizierter E-Mail-Kommunikation haben: Es kann sich dabei um
-pers\"onliche Bekanntschaften handeln, also etwa um Freunde und
-Bekannte. Genauso kann sich die Beziehung auch prim\"ar durch die
-Mitgliedschaft in einer gemeinsamen Gruppe oder Institution
+dem signierten Schl\"ussel und der Identit\"at des Besitzers. Es
+scheint allerdings recht unwahrscheinlich, dass solche Signaturen
+zwischen Personen entstehen, die sich v\"ollig unbekannt sind und in
+keiner Beziehung zueinander stehen. Stattdessen wird in dieser Arbeit
+davon ausgegangen, dass sich Signaturen in den meisten F\"allen anhand
+von bereits bestehenden sozialen Kontakten zwischen den Besitzern der
+Schl\"ussel ergeben\cite{Capkun2002}. Das Sprektum m\"oglicher
+Beziehungen ist dabei nat\"urlich sehr weit und umfasst mindestens
+alle Gruppen von Personen, die potentiell ein Interesse an
+vertraulicher und authentifizierter E-Mail-Kommunikation haben: Es
+kann sich dabei um pers\"onliche Bekanntschaften handeln, also etwa um
+Freunde und Bekannte. Genauso kann sich die Beziehung auch prim\"ar
+durch die Mitgliedschaft in einer gemeinsamen Gruppe oder Institution
 ergeben. Denkbar sind hier zum Beispiel Beziehungen, die sich aus
 Arbeitsverh\"altnissen oder einer Ausbildung ergeben, also Unternehmen
 oder akademische Einrichtungen. Genausogut kann es sich aber um die
@@ -1040,13 +1058,29 @@ Interessengebiet verf\"ugen (beispielsweise im Fall der
 \subsection{Small-World-Effekt}
 \label{sec:small-world-effekt}
 
-Milgram bahnbrechendes Experiment... (kurze Beschreibung, Zitat)
-Dieses Verhalten wird als Small-World-Effekt bezeichnet. Tritt in
-vielen Netzwerken auf, insbesondere in sozialen Netzwerken (Zitat).
+Milgram f\"uhrte ein Experiment durch, bei dem Briefe von Person zu
+Person\footnote{Teilnehmer wurden aufgefordert, die Briefe an ihnen
+  direkt bekannte Personen weiterzugegen, von denen sie annahmen, dass
+  sie sich ``n\"aher'' am Ziel befinden w\"urden.} weitergegeben
+wurden, um sie von zuf\"allig ausgew\"ahlten Absendern zu ebenfalls
+zuf\"allig ausgew\"ahlten, geographisch weit entfernten Empf\"angern
+zu transportieren\cite{Travers1969}. Diese Briefe erreichten ihr Ziel
+im Durchschnitt \"uber nur sechs Zwischenstationen\footnote{71\% der
+  Briefe erreichten ihr Ziel nicht.}. Mit diesem Experiment wurde
+gezeigt, dass Paare von Akteuren in einem sozialen Netzwerk nur durch
+wenige ``Zwischenschritte'' miteinander verbunden sind. Das Ph\"anomen
+``kleiner'' durchschnittlicher Pfadl\"angen wird als
+\emph{Small-World-Effekt} bezeichnet. Die meisten Netzwerke aus der
+realen Welt -- insbesondere soziale Netzwerke -- scheinen diesen
+Effekt aufzuweisen\cite{newman:167}. Eine pr\"azisere Formulierung
+ist, dass die durchschnittliche Distanz nur logarithmisch mit der
+Anzahl der Knoten w\"achst.
 
-Strogan/Watts: Klasse von Netzwerken mit geringer durchschnittlicher
-Distanz und viel Clustering. Modell, um solche Netzwerke zu erzeugen
-(Zitat).
+Auch zuf\"allige Graphen verf\"ugen \"uber eine geringe
+durchschnittliche Distanz. Strogatz und Watts bemerken, dass viele
+reale Netzwerke zus\"atzlich \"uber ausgepr\"agtes Clustering
+verf\"ugen, also \"uber einen hohen
+Clustering-Koeffizienten\cite{Watts1998}.
 
 \subsection{Skalenfreie Netzwerke}
 \label{sec:skal-netzw}
