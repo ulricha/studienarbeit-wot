@@ -989,21 +989,18 @@ knn
   <knn> = \sum_{k'} k'P_c (k'|k)
 \end{equation}
 
-Assortative mixing
-
-\begin{equation}
-  \label{eq:8}
-  r = \frac{1}{\delta_{q}^{2}} \sum_{jk} \left(e_{jk} - q_jq_k\right)
-\end{equation}
-
-assortative mixing (uebersetzung?) in einem netzwerk mit assortative
-mixing sind knoten mit hohem Grad vor allem mit Knoten verbunden, die
-wiedderum hohen Grad haben. 
-Pearson-Correlation-Koeffizient f\"ur den Grad des Knotens am Anfang
-und am Ende einer Kante. Nach Newman
-
-newman: technologische und biologische netzwerke haben meist kein
-assortative mixing, soziale netzwerke schon.
+Ein verwandtes Mass wird von Newman eingef\"uhrt: Ein Netzwerk zeigt
+\emph{assortative mixing}, wenn Knoten mit hohem Grad haupts\"achlich
+mit solchen Knoten verbunden sind, die ebenfalls einen hohen Grad
+haben\cite{PhysRevLett.89.208701}. Diese Eigenschaft wird durch den
+\emph{Assortativity-Koeffizienten} (ebd.)  gemessen, dessen Werte
+zwischen -1 und 1 liegen. Positive Werte f\"ur ein Netzwerk zeigen
+assortative mixing an, bei negativen Werten zeigt das Netzwerk kein
+assortative mixing. Newman gibt an, dass assortative mixing eine
+Eigenschaft ist, die viele soziale Netzwerke von anderen Netzwerken --
+etwa technologischer oder biologischer Natur unterscheidet. Die
+meisten sozialen Netzwerke zeigen assortative mixing, w\"arend die
+restlichen dies nicht tun.
 
 \subsection{Soziale Netzwerke}
 \label{sec:soziale-netzwerke}
@@ -1175,9 +1172,6 @@ Erkennung von Communities vorgestellt. An dieser Stelle werden 3
 Methoden n\"aher beschrieben, die in dieser Arbeit verwendet
 werden. Einen Gesamt\"uberblick bietet ein \"Ubersichtsartikel von
 Fortunato \cite{Fortunato2010}.
-
-\paragraph{Algorithmus von Clauset et al.  (CNM)}
-\label{sec:algor-von-girv}
 
 \paragraph{Algorithmus von Blondel et al.}
 \label{sec:algor-von-blond}
