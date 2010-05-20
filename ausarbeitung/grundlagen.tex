@@ -982,12 +982,17 @@ Sachverhalt aus wie der in dieser Arbeit verwendete
 Clustering-Koeffizient, ist aber nicht \"aquivalent zu diesem und
 sollte nicht verwechselt werden.
 
-knn
+Pastor-Satorras et al. gegen ein Mass f\"ur die Korrelation der
+Knotengrade in einem Netzwerk an\cite{PhysRevLett.87.258701}. Der Wert
 
 \begin{equation}
   \label{eq:9}
   <knn> = \sum_{k'} k'P_c (k'|k)
 \end{equation}
+gibt den durchschnittlichen Grad der Nachbarn von Knoten mit Grad $k$
+an.  Dabei gibt die bedingte Wahrscheinlichkeit $P_c(k'|k)$ die
+Wahrscheinlichkeit an, dass eine Kante, die an einem Knoten mit Grad
+$k$ beginnt, an einem Knoten mit $k'$ endet.
 
 Ein verwandtes Mass wird von Newman eingef\"uhrt: Ein Netzwerk zeigt
 \emph{assortative mixing}, wenn Knoten mit hohem Grad haupts\"achlich
