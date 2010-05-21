@@ -6,62 +6,78 @@
 \label{ch:Zusammenfassung}
 %% ==============================
 
-\begin{itemize}
+Es wurde eine Software vorgestellt, die aus der Datenbank eines
+Keyservers die Struktur des Zertifikatsgraphen extrahiert. Im
+Unterschied zu Wotsap beschr\"ankt sich der Datensatz nicht auf die
+gr\"osste starke Zusammenhangskomponente, sondern enth\"alt alle
+validen Schl\"ussel. Auch die zeitliche Entwicklung ist sichtbar, da
+Entstehungs-, Ablauf- und Widerrufszeitpunkte enthalten sind.
 
-\item Datensatz: Unterschied zu anderen (Wotsap...)
+Dieser Datensatz wurde benutzt, um die Struktur des Web of Trust auf
+mehreren Ebenen zu untersuchen. Es wurde gezeigt, dass die Mehrzahl
+der Schl\"ussel kaum vernetzt ist und sich fast alle Signaturen auf
+eine zentrale Komponente von 45000 Schl\"usseln konzentrieren. 
 
-\item Alleinstellungsmerkmal: einzige untersuchung auf aktuellen
-  \emph{und} korrekten Daten. akademischer kram ist veraltet (aus
-  vergleich: eigenschaften haben sich geandert... welche) und die
-  sachen die auf wotsap basieren (penning) verwenden halt fehlerhafte
-  daten.
+Es wurde argumentiert, dass der Zertifikatsgraph Elemente eines
+sozialen Netzwerks beinhaltet. In der Tat zeigt die zentrale
+Komponente Eigenschaften, die typisch f\"ur soziale Netzwerke sind:
+den Small-World-Effekt, ein hohes Mass an Clustering, eine Korrelation
+zwischen dem Grad von Knoten und eine ausgepgr\"agte
+Community-Struktur.
 
-Es wurde 
+Die zentrale Komponente zeigt ausserdem eine Gradverteilung, die einem
+Power-Law \"ahnelt und eine Eigenschaft, die charakteristisch f\"ur
+skalenfreie Netzwerke ist: Eine Struktur von Hubs, die einerseits das
+Netzwerk zusammenhalten, es andererseits aber auch verwundbar gegen
+gezielte Angriffe machen. 
 
-\item Datensatz wurde benutzt, um verschiedene Aspekte des Web of
-  Trust zu untersuchen: Komponentenstruktur, Netzwerkstatistiken der
-  MSCC, Community-Struktur, Verbindung mit inhaltlichen Informationen,
-  Benutzung von Algorithmen. Wurde versucht, die Auswirkungen von
-  Kryptoanalytischen Durchbr\"uchen abzusch\"atzen.
+Es wurde versucht, die Auswirkung von Fortschritten in Angriffen auf
+kryptographische Methoden f\"ur das Netzwerk abzusch\"atzen. Direkt
+absehbare Probleme mit MD5, SHA1 und RSA-Schl\"usseln geringer L\"ange
+werden den Zusammenhalt des Netzwerks nicht tiefgreifend beeinflussen,
+aber eine Reihe von selbst nicht betroffenen Schl\"usseln von diesem
+abtrennen.
 
-\item viele Schluessel in Datenbank, aber nur wenige davon nehmen am
-  Web of Trust teil. zahl ist auch nur eine obergrenze fuer aktive
-  teilnehmer, da individuen mit mehreren Schluesseln und schluessel,
-  die nicht mehr benutzt werden, aber nicht widerrufen wurden, nicht
-  gezaehlt werden.
-\item Grosse Mehrzahl der PGP-Benutzer (Leute mit Schluesseln,
-  kann allerdings nicht vorrausgesetzt werden, dass diese tatsaechlich
-  benutzt werden) authentifiziert Schl\"ussel nicht
+Die Communities sind nicht zuf\"allig entstanden, sondern scheinen
+teilweise tats\"achlich soziale Zusammenh\"ange
+wiederzuspiegeln. Selbst mit den hier verwendeten primitiven Methoden
+und ohne weiteres Wissen \"uber tats\"achliche soziale Zusammenh\"ange
+kann f\"ur viele Communities gezeigt werden, dass sie aus gemeinsamen
+Gruppenzugeh\"origkeiten entstanden sind. Allerdings kann dadurch
+nicht befriedigend erkl\"art werden, wie die Communities entstehen
+und wie sie sich untereinander vernetzen.
 
+Insgesamt hat sich eine \"uberraschend geringe
+\emph{\"offentliche}\footnote{Es ist nicht bekannt, wie viele Benutzer
+  zwar das Web of Trust nutzen, ihre Signaturen aber nicht
+  ver\"offentlichen. Es scheint jedoch nicht wahrscheinlich, dass es
+  sich dabei um eine signifikante Zahl handelt.}Nutzung des
+PGP-Authentifizerungsmechanismus gezeigt. Nur innerhalb einer Gruppe
+von 45000 Schl\"usseln sind \"uberhaupt nennenswerte
+Signaturaktitiv\"aten feststellbar und auch in dieser sind viele
+vermutlich inaktive Schl\"ussel enthalten. Die Anzahl der Personen,
+die ernsthaft und kontinuierlich zum Web of Trust beitr\"agt, ist sehr
+gering. Die grosse Mehrheit der Personen, die ihre Schl\"ussel
+ver\"offentlicht haben, scheint Schl\"ussel von Kommunikationspartnern
+nicht zu authentifizieren.
 
+Auch wenn einige Arbeiten zur Struktur des Web of Trust
+ver\"offentlicht wurden, wurden hier Aspekte untersucht, die dort
+keine Beachtung fanden. Ausserdem wurde hier der \emph{aktuelle} Stand
+des Netzwerks untersucht, dessen Gr\"osse sich deutlich ver\"andert
+hat.
 
-\item mesoscopic: MSCC hat ausgepr\"agte modulare Struktur wie viele andere
-  soziale Netzwerke
-\item Communities stellen Bausteine dar, die das Gesamtnetz ergeben.
-\item Einige dieser Communities weisen Charakteristika auf, die eine
-  Zuordnung zu einer sozialen Gruppe oder Keysigning-Party erlauben.
-\item Aufl\"osungslimit hurts: Zusammenpacken in grosse Communities
-  bringt zwar m\"oglicherweise bessere Modularity, erschwert aber die
-  inhaltliche Analyse.
-\item Allerdings sind diese Mechanismen nicht geeignet, um die
-  Entstehungsdynamik insgesamt befriedigend zu erklaeren.
-\item Obwohl das nicht untersucht wurde, kann doch vermutet werden,
-  dass die \"uberwiegende Mehrheit der Schl\"ussel in der MSCC von
-  Personen stammt, die aus der Computersicherheit,  Open-Source-Gemeinde stammen oder einen
-  akademischen Background haben. Allerdings gibt es auch eine ganze
-  Reihe Communities, die sich einzelnen Firmen zuordnen lassen (sony,
-  cisco). 
-
-\end{itemize}
-
-Schl\"ussel und Signaturen enthalten grunds\"atzlich den Zeitpunkt
-ihrer Erzeugung und im Keyserver-Netzwerk sind alle jemals
-\"offentlich gemachten Schl\"ussel abrufbar. Im Unterschied zu vielen
-anderen sozialen Netzwerken ist hier die gesamte
-Entwicklungsgeschichte verf\"ugbar. Der in dieser Arbeit berechnete
-Datensatz k\"onnte damit ein interessanter Ansatzpunkt sein, um die
-Entstehungsdynamik eines komplexen sozialen Netzwerks im Detail zu
-untersuchen.
+Im Unterschied zu vielen anderen sozialen Netzwerken ist hier die
+gesamte Entwicklungsgeschichte verf\"ugbar. Der in dieser Arbeit
+berechnete Datensatz k\"onnte damit ein interessanter Ansatzpunkt
+sein, um die Entstehungsdynamik eines komplexen sozialen Netzwerks im
+Detail zu untersuchen. Dabei k\"onnte beispielsweise die
+Entstehungsdynamik (Enstehung und Verschmelzung) der Communities
+verfolgt werden. Auch die Vernetzungsstruktur der Communities in
+Ber\"ucksichtigung ihrer nationalen Zuordnung und die Rolle einzelner
+Knoten innerhalb von Communities (etwa welche Knoten als ``Br\"ucken''
+zwischen Communities dienen) k\"onnte untersucht
+werden.
 
 %%% Local Variables: 
 %%% mode: latex
