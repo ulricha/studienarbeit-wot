@@ -333,9 +333,8 @@ die einzelnen Werkzeuge findet sich in Anhang
 
 Die zur Community-Analyse verwendeten Algorithmen (siehe Abschnitt
 \ref{sec:community-analyse}) wurden aus Zeitgr\"unden nicht selbst
-implementiert. F\"ur Fastmod FIXME wurde die Implementierung aus dem
-Softwarepaket igraph\cite{Csardi2006} verwendet. F\"ur die restlichen
-Algorithmen wurden Implementierungen der jeweiligen Autoren verwendet.
+implementiert. Stattdessen wurden Implementierungen der jeweiligen
+Autoren verwendet.
 
 \paragraph{Parallelisierung mit MPI}
 \label{sec:parall-mitt-mpi}
@@ -406,6 +405,9 @@ Kennzahlen reduzierte sich damit auf ca. 20 Minuten.
 \section{Community-Analyse}
 \label{sec:community-analyse}
 
+\subsection{Vorgehensweise}
+\label{sec:vorgehensweise}
+
 In Abschnitt \ref{sec:sozi-komp-des} wurden Mechanismen beschrieben,
 die zur Entstehung des Web of Trust beitragen. Ausgehend davon kann
 die Annahme getroffen werden, dass die Vernetzung wesentlich von zwei
@@ -459,6 +461,8 @@ eine Community als Produkt einer KSP betrachtet, wenn 80\% der
 Signaturen zwischen den Mitgliedern innerhalb eines Monats vorgenommen
 wurden.
 
+
+
 Die Zuordnung zu sozialen Gruppen wird dadurch erschwert, dass --
 abgesehen von den Schl\"usseln und Signaturen selbst -- keine
 empirischen Daten \"uber die Gruppenzugeh\"origkeit vorliegen. Die
@@ -493,68 +497,6 @@ sondern dr\"ucken nur ein intuitives Verst\"andnis f\"ur die
 \"uberwiegende Mehrzahl der Mitglieder einer Gruppe bzw. einen
 erheblichen Anteil der Mitglieder einer Gruppe aus.
 
-Wie bereits in Abschnitt
-\ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities}
-beschrieben, existiert -- insbesondere f\"ur ungerichtete Graphen --
-eine Vielzahl von Methoden zur Zerlegung eines Graphen in
-Communities. Dabei hat sich bislang kein ``bester'' Algorithmus
-herauskristallisiert, auch wenn einige Algorithmen f\"ur eine Reihe
-von Benchmark-Graphen bessere Ergebnisse liefern als andere
-\cite{Lancichinetti2009}. Das \"ubliche G\"utemass zum Vergleich von
-Community-Zerlegungen eines Graphen, dessen tats\"achliche
-Community-Struktur nicht bekannt ist, ist der Modularity-Wert (siehe
-Abschnitt \ref{sec:community-analyse}).  Um zu vermeiden, dass eine
-vergleichsweise schlechte Einteilung durch einen Algorithmus die
-Ergebnisse verf\"alscht, wurden mehrere Algorithmen zur
-Community-Erkennung auf ungerichteten Graphen verwendet, um ihre
-Ergebnisse vergleichen zu k\"onnen: Fast-Modularity (FM) von Newman et
-al., sowie der Algorithmus von Blondel et al. (LP) (siehe Abschnitt
-\ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities}). Die
-Auswahl wurde aus folgenden Gr\"unden getroffen:
-
-\begin{itemize}
-\item Fast-Modularity war einer der ersten praktikablen Algorithmen
-  zur Community-Erkennung in grossen Netzwerken und wird weiterhin
-  h\"aufig verwendet. Allerdings liefert er in der Literatur
-  durchg\"angig schlechtere Ergebnisse als moderne Algorithmen
-  \cite{Fortunato2010} und wird deshalb hier nur als Vergleichsbasis
-  verwendet.
-\item Der Algorithmus von Blondel et al. erzielte im Vergleich von
-  Lancichinetti et al. \cite{Lancichinetti2009} mit die besten Ergebnisse.
-\end{itemize}
-
-Ein weiteres Auswahlkriterium war, dass f\"ur diese Algorithmen
-Implementierungen \"offentlich mit Sourcecode verf\"ugbar
-sind. Ausserdem existieren Algorithmen, die zwar f\"ur kleinere
-Graphen bessere Ergebnisse liefern als die hier verwendeten, aufgrund
-ihrer Berechnungskomplexit\"at f\"ur grosse Graphen wie den hier
-vorliegenden aber nicht geeignet sind.
-
-Eine Zuordnung von einer Person zu genau einer sozialen Gruppe scheint
-unrealistisch. Statt dessen ist davon auszugehen, dass eine Person im
-Allgemeinen zu mehreren Institutionen oder Gruppen zugeh\"orig
-ist. Ebenso ist es m\"oglich, dass sie sich einerseits im Kontext
-einer sozialen Gruppe vernetzt, andererseits aber auch an
-Keysigning-Parties teilnimmt. Eine solche multiple Zugeh\"origkeit
-sollte sich im Netzwerk durch eine Mitgliedschaft eines Knotens in
-mehreren Communities ausdr\"ucken. Wie in
-\ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities} erw\"ahnt,
-existiert eine Klasse von Algorithmen, die ein Netzwerk in
-\emph{\"uberlappende} Communities zerlegt, so dass ein Knoten Teil von
-mehreren Communities sein kann. Um zu untersuchen, inwiefern dieser
-\"Uberlappungseffekt die Zuordnung von Knoten zu sozialen Gruppen und
-KSPs beeinflusst, wurde zus\"atzlich noch eine \"uberlappende
-Zerlegung mit dem Algorithmus COPRA \cite{Gregory2010}, einer
-Verallgemeinerung von Label-Progagation auf berechnet. Dabei handelt
-es sich um eine Verallgemeinerung des bereits erw\"ahnten Algorithmus
-Label-Propagation. COPRA erwartet einen Parameter $v$, der angibt, zu
-wie vielen Communities ein Knoten geh\"oren kann. Um hier das Optimum
-bez\"uglich der Modularity zu finden, wurden Zerlegungen mit Werten
-$v=2, \dots, 15$ berechnet. Zum Vergleich wurde eine Zerlegung mit
-$v=1$ berechnet, die keine \"Uberlappung erlaubt. Da COPRA
-nichtdeterministisch ist, wurden f\"ur jeden Wert 10 Berechnungen
-durchgef\"uhrt, um die Abweichung zu ermitteln.
-
 W\"ahrend Modularity die G\"ute einer Zerlegung nur bezogen auf die
 Struktur des Graphen misst, dr\"ucken die Zuordnungszahlen die G\"ute
 einer Partitionierung in Bezug auf die oben formulierte Hypothese
@@ -573,32 +515,80 @@ Der Graph des Web of Trust ist inh\"arent gerichtet, da eine Signatur
 nur in eine Richtung gilt. Die meisten verf\"ugbaren Methoden zur
 Community-Erkennung setzen im Gegensatz dazu einen ungerichteten
 Graphen vorraus. Methoden, die auf gerichteten Graphen arbeiten, sind
-erst in j\"ungster Zeit vorgestellt worden \cite{Leicht2008}
-\cite{Rosvall2008}. Der bis jetzt am h\"aufigstpen verwendete Ansatz
-f\"ur die Community-Erkennung in gerichteten Netzwerken ist es, die
-Richtung der Kanten zu ignorieren und den Graphen als ungerichteten
-Graphen zu behandeln. Auch die Arbeiten, die den Web of Trust-Graphen
-unter Community-Gesichtspunkten analysieren oder ihn als Benchmark
-f\"ur den Vergleich von Algorithmen verwenden, gehen so vor
-\cite{Boguna2004}. Auch wenn dieses Vorgehen akzeptable Resultate
+erst in j\"ungster Zeit vorgestellt worden (beispielsweise
+\cite{Leicht2008} und \cite{Rosvall2008}). Hier wird der Algorithmus
+``infomap'' von Rosval et al.\cite{Rosvall2008} benutzt. 
+
+\subsection{Communities in ungerichteten Graphen}
+\label{sec:comm-unger-graph}
+
+
+Der bis jetzt am h\"aufigsten verwendete Ansatz f\"ur die
+Community-Erkennung in gerichteten Netzwerken ist es, die Richtung der
+Kanten zu ignorieren und den Graphen als ungerichteten Graphen zu
+behandeln. Auch die Arbeiten, die den Web of Trust-Graphen unter
+Community-Gesichtspunkten analysieren oder ihn als Benchmark f\"ur den
+Vergleich von Algorithmen verwenden, gehen so vor (siehe Abschnitt
+\ref{ch:Grundlagen:sec:RelatedWork}. Auch wenn dieses Vorgehen akzeptable Resultate
 liefern kann, ist doch klar, dass durch das Ignorieren der Richtung
 ein Informationsverlust stattfindet, der die Ergebnisse negativ
-beeinflussen kann. In der vorliegenden Arbeit wurde dieser \"ubliche
-Ansatz des Ignorierens der Kantenrichtung verwendet, da die Methoden
-f\"ur ungerichtete Netzwerke besser etabliert und Implementationen
-dieser Algorithmen einfacher zug\"anglich sind. Im Fall des Web of
-Trust ist allerdings ein erheblicher Anteil der verbundenen
+beeinflussen kann.
+
+Da die Zerlegung des gerichteten Graphen keine verwertbaren Ergebnisse
+lieferte (siehe Abschnitt \ref{sec:ergebnisse-fur-den}), wurde als
+Ausweichl\"osung auf diesen Ansatz zur\"uckgegriffen.  Im Fall des Web
+of Trust ist allerdings ein erheblicher Anteil der verbundenen
 Knotenpaare nur in eine Richtung verbunden, d.h. es existiert keine
 ``Gegenkante'' (siehe Abschnitt
 \ref{sec:result-allg-merkm-des}). Damit ist auch der
-Informationsverlust durch die Reduzierung erheblich. Es ist daher
-naheliegend, dass eine Community-Zerlegung des Graphen unter
-Ber\"ucksichtigung der Richtungsinformationen eine Zerlegung berechnen
-k\"onnte, die die Struktur des Graphen besser wiedergibt und auch
-unter dem Gesichtspunkt der Zuteilung zu sozialen Gruppen und
-Keysigning-Parties bessere Resultate liefert. Um den Einfluss der
-Richtung zu \"uberpr\"ufen, wurde eine Zerlegung mit dem Algorithmus
-``infomap'' von Rosvall et al. \cite{Rosvall2008} berechnet.
+Informationsverlust durch die Reduzierung erheblich. Die Qualit\"at
+der Community-Zerlegung und die sich daraus ergebende Zuordnung zu
+sozialen Gruppen und Keysigning-Parties stellt also sicher nicht das
+Optimum dar.
+
+Wie bereits in Abschnitt
+\ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities}
+beschrieben, existiert -- insbesondere f\"ur ungerichtete Graphen --
+eine Vielzahl von Methoden zur Zerlegung eines Graphen in
+Communities. Dabei hat sich bislang kein ``bester'' Algorithmus
+herauskristallisiert, auch wenn einige Algorithmen f\"ur eine Reihe
+von Benchmark-Graphen bessere Ergebnisse liefern als andere
+\cite{Lancichinetti2009}. Basierend auf diesem Vergleich wurde der
+Algorithmus von Blondel et al. (siehe Abschnitt
+\ref{sec:algor-von-blond} ausgew\"ahlt, der ausserdem gut auf grosse
+Graphen skaliert und f\"ur den eine Open-Source-Source-Implementierung
+verf\"ugbar ist.  Zwar existieren Algorithmen, die f\"ur kleinere
+Graphen bessere Ergebnisse liefern als die hier verwendeten, aufgrund
+ihrer Berechnungskomplexit\"at f\"ur grosse Graphen wie den hier
+vorliegenden aber nicht geeignet sind.
+
+\subsection{\"Uberlappende Communities in ungerichteten Graphen}
+\label{sec:uberl-comm-unger}
+
+Eine Zuordnung von einer Person zu genau einer sozialen Gruppe scheint
+unrealistisch. Statt dessen ist davon auszugehen, dass eine Person im
+Allgemeinen zu mehreren Institutionen oder Gruppen zugeh\"orig
+ist. Ebenso ist es m\"oglich, dass sie sich einerseits im Kontext
+einer sozialen Gruppe vernetzt, andererseits aber auch an
+Keysigning-Parties teilnimmt. Eine solche multiple Zugeh\"origkeit
+sollte sich im Netzwerk durch eine Mitgliedschaft eines Knotens in
+mehreren Communities ausdr\"ucken. Wie in
+\ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities} erw\"ahnt,
+existiert eine Klasse von Algorithmen, die ein Netzwerk in
+\emph{\"uberlappende} Communities zerlegt, so dass ein Knoten Teil von
+mehreren Communities sein kann. Um zu untersuchen, inwiefern dieser
+\"Uberlappungseffekt die Zuordnung von Knoten zu sozialen Gruppen und
+KSPs beeinflusst, wurde zus\"atzlich noch eine \"uberlappende
+Zerlegung mit dem Algorithmus COPRA (siehe Abschnitt \ref{sec:copra}
+berechnet. COPRA erwartet einen Parameter $v$, der angibt, zu wie
+vielen Communities ein Knoten geh\"oren kann. Um hier das Optimum
+bez\"uglich der Modularity zu finden, wurden Zerlegungen mit Werten
+$v=2, \dots, 15$ berechnet. Zum Vergleich wurde eine Zerlegung mit
+$v=1$ berechnet, die keine \"Uberlappung erlaubt. Da COPRA
+nichtdeterministisch ist, wurden f\"ur jeden Wert 10 Berechnungen
+durchgef\"uhrt, um die Abweichung zu ermitteln.
+
+
 
 %%% Local Variables: 
 %%% mode: latex
