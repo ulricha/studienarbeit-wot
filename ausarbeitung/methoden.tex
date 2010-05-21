@@ -310,7 +310,7 @@ erreichen. Eine grosse Zahl solcher Pakete scheint aber
 unwahrscheinlich, da zumindest unter Sicherheitsaspekten ein Angreifer
 damit keinen offensichtlichen Gewinn erreichen kann.
 
-Die so extrahierten Daten werden in einer SQL-Datenbank (PostgresQL)
+Die so extrahierten Daten werden in einer SQL-Datenbank (PostgreSQL)
 abgelegt. Auf diese Weise kann darauf verzichtet werden, eigene
 Selektionsmechanismen zu implementieren. Stattdessen kann die
 gewünschte Datenmenge einfach als SQL-Abfrage formuliert werden. Auf
@@ -401,6 +401,44 @@ wobei eine Worker-Instanz auf einem Core einer Quad-Core-Xeon-CPU
 ausgef\"uhrt wird. Insgesamt wurden also 7 Clusterknoten benutzt. Die
 notwendige Zeit f\"ur das Berechnen s\"amtlicher oben angef\"uhrter
 Kennzahlen reduzierte sich damit auf ca. 20 Minuten.
+
+\section{Schl\"ussel und Invididuen}
+\label{sec:schl-und-invid}
+
+Ein Schwachpunkt der hier vorgenommenen Analyse soll nicht
+verschwiegen werden. Es wurde argumentiert, dass die
+Signaturbeziehungen im Web of Trust Abbild sozialer Beziehungen sind
+und der Graph deswegen als Abbild eines sozialen Netzwerks betrachtet
+werden kann. Allerdings stehen die Knoten dieses Netzwerks zun\"achst
+nicht f\"ur individuelle Personen, sondern f\"ur
+Schl\"usselpaare. Eine einzelne Person kann selbstverst\"andlich
+mehrere Schl\"ussel besitzen.
+
+Das Problem, mehrere Schl\"ussel auf ein Individuum abzubilden,
+scheint nicht einfach. Zwar k\"onnen anhand der UserID, die einen
+Namen und eine E-Mail-Adresse enth\"alt, gleiche Personen auf mehreren
+Schl\"usseln identifiziert werden. Allerdings k\"onnen sich
+E-Mail-Adressen auch \"andern, Namen k\"onnen unterschiedlich
+geschrieben werden und Individuen k\"onnen unter unterschiedlichen
+Namen oder Pseudonymen auftreten. Diese Vorgehensweise ist also
+vermutlich mit einer nicht unwesentlichen Fehlerrate verbunden. Ein
+schwerwiegenderes Problem ist aber, dass sich durch die Reduktion auf
+Individuen die Graphenstruktur erheblich ver\"andern w\"urde. W\"urden
+etwa alle Schl\"ussel einer Person und deren Signaturen auf einen
+Knoten zusammengefasst, erg\"abe sich potentiell ein fundamental
+anderer Graph.
+
+Dieser Ansatz wurde von Warren et al.\cite{Warren2007} gew\"ahlt. In
+dem dort betrachteten PGP-Netzwerk aus dem Jahr 2006 verf\"ugt jedes
+von 830.000 Individuen durchschnittlich \"uber 2,38 Schl\"ussel.
+
+Der Fokus dieser Arbeit liegt zun\"achst tats\"achlich auf der
+Struktur der Signaturbeziehungen und nur sekund\"ar auf der sozialen
+Komponente. Die G\"ultigkeit \emph{vorhandener} Beziehungen wird durch
+das beschriebene Problem nicht gAus diesen Gr\"unden wurde auf eine Reduktion des
+Netzwerks verzichtet. Die Aussagekraft hinsichtlich sozialer
+Beziehungen und insbesondere \"uber einzelne \emph{Personen} sollte
+dann allerdings mit Vorsicht betrachtet werden.
 
 \section{Community-Analyse}
 \label{sec:community-analyse}
