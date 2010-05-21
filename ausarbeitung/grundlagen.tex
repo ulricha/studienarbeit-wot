@@ -1153,7 +1153,9 @@ existieren, die allgemein akzeptiert ist. Stattdessen wird ein
 intuitives Verst\"andis verwendet, nach dem Communities \emph{dichte}
 Teilbereiche eines Graphen sind, also Gruppen von Knoten, die
 untereinander ``viele'' Kanten haben, w\"arend zu nicht in der Gruppe
-liegenden Knoten nur ``wenige'' Kanten bestehen.
+liegenden Knoten nur ``wenige'' Kanten bestehen. Oft wird werden
+Communities auch algorithmisch definiert: Communities sind gerade das
+Ergebnis eines Algorithmus zur Community-Zerlegung.
 
 Da ein Graph \"uber ein konkretes Netzwerk abstrahiert und nur noch
 die Struktur abbildet, werden auch bei der Community-Erkennung nur
@@ -1291,8 +1293,56 @@ f\"ur sehr grosse Graphen geeignet.
 \paragraph{COPRA}
 \label{sec:copra}
 
-Ein g\"anzlich anderer Ansatz, der nicht auf der Optimierung des
-Modularity-Wertes beruht, wird von COPRA\cite{Gregory2010} verwendet.
+Ein g\"anzlich anderer Ansatz, der nicht direkt mit der Optimierung
+des Modularity-Wertes arbeitet, wird von COPRA\cite{Gregory2010}
+verwendet. COPRA basiert auf einem Algorithmus von Raghavan et
+al.\cite{Raghavan2007}, der auf der Propagierung von \emph{Labels}
+beruht. 
+
+Im Anfangszustand wird jedem Knoten ein unterschiedliches Label
+zugewiesen. In jeder Iteration wird dann ein sequentieller Lauf in
+zuf\"alliger Reihenfolge \"uber alle Knoten durchgef\"uhrt. Dabei
+\"ubernimmt jeder Knoten das Label, dass die Mehrheit seiner Nachbarn
+besitzt. Wenn dabei ein Gleichstand auftritt, wird eines der Labels
+zuf\"allig ausgew\"ahlt. Auf diese Weise werden Labels \"uber den
+Graphen propagiert. Einige Labels verschwinden, w\"ahrend andere sich
+ausbreiten. Da zwischen Communities nur wenige Kanten bestehen
+sollten, ist die Chance, dass sich Labels \"uber Community-Grenzen
+ausbreiten, sehr gering. \emph{Innerhalb} von dicht vernetzten Gruppen
+sollte sich jedoch ein ``Konsens'' \"uber ein Label ergeben. Das
+Konvergenzkriterium besteht darin, dass jeder Knoten ein Label hat,
+dass von der Mehrheit seiner Nachbarn geteilt wird. Die
+Zeitkomplexit\"at des Algorithmus wird durch die Autoren als
+``ann\"ahernd linear'' angegeben. Er ist also auch f\"ur grosse
+Graphen geeignet. Zu beachten ist, dass der Algorithmus durch die
+zuf\"allige Reihenfolge, in der die Knoten durchlaufen werden, und die
+Aufl\"osung von Pattsituationen \emph{nichtdeterministisch} ist.
+
+Der Algorithmus von Raghavan et al. liefert eine Zerlegung mit
+disjunkten Teilmengen von $V$. COPRA verallgemeinert diesen Ansatz zur
+Berechnung \emph{\"uberlappender} Communities. Dabei kann ein Knoten
+in mehreren Communities enthalten sein, die Teilmengen der Zerlegung
+sind nicht mehr disjunkt. Statt einfacher Labels werden Paare $(c, b)$
+von Labels $c$ und einem Zugeh\"origkeitskoeffizienten $b$
+propagiert. $b$ dr\"uckt aus, wie stark ein Knoten zur Community $c$
+geh\"ort. In jedem Schritt \"ubernimmt ein Knoten statt eines einizgen
+Labels \emph{alle} Label seiner Nachbarn. Der
+Zugeh\"origkeitskoeffizient eines Knotens $u$ zu Label $c$ in der
+Iteration $t$ ist definiert als
+\begin{equation}
+  \label{eq:10}
+  b_t(c, u) = \frac{1}{d(u)}\sum_{v \in N(u)}b_{t-1}(c, v)
+\end{equation}
+, also der Durchschnitt der Zugeh\"origkeitskoeffizienten aller
+Nachbarn f\"ur das Label $c$ in der vorherigen Iteration. Die Summe
+der Zugeh\"origkeitskoeffizienten f\"ur alle Label eines Knotes
+betr\"agt 1. Um zu vermeiden, dass sich alle Labels ausbreiten, werden
+Paare $(c, b)$ gel\"oscht, wenn $b$ unter einem Schwellwert
+$\frac{1}{v}$ liegt. $v$ gibt damit an, in wie vielen Communities ein
+Knoten maximal Mitglied sein kann. 
+
+Die Zeitkomplexit\"at von COPRA wird mit $\mathcal{O}(v^3n)$
+angegeben, ist also im wesentlichen linear.
 
 %% ==============================
 \section{Verwandte Arbeiten}
