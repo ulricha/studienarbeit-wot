@@ -674,8 +674,7 @@ Bis jetzt wurde nur erklärt, dass eine Signatur die
 Zusicherung über die Bindung eines Schlüssels an eine Person,
 d.h. eine Identität, darstellt. In diesem Abschnitt wird näher
 darauf eingegangen, wie solche Zusicherungen \emph{üblicherweise}
-zustande kommen. Außerdem werden einige Aspekte (FIXME
-Rahmenbedingungen)
+zustande kommen.
 
 Bemerkt werden muss, dass der Zertifizierungsprozess im Kontext des
 Web of Trust nicht formal definiert ist. Weder der OpenPGP-RFC noch
@@ -738,13 +737,12 @@ von dem in Abschnitt \ref{sec:ubliche-zert} beschriebenen Vorgehen.
 \item Der Heise-Verlag betreibt seit 1997 eine Certificate Authority
   im Rahmen der ``Krypto-Kampagne''. Diese hat sich zum Ziel gesetzt,
   die Verbreitung von PGP zu fördern. Durch eine kostenlose
-  Certificate Authority soll das Web of Trust gestärkt werden (FIXME
-  cite).
+  Certificate Authority soll das Web of Trust gestärkt werden.
 
   Die Zertifizierung wird auf Messen gegen Vorlage des
   Personalausweises angeboten. Die von dieser CA verwendeten
   Schlüssel haben insgesamt ca. 22000 Signaturen erstellt.
-\item Die Certificate Authority CACert (FIXME link) zertifiziert unter
+\item Die Certificate Authority CACert zertifiziert unter
   anderem auch OpenPGP-Schlüssel. Der von dieser CA verwendete
   Schlüssel hat ca. 3400 Schlüssel signiert.
 \item Das Deutsche Forschungsnetzwerk (DFN) betrieb vermutlich bis zum
@@ -758,7 +756,7 @@ einer Certificate Authority keinen Sinn, da er üblicherweise nicht
 mit einer einzelnen Person verbunden ist. Ein Benutzer muss
 sicherstellen, dass der CA-Schlüssel authentisch ist und
 entscheiden, ob er dem Betreiber dahingehend vertraut, die
-dokumentierte Policy FIXME zuverlässig umzusetzen. Zusätzlich muss
+dokumentierte Policy zuverlässig umzusetzen. Zusätzlich muss
 allerdings der CA-Schlüssel signiert werden, um seine Signaturen
 benutzen zu können. Werden diese Signaturen auf dem CA-Schlüssel
 veröffentlicht, dann ergeben sich Signaturpfade, die zu diesem
@@ -1375,13 +1373,12 @@ gleichen Jahr. Das Netzwerk wurde von vornherein in ein ungerichtetes
 Netzwerk umgewandelt, indem nicht gegenseitige Kanten entfernt
 wurden. Sie betrachteten die Gradverteilung, den
 Clustering-Koeffizienten und die Korrelation von Graden benachbarter
-Knoten. Dabei folgt die Verteilung der Knotengrade einem Power-Law mit
-einem exponentiellen Cutoff FIXME. Der Clustering-Koeffizient des
-Netzwerkes beträgt $C=0.4$, ist also recht hoch. Die Grade
-benachbarter Knoten sind positiv korreliert. Außerdem benutzten die
-Autoren den in Abschnitt \ref{sec:grundl-begr}erwähnten Algorithmus
-von Girvan und Newman, um eine Community-Zerlegung des Netzwerks zu
-berechnen. Die Verteilung der Größe dieser Communities folgt wieder
+Knoten. Dabei folgt die Verteilung der Knotengrade einem
+Power-Law. Der Clustering-Koeffizient des Netzwerkes beträgt $C=0.4$,
+ist also recht hoch. Die Grade benachbarter Knoten sind positiv
+korreliert. Außerdem benutzten die Autoren den Algorithmus von Girvan
+und Newman\cite{Newman2004}, um eine Community-Zerlegung des Netzwerks
+zu berechnen. Die Verteilung der Größe dieser Communities folgt wieder
 einem Power-Law.
 
 Warren et al. betrachteten das Netzwerk nicht zu einem festen
@@ -1405,7 +1402,6 @@ Nutzung von Zertifikatspfaden behilflich sein soll. In Abschnitt
 \ref{ch:Grundlagen:sec:WarumEigene} wird der Wotsap-Datensatz näher
 betrachtet und begründet, warum er in dieser Arbeit nicht verwendet
 wurde. 
-
 
 Henk P. Penning berechnet anhand der Wotsap-Daten regelmäßig
 strukturelle Eigenschaften des Web of Trust bzw. von dessen größter
