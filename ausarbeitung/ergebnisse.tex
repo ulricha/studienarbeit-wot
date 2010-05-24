@@ -64,8 +64,8 @@ Der Graph wurde zun\"achst in seine 240.382 starken
 Zusammenhangskomponenten zerlegt. Die Verteilung der
 Komponentengr\"ossen in Abbildung \ref{fig:component-size} zeigt dabei
 zwei Extreme: Es existiert eine einzelne gigantische Komponente mit
-ca. 45000 Knoten. Demgegen\"uber steht eine geringe Anzahl von kleinen
-Komponenten bis zur Gr\"osse 3 , insbesondere aber \"uber 100.000
+ca. 45.000 Knoten. Demgegen\"uber steht eine geringe Anzahl von kleinen
+Komponenten bis zur Gr\"osse drei, insbesondere aber \"uber 100.000
 einelementige Komponenten, also einzelne Knoten, die nur
 \emph{entweder} ein- oder ausgehende Kanten haben, und \"uber 10.000
 zweielementige Komponenten, also durch zwei Kanten verbundene
@@ -83,7 +83,7 @@ ist also wiederum nur sehr wenig vernetzt.
 \end{figure}
 
 Abbildung \ref{fig:komponenten-struktur} zeigt die Struktur der
-Zusammenhangskomponenten bis zur Gr\"osse 6, die mit anderen
+Zusammenhangskomponenten bis zur Gr\"osse sechs, die mit anderen
 Komponenten verbunden sind. Es ergibt sich eine sternf\"ormige
 Struktur, bei der die kleineren Komponenten fast ausschliesslich mit
 der gr\"ossten Komponente verbunden sind und es so gut wie keine
@@ -104,6 +104,7 @@ geringer sein.
 
 Die \emph{N\"utzlichkeit} des Web of Trust f\"ur die Teilnehmer, deren
 Schl\"ussel nicht in der gr\"ossten starken Zusammenhangskomponente
+(MSCC)
 enthalten sind, ist gering: Die Menge der Schl\"ussel, die von einem
 Teilnehmer anhand von Signaturketten verifiziert werden kann,
 beschr\"ankt sich zun\"achst auf die eigene Komponente und ist damit
@@ -114,7 +115,7 @@ direkt \"uber eine einzige Kante errreichen k\"onnen. Allerdings muss
 hier beachtet werden, dass das in PGP/GnuPG verwendete
 Verifizierungsmodell die L\"ange der verwendbaren Signaturketten
 begrenzt -- in der Standardeinstellung von GnuPG auf die maximale
-L\"ange 5 (siehe Abschnitt
+L\"ange f\"unf (siehe Abschnitt
 \ref{sec:das-gnupg-vertrauensmodell}). Schon innerhalb der gr\"ossten
 Komponente sind viele k\"urzeste Pfade l\"anger als dieses Maximum
 (siehe Abschnitt \ref{sec:kennz-des-graph}). Durch den zus\"atzlichen
@@ -128,14 +129,14 @@ reduziert sich diese Menge noch weiter. Gleiches gilt auch f\"ur die
 Erreichbarkeit der Menge von ca. 92000 Knoten, zu denen eine Kante von
 Knoten der gr\"ossten Komponente aus besteht. Beachtet werden muss
 allerdings die Existenz von zentralen Certificate Authorities im
-eigentlich dezentralen Web of Trust. Mit den drei seit 1997 im Rahmen der
-``Krypto-Kampagne'' der Zeitschrift c't (siehe Abschnitt
+eigentlich dezentralen Web of Trust. Mit den drei seit 1997 im Rahmen
+der ``Krypto-Kampagne'' der Zeitschrift c't (siehe Abschnitt
 \ref{sec:sozi-komp-des}) verwendeten Zertifizierungsschl\"usseln
-wurden insgesamt 23813 derzeit g\"ultige Schl\"ussel
-unterschrieben. Von diesen liegen nur 2578 Schl\"ussel innerhalb der
+wurden insgesamt 23.813 derzeit g\"ultige Schl\"ussel
+unterschrieben. Von diesen liegen nur 2.578 Schl\"ussel innerhalb der
 gr\"ossten Komponente. Wenn also nur dem verwendeten
 Zertifizierungsprozess und damit diesen drei
-Zertifizierungsschl\"usseln vertraut wird, sind immerhin etwa 20000
+Zertifizierungsschl\"usseln vertraut wird, sind immerhin etwa 20.000
 Schl\"ussel aussserhalb der gr\"ossten Komponente verifizierbar. Es
 zeigt sich hier auch die Flexibilit\"at des Web of Trust-Konzeptes,
 dass die Integration von zentralen Komponenten in das eigentlich
@@ -215,9 +216,9 @@ unterschreiben, deren Authentizit\"at sie nicht \"uberpr\"uft haben,
 um diese Warnung zu unterdr\"ucken, selbst wenn dadurch der Sinn des
 Web of Trust untergraben wird.
 
-Abbildung \ref{fig:inoutcorr} zeigt die Verteilungsfunktion des
-Verh\"altnisses von ausgehendem zu eingehendem Grad f\"ur alle Knoten
-$u$ in der gr\"ossten starken Zusammenhangskomponente, also
+Abbildung \ref{fig:inoutcorr} zeigt die kumulative Verteilungsfunktion
+des Verh\"altnisses von ausgehendem zu eingehendem Grad f\"ur alle
+Knoten $u$ in der gr\"ossten starken Zusammenhangskomponente, also
 $\frac{d^+(u)}{d^-(u)}$. Aus dieser Verteilung ergibt sich, dass eine
 positive Korrelation zwischen dem eingehendem und dem ausgehendem Grad
 eines Knotens besteht. F\"ur etwa die H\"alfte der Knoten (21.817)
@@ -251,16 +252,17 @@ in beide Richtungen verl\"auft, und eine positive Korrelation zwischen
 dem ausgehendem und dem eingehenden Grad von Knoten besteht. Der
 Schaden sollte sich also in Grenzen halten.
 
-Der durchschnittliche Clustering-Koeffizient f\"ur die MSCC betr\"agt
-$C = 0,460$. Das bedeutet, dass \emph{im Durchschnitt} etwa die
-H\"alfte der Nachbarn eines Knoten wieder verbunden sind. Der Graph
-zeigt also ein erhebliches Mass an Clustering. Zum Vergleich betr\"agt
-der Clustering-Koeffizient f\"ur ein \emph{zuf\"alliges} Netzwerk mit
-der gleichen Anzahl von Knoten und Kanten $C = 0,00025$ und f\"ur ein
-zuf\"alliges Netzwerk, dass ausserdem \"uber die gleiche Sequenz von
-Graden verf\"ugt, $C = 0,013$. In der MSCC findet sich also wesentlich
-mehr Clustering, als in einem zuf\"allig entstandenen Netzwerk zu
-erwarten w\"are.
+Der durchschnittliche Clustering-Koeffizient f\"ur die gr\"osste
+starke Zusammenhangskomponente betr\"agt $C = 0,460$. Das bedeutet,
+dass \emph{im Durchschnitt} etwa die H\"alfte der Nachbarn eines
+Knoten wieder verbunden sind. Der Graph zeigt also ein erhebliches
+Mass an Clustering. Zum Vergleich betr\"agt der Clustering-Koeffizient
+f\"ur ein \emph{zuf\"alliges} Netzwerk mit der gleichen Anzahl von
+Knoten und Kanten $C = 0,00025$ und f\"ur ein zuf\"alliges Netzwerk,
+dass ausserdem \"uber die gleiche Sequenz von Graden verf\"ugt, $C =
+0,013$. In der gr\"ossten starken Zusammenhangskomponente findet sich
+also wesentlich mehr Clustering, als in einem zuf\"allig entstandenen
+Netzwerk zu erwarten w\"are.
 
 Newman und Park bemerken, dass ein hohes Mass an Clustering
 charakteristisch f\"ur soziale Netzwerke ist und sie von vielen
@@ -304,6 +306,7 @@ Land oder Sprachraum zuordnen lassen. Interessant w\"are an dieser
 Stelle eine Untersuchung, inwiefern sich die geographische Distanz der
 L\"ander auch in der Distanz im Netzwerk der entsprechenden
 Communities wiederspiegelt.
+
 \subsubsection{Verteilung der Grade, Skalenfreiheit}
 \label{sec:verteilung-der-grade}
 
@@ -548,6 +551,7 @@ einen eingehenden Grad von 1 hat und nur von einem einzigen
 Schl\"ussel $B$ signiert wurde. F\"ur die Verifizierung von $A$ muss
 zwingend dem Besitzer von $B$ vertraut werden. Ist $B$ nicht mehr
 benutzbar, wird $A$ vom Netz getrennt.
+
 \begin{figure}[th!]
   \centering
   \subfloat[]{\label{fig:avg-pathlen}\includegraphics[scale=0.3]{images/pathlen-dist.pdf}}
@@ -634,11 +638,8 @@ gr\"ossten Zusammenhangskomponente ist aber das Vorhandensein und die
 Benutzung der CA-Schl\"ussel entscheidend, da sie andernfalls nicht
 erreichbar sind.
 
-\section{Eigenschaften einzelner Schl\"ussel, zeitliche Entwicklung}
+\section{Zeitliche Entwicklung des Schl\"usselbestandes}
 \label{sec:result-key-properties}
-
-\subsection{Zeitliche Entwicklung}
-\label{sec:zeitl-entw}
 
 \begin{figure}[th!]
   \centering
@@ -715,7 +716,7 @@ Allgemeinen nicht sofort in die Zusammenhangskomponente aufgenommen,
 sondern erst mit einiger Verz\"ogerung. Die Zusammenhangskomponente
 d\"urfte also etwas ``tr\"ager'' auf Ver\"anderungen reagieren.
 
-\subsection{Public-Key- und Hashalgorithmen}
+\section{Verwendung von Public-Key- und Hashalgorithmen}
 \label{sec:public-key-und}
 
 \begin{table}[ht!]

@@ -2,21 +2,22 @@
 
 \chapter{Methoden und Materialien}
 \label{ch:Methoden}
+
+\section{Software}
+\label{sec:software}
+
 %% ==============================
 
 %% ==============================
-\section{Warum eigene Software?}
+\subsection{Warum eigene Software?}
 %% ==============================
 \label{ch:Grundlagen:sec:WarumEigene}
 Das bereits in Abschnitt \ref{ch:Grundlagen:sec:RelatedWork} erwähnte
-\emph{wotsap}-Projekt berechnet täglich die Struktur des Web of
-Trust. Die Daten werden für eine Web-Applikation benutzt, die
-grundlegende Statistiken über Schlüssel berechnet und Pfade zwischen
-Schlüsseln graphisch darstellt. Zusätzlich werden die Daten aber auch
-für weitere Analysen zur Verfügung gestellt. In diesem Abschnitt wird
-begründet, warum für die vorliegende Arbeit nicht auf diese Daten
-zurückgegriffen wurde, sondern die Datenextraktion selbst vorgenommen
-wurde.
+\emph{wotsap}-Projekt stellt einen t\"aglich aktualisierten Datensatz
+zur Verf\"ugung, der die Struktur des Web of Trust beinhaltet. In
+diesem Abschnitt wird begründet, warum für die vorliegende Arbeit
+nicht auf diese Daten zurückgegriffen wurde, sondern die
+Datenextraktion selbst vorgenommen wurde.
 
 Ein Ziel dieser Arbeit ist es, die Struktur des Web of Trust abseits
 der grössten starken Zusammenhangskomponente zu
@@ -127,19 +128,24 @@ die mit diesen Daten gewonnen wurden, sollten sie daher mit korrekten
 Daten überprüft werden. Der Keyserver \emph{wwwkeys.ch.pgp.net} sollte
 von Anwendern nicht mehr benutzt werden.
 
-\section{Design und Implementierung}
+\subsection{Design und Implementierung}
 \label{ch:Grundlagen:sec:Design}
 
 Dieser Abschnitt beschreibt die im Rahmen dieser Arbeit erstellte
 Software zur Extraktion und Analyse des Web of Trust. Abschnitt
 \ref{ch:Grundlagen:sec:Design:subsec:der-sks-keyserver} beschreibt
-zunächst die Keyserver-Software \emph{SKS}, auf die %FIXME
-der Extraktionsteil aufbaut. Abschnitt
-\ref{ch:Grundlagen:sec:Design:subsec:eigene-software}
-beschreibt
-dann die entwickelte Software selbst und begründet das Design.
+zunächst die Keyserver-Software \emph{SKS}.
 
-\subsection{Der SKS Keyserver}
+Die im Rahmen dieser Arbeit entwickelte Software besteht aus zwei
+Teilen: Der in SKS integrierte Extraktionsteil liesst Schlüssel aus
+der Datenbank eines Keyservers aus, parst sie, reduziert sie dabei auf
+die benötigten Daten und speichert sie in einer Datei ab. Die
+reduzierten Daten werden in einer SQL-Datenbank abgelegt und können
+dort abgefragt werden. Der zweite Teil besteht aus einer Reihe von
+Werkzeugen zur Analyse dieser Daten entsprechend der Zielsetzung
+dieser Arbeit.
+
+\subsubsection{Der SKS-Keyserver}
 \label{ch:Grundlagen:sec:Design:subsec:der-sks-keyserver}
 
 SKS (Synchronizing Key Server) löst die bis dahin verbreitetste
@@ -171,25 +177,14 @@ die verschiedenen Abfragemöglichkeiten (Webinterface, HKP) während der
 \emph{recon}-Prozess für den Abgleich der Datenbank mit anderen
 Keyservern zuständig ist.
 
-\subsection{Eigene Software}
-\label{ch:Grundlagen:sec:Design:subsec:eigene-software}
-
-Die im Rahmen dieser Arbeit entwickelte Software besteht aus zwei
-Teilen: Der Extraktionsteil liesst Schlüssel aus der Datenbank eines
-Keyservers aus, parst sie, reduziert sie dabei auf die benötigten
-Daten und speichert sie in einer Datei ab. Die reduzierten Daten
-werden in einer SQL-Datenbank abgelegt und können dort abgefragt
-werden. Der zweite Teil besteht aus einer Reihe von Werkzeugen zur
-Analyse dieser Daten entsprechend der Zielsetzung dieser Arbeit.
-
 \subsubsection{Datenextraktion}
 \label{sec:datenextraktion}
 
 Die Extraktion der Daten ist recht zeitaufwendig. Auf der zur
-Verfügung stehenden Hardware (FIXME Poolrechner Hardware) werden
-ca. XX Stunden benötigt. Durch die Aufteilung kann die Extraktion der
-Daten einmalig auf dem Keyserver vorgenommen werden, während die Daten
-anschliessend auf beliebigen Rechnern zur Verfügung stehen.
+Verfügung stehenden Hardware (Pentium 4 2,4 GHz) werden ca. 4 Stunden
+benötigt. Durch die Aufteilung kann die Extraktion der Daten einmalig
+auf dem Keyserver vorgenommen werden, während die Daten anschliessend
+auf beliebigen Rechnern zur Verfügung stehen.
 
 Der Extraktionsteil wurde direkt in die SKS-Software
 integriert. Dadurch ergeben sich mehrere Vorteile: 
@@ -546,7 +541,7 @@ Zerlegung mit hohen Zuordnungszahlen ist, dass sich also die real
 existierenden Communities direkt in der Struktur des Graphen
 wiederfinden.
 
-\subsection{Communities in gerichteten Graphen}
+\subsection{Communities im gerichteten Graphen}
 \label{sec:comm-gericht-graph}
 Der Graph des Web of Trust ist inh\"arent gerichtet, da eine Signatur
 nur in eine Richtung gilt. Die meisten verf\"ugbaren Methoden zur
@@ -556,7 +551,7 @@ erst in j\"ungster Zeit vorgestellt worden (beispielsweise
 \cite{Leicht2008} und \cite{Rosvall2008}). Hier wird der Algorithmus
 ``infomap'' von Rosval et al.\cite{Rosvall2008} benutzt. 
 
-\subsection{Communities in ungerichteten Graphen}
+\subsection{Communities im ungerichteten Graphen}
 \label{sec:comm-unger-graph}
 
 
@@ -599,7 +594,7 @@ Graphen bessere Ergebnisse liefern als die hier verwendeten, aufgrund
 ihrer Berechnungskomplexit\"at f\"ur grosse Graphen wie den hier
 vorliegenden aber nicht geeignet sind.
 
-\subsection{\"Uberlappende Communities in ungerichteten Graphen}
+\subsection{\"Uberlappende Communities im ungerichteten Graphen}
 \label{sec:uberl-comm-unger}
 
 Eine Zuordnung von einer Person zu genau einer sozialen Gruppe scheint
