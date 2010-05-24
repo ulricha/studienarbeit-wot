@@ -721,7 +721,7 @@ d\"urfte also etwas ``tr\"ager'' auf Ver\"anderungen reagieren.
 \begin{table}[ht!]
   \footnotesize
   \centering
-  \subfloat{
+  \subfloat[][]{
     \label{tab:hash}
     \begin{tabular}[ht!]{l|c}
       Algorithmus & Anzahl \\
@@ -735,7 +735,7 @@ d\"urfte also etwas ``tr\"ager'' auf Ver\"anderungen reagieren.
       SHA224 & 532
     \end{tabular}
   }\quad
-  \subfloat{
+  \subfloat[][]{
   \label{tab:algs}
     \begin{tabular}{l|c}
       Algorithmus & Anzahl \\
@@ -750,7 +750,7 @@ d\"urfte also etwas ``tr\"ager'' auf Ver\"anderungen reagieren.
       DSA & 36555
     \end{tabular}
   }\quad
-  \subfloat{
+  \subfloat[][]{
     \label{tab:cert}
     \begin{tabular}{l|c}
       Cert Level & Anzahl \\
@@ -763,7 +763,7 @@ d\"urfte also etwas ``tr\"ager'' auf Ver\"anderungen reagieren.
   }
   \caption{Verwendung von Hashalgorithmen 
     \subref{tab:hash}, Public-Key-Algorithmen \subref{tab:algs} und
-    Cert-Leveln \subref{tab:certs} in der gr\"ossten starken
+    certification levels \subref{tab:cert} in der gr\"ossten starken
     Zusammenhangskomponente}
 \end{table}
 
@@ -772,7 +772,7 @@ In Tabelle \ref{tab:algs} sind schlussendlich noch einige Statistiken
 
 Die einzelnen ``certification level'' (siehe Abschnitt
 \ref{sec:das-gnupg-vertrauensmodell}) werden durchaus verwendet
-(Tabelle \ref{tab:certs}). Zwar ist die Mehrheit der Signaturen mit
+(Tabelle \ref{tab:cert}). Zwar ist die Mehrheit der Signaturen mit
 dem Standardwert ``Generic'' versehen, der keine weitere Aussage
 macht. Allerdings verf\"ugt \"uber 25\% der Signaturen \"uber den
 h\"ochsten Wert ``Positive''. Da die Level keine im Standard
