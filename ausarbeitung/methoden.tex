@@ -13,14 +13,14 @@
 %% ==============================
 \label{ch:Grundlagen:sec:WarumEigene}
 Das bereits in Abschnitt \ref{ch:Grundlagen:sec:RelatedWork} erwähnte
-\emph{wotsap}-Projekt stellt einen t\"aglich aktualisierten Datensatz
-zur Verf\"ugung, der die Struktur des Web of Trust beinhaltet. In
+\emph{wotsap}-Projekt stellt einen täglich aktualisierten Datensatz
+zur Verfügung, der die Struktur des Web of Trust beinhaltet. In
 diesem Abschnitt wird begründet, warum für die vorliegende Arbeit
 nicht auf diese Daten zurückgegriffen wurde, sondern die
 Datenextraktion selbst vorgenommen wurde.
 
 Ein Ziel dieser Arbeit ist es, die Struktur des Web of Trust abseits
-der grössten starken Zusammenhangskomponente zu
+der größten starken Zusammenhangskomponente zu
 untersuchen. \emph{wotsap} berechnet allerdings nur die Struktur eben
 dieser Zusammenhangskomponente. Schlüssel, die nicht in dieser
 Komponente enthalten sind, werden nicht beachtet. \emph{wotsap}
@@ -30,29 +30,29 @@ einer Breitensuche (rückwärts) verfolgt. Aufgrund dieser Methode
 scheint es mit vertretbarem Aufwand nicht möglich, die Extraktion auf
 alle Schlüssel auszudehnen.
 
-Der Anwendungszweck der \emph{wotsap}-Daten ist ausschliesslich die
-strukturelle Analyses des Netzes. Die über die reine Struktur
+Der Verwendungszweck der \emph{wotsap}-Daten ist ausschließlich die
+strukturelle Analyse des Netzes. Die über die reine Struktur
 hinausgehenden Daten, die über Schlüssel und Signaturen gespeichert
 werden, sind dabei auf ein Minimum reduziert: Für Schlüssel werden
-ausschliesslich die KeyID und die primäre UserID gespeichert, für
+ausschließlich die KeyID und die primäre UserID gespeichert, für
 Signaturen der certification level und die KeyID des signierten und
-des signierenden Schl\"ussels. Diese Reduktion erlaubt zwar eine sehr
+des signierenden Schlüssels. Diese Reduktion erlaubt zwar eine sehr
 kompakte Speicherung der Daten, macht den Datensatz aber für eine
 Auswertung weiterer Eigenschaften von Schlüsseln und Signaturen
-unbrauchbar. Das verwendete Dateiformat ist ausserdem recht unflexibel
-und lässt eine Speicherung weiterer Daten nur mit grösserem Aufwand
+unbrauchbar. Das verwendete Dateiformat ist außerdem recht unflexibel
+und lässt eine Speicherung weiterer Daten nur mit größerem Aufwand
 zu.
 
 Die \emph{wotsap}-Daten beinhalten nur die zum jeweiligen Zeitpunkt
 gültigen Schlüssel und Signaturen. Dieser "`Schnappschuss"' reicht für
 die strukturelle Analyse des Graphen aus. Zeitliche Entwicklungen,
-beispielsweise die Grösse des Datenbestandes, die Verwendung
+beispielsweise die Größe des Datenbestandes, die Verwendung
 bestimmter Verschlüsselungs- und Signaturalgorithmen und die Entwicklung
 einzelner Komponenten können damit aber nicht nachvollzogen werden.
 
 Die \emph{wotsap}-Methode liefert also nicht die im Rahmen dieser
 Arbeit benötigten Daten. Eine Anpassung der Software würde auf eine
-komplette Neuimplementierung hinauslaufen. Ausserdem beruht die
+komplette Reimplementierung hinauslaufen. Außerdem beruht die
 Extraktion der Daten bei \emph{wotsap} auf der veralteten und kaum
 mehr benutzten \emph{PKS}-Keyserver-Implementierung (siehe Abschnitt
 \ref{ch:Grundlagen:sec:Design:subsec:der-sks-keyserver}).
@@ -60,7 +60,7 @@ mehr benutzten \emph{PKS}-Keyserver-Implementierung (siehe Abschnitt
 Darüber hinaus ist allerdings der \emph{wotsap}-Datensatz
 fehlerhaft. Diese Fehler werden sowohl durch Fehler in der
 Implementierung als auch durch einen fehlerhaften Datenbestand auf dem
-verwendeten Keyserver verursacht: Die grösste starke
+verwendeten Keyserver verursacht: Die größte starke
 Zusammenhangskomponente die durch XXX berechnet %FIXME
 wurde (MSCC-1), enthält mit dem Stand vom 02.12.2009 ca. 44900
 Schlüssel, während der \emph{wotsap}-Datensatz (MSCC-2) vom gleichen
@@ -74,7 +74,7 @@ treten unter anderem Signaturen auf komplett widerrufenen Schlüsseln und
 Signaturen auf widerrufenen UserIDs auf. \emph{wotsap} benutzt GnuPG,
 um die OpenPGP-Pakete eines Schlüssels zu parsen. Der Code zum Parsen
 der GnuPG-Ausgabe ist fehlerhaft und führt dazu, dass \emph{wotsap}
-Widerrufssignaturen fäschlicherweise nicht beachtet.
+Widerrufssignaturen fälschlicherweise nicht beachtet.
 
 Auf der anderen Seite sind ca. 3980 Schlüssel zwar in MSCC-1
 vorhanden, nicht aber in MSCC-2. Um den Grund dafür zu finden, wurde
@@ -87,23 +87,23 @@ sie gültig sind. Kann für beide Richtungen jeweils eine Kette
 erfolgreich verifiziert werden, so ist der betreffende Schlüssel per
 definitionem in der MSCC. Im vorliegenden Fall konnte das für alle
 Schlüssel der Stichprobe gezeigt werden. Der Fehler liegt also
-wiederrum bei \emph{wotsap}, dass diese Schlüssel fälschlicherweise
-ausschliesst. Als Ursache dafür ergab sich in allen betrachteten
+wiederum bei \emph{wotsap}, dass diese Schlüssel fälschlicherweise
+ausschließt. Als Ursache dafür ergab sich in allen betrachteten
 Fällen der fehlerhafte Bestand des Keyservers
 \emph{wwwkeys.ch.pgp.net}, der von \emph{wotsap} verwendet wird. Die
 Schlüssel wurden von \emph{wotsap} nicht in die MSCC-2 übernommen,
 weil Teile der dazu notwendigen Signaturketten (komplette Schlüssel
 oder einzelne Signaturen) auf dem Keyserver nicht vorhanden
-sind. Besonders h\"aufig traten dabei Schl\"ussel auf, deren
-Ablaufdatum durch eine neue Selbstsignatur verl\"angert wurde. Dieses
+sind. Besonders häufig traten dabei Schlüssel auf, deren
+Ablaufdatum durch eine neue Selbstsignatur verlängert wurde. Dieses
 Signaturpaket fehlte auf \emph{wwwkeys.ch.pgp.net}, wodurch der
-betreffende Schl\"ussel f\"alschlicherweise als abgelaufen betrachtet
+betreffende Schlüssel fälschlicherweise als abgelaufen betrachtet
 wurde. Diese fehlenden Teile sind aber auf allen Keyservern des
 \emph{SKS}-Verbundes %FIXME
-vorhanden. Da die Ursache in allen untersuchten F\"allen die gleiche
+vorhanden. Da die Ursache in allen untersuchten Fällen die gleiche
 war, kann angenommen werden, dass der Fehler systematisch ist und
-diesen Teil der Diskrepanz zwischen den Datens\"atzen vollst\"andig
-erkl\"art. Als Ursache kommen eine mangelhafte Synchronisation
+diesen Teil der Diskrepanz zwischen den Datensätzen vollständig
+erklärt. Als Ursache kommen eine mangelhafte Synchronisation
 zwischen \emph{wwwkeys.ch.pgp.net} und dem \emph{SKS}-Netzwerk sowie
 Fehler in der auf \emph{wwwkeys.ch.pgp.net} verwendeten
 \emph{PKS}-Version in Frage.
@@ -112,15 +112,15 @@ Die Natur der Fehler legt nahe, dass hauptsächlich solche Schlüssel
 fehlen bzw. fälschlich einbezogen wurden, die nur über eine sehr
 geringe Anzahl von redundanten Pfaden zur bzw. von der MSCC
 verfügen. Gäbe es mehr redundante Pfade, so hätten einzelne
-fehlerhafte Informationen (fehlende bzw. fäschlicherweise als gültig
+fehlerhafte Informationen (fehlende bzw. fälschlicherweise als gültig
 betrachtete Schlüssel oder Signaturen) einen geringeren Einfluss.
 
 Die Anzahl fehlender bzw. fälschlich einbezogener Schlüssel (ca. 9\%
 fehlend, ca. 2\% fälschlich einbezogen relativ zu MSCC-1) ist so
-gross, dass qualitative Fehler in der Graphenstruktur zu erwarten
+groß, dass qualitative Fehler in der Graphenstruktur zu erwarten
 sind. Insbesondere Aussagen über die Verteilung von Knotengraden und
 ähnliche Aussagen anhand dieser Daten sind mit Vorsicht zu
-geniessen. Eine Reihe von Arbeiten verwendet die \emph{wotsap}-Daten
+genießen. Eine Reihe von Arbeiten verwendet die \emph{wotsap}-Daten
 als Beispiel für ein empirisches soziales bzw. Small-World-Netzwerk
 \cite{Brondsema2006} \cite{Heikkila2009} \cite{Dell'Amico2007}. Sofern
 die Ergebnisse dieser Arbeit auf experimentellen Resultaten aufbauen,
@@ -137,7 +137,7 @@ Software zur Extraktion und Analyse des Web of Trust. Abschnitt
 zunächst die Keyserver-Software \emph{SKS}.
 
 Die im Rahmen dieser Arbeit entwickelte Software besteht aus zwei
-Teilen: Der in SKS integrierte Extraktionsteil liesst Schlüssel aus
+Teilen: Der in SKS integrierte Extraktionsteil liest Schlüssel aus
 der Datenbank eines Keyservers aus, parst sie, reduziert sie dabei auf
 die benötigten Daten und speichert sie in einer Datei ab. Die
 reduzierten Daten werden in einer SQL-Datenbank abgelegt und können
@@ -151,9 +151,9 @@ dieser Arbeit.
 SKS (Synchronizing Key Server) löst die bis dahin verbreitetste
 Keyserver-Software PKS (Public Key Server) ab und wird inzwischen auf
 so gut wie allen Keyservern benutzt. Mit \emph{pgp.mit.edu} wurde im
-Juli 2009 der letzte grosse Keyserver auf SKS umgestellt. PKS benutzt
+Juli 2009 der letzte große Keyserver auf SKS umgestellt. PKS benutzt
 ein auf E-Mails basierendes Protokoll zur Synchronisation zwischen
-Keyservern, das ausgesprochen ineffizient ist. Ausserdem kommt es mit
+Keyservern, das ausgesprochen ineffizient ist. Außerdem kommt es mit
 einigen Bestandteilen des aktuellen OpenPGP-Standards wie
 z.B. \emph{PhotoIDs} und mehreren Unterschlüsseln nicht
 zurecht. PKS-Keyserver können über ein Webinterface, ein
@@ -183,7 +183,7 @@ Keyservern zuständig ist.
 Die Extraktion der Daten ist recht zeitaufwendig. Auf der zur
 Verfügung stehenden Hardware (Pentium 4 2,4 GHz) werden ca. 4 Stunden
 benötigt. Durch die Aufteilung kann die Extraktion der Daten einmalig
-auf dem Keyserver vorgenommen werden, während die Daten anschliessend
+auf dem Keyserver vorgenommen werden, während die Daten anschließend
 auf beliebigen Rechnern zur Verfügung stehen.
 
 Der Extraktionsteil wurde direkt in die SKS-Software
@@ -194,7 +194,7 @@ integriert. Dadurch ergeben sich mehrere Vorteile:
   wiederverwendet werden
 \item SKS enthält einen rudimentären OpenPGP-Parser, d.h. eine Reihe
   von Funktionen, die die Byte-Struktur einzelner OpenPGP-Pakete sowie
-  die Paket-Struktur des Schlüssels parsen und die darin enhaltenen
+  die Paket-Struktur des Schlüssels parsen und die darin enthaltenen
   Informationen in Datenstrukturen zugänglich machen. Durch die
   Verwendung dieser Funktionen kann auf eine eigene Implementierung
   eines OpenPGP-Parsers verzichtet werden.
@@ -220,9 +220,9 @@ nicht notwendig.
 Als Sprache für die Implementierung wurde OCaml ausgewählt. Im
 Extraktionsteil bestand dafür aufgrund der Integration in SKS keine
 Wahl. Der Analyseteil wurde ebenfalls in OCaml implementiert. Da die
-dort verwendeten Daten ausschliesslich aus der SQL-Datenbank stammen
+dort verwendeten Daten ausschließlich aus der SQL-Datenbank stammen
 und dort nur primitive Datentypen (Strings, Ganz- und
-Fliesskommazahlen) gespeichert werden, können aber für diesen Teil
+Fließkommazahlen) gespeichert werden, können aber für diesen Teil
 auch problemlos andere Sprachen verwendet werden.
 
 Der Extraktionsteil iteriert über alle in der SKS-Datenbank
@@ -235,13 +235,13 @@ noch
   betrachtet. Falls zu einer UserID mehrere Selbstsignaturen
   vorliegen, wird entsprechend der Empfehlung im OpenPGP-Standard nur
   die aktuellste verwendet. Liegt ein Rückrufzertifikat vor oder ist
-  der Schlüssel abgelaufen, wird das Ablauf- bzw. Rückzugsdatum
+  der Schlüssel abgelaufen, wird das Ablauf- bzw. Widerrufsdatum
   gespeichert.
 \item Fremdsignaturen sammeln. Dazu wird jede UserID betrachtet und
   die darauf angebrachten Signaturen ohne Duplikate gespeichert. Hier
   wird ebenfalls nur die neueste Signatur verwendet. Handelt es sich
-  bei der neuesten Signatur um eine Rückrufsignatur, wird das Datum
-  des Rückrufs gespeichert und zusätzlich die nächstältere Signatur
+  bei der neuesten Signatur um eine Widerrufssignatur, wird das Datum
+  des Widerrufs gespeichert und zusätzlich die nächst ältere Signatur
   gesucht, auf die sich der Rückruf bezieht.
 \item den Schlüssel und jede Fremdsignatur auf die benötigten Daten
   reduzieren. Für den Schlüssel sind dies (falls vorhanden) Rückzugs-
@@ -252,7 +252,7 @@ noch
 
   Eine Fremdsignatur wird reduziert auf die KeyID des Unterzeichners, 
   den Zertifizierungslevel, das Erstellungsdatum der Signatur,
-  falls vorhanden Ablauf- und Rückzugsdatum, den verwendeten
+  falls vorhanden Ablauf- und Widerrufssdatum, den verwendeten
   Signaturalgorithmus und den verwendeten Public-Key-Algorithmus.
 \end{itemize}
 
@@ -262,15 +262,15 @@ die zurückgezogen oder abgelaufen sind, werden unter Angabe des
 jeweiligen Datums trotzdem gespeichert. Auf diese Weise ist
 sichergestellt, dass der Datensatz möglichst vollständig ist. Für
 einen beliebigen Zeitpunkt stehen alle dann gültigen Schlüssel und
-Signaturen zur Verfügung. Es kann also gewissermassen ein
+Signaturen zur Verfügung. Es kann also gewissermaßen ein
 "`Snapshot"' des Web of Trust zu einem beliebigen Zeitpunkt
 analysiert werden.
 
 Sind alle Schlüssel extrahiert, werden noch solche Signaturen
 entfernt, deren erstellender Schlüssel im Datenbestand nicht vorhanden
-ist. Ausserdem werden für Signaturen, die von einem Unterschlüssel
+ist. Außerdem werden für Signaturen, die von einem Unterschlüssel
 erstellt wurden, die KeyID des signierenden Schlüssels auf die des
-Hauptschl\"ussels geändert. Dies ist notwendig, weil das hier
+Hauptschlüssels geändert. Dies ist notwendig, weil das hier
 verwendete Datenmodell keine Informationen über Unterschlüssel
 enthält.
 
@@ -297,10 +297,10 @@ die Signaturen verifizieren zu können. Letztendlich kostet der Aufruf
 von GnuPG selbst Zeit. Für die Anzahl der hier verarbeiteten Schlüssel
 (2,6 Millionen) scheint dieser Ansatz daher ungeeignet. Sicherlich
 sind Schlüssel mit defekten Signaturpaketen auf den Keyservern
-vorhanden. Allerdings müsste deren Anzahl sehr gross sein, um
+vorhanden. Allerdings müsste deren Anzahl sehr groß sein, um
 signifikante Änderungen in der Struktur des Graphen und den
 statistischen Auswertungen der Schlüsseleigenschaften zu
-erreichen. Eine grosse Zahl solcher Pakete scheint aber
+erreichen. Eine große Zahl solcher Pakete scheint aber
 unwahrscheinlich, da zumindest unter Sicherheitsaspekten ein Angreifer
 damit keinen offensichtlichen Gewinn erreichen kann.
 
@@ -311,8 +311,8 @@ gewünschte Datenmenge einfach als SQL-Abfrage formuliert werden. Auf
 diese Weise ergibt sich eine deutlich flexiblere
 Abfragemöglichkeit. Die Ablage in der Datenbank ist zwar etwas
 langsamer als die Daten im Speicher zu halten. Andererseits müssen die
-Daten aber nicht jedesmal komplett in den Speicher geladen und dort
-gehalten werden. Ausserdem werden effiziente Indexstrukturen der
+Daten aber nicht jedes mal komplett in den Speicher geladen und dort
+gehalten werden. Außerdem werden effiziente Indexstrukturen der
 Datenbank genutzt und müssen nicht selbst implementiert werden.
 
 \subsubsection{Datenauswertung}
@@ -321,12 +321,12 @@ Datenbank genutzt und müssen nicht selbst implementiert werden.
 Die Datenauswertung besteht aus einer Reihe von unabhängigen
 Werkzeugen, die die jeweiligen Analyseaufgaben implementieren. Diese
 sind als Kommandozeilenprogramme in separaten Prozessen
-realisiert. Eine \"Ubersicht \"uber die Aufteilung der Aufgaben auf
+realisiert. Eine Übersicht über die Aufteilung der Aufgaben auf
 die einzelnen Werkzeuge findet sich in Anhang
 \ref{cha:analysewerkzeuge}.
 
 Die zur Community-Analyse verwendeten Algorithmen (siehe Abschnitt
-\ref{sec:community-analyse}) wurden aus Zeitgr\"unden nicht selbst
+\ref{sec:community-analyse}) wurden aus Zeitgründen nicht selbst
 implementiert. Stattdessen wurden Implementierungen der jeweiligen
 Autoren verwendet.
 
@@ -336,103 +336,103 @@ Autoren verwendet.
 Die in Abschnitt
 \ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Statistiken} definierten
 Kennzahlen Eccentricity, Durchmesser, Radius, $h$-Nachbarschaften und
-charakteristische Distanz ergeben sich s\"amtlich aus den Distanzen in
-einem Graphen. Der \"ubliche Ansatz zur Berechnung dieser Kennzahlen
+charakteristische Distanz ergeben sich sämtlich aus den Distanzen in
+einem Graphen. Der übliche Ansatz zur Berechnung dieser Kennzahlen
 ist, die Distanzmatrix
 \begin{equation}
   \label{eq:7}
   D = (d(u, v))_{u, v\in V}
 \end{equation}
 zu berechnen, die die Distanz $d(u, v)$ in Zeile $u$ und Spalte $v$
-enth\"alt\cite{Brinkmeier2004}. Aus dieser Matrix aller Distanzen im
-Graphen lassen sich alle oben angef\"uhrten Kennzahlen berechnen. $D$
+enthält\cite{Brinkmeier2004}. Aus dieser Matrix aller Distanzen im
+Graphen lassen sich alle oben angeführten Kennzahlen berechnen. $D$
 kann berechnet werden, indem das single-source-shortest-path-Problem
-(SSSP) f\"ur alle $n$ Knoten oder das all-pairs-shortest-path-Problem
-(APSP) gel\"ost werden. F\"ur den vorliegenden Fall eines
-ungewichteten Graphen l\"asst sich SSSP in $\mathcal{O}(n)$ durch
-Breitensuche l\"osen. F\"ur die Berechnung der Distanzmatrix ergibt
-sich dann eine Komplexit\"at von $\mathcal{O}(nm)$.
+(SSSP) für alle $n$ Knoten oder das all-pairs-shortest-path-Problem
+(APSP) gelöst werden. Für den vorliegenden Fall eines
+ungewichteten Graphen lässt sich SSSP in $\mathcal{O}(n)$ durch
+Breitensuche lösen. Für die Berechnung der Distanzmatrix ergibt
+sich dann eine Komplexität von $\mathcal{O}(nm)$.
 
-Dieser Ansatz ist hier aufgrund der Gr\"osse des vorliegenden Graphen
-nicht geeignet. F\"ur diesen gilt $m > n$, so dass die Berechnung
-quadratisch in der Anzahl der Knoten ist. Das sequentielle L\"osen von
-SSSP f\"ur jeden Knoten auf der zur Verf\"ugung stehenden Hardware
-h\"atte einen Zeitaufwand von ca. 32 Stunden erfordert. Das Vorhalten
+Dieser Ansatz ist hier aufgrund der Größe des vorliegenden Graphen
+nicht geeignet. Für diesen gilt $m > n$, so dass die Berechnung
+quadratisch in der Anzahl der Knoten ist. Das sequentielle Lösen von
+SSSP für jeden Knoten auf der zur Verfügung stehenden Hardware
+hätte einen Zeitaufwand von ca. 32 Stunden erfordert. Das Vorhalten
 der quadratischen Distanzmatrix erfordert eine erhebliche Menge
 Speicher (ca. 8 GiB, wenn Distanzen durch 4-Byte-Ganzzahlen
-repr\"asentiert werden.
+repräsentiert werden.
 
 Allerdings ist es nicht notwendig, die gesamte Distanzmatrix
 vorzuhalten. Eccentricity, $h$-Nachbarschaften und die
 durchschnittliche Distanz eines Knotens sind bestimmbar, wenn SSSP
-\emph{f\"ur diesen Knoten} gel\"ost wurde. Durchmesser und Radius
-ergeben sich allein aus den Eccentricity-Werten f\"ur alle Knoten. Die
+\emph{für diesen Knoten} gelöst wurde. Durchmesser und Radius
+ergeben sich allein aus den Eccentricity-Werten für alle Knoten. Die
 Berechnung kann also parallelisiert werden, indem die Knotenmenge $V$
 in Teilmengen $V_1, \dots, V_k$ aufgeteilt wird, die jeweils einer
 Berechnungseinheit zugewiesen werden. Jede Berechnungseinheit $i$
-l\"ost dann SSSP f\"ur alle Knoten aus $V_i$. Die Ergebnisse m\"ussen
+löst dann SSSP für alle Knoten aus $V_i$. Die Ergebnisse müssen
 dann nur noch kombiniert werden, um Radius, Durchmesser und
 charakteristische Distanz des Graphen zu bestimmen.
 
 Dieser Ansatz wurde auf einem Cluster realisiert, dessen Knoten
 mittels Message-Passing-Interface (MPI) kommunizieren. Eine zentrale
 \emph{Master}-Instanz zerlegt die Knotenmenge des Graphen und schickt
-jeder der $k$ \emph{Worker}-Instanzen die Menge $V_k$, f\"ur die diese
-zust\"andig ist. Jede \emph{Worker}-Instanz $k$ l\"ost SSSP f\"ur alle
+jeder der $k$ \emph{Worker}-Instanzen die Menge $V_k$, für die diese
+zuständig ist. Jede \emph{Worker}-Instanz $k$ löst SSSP für alle
 Knoten aus $V_k$ sequentiell und berechnet damit die gesuchten
 Kennzahlen. Die Ergebnisse werden an die \emph{Master}-Instanz
-\"ubermittelt, die sie kombiniert.
+übermittelt, die sie kombiniert.
 
-Da die Berechnung f\"ur die einzelnen Knotenmengen $V_k$ komplett
-unabh\"angig l\"auft, beschr\"ankt sich die notwendige Kommunikation
+Da die Berechnung für die einzelnen Knotenmengen $V_k$ komplett
+unabhängig läuft, beschränkt sich die notwendige Kommunikation
 zwischen den Instanzen auf das Zuteilen der Knotenmenge zu einer
-\emph{Worker}-Instanz und die \"Ubertragung der Ergebnisse zu der
+\emph{Worker}-Instanz und die Übertragung der Ergebnisse zu der
 zentralen \emph{Master}-Instanz. Dieser Ansatz skaliert also
-ann\"ahernd linear in der Anzahl der Berechnungseinheiten.
+annähernd linear in der Anzahl der Berechnungseinheiten.
 
-Die Berechnung wurde mit 24 \emph{Worker}-Instanzen durchgef\"uhrt,
+Die Berechnung wurde mit 24 \emph{Worker}-Instanzen durchgeführt,
 wobei eine Worker-Instanz auf einem Core einer Quad-Core-Xeon-CPU
-ausgef\"uhrt wird. Insgesamt wurden also 7 Clusterknoten benutzt. Die
-notwendige Zeit f\"ur das Berechnen s\"amtlicher oben angef\"uhrter
+ausgeführt wird. Insgesamt wurden also 7 Clusterknoten benutzt. Die
+notwendige Zeit für das Berechnen sämtlicher oben angeführter
 Kennzahlen reduzierte sich damit auf ca. 20 Minuten.
 
-\section{Schl\"ussel und Invididuen}
+\section{Schlüssel und Individuen}
 \label{sec:schl-und-invid}
 
 Ein Schwachpunkt der hier vorgenommenen Analyse soll nicht
 verschwiegen werden. Es wurde argumentiert, dass die
 Signaturbeziehungen im Web of Trust Abbild sozialer Beziehungen sind
 und der Graph deswegen als Abbild eines sozialen Netzwerks betrachtet
-werden kann. Allerdings stehen die Knoten dieses Netzwerks zun\"achst
-nicht f\"ur individuelle Personen, sondern f\"ur
-Schl\"usselpaare. Eine einzelne Person kann selbstverst\"andlich
-mehrere Schl\"ussel besitzen.
+werden kann. Allerdings stehen die Knoten dieses Netzwerks zunächst
+nicht für individuelle Personen, sondern für
+Schlüsselpaare. Eine einzelne Person kann selbstverständlich
+mehrere Schlüssel besitzen.
 
-Das Problem, mehrere Schl\"ussel auf ein Individuum abzubilden,
-scheint nicht einfach. Zwar k\"onnen anhand der UserID, die einen
-Namen und eine E-Mail-Adresse enth\"alt, gleiche Personen auf mehreren
-Schl\"usseln identifiziert werden. Allerdings k\"onnen sich
-E-Mail-Adressen auch \"andern, Namen k\"onnen unterschiedlich
-geschrieben werden und Individuen k\"onnen unter unterschiedlichen
+Das Problem, mehrere Schlüssel auf ein Individuum abzubilden,
+scheint nicht einfach. Zwar können anhand der UserID, die einen
+Namen und eine E-Mail-Adresse enthält, gleiche Personen auf mehreren
+Schlüsseln identifiziert werden. Allerdings können sich
+E-Mail-Adressen auch ändern, Namen können unterschiedlich
+geschrieben werden und Individuen können unter unterschiedlichen
 Namen oder Pseudonymen auftreten. Diese Vorgehensweise ist also
 vermutlich mit einer nicht unwesentlichen Fehlerrate verbunden. Ein
 schwerwiegenderes Problem ist aber, dass sich durch die Reduktion auf
-Individuen die Graphenstruktur erheblich ver\"andern w\"urde. W\"urden
-etwa alle Schl\"ussel einer Person und deren Signaturen auf einen
-Knoten zusammengefasst, erg\"abe sich potentiell ein fundamental
+Individuen die Graphenstruktur erheblich verändern würde. Würden
+etwa alle Schlüssel einer Person und deren Signaturen auf einen
+Knoten zusammengefasst, ergäbe sich potentiell ein fundamental
 anderer Graph.
 
-Dieser Ansatz wurde von Warren et al.\cite{Warren2007} gew\"ahlt. In
-dem dort betrachteten PGP-Netzwerk aus dem Jahr 2006 verf\"ugt jedes
-von 830.000 Individuen durchschnittlich \"uber 2,38 Schl\"ussel.
+Dieser Ansatz wurde von Warren et al.\cite{Warren2007} gewählt. In
+dem dort betrachteten PGP-Netzwerk aus dem Jahr 2006 verfügt jedes
+von 830.000 Individuen durchschnittlich über 2,38 Schlüssel.
 
-Der Fokus dieser Arbeit liegt zun\"achst tats\"achlich auf der
-Struktur der Signaturbeziehungen und nur sekund\"ar auf der sozialen
-Komponente. Die G\"ultigkeit \emph{vorhandener} Beziehungen wird durch
-das beschriebene Problem nicht gAus diesen Gr\"unden wurde auf eine Reduktion des
-Netzwerks verzichtet. Die Aussagekraft hinsichtlich sozialer
-Beziehungen und insbesondere \"uber einzelne \emph{Personen} sollte
-dann allerdings mit Vorsicht betrachtet werden.
+Der Fokus dieser Arbeit liegt zunächst tatsächlich auf der Struktur
+der Signaturbeziehungen und nur sekundär auf der sozialen
+Komponente. Die Gültigkeit \emph{vorhandener} Beziehungen wird durch
+das beschriebene Problem nicht beeintr\"achtigt. Aus diesen Gründen
+wurde auf eine Reduktion des Netzwerks verzichtet. Die Aussagekraft
+hinsichtlich sozialer Beziehungen und insbesondere über einzelne
+\emph{Personen} sollte dann allerdings mit Vorsicht betrachtet werden.
 
 \section{Community-Analyse}
 \label{sec:community-analyse}
@@ -444,31 +444,31 @@ In Abschnitt \ref{sec:sozi-komp-des} wurden Mechanismen beschrieben,
 die zur Entstehung des Web of Trust beitragen. Ausgehend davon kann
 die Annahme getroffen werden, dass die Vernetzung wesentlich von zwei
 Faktoren beeinflusst wird: Teilnehmer vernetzen sich einerseits
-aufgrund ihrer Zugeh\"origkeit zu einer \emph{sozialen Gruppe}. Dabei
+aufgrund ihrer Zugehörigkeit zu einer \emph{sozialen Gruppe}. Dabei
 kann es sich um Open-Source-Projekte wie z.B. Debian, akademische
 Einrichtungen und Firmen handeln, aber auch um eine Gruppe von
 Freunden oder Bekannten. Andererseits vernetzen sich Teilnehmer auf
-Keysigning-Parties mit einer relativ grossen Anzahl Benutzer, die
+Keysigning-Parties mit einer relativ großen Anzahl Benutzer, die
 ihnen nicht unbedingt bekannt sind und mit denen sie keine starke
-Gruppenzugeh\"origkeit verbindet. Offensichtlich ist allerdings, dass
-diese Mechanismen sich nicht gegenseitig ausschliessen. Die bereits in
+Gruppenzugehörigkeit verbindet. Offensichtlich ist allerdings, dass
+diese Mechanismen sich nicht gegenseitig ausschließen. Die bereits in
 \ref{sec:sozi-komp-des} beschriebene Bandbreite von Keysigning-Parties
 reicht von Ad-hoc-Veranstaltungen mit wenigen Teilnehmern, die
-durchaus der selben Institution angeh\"orig sein k\"onnen, bis zu
-grossen, formalisierten Veranstaltungen auf Konferenzen und Messen mit
+durchaus der selben Institution angehörig sein können, bis zu
+großen, formalisierten Veranstaltungen auf Konferenzen und Messen mit
 etlichen Teilnehmern.
 
 Es soll nun untersucht werden, inwiefern sich diese postulierten
 Entstehungsmechanismen in der Struktur, also den topologischen
 Eigenschaften, des Web of Trust wiederfinden. Angenommen wird, dass
-sich ein hoher Anteil der Teilnehmer prim\"ar anhand dieser beiden
+sich ein hoher Anteil der Teilnehmer primär anhand dieser beiden
 Mechanismen vernetzen und der Anteil an Signaturen zwischen
 Teilnehmern, die nicht durch eine Keysigning-Party oder eine soziale
 Gruppe entstanden ist, deutlich geringer ist. In diesem Fall ist zu
 erwarten, dass sich soziale Gruppen und die Ergebnisse von
 Keysigning-Parties als Gruppen von Knoten im Netzwerk wiederfinden,
 die untereinander eine hohe Anzahl von Kanten hat, d.h. \emph{dicht}
-vernetzt ist, w\"ahrend sich zu Knoten ausserhalb der Gruppe nur
+vernetzt ist, während sich zu Knoten außerhalb der Gruppe nur
 relativ wenige Kanten finden. Diese Eigenschaft entspricht exakt der
 in Abschnitt
 \ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities}
@@ -477,17 +477,17 @@ Methode deshalb sinnvoll, mit vorhandenen Methoden zur
 Community-Erkennung eine Zerlegung des Graphen zu berechnen und dann
 zu untersuchen, inwiefern sich die einzelnen so berechneten
 Communities entsprechend der Annahme auf soziale Gruppen
-bzw. Keysigning-Parties abbilden lassen. Beispielsweise k\"onnten sich
+bzw. Keysigning-Parties abbilden lassen. Beispielsweise könnten sich
 eine (oder mehrere) Communities ergeben, die von Mitgliedern des
 Debian-Projekts dominiert werden.
 
-Dazu sind Kriterien n\"otig, um eine berechnete Community einer
-sozialen Gruppe, einer Keysigning-Party oder beidem zuzuordnen. F\"ur
-Keysigning-Parties ist anzunehmen, dass die Signaturvorg\"ange
+Dazu sind Kriterien nötig, um eine berechnete Community einer
+sozialen Gruppe, einer Keysigning-Party oder beidem zuzuordnen. Für
+Keysigning-Parties ist anzunehmen, dass die Signaturvorgänge
 zwischen den Teilnehmern einer KSP innerhalb eines eng begrenzten
 Zeitraums nach Stattfinden der KSP vorgenommen werden. Als einfaches
-Kriterium f\"ur die Erkennung einer Keysigning-Party kann also eine
-starke zeitliche Korrelation der Signaturvorg\"ange zwischen der
+Kriterium für die Erkennung einer Keysigning-Party kann also eine
+starke zeitliche Korrelation der Signaturvorgänge zwischen der
 Mehrzahl der Community-Mitglieder verwendet werden. Konkret wird hier
 eine Community als Produkt einer KSP betrachtet, wenn 80\% der
 Signaturen zwischen den Mitgliedern innerhalb eines Monats vorgenommen
@@ -496,46 +496,46 @@ wurden.
 
 
 Die Zuordnung zu sozialen Gruppen wird dadurch erschwert, dass --
-abgesehen von den Schl\"usseln und Signaturen selbst -- keine
-empirischen Daten \"uber die Gruppenzugeh\"origkeit vorliegen. Die
+abgesehen von den Schlüsseln und Signaturen selbst -- keine
+empirischen Daten über die Gruppenzugehörigkeit vorliegen. Die
 einzigen Daten, die eine (primitive) Zuordnung erlauben, sind die in
-den UserIDs enthaltenen E-Mail-Adressen. \"Uber die Top-Level-Domain
+den UserIDs enthaltenen E-Mail-Adressen. Über die Top-Level-Domain
 (TLD) kann ein User einem Land zugeordnet werden, sofern es sich nicht
-um eine der generischen TLDs (com, org, net) handelt. \"Uber die
+um eine der generischen TLDs (com, org, net) handelt. Über die
 Second-Level-Domain kann versucht werden, einen Nutzer einer
-Institution zuzuordnen. Ein User, der beispielsweise \"uber eine
-E-Mail-Adresse mit der Domain debian.org verf\"ugt, ist sicherlich ein
+Institution zuzuordnen. Ein User, der beispielsweise über eine
+E-Mail-Adresse mit der Domain debian.org verfügt, ist sicherlich ein
 Mitglied des Debian-Projekts. Hilfreich dabei ist, dass Teilnehmer
-dazu tendieren, alle ihre Adressen auf ihren Schl\"usseln zu
-vermerken, so dass viele Schl\"ussel mehrere UserIDs und
+dazu tendieren, alle ihre Adressen auf ihren Schlüsseln zu
+vermerken, so dass viele Schlüssel mehrere UserIDs und
 E-Mail-Adressen haben (siehe Abschnitt
-\ref{sec:result-key-properties}). Dadurch werden die verf\"ugbaren
-Informationen \"uber Gruppenzugeh\"origkeiten erh\"oht. Adressen
+\ref{sec:result-key-properties}). Dadurch werden die verfügbaren
+Informationen über Gruppenzugehörigkeiten erhöht. Adressen
 verbreiteter ``Freemail''-Anbieter wie Gmail, GMX und Yahoo sowie
-Adressen von Internet Service Providern d\"urfen dabei nat\"urlich
-nicht verwendet werden, weil ihre Verwendung nichts \"uber eine
-Gruppenzugeh\"origkeit aussagt.
+Adressen von Internet Service Providern dürfen dabei natürlich
+nicht verwendet werden, weil ihre Verwendung nichts über eine
+Gruppenzugehörigkeit aussagt.
 
-\"Ahnlich wie f\"ur Keysigning-Parties werden wieder einfache
+Ähnlich wie für Keysigning-Parties werden wieder einfache
 Schwellwerte verwendet, um eine Community einer sozialen Gruppe, also
 einer Domain, zuzuordnen: Eine Community kann einer Domain
 \emph{zugeordnet} werden, wenn mindestens 80\% der Mitglieder
-eine UserID mit dieser Domain haben. Ausserdem wird eine Community von
+eine UserID mit dieser Domain haben. Außerdem wird eine Community von
 einer Domain \emph{dominiert}, wenn ein erheblicher Anteil -- konkret
 mindestens 40\% -- der Mitglieder eine UserID mit dieser Domain haben.
 
 Die Schwellwerte wurden nicht anhand empirischer Daten festgelegt
-sondern dr\"ucken nur ein intuitives Verst\"andnis f\"ur die
-\"uberwiegende Mehrzahl der Mitglieder einer Gruppe bzw. einen
+sondern drücken nur ein intuitives Verständnis für die
+überwiegende Mehrzahl der Mitglieder einer Gruppe bzw. einen
 erheblichen Anteil der Mitglieder einer Gruppe aus.
 
-W\"ahrend Modularity die G\"ute einer Zerlegung nur bezogen auf die
-Struktur des Graphen misst, dr\"ucken die Zuordnungszahlen die G\"ute
+Während Modularity die Güte einer Zerlegung nur bezogen auf die
+Struktur des Graphen misst, drücken die Zuordnungszahlen die Güte
 einer Partitionierung in Bezug auf die oben formulierte Hypothese
-\"uber die Entstehung des Netzwerks aus. Wenn diese Hypothese
+über die Entstehung des Netzwerks aus. Wenn diese Hypothese
 zutrifft, ist eine Zerlegung in Bezug darauf ``besser'', wenn eine
-gr\"ossere Anzahl von Communities einer sozialen Gruppe oder
-Keysigning-Party zugeordnet werden kann. Es kann nicht vorrausgesetzt
+grössere Anzahl von Communities einer sozialen Gruppe oder
+Keysigning-Party zugeordnet werden kann. Es kann nicht vorausgesetzt
 werden, dass eine Zerlegung mit hoher Modularity automatisch auch eine
 Zerlegung mit hohen Zuordnungszahlen ist, dass sich also die real
 existierenden Communities direkt in der Struktur des Graphen
@@ -543,11 +543,11 @@ wiederfinden.
 
 \subsection{Communities im gerichteten Graphen}
 \label{sec:comm-gericht-graph}
-Der Graph des Web of Trust ist inh\"arent gerichtet, da eine Signatur
-nur in eine Richtung gilt. Die meisten verf\"ugbaren Methoden zur
+Der Graph des Web of Trust ist inhärent gerichtet, da eine Signatur
+nur in eine Richtung gilt. Die meisten verfügbaren Methoden zur
 Community-Erkennung setzen im Gegensatz dazu einen ungerichteten
-Graphen vorraus. Methoden, die auf gerichteten Graphen arbeiten, sind
-erst in j\"ungster Zeit vorgestellt worden (beispielsweise
+Graphen voraus. Methoden, die auf gerichteten Graphen arbeiten, sind
+erst in jüngster Zeit vorgestellt worden (beispielsweise
 \cite{Leicht2008} und \cite{Rosvall2008}). Hier wird der Algorithmus
 ``infomap'' von Rosval et al.\cite{Rosvall2008} benutzt. 
 
@@ -555,11 +555,11 @@ erst in j\"ungster Zeit vorgestellt worden (beispielsweise
 \label{sec:comm-unger-graph}
 
 
-Der bis jetzt am h\"aufigsten verwendete Ansatz f\"ur die
+Der bis jetzt am häufigsten verwendete Ansatz für die
 Community-Erkennung in gerichteten Netzwerken ist es, die Richtung der
 Kanten zu ignorieren und den Graphen als ungerichteten Graphen zu
 behandeln. Auch die Arbeiten, die den Web of Trust-Graphen unter
-Community-Gesichtspunkten analysieren oder ihn als Benchmark f\"ur den
+Community-Gesichtspunkten analysieren oder ihn als Benchmark für den
 Vergleich von Algorithmen verwenden, gehen so vor (siehe Abschnitt
 \ref{ch:Grundlagen:sec:RelatedWork}. Auch wenn dieses Vorgehen akzeptable Resultate
 liefern kann, ist doch klar, dass durch das Ignorieren der Richtung
@@ -568,57 +568,57 @@ beeinflussen kann.
 
 Da die Zerlegung des gerichteten Graphen keine verwertbaren Ergebnisse
 lieferte (siehe Abschnitt \ref{sec:ergebnisse-fur-den}), wurde als
-Ausweichl\"osung auf diesen Ansatz zur\"uckgegriffen.  Im Fall des Web
+Ausweichlösung auf diesen Ansatz zurückgegriffen.  Im Fall des Web
 of Trust ist allerdings ein erheblicher Anteil der verbundenen
 Knotenpaare nur in eine Richtung verbunden, d.h. es existiert keine
 ``Gegenkante'' (siehe Abschnitt
 \ref{sec:result-allg-merkm-des}). Damit ist auch der
-Informationsverlust durch die Reduzierung erheblich. Die Qualit\"at
+Informationsverlust durch die Reduzierung erheblich. Die Qualität
 der Community-Zerlegung und die sich daraus ergebende Zuordnung zu
 sozialen Gruppen und Keysigning-Parties stellt also sicher nicht das
 Optimum dar.
 
 Wie bereits in Abschnitt
 \ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities}
-beschrieben, existiert -- insbesondere f\"ur ungerichtete Graphen --
+beschrieben, existiert -- insbesondere für ungerichtete Graphen --
 eine Vielzahl von Methoden zur Zerlegung eines Graphen in
 Communities. Dabei hat sich bislang kein ``bester'' Algorithmus
-herauskristallisiert, auch wenn einige Algorithmen f\"ur eine Reihe
+herauskristallisiert, auch wenn einige Algorithmen für eine Reihe
 von Benchmark-Graphen bessere Ergebnisse liefern als andere
 \cite{Lancichinetti2009}. Basierend auf diesem Vergleich wurde der
 Algorithmus von Blondel et al. (siehe Abschnitt
-\ref{sec:algor-von-blond} ausgew\"ahlt, der ausserdem gut auf grosse
-Graphen skaliert und f\"ur den eine Open-Source-Source-Implementierung
-verf\"ugbar ist.  Zwar existieren Algorithmen, die f\"ur kleinere
+\ref{sec:algor-von-blond} ausgewählt, der außerdem gut auf große
+Graphen skaliert und für den eine Open-Source-Source-Implementierung
+verfügbar ist.  Zwar existieren Algorithmen, die für kleinere
 Graphen bessere Ergebnisse liefern als die hier verwendeten, aufgrund
-ihrer Berechnungskomplexit\"at f\"ur grosse Graphen wie den hier
+ihrer Berechnungskomplexität für große Graphen wie den hier
 vorliegenden aber nicht geeignet sind.
 
-\subsection{\"Uberlappende Communities im ungerichteten Graphen}
+\subsection{Überlappende Communities im ungerichteten Graphen}
 \label{sec:uberl-comm-unger}
 
 Eine Zuordnung von einer Person zu genau einer sozialen Gruppe scheint
 unrealistisch. Statt dessen ist davon auszugehen, dass eine Person im
-Allgemeinen zu mehreren Institutionen oder Gruppen zugeh\"orig
-ist. Ebenso ist es m\"oglich, dass sie sich einerseits im Kontext
+Allgemeinen zu mehreren Institutionen oder Gruppen zugehörig
+ist. Ebenso ist es möglich, dass sie sich einerseits im Kontext
 einer sozialen Gruppe vernetzt, andererseits aber auch an
-Keysigning-Parties teilnimmt. Eine solche multiple Zugeh\"origkeit
+Keysigning-Parties teilnimmt. Eine solche multiple Zugehörigkeit
 sollte sich im Netzwerk durch eine Mitgliedschaft eines Knotens in
-mehreren Communities ausdr\"ucken. Wie in
-\ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities} erw\"ahnt,
+mehreren Communities ausdrücken. Wie in
+\ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities} erwähnt,
 existiert eine Klasse von Algorithmen, die ein Netzwerk in
-\emph{\"uberlappende} Communities zerlegt, so dass ein Knoten Teil von
+\emph{überlappende} Communities zerlegt, so dass ein Knoten Teil von
 mehreren Communities sein kann. Um zu untersuchen, inwiefern dieser
-\"Uberlappungseffekt die Zuordnung von Knoten zu sozialen Gruppen und
-KSPs beeinflusst, wurde zus\"atzlich noch eine \"uberlappende
+Überlappungseffekt die Zuordnung von Knoten zu sozialen Gruppen und
+KSPs beeinflusst, wurde zusätzlich noch eine überlappende
 Zerlegung mit dem Algorithmus COPRA (siehe Abschnitt \ref{sec:copra}
 berechnet. COPRA erwartet einen Parameter $v$, der angibt, zu wie
-vielen Communities ein Knoten geh\"oren kann. Um hier das Optimum
-bez\"uglich der Modularity zu finden, wurden Zerlegungen mit Werten
+vielen Communities ein Knoten gehören kann. Um hier das Optimum
+bezüglich der Modularity zu finden, wurden Zerlegungen mit Werten
 $v=2, \dots, 15$ berechnet. Zum Vergleich wurde eine Zerlegung mit
-$v=1$ berechnet, die keine \"Uberlappung erlaubt. Da COPRA
-nichtdeterministisch ist, wurden f\"ur jeden Wert 10 Berechnungen
-durchgef\"uhrt, um die Abweichung zu ermitteln.
+$v=1$ berechnet, die keine Überlappung erlaubt. Da COPRA
+nichtdeterministisch ist, wurden für jeden Wert 10 Berechnungen
+durchgeführt, um die Abweichung zu ermitteln.
 
 
 
