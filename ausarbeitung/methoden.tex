@@ -34,12 +34,13 @@ strukturelle Analyses des Netzes. Die über die reine Struktur
 hinausgehenden Daten, die über Schlüssel und Signaturen gespeichert
 werden, sind dabei auf ein Minimum reduziert: Für Schlüssel werden
 ausschliesslich die KeyID und die primäre UserID gespeichert, für
-Signaturen der Cert level und die Schlüssel. Diese Reduktion erlaubt
-zwar eine sehr kompakte Speicherung der Daten, macht den Datensatz
-aber für eine Auswertung weiterer Eigenschaften von Schlüsseln und
-Signaturen unbrauchbar. Das verwendete Dateiformat ist ausserdem recht
-unflexibel und lässt eine Speicherung weiterer Daten nur mit grösserem
-Aufwand zu.
+Signaturen der certification level und die KeyID des signierten und
+des signierenden Schl\"ussels. Diese Reduktion erlaubt zwar eine sehr
+kompakte Speicherung der Daten, macht den Datensatz aber für eine
+Auswertung weiterer Eigenschaften von Schlüsseln und Signaturen
+unbrauchbar. Das verwendete Dateiformat ist ausserdem recht unflexibel
+und lässt eine Speicherung weiterer Daten nur mit grösserem Aufwand
+zu.
 
 Die \emph{wotsap}-Daten beinhalten nur die zum jeweiligen Zeitpunkt
 gültigen Schlüssel und Signaturen. Dieser "`Schnappschuss"' reicht für

@@ -44,3 +44,13 @@ results-*
 .omakedb*
 *.
 *.omc
+.DS_Store
+.RData
+.Rhistory
+.analyze/basic_properties
+.analyze/basic_properties_mpi
+.analyze/betweeness_ser
+.analyze/clustering_coefficient_ser
+.analyze/complete_graph*
+
+
