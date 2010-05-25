@@ -368,21 +368,21 @@ Power-Law-Verteilung der Grade haben, bei denen die Knoten mit hohem
 Grad aber eher an der \emph{Peripherie} liegen und keine zentrale
 Rolle im Sinne von Hubs \"ubernehmen.  Hubs ergeben sich erst dann,
 wenn Knoten mit hohem Grad prim\"ar mit Knoten vernetzt sind, die
-wiederum einen hohen Grad haben (ebd.). Es scheint auf der anderen
-Seite nicht unrealistisch, dass ein Netzwerk, welches in
-charakteristischen Aspekten einem skalenfreien Netzwerk
-\emph{\"ahnelt}, auch \"ahnliche Eigenschaften aufweisen \emph{kann}.
+wiederum einen hohen Grad haben. Eine tats\"achliche
+Power-Law-Verteilung ist f\"ur die Existenz einer Hub-Struktur nicht
+notwendig, es reicht als notwendiges Kriterium bereits eine Verteilung
+mit hoher Variabilit\"at (ebd.). Eine solche ist hier vorhanden.
 
-Um zu \"uberpr\"ufen, ob die gut vernetzten Knoten als Hubs fungieren,
-wurde zun\"achst die Korrelationsfunktion $k_{nn}$ berechnet. Diese
-verbindet f\"ur gerichtete Graphen einen Grad $d$ mit dem Durchschnitt
-des Grads der Nachbarn der Knoten, die diesen Grad $d$ haben. Sie
-misst also, wie hoch der Grad von Knoten ist, die mit Knoten vom Grad
-$d$ verbunden sind. Abbildung \ref{fig:knn} zeigt die Verteilung von
-$k_{nn}$ \"uber alle Grade $d$. Aus der ansteigenden Kurve f\"ur
-ansteigende Grade kann geschlossen werden, dass Knoten mit hohem Grad
-dazu tendieren, zu anderen Knoten mit hohem Grad verbunden zu
-sein. Diese Knoten scheinen also in der Tat einen \emph{Kern} des
+Um zu \"uberpr\"ufen, ob die gut vernetzten Knoten tats\"achlich als
+Hubs fungieren, wurde zun\"achst die Korrelationsfunktion $k_{nn}$
+berechnet. Diese verbindet f\"ur gerichtete Graphen einen Grad $d$ mit
+dem Durchschnitt des Grads der Nachbarn der Knoten, die diesen Grad
+$d$ haben. Sie misst also, wie hoch der Grad von Knoten ist, die mit
+Knoten vom Grad $d$ verbunden sind. Abbildung \ref{fig:knn} zeigt die
+Verteilung von $k_{nn}$ \"uber alle Grade $d$. Aus der ansteigenden
+Kurve f\"ur ansteigende Grade kann geschlossen werden, dass Knoten mit
+hohem Grad dazu tendieren, zu anderen Knoten mit hohem Grad verbunden
+zu sein. Diese Knoten scheinen also in der Tat einen \emph{Kern} des
 Netzwerkes zu bilden. Um dies zu untermauern, wurde zus\"atzlich noch
 der Assortativity-Koeffizient $r$ \cite{PhysRevLett.89.208701}
 berechnet. Ein positiver Wert von $r$ bedeutet, dass eine positive

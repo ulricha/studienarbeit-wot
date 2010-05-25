@@ -1092,22 +1092,36 @@ Clustering-Koeffizienten\cite{Watts1998}.
 \subsection{Skalenfreie Netzwerke}
 \label{sec:skal-netzw}
 
-Definition einer Power-Law-Verteilung. Verbindung mit Netzwerken:
-Power-Law in Gradverteilung. Barabasi: Skale free. Netzwerke mit
-dieser Eigenschaft überall gefunden (bsp: sozial, biologisch,
-technisch). allerdings für viele dieser netzwerke bestritten, dass
-es sich um ein wirkliches power-law handelt und dass
-preferential-attachment als erzeugungsmechanismus wirkt. Erzeugendes
-Modell vorgeschlagen, dass Graphen mit Power-law-Verteilung erzeugt ->
-preferential attachment.
+Eine Verteilung $p$ folgt einem \emph{power law}, wenn sie die Form
 
-welche eigenschaften werden scale-free networks zugeschrieben? li et
-al. bemerken, dass konfusion herrscht, welche eigenschaften
-skalenfreie netzwerke ausmachen und welche daraus folgen. vielleicht
-auch biologen-essay zitieren.
+\begin{equation}
+  \label{eq:8}
+  p(k) = ck^{-\delta} \quad \delta > 0, c > 0
+\end{equation}
+hat\cite{Baumann2004}. Damit kommen kleine Werte h\"aufig vor,
+w\"ahrend sehr grosse Werte nur sehr selten vorkommen.  Ein zentrales
+Merkmal solcher Verteilungen ist eine hohe
+\emph{Variabilit\"at}. Damit ist gemeint, dass die Abweichungen vom
+Durchschnittswert sich um mehrere Gr\"ossenordnungen unterscheiden
+k\"onnen, so dass der Durchschnitt nicht besonders aussagekr\"aftig
+ist.
 
-\cite{Barabasi1999} 
-baz
+Ein Netzwerk, in dem die Verteilung der Knotengrade einem power law
+folgt, wird als \emph{skalenfrei} bezeichnet. Dieser Begriff geht auf
+Barabasi und Albert zur\"uck, die feststellten, dass eine Reihe von
+Netzwerken aus verschiedenen Bereichen -- etwa technologische, soziale
+oder biologische Netzwerke -- diese Eigenschaft
+aufweisen\cite{Barabasi1999}.
+
+Skalenfreien Netzwerken wird eine Reihe von allgemeinen Eigenschaften
+zugeschrieben. Die wichtigste Eigenschaft ist, dass skalenfreie
+Netzwerke sehr gut verbundene \emph{Hubs}, also Knoten mit sehr hohem
+Grad, enthalten. Diese halten das Netzwerk zusammen und sorgen
+daf\"ur, dass das Netzwerk bei der gezielten Entfernung dieser Hubs
+sehr schnell zusammenbricht. Auf der anderen Seite sollen sich
+skalenfreie Netzwerke sehr robust gegen\"uber der zuf\"alligen
+Entfernung von Knoten zeigen, da die Chance, dabei einen Knoten mit
+niedrigem Grad zu treffen, hoch ist\cite{Albert2000}.
 
 \subsection{Communities}
 \label{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities}
