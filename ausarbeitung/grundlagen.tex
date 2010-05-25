@@ -8,7 +8,7 @@
 Dieses Kapitel führt Grundlagen ein, die für das Verständnis der
 Arbeit notwendig sind. Dies sind zum einen die Kryptographie mit
 öffentlichen Schlüsseln und das sich daraus ergebende Problem der
-Authentifizierung öffentlicher Schlüssel. Zum anderen wird auf die
+Authentifizierung öffentlicher Schlüssel. Ausserdem wird auf die
 Funktionsweise der PGP-Software eingegangen.
 
 Da der Fokus dieser Arbeit auf der Netzwerkstruktur des Web of Trust
@@ -17,7 +17,7 @@ der PGP-Software nur in dem Ausmaß besprochen, dass für die weitere
 Arbeit nötig ist. Für detailliertere Darstellungen wird auf
 entsprechende Literatur verwiesen.
 
-Abschnitt \ref{sec:graph-und-netzw} definiert zunächst den
+Abschnitt \ref{sec:graph-und-netzw} definiert dann den
 grundlegenden Begriff des Graphen und einige verwandte Begriffe und
 führt dann die Methoden aus dem Bereich der Netzwerkanalyse ein, mit
 denen die Struktur des Web of Trust untersucht wird.
@@ -159,12 +159,12 @@ Vorkehrungen getroffen werden, um die Authentizität des Schlüssels
 sicherzustellen. Ein aktiver Angreifer $M$ könnte dann den echten
 Schlüssel von $A$ abfangen und durch einen Schlüssel ersetzen, der
 zwar die Identität von $A$ trägt, aber unter der Kontrolle von $M$
-steht. $M$ wäre dann in der Lage, Nachrichten zu entschlüsseln,
-die von $B$ mittels des vermeintlich $A$ gehörenden Schlüssels
-verschlüsselt wurden. $M$ könnte darüber hinaus solche
-Nachrichten mit dem echten Schlüssel von $A$ verschlüsseln und sie
-weiter schicken. Auf diese Weise bliebe der Angriff unbemerkt. Ein
-solcher Angriff wird als Man-in-the-middle-Angriff bezeichnet.
+steht. $M$ wäre dann in der Lage, Nachrichten zu entschlüsseln, die
+von $B$ mittels des vermeintlich $A$ gehörenden Schlüssels
+verschlüsselt wurden. $M$ könnte darüber hinaus solche Nachrichten mit
+dem echten Schlüssel von $A$ verschlüsseln und sie weiter
+schicken. Auf diese Weise bliebe der Angriff unbemerkt. Ein solcher
+Angriff wird als \emph{Man-in-the-middle-Angriff} bezeichnet.
 
 Natürlich kann die Authentizität eines Schlüssels überprüft
 werden, wenn dieser bei einem persönlichen Treffen übergeben
@@ -582,15 +582,15 @@ dieses Schlüssels können dann nicht benutzt werden.
 \subsection{Das Keyserver-Netzwerk}
 \label{sec:das-keys-netzw}
 
-Die Verbreitung von öffentlichen Schlüsseln ist auf beliebigen
-Wegen möglich, etwa per E-Mail oder auf Webseiten. Ein zentraler
-Ablageort für öffentliche Schlüssel erleichtert das Auffinden
-derselben aber erheblich. Im Kontext von PGP wird diese Aufgabe von
-\emph{Keyservern} übernommen. Dabei handelt es sich im wesentlichen
-um Datenbanken von OpenPGP-Schlüsseln, die nach verschiedenen
-Kriterien (etwa nach KeyID oder UserID) durchsucht werden
-können. Benutzer können ihre öffentlichen auf diese Keyserver
-laden, um sie der Öffentlichkeit zur Verfügung zu stellen.
+Die Verbreitung von öffentlichen Schlüsseln ist auf beliebigen Wegen
+möglich, etwa per E-Mail oder auf Webseiten. Ein zentraler Ablageort
+für öffentliche Schlüssel erleichtert das Auffinden derselben aber
+erheblich. Im Kontext von PGP wird diese Aufgabe von \emph{Keyservern}
+übernommen. Dabei handelt es sich im wesentlichen um Datenbanken von
+OpenPGP-Schlüsseln, die nach verschiedenen Kriterien (etwa nach KeyID
+oder UserID) durchsucht werden können. Benutzer können ihre
+öffentlichen Schl\"ussel auf diese Keyserver laden, um sie der
+Öffentlichkeit zur Verfügung zu stellen.
 
 Schlüssel können von beliebigen Personen auf Keyserver geladen
 werden, nicht nur durch die Benutzer. Auf diesem Weg werden auch
@@ -697,7 +697,7 @@ Identität (in Form der \emph{UserID}) übereinstimmt. Diese
 stattfinden, da sonst eine sinnvolle Identitätsüberprüfung im
 Allgemeinen nicht möglich ist. Der Unterzeichnete sollte zuerst den
 Fingerabdruck seines Schlüssels präsentieren. Anhand dieses
-Fingerabdrucks kann der Unterzeichnete überprüfen, dass der zu
+Fingerabdrucks kann der Unterzeichner überprüfen, dass der zu
 unterschreibende Schlüssel tatsächlich der des Unterzeichneten
 ist.  Der Unterzeichnete sollte dann ein Dokument präsentieren, dass
 seine Identität belegt. Um die Verwendung von gefälschten
@@ -769,17 +769,17 @@ also problemlos in das dezentrale Web of Trust ein.
 \subsubsection{Keysigning-Parties}
 \label{sec:keysigning-parties}
 
-Das in Abschnitt \ref{sec:ubliche-zert} beschriebene übliche
-Verfahren betrifft zunächst nur zwei Personen. Wenn mehrere Personen
-zusammenkommen, um ihre Schlüssel gegenseitig zu unterschreiben,
-wird von einer \emph{Keysigning-Party} gesprochen. Die Bandbreite
-dieser Veranstaltungen ist sehr groß. Sie reicht von informellen
+Das in Abschnitt \ref{sec:ubliche-zert} beschriebene übliche Verfahren
+betrifft zunächst nur zwei Personen. Wenn mehrere Personen
+zusammenkommen, um ihre Schlüssel gegenseitig zu unterschreiben, wird
+von einer \emph{Keysigning-Party} gesprochen. Die Bandbreite dieser
+Veranstaltungen ist sehr groß. Sie reicht von informellen
 Zusammenkünften mehrerer Personen, die paarweise ihre Schlüssel
-unterschreiben, bis hin zu größeren, formalisierten Veranstaltungen
-im Kontext von Konferenzen und Messen. Bei grössere Veranstaltungen
-wird üblicherweise eine Anmeldung der Teilnehmer erwartet. Für
-grössere Veranstaltungen hat sich eine Reihe von ``Protokollen''
-etabliert, um den Ablauf effizient zu organisieren\cite{Brennen2008}.
+unterschreiben, bis hin zu größeren, formalisierten Veranstaltungen im
+Kontext von Konferenzen und Messen. Bei grösseren Veranstaltungen wird
+üblicherweise eine Anmeldung der Teilnehmer erwartet. Für grössere
+Veranstaltungen hat sich eine Reihe von ``Protokollen'' etabliert, um
+den Ablauf effizient zu organisieren\cite{Brennen2008}.
 
 Grössere Keysigning-Parties Open-Source-Umfeld fanden im Jahr 2009
 beispielsweise auf diesen Veranstaltungen statt:
@@ -1129,7 +1129,7 @@ niedrigem Grad zu treffen, hoch ist\cite{Albert2000}.
 Dieser Abschnitt führt den Begriff der \emph{Community} ein,
 definiert das Gütemass \emph{Modularity} und beschreibt einige
 Algorithmen zur Erkennung von Communities in Netzwerken. Sofern nicht
-anders angegeben, wurde als Quelle ein übersichtsartikel von
+anders angegeben, wurde als Quelle ein Übersichtsartikel von
 Fortunato \cite{Fortunato2010} benutzt.
 
 \subsubsection{Grundlegende Begriffe}
@@ -1262,8 +1262,8 @@ vermutlich nicht praktikabel.
 
 Verschiedene Autoren haben Erweiterungen der Modularity-Definition auf
 andere Graphen- und Zerlegungstypen vorgeschlagen: etwa für
-überlappende Communities\cite{Nicosia2009} und für gerichtete
-Graphen\cite{Leicht2008}.
+überlappende Communities \cite{Nicosia2009} und für gerichtete
+Graphen \cite{Leicht2008}.
 
 \subsubsection{Weitere Algorithmen}
 \label{sec:algorithmen}
@@ -1287,7 +1287,7 @@ verwendet\cite{Newman2004a}.
 Der Algorithmus verläuft in Phasen, die in 2 Schritte aufgeteilt
 sind. Im Anfangszustand wird jedem Knoten eine eigene Community
 zugewiesen. In jeder Phase wird dann im ersten Schritt in einem
-sequentiellen Durchlauf dann jeder Knoten der Community desjenigen
+sequentiellen Durchlauf jeder Knoten der Community desjenigen
 Nachbarn zugewiesen, für den sich der maximale Zugewinn an
 Modularity ergibt. Im zweiten Schritt wird jede der so erhaltenen
 Communities zu einem neuen \emph{Superknoten} verschmolzen. Zwischen
@@ -1366,14 +1366,14 @@ angegeben, ist also im wesentlichen linear.
 
 An dieser Stelle wird nur auf Arbeiten eingegangen, die sich mit der
 Netzwerkstruktur des Web of Trust bei PGP beschäftigen. Für einen
-Überblick über Arbeiten zur Struktur von anderen Netzwerken sei
-auf \cite{newman:167}und für Arbeiten zur Community-Struktur von
-anderen Netzwerken auf \cite{Fortunato2010} verwiesen.
+Überblick über Arbeiten zur Struktur von anderen Netzwerken sei auf
+\cite{newman:167}und für Arbeiten zur Community-Struktur von anderen
+Netzwerken auf \cite{Fortunato2010} verwiesen.
 
 Capkun et al. \cite{Capkun2002} untersuchten strukturelle Aspekte der
-größten starken Zusammenhangskomponente eines PGP-Netzwerkes aus
-dem Jahr 2001. Dieses Netzwerk zeigte eine geringe charakteristische
-Distanz und einen hohen Clustering-Koeffizient. Außerdem stimmte die
+größten starken Zusammenhangskomponente eines PGP-Netzwerkes aus dem
+Jahr 2001. Dieses Netzwerk zeigte eine geringe charakteristische
+Distanz und einen hohen Clustering-Koeffizienten. Außerdem stimmte die
 Verteilung der aus- und eingehenden Grade mit einem Power-Law
 überein. Die Autoren argumentieren, dass Netzwerke, die aus
 Zertifikatsbeziehungen entstehen, naturgemäß den Small-World-Effekt

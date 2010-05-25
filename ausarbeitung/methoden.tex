@@ -61,19 +61,19 @@ Darüber hinaus ist allerdings der \emph{wotsap}-Datensatz
 fehlerhaft. Diese Fehler werden sowohl durch Fehler in der
 Implementierung als auch durch einen fehlerhaften Datenbestand auf dem
 verwendeten Keyserver verursacht: Die größte starke
-Zusammenhangskomponente die durch XXX berechnet %FIXME
-wurde (MSCC-1), enthält mit dem Stand vom 02.12.2009 ca. 44900
-Schlüssel, während der \emph{wotsap}-Datensatz (MSCC-2) vom gleichen
-Tag nur ca. 42130 Schlüssel enthält. Die Differenz zwischen den
-Datensätzen ergibt einerseits, dass ca. 1000 Schlüssel in MSCC-1
-fehlen, die in MSCC-2 vorhanden sind. Eine stichprobenartige Analyse
-von 20 Schlüsseln zeigt, dass diese Schlüssel überwiegend durch
-Signaturketten an die MSCC angebunden sind, die aufgrund von
-widerrufenen Schlüsseln oder Schlüsselteilen unterbrochen sind. Dabei
-treten unter anderem Signaturen auf komplett widerrufenen Schlüsseln und
-Signaturen auf widerrufenen UserIDs auf. \emph{wotsap} benutzt GnuPG,
-um die OpenPGP-Pakete eines Schlüssels zu parsen. Der Code zum Parsen
-der GnuPG-Ausgabe ist fehlerhaft und führt dazu, dass \emph{wotsap}
+Zusammenhangskomponente die in dieser Arbeit berechnet wurde (MSCC-1),
+enthält mit dem Stand vom 02.12.2009 ca. 44900 Schlüssel, während der
+\emph{wotsap}-Datensatz (MSCC-2) vom gleichen Tag nur ca. 42130
+Schlüssel enthält. Die Differenz zwischen den Datensätzen ergibt
+einerseits, dass ca. 1000 Schlüssel in MSCC-1 fehlen, die in MSCC-2
+vorhanden sind. Eine stichprobenartige Analyse von 20 Schlüsseln
+zeigt, dass diese Schlüssel überwiegend durch Signaturketten an die
+MSCC angebunden sind, die aufgrund von widerrufenen Schlüsseln oder
+Schlüsselteilen unterbrochen sind. Dabei treten unter anderem
+Signaturen auf komplett widerrufenen Schlüsseln und Signaturen auf
+widerrufenen UserIDs auf. \emph{wotsap} benutzt GnuPG, um die
+OpenPGP-Pakete eines Schlüssels zu parsen. Der Code zum Parsen der
+GnuPG-Ausgabe ist fehlerhaft und führt dazu, dass \emph{wotsap}
 Widerrufssignaturen fälschlicherweise nicht beachtet.
 
 Auf der anderen Seite sind ca. 3980 Schlüssel zwar in MSCC-1
@@ -227,8 +227,7 @@ auch problemlos andere Sprachen verwendet werden.
 
 Der Extraktionsteil iteriert über alle in der SKS-Datenbank
 enthaltenen Schlüssel. Jeder Schlüssel wird durch die in SKS
-enthaltenen Funktionen geparst. Der Extraktionsteil FIXME muss dann
-noch
+enthaltenen Funktionen geparst. Der Extraktionsteil muss dann noch
 \begin{itemize}
 \item entscheiden, ob der Schlüssel zurückgezogen oder abgelaufen
   ist. Dazu werden die Selbstsignaturen auf den einzelnen UserIDs
@@ -360,7 +359,7 @@ SSSP für jeden Knoten auf der zur Verfügung stehenden Hardware
 hätte einen Zeitaufwand von ca. 32 Stunden erfordert. Das Vorhalten
 der quadratischen Distanzmatrix erfordert eine erhebliche Menge
 Speicher (ca. 8 GiB, wenn Distanzen durch 4-Byte-Ganzzahlen
-repräsentiert werden.
+repräsentiert werden).
 
 Allerdings ist es nicht notwendig, die gesamte Distanzmatrix
 vorzuhalten. Eccentricity, $h$-Nachbarschaften und die
@@ -448,15 +447,15 @@ aufgrund ihrer Zugehörigkeit zu einer \emph{sozialen Gruppe}. Dabei
 kann es sich um Open-Source-Projekte wie z.B. Debian, akademische
 Einrichtungen und Firmen handeln, aber auch um eine Gruppe von
 Freunden oder Bekannten. Andererseits vernetzen sich Teilnehmer auf
-Keysigning-Parties mit einer relativ großen Anzahl Benutzer, die
-ihnen nicht unbedingt bekannt sind und mit denen sie keine starke
+Keysigning-Parties mit einer relativ großen Anzahl Benutzer, die ihnen
+nicht unbedingt bekannt sind und mit denen sie keine starke
 Gruppenzugehörigkeit verbindet. Offensichtlich ist allerdings, dass
 diese Mechanismen sich nicht gegenseitig ausschließen. Die bereits in
-\ref{sec:sozi-komp-des} beschriebene Bandbreite von Keysigning-Parties
-reicht von Ad-hoc-Veranstaltungen mit wenigen Teilnehmern, die
-durchaus der selben Institution angehörig sein können, bis zu
-großen, formalisierten Veranstaltungen auf Konferenzen und Messen mit
-etlichen Teilnehmern.
+Abschnitt \ref{sec:sozi-komp-des} beschriebene Bandbreite von
+Keysigning-Parties reicht von Ad-hoc-Veranstaltungen mit wenigen
+Teilnehmern, die durchaus der selben Institution angehörig sein
+können, bis zu großen, formalisierten Veranstaltungen auf Konferenzen
+und Messen mit etlichen Teilnehmern.
 
 Es soll nun untersucht werden, inwiefern sich diese postulierten
 Entstehungsmechanismen in der Struktur, also den topologischen
@@ -600,18 +599,18 @@ vorliegenden aber nicht geeignet sind.
 Eine Zuordnung von einer Person zu genau einer sozialen Gruppe scheint
 unrealistisch. Statt dessen ist davon auszugehen, dass eine Person im
 Allgemeinen zu mehreren Institutionen oder Gruppen zugehörig
-ist. Ebenso ist es möglich, dass sie sich einerseits im Kontext
-einer sozialen Gruppe vernetzt, andererseits aber auch an
-Keysigning-Parties teilnimmt. Eine solche multiple Zugehörigkeit
-sollte sich im Netzwerk durch eine Mitgliedschaft eines Knotens in
-mehreren Communities ausdrücken. Wie in
+ist. Ebenso ist es möglich, dass sie sich einerseits im Kontext einer
+sozialen Gruppe vernetzt, andererseits aber auch an Keysigning-Parties
+teilnimmt. Eine solche multiple Zugehörigkeit sollte sich im Netzwerk
+durch eine Mitgliedschaft eines Knotens in mehreren Communities
+ausdrücken. Wie in Abschnitt
 \ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities} erwähnt,
 existiert eine Klasse von Algorithmen, die ein Netzwerk in
 \emph{überlappende} Communities zerlegt, so dass ein Knoten Teil von
 mehreren Communities sein kann. Um zu untersuchen, inwiefern dieser
 Überlappungseffekt die Zuordnung von Knoten zu sozialen Gruppen und
-KSPs beeinflusst, wurde zusätzlich noch eine überlappende
-Zerlegung mit dem Algorithmus COPRA (siehe Abschnitt \ref{sec:copra}
+KSPs beeinflusst, wurde zusätzlich noch eine überlappende Zerlegung
+mit dem Algorithmus COPRA (siehe Abschnitt \ref{sec:copra}
 berechnet. COPRA erwartet einen Parameter $v$, der angibt, zu wie
 vielen Communities ein Knoten gehören kann. Um hier das Optimum
 bezüglich der Modularity zu finden, wurden Zerlegungen mit Werten

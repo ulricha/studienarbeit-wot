@@ -8,75 +8,75 @@
 
 Es wurde eine Software vorgestellt, die aus der Datenbank eines
 Keyservers die Struktur des Zertifikatsgraphen extrahiert. Im
-Unterschied zu Wotsap beschr\"ankt sich der Datensatz nicht auf die
-gr\"osste starke Zusammenhangskomponente, sondern enth\"alt alle
-validen Schl\"ussel. Auch die zeitliche Entwicklung ist sichtbar, da
+Unterschied zu Wotsap beschränkt sich der Datensatz nicht auf die
+größte starke Zusammenhangskomponente, sondern enthält alle
+g\"ultigen Schlüssel. Auch die zeitliche Entwicklung ist sichtbar, da
 Entstehungs-, Ablauf- und Widerrufszeitpunkte enthalten sind.
 
 Dieser Datensatz wurde benutzt, um die Struktur des Web of Trust auf
 mehreren Ebenen zu untersuchen. Es wurde gezeigt, dass die Mehrzahl
-der Schl\"ussel kaum vernetzt ist und sich fast alle Signaturen auf
-eine zentrale Komponente von 45000 Schl\"usseln konzentrieren. 
+der Schlüssel kaum vernetzt ist und sich fast alle Signaturen auf
+eine zentrale Komponente von 45.000 Schlüsseln konzentrieren. 
 
 Es wurde argumentiert, dass der Zertifikatsgraph Elemente eines
 sozialen Netzwerks beinhaltet. In der Tat zeigt die zentrale
-Komponente Eigenschaften, die typisch f\"ur soziale Netzwerke sind:
+Komponente Eigenschaften, die typisch für soziale Netzwerke sind:
 den Small-World-Effekt, ein hohes Mass an Clustering, eine Korrelation
-zwischen dem Grad von Knoten und eine ausgepgr\"agte
+zwischen dem Grad von Knoten und eine ausgeprägte
 Community-Struktur.
 
-Die zentrale Komponente zeigt ausserdem eine Gradverteilung, die einem
-Power-Law \"ahnelt und eine Eigenschaft, die charakteristisch f\"ur
+Die zentrale Komponente zeigt außerdem eine Gradverteilung, die einem
+Power-Law ähnelt und eine Eigenschaft, die charakteristisch für
 skalenfreie Netzwerke ist: Eine Struktur von Hubs, die einerseits das
 Netzwerk zusammenhalten, es andererseits aber auch verwundbar gegen
 gezielte Angriffe machen. 
 
 Es wurde versucht, die Auswirkung von Fortschritten in Angriffen auf
-kryptographische Methoden f\"ur das Netzwerk abzusch\"atzen. Direkt
-absehbare Probleme mit MD5, SHA1 und RSA-Schl\"usseln geringer L\"ange
-werden den Zusammenhalt des Netzwerks nicht tiefgreifend beeinflussen,
-aber eine Reihe von selbst nicht betroffenen Schl\"usseln von diesem
+kryptographische Methoden für das Netzwerk abzuschätzen. Direkt
+absehbare Probleme mit MD5, SHA1 und RSA-Schlüsseln geringer Länge
+werden den Zusammenhalt des Netzwerks nicht tief greifend beeinflussen,
+aber eine Reihe von selbst nicht betroffenen Schlüsseln von diesem
 abtrennen.
 
-Die Communities sind nicht zuf\"allig entstanden, sondern scheinen
-teilweise tats\"achlich soziale Zusammenh\"ange
-wiederzuspiegeln. Selbst mit den hier verwendeten primitiven Methoden
-und ohne weiteres Wissen \"uber tats\"achliche soziale Zusammenh\"ange
-kann f\"ur viele Communities gezeigt werden, dass sie aus gemeinsamen
-Gruppenzugeh\"origkeiten entstanden sind. Allerdings kann dadurch
-nicht befriedigend erkl\"art werden, wie die Communities entstehen
+Die Communities sind nicht zufällig entstanden, sondern scheinen
+teilweise tatsächlich soziale Zusammenhänge
+widerzuspiegeln. Selbst mit den hier verwendeten primitiven Methoden
+und ohne weiteres Wissen über tatsächliche soziale Zusammenhänge
+kann für viele Communities gezeigt werden, dass sie aus gemeinsamen
+Gruppenzugehörigkeiten entstanden sind. Allerdings kann dadurch
+nicht befriedigend erklärt werden, wie die Communities entstehen
 und wie sie sich untereinander vernetzen.
 
-Insgesamt hat sich eine \"uberraschend geringe
-\emph{\"offentliche}\footnote{Es ist nicht bekannt, wie viele Benutzer
+Insgesamt hat sich eine überraschend geringe
+\emph{öffentliche}\footnote{Es ist nicht bekannt, wie viele Benutzer
   zwar das Web of Trust nutzen, ihre Signaturen aber nicht
-  ver\"offentlichen. Es scheint jedoch nicht wahrscheinlich, dass es
+  veröffentlichen. Es scheint jedoch nicht wahrscheinlich, dass es
   sich dabei um eine signifikante Zahl handelt.}Nutzung des
 PGP-Authentifizerungsmechanismus gezeigt. Nur innerhalb einer Gruppe
-von 45000 Schl\"usseln sind \"uberhaupt nennenswerte
-Signaturaktitiv\"aten feststellbar und auch in dieser sind viele
-vermutlich inaktive Schl\"ussel enthalten. Die Anzahl der Personen,
-die ernsthaft und kontinuierlich zum Web of Trust beitr\"agt, ist sehr
-gering. Die grosse Mehrheit der Personen, die ihre Schl\"ussel
-ver\"offentlicht haben, scheint Schl\"ussel von Kommunikationspartnern
-nicht zu authentifizieren.
+von 45000 Schlüsseln sind überhaupt nennenswerte
+Signaturaktitiväten feststellbar und auch in dieser sind viele in
+Bezug auf Signierungen) vermutlich inaktive Schlüssel enthalten. Die
+Anzahl der Personen, die ernsthaft und kontinuierlich zum Web of Trust
+beiträgt, ist sehr gering. Die große Mehrheit der Personen, die
+ihre Schlüssel veröffentlicht haben, scheint Schlüssel von
+Kommunikationspartnern nicht zu authentifizieren.
 
 Auch wenn einige Arbeiten zur Struktur des Web of Trust
-ver\"offentlicht wurden, wurden hier Aspekte untersucht, die dort
-keine Beachtung fanden. Ausserdem wurde hier der \emph{aktuelle} Stand
-des Netzwerks untersucht, dessen Gr\"osse sich deutlich ver\"andert
+veröffentlicht wurden, wurden hier Aspekte untersucht, die dort
+keine Beachtung fanden. Außerdem wurde hier der \emph{aktuelle} Stand
+des Netzwerks untersucht, dessen Größe sich deutlich verändert
 hat.
 
 Im Unterschied zu vielen anderen sozialen Netzwerken ist hier die
-gesamte Entwicklungsgeschichte verf\"ugbar. Der in dieser Arbeit
-berechnete Datensatz k\"onnte damit ein interessanter Ansatzpunkt
+gesamte Entwicklungsgeschichte verfügbar. Der in dieser Arbeit
+berechnete Datensatz könnte damit ein interessanter Ansatzpunkt
 sein, um die Entstehungsdynamik eines komplexen sozialen Netzwerks im
-Detail zu untersuchen. Dabei k\"onnte beispielsweise die
-Entstehungsdynamik (Enstehung und Verschmelzung) der Communities
+Detail zu untersuchen. Dabei könnte beispielsweise die
+Entstehungsdynamik (Entstehung und Verschmelzung) der Communities
 verfolgt werden. Auch die Vernetzungsstruktur der Communities in
-Ber\"ucksichtigung ihrer nationalen Zuordnung und die Rolle einzelner
-Knoten innerhalb von Communities (etwa welche Knoten als ``Br\"ucken''
-zwischen Communities dienen) k\"onnte untersucht
+Berücksichtigung ihrer nationalen Zuordnung und die Rolle einzelner
+Knoten innerhalb von Communities (etwa welche Knoten als ``Brücken''
+zwischen Communities dienen) könnte untersucht
 werden.
 
 %%% Local Variables: 

@@ -3,7 +3,16 @@
 \chapter{Ergebnisse und Diskussion}
 \label{ch:Ergebnisse}
 In Abschnitt \ref{sec:datensatz} wird zunächst der berechnete
-Datensatz allgemein charakterisiert. 
+Datensatz allgemein charakterisiert. Abschnitt
+\ref{sec:result-allg-merkm-des} untersucht die Struktur des sich
+daraus ergebenden Graphen. Die zeitliche Entwicklung der Gr\"osse des
+Web of Trust und Statistiken \"uber die Verwendung von Algorithmen
+werden in den Abschnitten \ref{sec:result-key-properties} und
+\ref{sec:public-key-und} dargestellt. Abschnitt
+\ref{sec:result-zusamm-und-comm} analysiert die Community-Struktur der
+größten starken Zusammenhangskomponente nach der in Abschnitt
+\ref{sec:community-analyse} beschriebenen Vorgehensweise.
+
 \section{Datensatz}
 \label{sec:datensatz}
 
@@ -47,7 +56,7 @@ wurden. Beachtet werden muss auch, dass der Datensatz keine präzise
 Angabe über die momentane Anzahl von PGP-Benutzern erlaubt, da sich
 die Schlüssel über einen Zeitraum von 20 Jahren angesammelt haben.
 
-\section{Allgemeine Merkmale des Netzwerkes}
+\section{Strukturelle Merkmale des Netzwerkes}
 \label{sec:result-allg-merkm-des}
 
 \subsection{Starke Zusammenhangskomponenten}
@@ -266,7 +275,7 @@ Netzwerk zu erwarten wäre.
 
 Newman und Park bemerken, dass ein hohes Mass an Clustering
 charakteristisch für soziale Netzwerke ist und sie von vielen
-nicht-sozialen Netzwerken unterscheidet\cite{PhysRevE.68.036122}. Als
+nicht-sozialen Netzwerken unterscheidet \cite{PhysRevE.68.036122}. Als
 möglichen Grund geben sie an, dass sich die Knoten in sozialen
 Netzwerken üblicherweise in \emph{Communities} einteilen lassen,
 also Gruppen von Knoten, die untereinander stärker vernetzt sind als
@@ -411,12 +420,13 @@ aufwändig war.
 
 In diesem Zusammenhang stellt sich auch die Frage nach der
 \emph{Robustheit} des Netzwerkes.  Eine Eigenschaft, die skalenfreien
-Netzwerken üblicherweise zugeschrieben wird\cite{Albert2000}, ist
-eine typische Reaktion auf das Entfernen von Knoten: Während die
+Netzwerken üblicherweise zugeschrieben wird, ist eine
+charakteristische Reaktion auf das Entfernen von Knoten: Während die
 Entfernung zufällig ausgewählter Knoten kaum Schaden anrichtet,
 reagiert das Netzwerk sehr verwundbar auf die Entfernung von Knoten,
 die sehr gut vernetzt sind. Schon die Entfernung weniger sehr gut
-vernetzter Knoten führt dazu, dass das Netzwerk zerfällt.
+vernetzter Knoten führt dazu, dass das Netzwerk
+zerfällt\cite{Albert2000}.
 
 Dieser Unterschied kann aufgefasst werden als der Unterschied zwischen
 einem gerichteten \emph{Angriff} und einer zufälligen
@@ -440,19 +450,18 @@ potentiell für das Netzwerk. Um die Robustheit unter dieser
 Auswahlstrategie zu testen, wurden aus der größten starken
 Zusammenhangskomponente sukzessive Knoten in der Reihenfolge
 absteigender ausgehender Grade bzw. in einer zufälligen Reihenfolge
-entfernt. Abbildung \ref{fig:without} zeigt die Entwicklung der
-Größe der größten Komponente, wenn mehr und mehr Knoten entfernt
-werden. Bei der Entfernung zufällig ausgewählter Knoten ist das
-Netzwerk ausgesprochen stabil. Die größte Komponente schrumpft fast
-im gleichen Masse, wie Knoten entfernt werden. Dieses Ergebnis ist
-nicht überraschend. Da ein hoher Anteil der Knoten einen sehr
-niedrigen Grad hat, ist bei zufälliger Auswahl die Chance, einen
-solchen Knoten zu treffen, hoch. Das Verschwinden von Schlüsseln
-durch Ablaufen ist ein normaler und häufiger Prozess. So verfügen
-etwa 5700 Schlüssel in der größten starken
-Zusammenhangskomponente über ein Ablaufdatum, werden also irgendwann
-aus dem Netz verschwinden. Dieser Fall richtet also kaum globalen
-Schaden im Netzwerk an.
+entfernt. Abbildung \ref{fig:without} zeigt die Entwicklung der Größe
+der größten Komponente, wenn mehr und mehr Knoten entfernt werden. Bei
+der Entfernung zufällig ausgewählter Knoten ist das Netzwerk
+ausgesprochen stabil. Die größte Komponente schrumpft fast im gleichen
+Masse, wie Knoten entfernt werden. Dieses Ergebnis ist nicht
+überraschend. Da ein hoher Anteil der Knoten einen sehr niedrigen Grad
+hat, ist bei zufälliger Auswahl die Chance, einen solchen Knoten zu
+treffen, hoch. Das Verschwinden von Schlüsseln durch Ablaufen ist ein
+normaler und häufiger Prozess. So verfügen etwa 5.700 Schlüssel in der
+größten starken Zusammenhangskomponente über ein Ablaufdatum, werden
+also irgendwann aus dem Netz verschwinden. Dieser Fall richtet also
+kaum globalen Schaden im Netzwerk an.
 
 Der Schaden durch die Entfernung von Knoten mit hohem ausgehendem Grad
 ist deutlich größer. Hier führt schon die Entfernung von deutlich
@@ -486,7 +495,7 @@ Distanzen schon durch die Entfernung weniger Knoten merklich
 erhöhen. Aufgrund des notwendigen Rechenaufwandes konnte dies im
 Rahmen dieser Arbeit aber nicht durchgeführt werden.
 
-Der Grad eines Knoten ist nicht unbedingt das geeignetste Mass für
+Der Grad eines Knotens ist nicht unbedingt das geeignetste Mass für
 die globale ``Wichtigkeit'' des Knotens. Durch eine Konzentration auf
 \emph{zentrale} Knoten, also etwa solche mit einer hohen Betweeness
 Centrality, lässt sich möglicherweise mehr Schaden anrichten. Dies
@@ -496,11 +505,11 @@ ausgehenden Grad, haben also viele Schlüssel signiert und damit
 relativ kurze Wege zu vielen Schlüsseln. Allerdings haben sie
 gleichzeitig einen niedrigen eingehenden Grad, weil ein CA-Schlüssel
 üblicherweise nicht mit einer Person direkt verbunden ist, und damit
-das übliche Verifizieren der Identität wenig Sinn macht. Damit
-tauchen CA-Schlüssel nur auf relativ wenigen kürzesten Pfaden auf,
-da sie selbst eher schlecht erreichbar sind. Ihre Entfernung richtet
-also -- zumindest in Bezug auf die Distanzen -- einen relativ geringen
-Schaden an.
+das übliche Verifizieren der Identität wenig Sinn macht. Damit tauchen
+CA-Schlüssel nur auf relativ wenigen kürzesten Pfaden auf, da sie
+selbst eher schlecht erreichbar sind. Ihre Entfernung richtet also --
+zumindest in Bezug auf die Distanzen -- einen relativ geringen Schaden
+an.
 
 \subsection{Nützlichkeit}
 \label{sec:nutzlichkeit}
@@ -649,23 +658,28 @@ erreichbar sind.
 \end{figure}
 
 Da die verwendete Datenbank alle jemals auf einen Keyserver geladenen
-Schlüssel enthält, ist es möglich, den Zustand des
-Schlüsselbestandes zu einem beliebigen Zeitpunkt zu berechnen. In
-Abbildung \ref{fig:size-dev-whole} wird die Entwicklung der Größe
-des gesamten Schlüsselbestandes und in \ref{fig:size-dev-mscc} die
-Entwicklung der Größe der größten starken
-Zusammenhangskomponente dargestellt. Als Beginn wurde das Jahr 1991
-gewählt, da in diesem Jahr die erste Version von PGP vorgestellt
-wurde (siehe Abschnitt \ref{ch:Grundlagen:sec:PGP}. Sowohl der gesamte Schlüsselbestand als auch
-die größte starke Zusammenhangskomponente zeigen nennenswertes
+Schlüssel enthält, ist es möglich, den Zustand des Schlüsselbestandes
+zu einem beliebigen Zeitpunkt zu berechnen. In Abbildung
+\ref{fig:size-dev-whole} wird die Entwicklung der Größe des gesamten
+Schlüsselbestandes und in \ref{fig:size-dev-mscc} die Entwicklung der
+Größe der größten starken Zusammenhangskomponente dargestellt. Als
+Beginn wurde das Jahr 1991 gewählt, da in diesem Jahr die erste
+Version von PGP vorgestellt wurde (siehe Abschnitt
+\ref{ch:Grundlagen:sec:PGP}. Sowohl der gesamte Schlüsselbestand als
+auch die größte starke Zusammenhangskomponente zeigen nennenswertes
 Wachstum erst etwa ab dem Jahr 1997. Dieser Zeitpunkt korreliert unter
 anderem mit der Gründung des Unternehmens \emph{PGP Inc.}, der
 Veröffentlichung einer neuen Version 5 der PGP-Software und in
 Deutschland dem Start der bereits erwähnten
-``Krypto-Kampagne''. Gründe für das deutlich langsamere Wachstum
-des gesamten Schlüsselbestandes etwa ab dem Jahr 2001 und der
-größten starken Zusammenhangskomponente mit einer Verzögerung
-etwa ab dem Jahr 2005 sind nicht bekannt.
+``Krypto-Kampagne''. Gründe für das deutlich langsamere Wachstum des
+gesamten Schlüsselbestandes etwa ab dem Jahr 2001 und der größten
+starken Zusammenhangskomponente mit einer Verzögerung etwa ab dem Jahr
+2005 sind nicht bekannt. Es kann aber spekuliert werden, dass die
+Zielgruppe, in der sich PGP/GnuPG prim\"ar verbreitet, begrenzt ist
+(Anwender und Entwickler von freier Software, Sicherheitsexperten,
+politische Aktivisten) und in dieser Zielgruppe eine gewisse
+S\"attigung eingetreten ist. Ebenfalls m\"oglich ist eine zunehmende
+Verbreitung von auf X.509 basierenden S/MIME-Zertifikaten.
 
 \begin{figure}[th!]
   \centering
@@ -702,7 +716,7 @@ verwenden. Diese Umstellung wurde in der Entwicklerversion von GnuPG
 am
 17.05.2009\footnote{http://lists.gnupg.org/pipermail/gnupg-devel/2009-May/025079.html}
 aufgrund von Berichten über verbesserte Angriffe auf die
-Hashfunktion SHA-1\cite{McDonald2009}, auf der DSA basiert,
+Hashfunktion SHA1\cite{McDonald2009}, auf der DSA basiert,
 vorgenommen. Warum diese Entwicklung nicht ebenfalls in der größten
 starken Zusammenhangskomponente sichtbar ist, ist nicht
 klar. Möglicherweise liegt dies daran, dass für die Aufnahme in
@@ -726,7 +740,7 @@ dürfte also etwas ``träger'' auf Veränderungen reagieren.
       \hline
       Signaturen gesamt & 446325 \\
       MD5 & 41700 \\
-      SHA-1 & 398849 \\
+      SHA1 & 398849 \\
       RIPE-MD/160 & 122 \\
       SHA256 & 5031 \\
       SHA512 & 2472 \\
@@ -823,9 +837,6 @@ erhöht.
 \section{Communities}
 \label{sec:result-zusamm-und-comm}
 
-Dieser Abschnitt analysiert die Community-Struktur der größten
-starken Zusammenhangskomponente nach der in Abschnitt
-\ref{sec:community-analyse} beschriebenen Vorgehensweise.
 
 \subsection{Ergebnisse für den gerichteten Graphen}
 \label{sec:ergebnisse-fur-den}
@@ -988,7 +999,7 @@ Gegenüber der COPRA-Zerlegung mit $v=1$ zeigt die Zerlegung mit
 $v=3$ eine deutlich grössere Anzahl von Communities der Größe 3
 und 4. Abgesehen davon ähneln sich die Verteilungen der Größen aber
 weitgehend. Beide enthalten eine charakteristische sehr Glosse
-Community mit ca. 19000 bzw. ca. 21000 Mitgliedern. Demgegenüber
+Community mit ca. 19.000 bzw. ca. 21.000 Mitgliedern. Demgegenüber
 bietet die Blondel-Zerlegung mit $l=2$ eine deutlich geringere Anzahl
 solcher sehr kleiner Communities, dafür aber eine höhere Zahl
 mittlerer (mehr als 100 Mitglieder) und insbesondere eine höhere
@@ -1276,7 +1287,7 @@ der Knoten denkbar.
   \label{fig:time-corrdist}
 \end{figure}
 
-\subsection{Gesamtbewertung (Communities)}
+\subsection{Diskussion}
 \label{sec:gesamtb-comm}
 
 Diese Ergebnisse widerlegen nicht die Annahme, dass die Vernetzung im
@@ -1287,19 +1298,18 @@ werden, dass die hier verwendeten Methoden nicht geeignet sind, um den
 Entstehungsmechanismus entlang dieser Annahme befriedigend zu
 erklären. 
 
-Ein Grund dafür ist sicherlich, dass die Struktur des Web of Trust
-nur zu einem bestimmten, festen Zeitpunkt betrachtet wurde. Um die
-Entstehungsdynamik zu verstehen, könnte alternativ die Entwicklung
-des Netzwerks tatsächlich über die Zeit nachvollzogen werden. Das
+Ein Grund dafür ist sicherlich, dass die Struktur des Web of Trust nur
+zu einem bestimmten, festen Zeitpunkt betrachtet wurde. Um die
+Entstehungsdynamik zu verstehen, könnte alternativ die Entwicklung des
+Netzwerks tatsächlich über die Zeit nachvollzogen werden. Das
 Keyserver-Netzwerk speichert nicht nur den momentanen Zustand des
 Netzwerks, sondern implizit auch den Entstehungszeitpunkt jedes
-Schlüssels und jeder Signatur. Die im Rahmen dieser Arbeit
-entwickelte Software speichert diese Zeitstempel in einer Datenbank
-und macht so die gesamte Entwicklungsgeschichte des Web of Trust
-verfügbar (siehe Abschnitt
-\ref{ch:Grundlagen:sec:Design:subsec:eigene-software}). Anhand dieser
-Daten könnte nachvollzogen werden, wie und in welcher Form die
-Communities tatsächlich entstehen und sich entwickeln.
+Schlüssels und jeder Signatur. Die im Rahmen dieser Arbeit entwickelte
+Software speichert diese Zeitstempel in einer Datenbank und macht so
+die gesamte Entwicklungsgeschichte des Web of Trust verfügbar (siehe
+Abschnitt \ref{sec:software}). Anhand dieser Daten könnte
+nachvollzogen werden, wie und in welcher Form die Communities
+tatsächlich entstehen und sich entwickeln.
 
 Dass nur sehr wenige grössere Communities mit zeitlicher Korrelation
 der Signaturen gefunden wurden, obwohl regelmäßig grössere
