@@ -106,6 +106,10 @@ anhang
 %% ++++++++++++++++++++++++++++++++++++++++++
 \ifnotdraft{
 {\parskip 0pt\tableofcontents} % toc bitte einzeilig
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
+\listoffigures
 \blankpage
 %\listoffigures
 %\blankpage
@@ -118,6 +122,7 @@ anhang
 %% Hauptteil
 %% ++++++++++++++++++++++++++++++++++++++++++
 \graphicspath{{Bilder/}}
+
 
 \mainmatter
 \pagenumbering{arabic}
@@ -142,10 +147,6 @@ anhang
 %% ++++++++++++++++++++++++++++++++++++++++++
 %  mit dem Befehl \nocite werden auch nicht 
 %  zitierte Referenzen abgedruckt
-\cleardoublepage
-\phantomsection
-\addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
-\listoffigures
 
 \cleardoublepage
 \phantomsection
