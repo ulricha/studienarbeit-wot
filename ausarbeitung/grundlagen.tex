@@ -403,13 +403,13 @@ eines Schlüssels entscheiden, wird in Abschnitt
 \label{sec:structure-openpgp}
 An dieser Stelle wird in groben Zügen beschrieben, wie ein
 OpenPGP-Schlüssel aufgebaut ist. Für Details wird auf den
-OpenPGP-Standard\cite{Callas2007} verwiesen.
+OpenPGP-Standard \cite{Callas2007} verwiesen.
 
 Ein OpenPGP-Schlüssel besteht aus einer Reihe von
 \emph{Paketen}. Unterschiedliche Funktionen werden von
 unterschiedlichen Paket-Typen wahrgenommen. Ein öffentlicher
 OpenPGP-Schlüssel enthält zunächst ein \emph{Public-Key-Paket},
-dass das eigentliche Schlüsselmaterial enthält. Weiterhin
+das das eigentliche Schlüsselmaterial enthält. Weiterhin
 enthält ein Schlüssel eine Reihe von \emph{UserID}-Paketen, wobei
 mindestens ein solches Paket vorhanden sein muss. UserID-Pakete
 enthalten im Wesentlichen eine UserID bestehend aus einem Namen und
@@ -424,8 +424,8 @@ also jeder (öffentliche) OpenPGP-Schlüssel, auch wenn er keine
 Signaturen von Dritten enthält, ein selbst-signiertes Zertifikat
 dar. Werden zusätzliche Signaturen auf dem Schlüssel angebracht,
 ergibt sich gewissermaßen ein Zertifikat mit mehreren Signaturteilen
-oder mehrere Zertifikate, die sich auf einen gemeinsamen Datenteil
-beziehen.
+(oder mehrere Zertifikate, die sich auf einen gemeinsamen Datenteil
+beziehen).
 
 \subsection{Das GnuPG-Vertrauensmodell}
 \label{sec:das-gnupg-vertrauensmodell}
@@ -440,7 +440,7 @@ großer Bedeutung.
 
 Das Vertrauensmodell ist der Algorithmus, mit dem PGP bzw. GnuPG
 entscheiden, ob ein Schlüssel anhand des Web of Trust als gültig
-betrachtet wird\cite{Ashley1999}. Gültig meint an dieser Stelle,
+betrachtet wird \cite{Ashley1999}. Gültig meint an dieser Stelle,
 dass die Zugehörigkeit des Schlüssels zu dem angeblichen Besitzer
 bestätigt wurde.
 
@@ -537,7 +537,7 @@ Typen sind
 \item[Positive] Der Ersteller hat die Identität des
   Schlüsselinhabers gründlich\footnote{Es wird generell
     angenommen, dass mit diesem Typ eine Verifizierungsmethode wie in
-    Abschnitt \ref{sec:ubliche-zert} beschrieben verbunden ist}
+    Abschnitt \ref{sec:ubliche-zert} beschrieben verbunden ist.}
   verifiziert.
 \end{description}
 
@@ -564,7 +564,7 @@ $K$ unterschrieben wurden und dieser über volles Vertrauen verfügt,
 sind sie ebenfalls voll gültig. $O$ sowie $J$ sind voll gültig, da sie
 jeweils von drei Schlüsseln mit geringfügigem Vertrauen unterschrieben
 wurden. $I$ und $P$ wurden dagegen jeweils nur von zwei Schlüsseln mit
-geringfügigem Vertrauen unterschrieben und sind deshalb nicht voll
+geringfügigem Vertrauen unterschrieben und sind deshalb nicht voll, 
 sondern nur eingeschränkt gültig. $G$ wurde zwar von einem voll
 gültigen Schlüssel mit vollem Vertrauen unterschrieben. Allerdings
 überschreitet die Signaturkette zu $A$ die maximale Länge von 5 und
@@ -614,7 +614,7 @@ gleichen Datenbestand\footnote{In Tests des Autoren dauerte es
   normalerweise weniger als 10 Sekunden, bis neue Schlüssel auf alle
   Keyserver des Verbundes propagiert waren.}. Das öffentliche
 Keyserver-Netzwerk besteht derzeit (Mai 2010) aus 48
-Keyservern\cite{SKS}. Die üblicherweise
+Keyservern \cite{SKS}. Die üblicherweise
 verwendete Keyserver-Software wird in Abschnitt
 \ref{ch:Grundlagen:sec:Design:subsec:der-sks-keyserver} beschrieben.
 
@@ -661,7 +661,7 @@ wird argumentiert, dass die Signaturbeziehungen einer Person ein
 Abbild sozialer Beziehungen von unterschiedlicher Art sind. Die rein
 topologische Information eines sozialen Netzwerks erlaubt detaillierte
 Aussagen über die Rolle einzelner Personen im
-Netzwerk\cite{Carrington2005}. Benutzer müssen sich daher bewusst
+Netzwerk \cite{Carrington2005}. Benutzer müssen sich daher bewusst
 sein, dass die Benutzung öffentlicher Keyserver einen Verlust von
 Privatsphäre mit sich bringt und müssen dies gegenüber einem
 möglichen Gewinn an Sicherheit und Bequemlichkeit abwägen.
@@ -743,10 +743,10 @@ von dem in Abschnitt \ref{sec:ubliche-zert} beschriebenen Vorgehen.
 
   Die Zertifizierung wird auf Messen gegen Vorlage des
   Personalausweises angeboten. Die von dieser CA verwendeten
-  Schlüssel haben insgesamt ca. 22000 Signaturen erstellt.
+  Schlüssel haben insgesamt ca. 22.000 Signaturen erstellt.
 \item Die Certificate Authority CACert zertifiziert unter
   anderem auch OpenPGP-Schlüssel. Der von dieser CA verwendete
-  Schlüssel hat ca. 3400 Schlüssel signiert.
+  Schlüssel hat ca. 3.400 Schlüssel signiert.
 \item Das Deutsche Forschungsnetzwerk (DFN) betrieb vermutlich bis zum
   Jahr 2009 eine Certificate Authority für PGP.
 \end{itemize}
@@ -778,8 +778,7 @@ von einer \emph{Keysigning-Party} gesprochen. Die Bandbreite dieser
 Veranstaltungen ist sehr groß. Sie reicht von informellen
 Zusammenkünften mehrerer Personen, die paarweise ihre Schlüssel
 unterschreiben, bis hin zu größeren, formalisierten Veranstaltungen im
-Kontext von Konferenzen und Messen. Bei grösseren Veranstaltungen wird
-üblicherweise eine Anmeldung der Teilnehmer erwartet. Für grössere
+Kontext von Konferenzen und Messen. Für grössere
 Veranstaltungen hat sich eine Reihe von ``Protokollen'' etabliert, um
 den Ablauf effizient zu organisieren\cite{Brennen2008}.
 
@@ -881,7 +880,7 @@ Pfad von $u$ nach $v$, so wird $d(u,v) = \infty$ definiert.
 
 Ein Graph $G' = (V', E')$ ist ein \emph{Teilgraph} eines Graphen $G =
 (V, E)$, wenn $E' \subseteq E$ und $V' \subseteq V$ gelten. Ein
-Teilgraph $G' = (V', E')$ eines Graphen $G$ ist durch eine eine
+Teilgraph $G' = (V', E')$ eines Graphen $G$ ist durch eine
 Knotenmenge $V'$ \emph{induziert}, wenn $E' = \{(u, v) : u \in V, v
 \in V, (u, v) \in E\}$ gilt.
 
@@ -991,7 +990,7 @@ Clustering-Koeffizient, ist aber nicht äquivalent zu diesem und
 sollte nicht verwechselt werden.
 
 Pastor-Satorras et al. definieren ein Mass für die Korrelation der
-Knotengrade in einem Netzwerk\cite{PhysRevLett.87.258701}. Der Wert
+Knotengrade in einem Netzwerk \cite{PhysRevLett.87.258701}. Der Wert
 \begin{equation}
   \label{eq:9}
   <knn> = \sum_{k'} k'P_c (k'|k)
@@ -1010,7 +1009,7 @@ zwischen -1 und 1 liegen. Positive Werte für ein Netzwerk zeigen
 assortative mixing an, bei negativen Werten zeigt das Netzwerk kein
 assortative mixing. Newman gibt an, dass assortative mixing eine
 Eigenschaft ist, die viele soziale Netzwerke von anderen Netzwerken --
-etwa technologischer oder biologischer Natur unterscheidet. Die
+etwa technischer oder biologischer Natur unterscheidet. Die
 meisten sozialen Netzwerke zeigen assortative mixing, während die
 restlichen dies nicht tun.
 
@@ -1026,7 +1025,7 @@ von sexuellen Kontakten und Netzwerke von Geschäftsbeziehungen
 (ebd.).
 
 Die im Web of Trust vorhandenen Schlüssel können als
-Repräsentationen der Besitzer dieser Schlüssel gedacht
+Repräsentationen der Besitzer dieser Schlüssel aufgefasst
 werden. Allerdings ist dies keine Eins-zu-eins-Beziehung, da eine
 Person über beliebig viele Schlüssel verfügen kann. Die
 Beziehung dieser Personen im Web of Trust repräsentiert zunächst
@@ -1037,7 +1036,7 @@ zwischen Personen entstehen, die sich völlig unbekannt sind und in
 keiner Beziehung zueinander stehen. Stattdessen wird in dieser Arbeit
 davon ausgegangen, dass sich Signaturen in den meisten Fällen anhand
 von bereits bestehenden sozialen Kontakten zwischen den Besitzern der
-Schlüssel ergeben\cite{Capkun2002}. Das Spektrum möglicher
+Schlüssel ergeben \cite{Capkun2002}. Das Spektrum möglicher
 Beziehungen ist dabei natürlich sehr weit und umfasst mindestens
 alle Gruppen von Personen, die potentiell ein Interesse an
 vertraulicher und authentifizierter E-Mail-Kommunikation haben: Es
@@ -1058,7 +1057,7 @@ Teilnehmern (abgesehen von der Teilnahme selbst) zu bestehen. Es ist
 aber auch der Kontext relevant, in dem die Keysigning-Party
 stattfindet. Bei einer Konferenz oder Messe kann es sich um ein
 Ereignis mit einer klar definierten Zielgruppe handeln, die wiederum
-einer Gruppe zuordnenbar ist (z.B. im Fall der
+einer Gruppe zuordenbar ist (z.B. im Fall der
 ``Debconf''-Konferenzen). Ist dies nicht möglich, so handelt es sich
 immerhin um eine Gruppe von Personen, die über ein gemeinsames
 Interessengebiet verfügen (beispielsweise im Fall der
@@ -1153,7 +1152,7 @@ Gruppen oder \emph{Communities} ist die Tatsache, dass Mitglieder
 einer Gruppe normalerweise deutlich mehr Beziehungen zu anderen
 Mitgliedern dieser Gruppe haben als zu Teilnehmern außerhalb. Eine
 solche Community sollte sich also auch in der Struktur des Graphen
-wieder finden, der das Netzwerk beschreibt. In der Tat teilen viele --
+wiederfinden, der das Netzwerk beschreibt. In der Tat teilen viele --
 insbesondere die oben angeführten -- Beispiele von Netzwerken die
 Eigenschaft, dass die Kanten des Netzwerks nicht gleichmäßig
 verteilt sind. Stattdessen finden sich Gruppen von Knoten, in denen
@@ -1182,10 +1181,10 @@ beschrieben, da er den Startpunkt des großen Interesses in
 Community-Algorithmen in den letzten Jahren darstellt.
 
 \emph{Edge betweeness} ist ein auf Kanten definiertes
-Zentralitätsmass, dass auf dem Zentralitätsmass \emph{Vertex
-  betweeness}\cite{Koschutzki2004a} basiert. Die edge betweeness
+Zentralitätsma\ss, das auf dem Zentralitätsma\ss \emph{Vertex
+  betweeness} \cite{Koschutzki2004a} basiert. Die edge betweeness
 einer Kante gibt an, wie hoch der Anteil kürzester Pfade ist, die
-diese Kante beinhalten, wie wichtig also diese Kante für den
+diese Kante enthalten, wie wichtig also diese Kante für den
 Zusammenhalt und die Distanzen im Netzwerk ist.
 
 Der Algorithmus von Girvan und Newman basiert auf der folgenden Idee:
@@ -1225,7 +1224,7 @@ darüber, wie ``gut'' die Zerlegung auf einer bestimmten Ebene die
 tatsächliche Community-Struktur wiedergibt. Um diese Frage zu
 beantworten, wurde ebenfalls von Girvan und Newman als Mass für die
 Qualität einer Zerlegung die so genannte \emph{Modularity}
-definiert\cite{Newman2004}. Gegeben einen ungerichteten Graphen $G=(V,
+definiert \cite{Newman2004}. Gegeben einen ungerichteten Graphen $G=(V,
 E)$ und eine Zerlegung dieses Graphen $\mathcal{C} = C_1, ..., C_n$
 wird die Modularity $Q$ definiert als
 \begin{equation}
@@ -1258,7 +1257,7 @@ Intraclusterkanten höher ist als die \emph{erwartete}.
 
 Brandes et al. haben gezeigt, dass das Problem der Berechnung des
 Maximums von $Q$ für einen gegebenen Graphen NP-vollständig
-ist\cite{DBLP:journals/tkde/BrandesDGGHNW08}. Eine direkte Berechnung
+ist \cite{DBLP:journals/tkde/BrandesDGGHNW08}. Eine direkte Berechnung
 einer Zerlegung eines Graphen mit maximaler Modularity ist also
 vermutlich nicht praktikabel.
 
@@ -1311,15 +1310,15 @@ für sehr große Graphen geeignet.
 \label{sec:copra}
 
 Ein gänzlich anderer Ansatz, der nicht direkt mit der Optimierung
-des Modularity-Wertes arbeitet, wird von COPRA\cite{Gregory2010}
+des Modularity-Wertes arbeitet, wird von COPRA \cite{Gregory2010}
 verwendet. COPRA basiert auf einem Algorithmus von Raghavan et
-al.\cite{Raghavan2007}, der auf der Propagierung von \emph{Labels}
+al. \cite{Raghavan2007}, der auf der Propagierung von \emph{Labels}
 beruht. 
 
 Im Anfangszustand wird jedem Knoten ein unterschiedliches Label
 zugewiesen. In jeder Iteration wird dann ein sequentieller Lauf in
 zufälliger Reihenfolge über alle Knoten durchgeführt. Dabei
-übernimmt jeder Knoten das Label, dass die Mehrheit seiner Nachbarn
+übernimmt jeder Knoten das Label, das die Mehrheit seiner Nachbarn
 besitzt. Wenn dabei ein Gleichstand auftritt, wird eines der Labels
 zufällig ausgewählt. Auf diese Weise werden Labels über den
 Graphen propagiert. Einige Labels verschwinden, während andere sich
@@ -1393,13 +1392,13 @@ Knoten. Dabei folgt die Verteilung der Knotengrade einem
 Power-Law. Der Clustering-Koeffizient des Netzwerkes beträgt $C=0.4$,
 ist also recht hoch. Die Grade benachbarter Knoten sind positiv
 korreliert. Außerdem benutzten die Autoren den Algorithmus von Girvan
-und Newman\cite{Newman2004}, um eine Community-Zerlegung des Netzwerks
+und Newman \cite{Newman2004}, um eine Community-Zerlegung des Netzwerks
 zu berechnen. Die Verteilung der Größe dieser Communities folgt wieder
 einem Power-Law.
 
 Warren et al. betrachteten das Netzwerk nicht zu einem festen
 Zeitpunkt sondern untersuchten die \emph{Dynamik} des
-Netzwerks\cite{Warren2007}. Sie berechneten verschiedene grundlegende
+Netzwerks \cite{Warren2007}. Sie berechneten verschiedene grundlegende
 Netzwerkeigenschaften (Größe des Netzwerkes, Distanzen,
 Gradverteilung etc.) und verfolgten deren Entwicklung \emph{über die
   Zeit}. Ihre Ergebnisse können allerdings mit den in dieser Arbeit
@@ -1412,7 +1411,7 @@ PGP-Community, die Netzwerkstruktur zu untersuchen. Das
 wotsap-Projekt\cite{Cederlof} stellt einen täglich aktualisierten
 Datensatz bereit, der die Vernetzungsstruktur der größten starken
 Zusammenhangskomponente des Web of Trust darstellt. Diese Daten werden
-werden für eine Webapplikation benutzt, die kürzeste Pfade
+für eine Webapplikation benutzt, die kürzeste Pfade
 zwischen Schlüsseln berechnet und visualisiert und so bei der
 Nutzung von Zertifikatspfaden behilflich sein soll. In Abschnitt
 \ref{ch:Grundlagen:sec:WarumEigene} wird der Wotsap-Datensatz näher
