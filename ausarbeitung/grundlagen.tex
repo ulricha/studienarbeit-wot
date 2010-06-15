@@ -12,8 +12,9 @@ Authentifizierung öffentlicher Schlüssel. Ausserdem wird auf die
 Funktionsweise der PGP-Software eingegangen.
 
 Da der Fokus dieser Arbeit auf der Netzwerkstruktur des Web of Trust
-liegt, werden die kryptographischen Grundlagen und die Funktionsweise
-der PGP-Software nur in dem Ausmaß besprochen, dass für die weitere
+liegt, werden die kryptographischen Grundlagen (Abschnitt
+\ref{ch:Grundlagen:sec:PublicKeyCrypto}) und die Funktionsweise
+der PGP-Software (Abschnitt \ref{ch:Grundlagen:sec:PGP}) nur in dem Ausmaß besprochen, das für die weitere
 Arbeit nötig ist. Für detailliertere Darstellungen wird auf
 entsprechende Literatur verwiesen.
 
@@ -142,8 +143,8 @@ Schlüsselpaar für jeden Teilnehmer.
 \subsection{Authentisierung von Schlüsseln}
 \label{ch:Grundlagen:sec:PublicKeyCrypto:subsec:KeyAuth}
 Die Verteilung von öffentlichen Schlüsseln über unsichere
-Kanäle scheint zwar zunächst zwar zunächst das
-Schlüsselverteilungsproblem zu lösen. öffentliche Schlüssel
+Kanäle scheint zwar zunächst das
+Schlüsselverteilungsproblem zu lösen. Öffentliche Schlüssel
 können über beliebige Wege verteilt werden, etwa per E-Mail, auf
 Webseiten oder auf Keyservern (Abschnitt
 \ref{sec:das-keys-netzw}). Allerdings tritt dann ein weiteres Problem
@@ -169,9 +170,9 @@ Angriff wird als \emph{Man-in-the-middle-Angriff} bezeichnet.
 Natürlich kann die Authentizität eines Schlüssels überprüft
 werden, wenn dieser bei einem persönlichen Treffen übergeben
 wird. Im Kontext elektronischer Kommunikation ist dies jedoch im
-Allgemeinen nicht möglich. Stattdessen muss sich dafür auf einen
-zuverlässigen Dritten (Trusted Third Party -- TTP) verlassen werden,
-der die Authentizität des Schlüssels bestätigt. Eine TTP gibt
+Allgemeinen nicht möglich. Stattdessen m\"ussen sich die Beteiligten dafür auf einen
+zuverlässigen Dritten (Trusted Third Party -- TTP) verlassen,
+der die Authentizität der Schlüssels bestätigt. Eine TTP gibt
 eine Zusicherung über die Bindung von einem öffentlichen
 Schlüssel an eine Person oder allgemein eine Entität ab.
 
@@ -252,7 +253,7 @@ digitale Signaturschemata.
 Eine Hashfunktion $h$ ist eine Abbildung von Binärstrings beliebiger
 Länge auf Binärstrings einer festen Länge $n$. Die Ausgabe
 $h(x)$ eines Binärstrings $x$ wird als \emph{Hashwert} (oder als
-\emph{Fingerabdruck}) von $x$ bezeichnet. übliche Kriterien für
+\emph{Fingerabdruck}) von $x$ bezeichnet. Übliche Kriterien für
 eine gute Hashfunktion sind eine annähernde Gleichverteilung der
 Hashwerte und eine möglichst geringe Wahrscheinlichkeit von
 Kollisionen. Eine Kollision tritt dann auf, wenn $h(x) = h(y)$ für
@@ -263,7 +264,7 @@ Eigenschaften gefordert. Es darf nicht mit akzeptablem
 Berechnungsaufwand möglich sein, zwei Binärstrings $x_1$ und $x_2$
 zu berechnen, so dass $h(x_1) = h(x_2)$ gilt. Diese Eigenschaft wird
 als \emph{Kollisionsresistenz} bezeichnet. Außerdem muss die Funktion
-resistent gegen \emph{Urbild-Attacken}, sein, d.h. es darf mit
+resistent gegen \emph{Urbild-Angriffen} sein, d.h. es darf mit
 akzeptablem Aufwand nicht möglich sein, zu einem Hashwert $y$ einen
 Binärstring $x$ zu berechnen, so dass $h(x) = y$ gilt.
 
@@ -277,11 +278,11 @@ Verschlüsselung von E-Mails implementiert.  Die ursprüngliche
 Version von PGP wurde von Phil Zimmerman entwickelt. Der Quellcode von
 PGP wurde von Anfang an der Allgemeinheit zur Verfügung
 gestellt. PGP wird seit 1996 als kommerzielles Produkt vertrieben,
-blieb aber trotzdem kostenlos verfügbar\cite{wiki:pgp}. Seit 1998
+blieb aber trotzdem kostenlos verfügbar \cite{wiki:pgp}. Seit 1998
 ist das verwendete Nachrichten- und Schlüsselformat durch den RFC
-2440\cite{Callas1998} und seit 2007 durch den überarbeiteten RFC
-4880\cite{Callas2007} standardisiert. Seit 1999 existiert mit
-GnuPG\cite{Gnupg2010} eine freie Implementierung von OpenPGP unter der
+2440 \cite{Callas1998} und seit 2007 durch den überarbeiteten RFC
+4880 \cite{Callas2007} standardisiert. Seit 1999 existiert mit
+GnuPG \cite{Gnupg2010} eine freie Implementierung von OpenPGP unter der
 GNU General Public Licence, deren Entwicklung zeitweise vom deutschen
 Bundesministerium für Wirtschaft und Technologie gefördert
 wurde. GnuPG scheint inzwischen die am meisten verbreitete
@@ -289,7 +290,7 @@ OpenPGP-Implementierung zu sein.
 
 PGP benutzt asymmetrische Kryptographie für Verschlüsselung und
 digitale Signaturen und bietet damit ein Werkzeug, um Vertraulichkeit,
-Authentizität etc von Nachrichten zu erreichen. Die häufigste
+Authentizität etc. von Nachrichten zu erreichen. Die häufigste
 Anwendung von PGP ist die Verschlüsselung und Signierung von
 E-Mail-Nachrichten. Es kann aber auch benutzt werden, um beliebige
 Dokumente und Dateien zu verschlüsseln und zu signieren.
@@ -303,17 +304,18 @@ liegt unter anderem darin, dass symmetrische Verfahren in der Regel
 deutlich schneller sind als asymmetrische Verfahren.
 
 PGP und GnuPG implementieren eine Vielzahl von symmetrischen und
-asymmetrischen sowie Hashalgorithmen. Nachdem GnuPG seit 1999 in der
-Standardeinstellung DSA/ElGamal-Schlüssel erzeugte, werden seit 2009
-standardmäßig RSA-Schlüssel erzeugt (siehe Abschnitt
+asymmetrischen Verschl\"usselungsalgorithmen sowie
+Hashalgorithmen. GnuPG erzeugte bis zum Jahr 2009 in der
+Standardeinstellung DSA/ElGamal-Schlüssel. Seit 2009 werden
+standardm\"assig Schl\"ussel nach dem RSA-Verfahren erzeugt (siehe Abschnitt
 \ref{sec:result-key-properties}).
 
 OpenPGP-Schlüssel können mit einem Ablaufdatum versehen
 werden. Auch einzelne Teile eines Schlüssels, etwa einzelne UserIDs
 oder Signaturen, können ein Ablaufdatum erhalten. Ein Schlüssel
 kann aus verschiedenen Gründen nicht mehr benutzbar sein: Er kann
-kompromittiert worden sein, dass Schlüsselmaterial oder eine
-Passphrase können verloren gegangen sein und er kann schlichtweg
+kompromittiert worden sein, das Schlüsselmaterial oder eine
+Passphrase können verloren gegangen sein oder er kann schlichtweg
 durch einen anderen Schlüssel ersetzt worden sein. In solchen
 Fällen kann ein Schlüssel \emph{widerrufen} werden, indem eine
 spezielle Widerrufssignatur durch den Besitzer auf dem Schlüssel
@@ -384,7 +386,7 @@ dar. Tatsächlich kann das Modell des Web of Trust als eine
 Verallgemeinerung solcher Modelle angesehen werden. Es spricht
 zunächst nichts dagegen, mit den Mitteln des Web of Trust ein
 hierarchisches Modell auszudrücken und zu implementieren (siehe auch
-Abschnitt \ref{sec:cert-auth-im}).. Die aktuelle Version des
+Abschnitt \ref{sec:cert-auth-im}). Die aktuelle Version des
 OpenPGP-Standards sieht einen Mechanismus vor, um einen Baum von
 Certificate Authorities kryptographisch sicher auszudrücken
 (sog. \emph{trust signatures}).

@@ -6,54 +6,54 @@
 \label{ch:Einleitung}
 %% ==============================
 
-Die meisten Kommunikationsmedien -- insbesondere E-Mail -- k\"onnen
-nicht garantieren, dass Nachrichten unterwegs abgeh\"ort, ver\"andert
-oder mit gef\"alschtem Absender verschickt werden. PGP und GnuPG sind
+Die meisten Kommunikationsmedien -- insbesondere E-Mail -- können
+nicht garantieren, dass Nachrichten unterwegs abgehört, verändert
+oder mit gefälschtem Absender verschickt werden. PGP und GnuPG sind
 Softwarepakete, die -- basierend auf asymmetrischer Kryptographie --
-Vertraulichkeit und Authentizit\"at gew\"ahrleisten.
+Vertraulichkeit und Authentizität gewährleisten.
 
-Asymmetrische Kryptographie erlaubt es, Schl\"ussel auf unsicheren
-Kan\"alen auszutauschen. Damit stellt sich aber ein neues Problem: Wie
-kann ein Benutzer sicherstellen, dass ein Schl\"ussel authentisch ist,
-also tats\"achlich vom angeblichen Besitzer stammt? Im Kontext
+Asymmetrische Kryptographie erlaubt es, Schlüssel auf unsicheren
+Kanälen auszutauschen. Damit stellt sich aber ein neues Problem: Wie
+kann ein Benutzer sicherstellen, dass ein Schlüssel authentisch ist,
+also tatsächlich vom angeblichen Besitzer stammt? Im Kontext
 elektronischer Kommunikation kann dies meist nicht durch direkten
 Kontakt mit dem Kommunikationspartner festgestellt werden. Statt
-dessen m\"ussen sich Teilnehmer auf Dritte verlassen, die Schl\"ussel
+dessen müssen sich Teilnehmer auf Dritte verlassen, die Schlüssel
 verifizieren.
 
-Der traditionelle Ansatz daf\"ur besteht in der Verwendung von
+Der traditionelle Ansatz dafür besteht in der Verwendung von
 zentralen und hierarchischen Infrastrukturen, die sich auf wenige
-zentrale Authorit\"aten verlassen. Diese Authorit\"aten nehmen die
-Aufgabe der Verifizierung von Schl\"usseln wahr.  PGP setzt
+zentrale Autoritäten verlassen. Diese Autoritäten nehmen die
+Aufgabe der Verifizierung von Schlüsseln wahr.  PGP setzt
 stattdessen auf das Paradigma der Selbstorganisierung in Form des
 \emph{Web of Trust}. Mit Selbstorganisierung ist gemeint, dass ein
-System nicht zentral geplant wird, sondern sich ausschliesslich aus
+System nicht zentral geplant wird, sondern sich ausschließlich aus
 den Interaktionen aller Teilnehmer ergibt. Im Web of Trust ist die
-Aufgabe der Verifizierung von Schl\"usseln auf \emph{alle} Teilnehmer
-verlagert. Diese stellen Informationen \"uber von ihnen verifizierte
-Schl\"ussel \"offentlich zur Verf\"ugung und erm\"oglichen es so
+Aufgabe der Verifizierung von Schlüsseln auf \emph{alle} Teilnehmer
+verlagert. Diese stellen Informationen über von ihnen verifizierte
+Schlüssel öffentlich zur Verfügung und ermöglichen es so
 anderen Teilnehmern, sie zu benutzen. Auf diese Weise ergibt sich ein
-Netzwerk, dass abbildet, welche Schl\"ussel (bzw. Benutzer) welche
-anderen Schl\"ussel verifizert haben.
+Netzwerk, das abbildet, welche Schlüssel (bzw. Benutzer) welche
+anderen Schlüssel verifiziert haben.
 
 Eine Vielzahl von Arbeiten befasst sich mit der Analyse der Struktur
-grosser Netzwerke, die in verschiedensten Bereichen angetroffen
-werden. Dies k\"onnen etwa soziale, technologische oder biologische
+großer Netzwerke, die in verschiedensten Bereichen angetroffen
+werden. Dies können etwa soziale, technische oder biologische
 Netzwerke sein. In den letzten Jahren hat insbesondere die Analyse von
-sozialen und technologischen Netzwerken durch die Verf\"ugbarkeit von
+sozialen und technischen Netzwerken durch die Verfügbarkeit von
 Datensammlungen aus dem Bereich des Internets, von Online Social
-Networks (Facebook etc.) u.\"a. einen erheblichen Auftrieb erhalten.
+Networks (Facebook etc.) u.ä. einen erheblichen Auftrieb erhalten.
 
-Das Web of Trust stellt ein Beispiel f\"ur ein solches Netzwerk dar,
-dass sich aus der Selbstorganisierung der Teilnehmer ergibt. Auch wenn
-es zun\"achst nicht \"uber die streng regelm\"assige Struktur eines
-geplanten Systems verf\"ugt, ist es auch nicht komplett
+Das Web of Trust stellt ein Beispiel für ein solches Netzwerk dar,
+das sich aus der Selbstorganisierung der Teilnehmer ergibt. Auch wenn
+es zunächst nicht über die streng regelmäßige Struktur eines
+geplanten Systems verfügt, ist es auch nicht komplett
 unstrukturiert. Es ergeben sich Strukturen, die die Beziehungen der
-Teilnehmer im realen Leben wiederspiegeln. Das Netzwerk kann
-einerseits nur in Bezug auf die Erf\"ullung seines Zwecks betrachtet
-werden: Wie stark wird das Web of Trust benutzt und wie gut erf\"ullt
+Teilnehmer im realen Leben widerspiegeln. Das Netzwerk kann
+einerseits nur in Bezug auf die Erfüllung seines Zwecks betrachtet
+werden: Wie stark wird das Web of Trust benutzt und wie gut erfüllt
 es seinen Zweck? Andererseits kann seine Struktur benutzt werden, um
-die Mechanismen seiner Entstehung zu erkl\"aren. Wie finden sich die
+die Mechanismen seiner Entstehung zu erklären. Wie finden sich die
 Mechanismen seiner Entstehung und die abgebildeten Beziehungen in
 dieser Struktur wieder? Diese Studienarbeit stellt einen Versuch dar,
 zur Beantwortung beider Fragen beizutragen.
@@ -65,9 +65,9 @@ zur Beantwortung beider Fragen beizutragen.
 \label{ch:Einleitung:sec:Zielsetzung}
 
 Das Ziel dieser Studienarbeit ist eine Analyse der Struktur des Web of
-Trust auf verschiedenen Ebenen. Dazu soll zun\"achst eine Software
+Trust auf verschiedenen Ebenen. Dazu soll zunächst eine Software
 implementiert werden, die das Web of Trust aus einer
-Schl\"usseldatenbank extrahiert und in Form eines Graphen verf\"ugbar
+Schlüsseldatenbank extrahiert und in Form eines Graphen verfügbar
 macht. 
 
 Der dadurch erhaltene Graph soll unter mehreren Gesichtspunkten
@@ -77,20 +77,20 @@ analysiert werden:
 
 \item Wie stark sind die Teilnehmer des Web of Trust vernetzt?
 
-\item  Wie n\"utzlich ist das Web of Trust f\"ur seine Teilnehmer? Als
-  Mass f\"ur die N\"utzlichkeit wird hier angesehen, wie viele
-  Schl\"ussel f\"ur Teilnehmer anhand der Signaturen im Netzwerk
-  prinizpiell verifizierbar sind.
+\item  Wie nützlich ist das Web of Trust für seine Teilnehmer? Als
+  Mass für die Nützlichkeit wird hier angesehen, wie viele
+  Schlüssel für Teilnehmer anhand der Signaturen im Netzwerk
+  prinzipiell verifizierbar sind.
 
-\item Wie robust ist das Web of Trust? Wie sehr h\"angt sein
-  Zusammenhang von einzelnen Schl\"usseln ab?
+\item Wie robust ist das Web of Trust? Wie sehr hängt sein
+  Zusammenhang von einzelnen Schlüsseln ab?
 
-\item Wie h\"aufig werden verschiedene Verschl\"usselungs- und
-  Hashalgorithmen bei PGP-Schl\"usseln verwendet? Welche Auswirkungen
+\item Wie häufig werden verschiedene Verschlüsselungs- und
+  Hashalgorithmen bei PGP-Schlüsseln verwendet? Welche Auswirkungen
   haben Fortschritte in Angriffen gegen diese Algorithmen?
 
 \item Spiegeln sich Gruppierungen von Individuen in der Struktur des
-  Web of Trust wieder? L\"asst sich anhand solcher Gruppen erkl\"aren,
+  Web of Trust wieder? Lässt sich anhand solcher Gruppen erklären,
   wie sich das Netzwerk bildet?
 \end{itemize}
 
@@ -100,37 +100,37 @@ analysiert werden:
 \label{ch:Einleitung:sec:Gliederung}
 
 Die Arbeit ist im weiteren wie folgt gegliedert: Kapitel
-\ref{ch:Grundlagen} erl\"autert die notwendigen Grundlagen. Dies sind
+\ref{ch:Grundlagen} erläutert die notwendigen Grundlagen. Dies sind
 zum einen die Prinzipien asymmetrischer Kryptographie (Abschnitt
 \ref{ch:Grundlagen:sec:PublicKeyCrypto}), Methoden zur
-Authentifizierung \"offentlicher Schl\"ussel, die Weiterhin werden in
+Authentifizierung öffentlicher Schlüssel, die Weiterhin werden in
 Abschnitt \ref{ch:Grundlagen:sec:PGP} die Prinzipien von PGP und GnuPG
 sowie die Rahmenbedingungen, in denen PGP/GnuPGP verwendet wird,
-beschrieben. Ausserdem werden in Abschnitt \ref{sec:graph-und-netzw}
+beschrieben. Außerdem werden in Abschnitt \ref{sec:graph-und-netzw}
 die graphentheoretischen und netzwerkanalytischen Verfahren
-eingef\"uhrt, die in dieser Arbeit verwendet werden. Abschnitt
+eingeführt, die in dieser Arbeit verwendet werden. Abschnitt
 \ref{ch:Grundlagen:sec:RelatedWork} bespricht verwandte Arbeiten.
 
 Kapitel \ref{ch:Methoden} beschreibt die verwendeten
-Methoden. Abschnitt \ref{ch:Grundlagen:sec:WarumEigene} begr\"undet
-zun\"achst, warum die Extraktion der ben\"otigen Daten selbst
+Methoden. Abschnitt \ref{ch:Grundlagen:sec:WarumEigene} begründet
+zunächst, warum die Extraktion der benötigen Daten selbst
 implementiert wurde. Abschnitt \ref{ch:Grundlagen:sec:Design} beschreibt die
 im Rahmen dieser Arbeit implementierte Software zur Extraktion und
-Analyse des Web of Trust, w\"ahrend Abschnitt
-\ref{sec:community-analyse} die Vorgehensweise f\"ur die Analyse der
+Analyse des Web of Trust, während Abschnitt
+\ref{sec:community-analyse} die Vorgehensweise für die Analyse der
 Community-Struktur in Abschnitt \ref{sec:result-zusamm-und-comm}
-erl\"autert.
+erläutert.
 
-Kapitel \ref{ch:Ergebnisse} stellt die erhaltenen Ergebnisse vor und
-diskutiert sie. Dies gliedert sich in Ergebnisse \"uber die Struktur
+Kapitel \ref{ch:Ergebnisse} stellt die Ergebnisse vor und
+diskutiert sie. Dies gliedert sich in Ergebnisse über die Struktur
 des Web of Trust (Abschnitt \ref{sec:result-allg-merkm-des}), einige
-Statistiken \"uber Eigenschaften einzelner Schl\"ussel und die
+Statistiken über Eigenschaften einzelner Schlüssel und die
 zeitliche Entwicklung des Web of Trust (Abschnitt
 \ref{sec:result-key-properties}) sowie die Analyse der
 Community-Struktur (Abschnitt \ref{sec:result-zusamm-und-comm}).
 
-Kapitel \ref{ch:Zusammenfassung} schliesslich fasst die Ergebnisse
-zusammen und bietet einen Ausblick auf Ansatzpunkte f\"ur zuk\"unftige
+Kapitel \ref{ch:Zusammenfassung} schließlich fasst die Ergebnisse
+zusammen und bietet einen Ausblick auf Ansatzpunkte für zukünftige
 Arbeiten.
 
 %%% Local Variables: 
