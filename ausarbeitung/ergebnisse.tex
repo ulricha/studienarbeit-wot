@@ -364,9 +364,9 @@ signifikanten Anzahl von Knoten mit hohem Grad. Die Verteilung
 \emph{ähnelt} also immerhin einer Power-Law-Verteilung. Eine
 zentrale Rolle bei den Eigenschaften, die skalenfreien Netzwerken
 zugeschrieben werden, spielt die Existenz eines Kerns bestehend aus
-``Hubs'', also Knoten mit hohem Grad, die untereinander verbunden
-sind. Knoten mit niedrigem Grad sind primär mit diesen Hubs
-verbunden. Dieser Kern hält das Netzwerk zusammen und sorgt für
+untereinander verbundenen, stark vernetzten ``Hubs''. Knoten mit niedrigem Grad sind primär mit diesen Hubs
+verbunden. Dieser Kern ist essentiell  f\"ur den Zusammenhang des
+Netzwerkes und sorgt für
 geringe Distanzen. Allerdings haben Li et al. \cite{Li2005} gezeigt,
 dass die Existenz einer Power-Law-Verteilung nicht ausreicht, um die
 Existenz von Hubs nachzuweisen. Es existieren Netzwerke, die zwar eine
@@ -426,7 +426,9 @@ Entfernung zufällig ausgewählter Knoten kaum Schaden anrichtet,
 reagiert das Netzwerk sehr verwundbar auf die Entfernung von Knoten,
 die sehr gut vernetzt sind. Schon die Entfernung weniger sehr gut
 vernetzter Knoten führt dazu, dass das Netzwerk
-zerfällt \cite{Albert2000}.
+zerfällt. Dieses Verhalten wird damit erkl\"art, dass der Zusammenhang des
+Netzwerks fast ausschlie{\ss}lich durch die kleine Gruppe sehr stark
+vernetzter Hubs bestimmt wird \cite{Albert2000}.
 
 Dieser Unterschied kann aufgefasst werden als der Unterschied zwischen
 einem gerichteten \emph{Angriff} und einer zufälligen
@@ -454,46 +456,68 @@ entfernt. Abbildung \ref{fig:without} zeigt die Entwicklung der Größe
 der größten Komponente, wenn mehr und mehr Knoten entfernt werden. Bei
 der Entfernung zufällig ausgewählter Knoten ist das Netzwerk
 ausgesprochen stabil. Die größte Komponente schrumpft fast im gleichen
-Masse, wie Knoten entfernt werden. Dieses Ergebnis ist nicht
+Masse, wie Knoten entfernt werden, woraus geschlossen werden kann,
+dass nur einzelne Knoten oder sehr kleine Gruppen abgetrennt werden. Dieses Ergebnis ist nicht
 überraschend. Da ein hoher Anteil der Knoten einen sehr niedrigen Grad
 hat, ist bei zufälliger Auswahl die Chance, einen solchen Knoten zu
-treffen, hoch. Das Verschwinden von Schlüsseln durch Ablaufen ist ein
+treffen, hoch. Das Verschwinden von Schlüsseln durch die
+\"Uberschreitung des Ablaufdatums ist ein
 normaler und häufiger Prozess. So verfügen etwa 5.700 Schlüssel in der
 größten starken Zusammenhangskomponente über ein Ablaufdatum, werden
 also irgendwann aus dem Netz verschwinden. Dieser Fall richtet also
 kaum globalen Schaden im Netzwerk an.
 
-Der Schaden durch die Entfernung von Knoten mit hohem ausgehendem Grad
-ist deutlich größer. Hier führt schon die Entfernung von deutlich
-weniger Knoten zu einem raschen Verfall bis hin zur völligen
-Auflösung des Netzwerkes. Aber auch hier richtet die Entfernung
-\emph{einzelner} Knoten noch keinen signifikanten Schaden an. Erst ab
-etwa 100 Knoten -- was der Entfernung aller Knoten mit einem
-ausgehenden Grad größer 250 entspricht -- sinkt die Größe der
-Komponente erheblich. Die Möglichkeiten eines Angreifers dürften
+Abbildung \ref{fig:without} zeigt ebenfalls, dass die Entfernung von
+Knoten geordnet nach absteigendem ausgehendem Grad die Gr\"o{\ss}e der
+gr\"o{\ss}ten starken Zusammenhangskomponente deutlich schneller reduziert als im
+Fall der zuf\"alligen Reihenfolge. Dies ist nicht verwunderlich, da
+bei der geordneten Reihenfolge am Anfang mit jedem Knoten im
+Durchschnitt eine sehr viel gr\"o{\ss}ere Anzahl von Kanten
+entfernt wird. Da das Netzwerk eine sehr gro{\ss}e Anzahl von Knoten mit
+sehr niedrigem Grad enth\"alt, ist die Wahrscheinlichkeit hoch, dass
+eine Reihe dieser Kanten solche schlecht vernetzten Knoten
+vollst\"andig abtrennt.
+
+Andererseits ist die Abnahme der Gr\"o{\ss}e der MSCC zu langsam, als
+dass von einem rapiden Zerfall gesprochen werden k\"onnte. Die
+Entfernung der 240 Knoten mit den h\"ochsten Graden -- dies entspricht
+der Entfernung aller Knoten mit einem ausgehenden Grad von mindestens
+160 -- reduziert die
+Gr\"o{\ss}e der MSCC auf 40.000 Knoten. Auch wenn damit eine
+signifikante Anzahl von Knoten abgetrennt wird, wird das Netzwerk als
+Solches damit noch lange nicht fundamental fragmentiert. Selbst die
+Entfernung von 5000 Knoten (d.h. Knoten mit einem Grad von mindestens
+18) l\"a{\ss}t noch eine gr\"o{\ss}te starke Zusammenhangskomponente von
+etwa 20.000 Knoten \"ubrig.
+
+Es zeigt sich, dass die am besten vernetzten Knoten nicht so zentral
+f\"ur den Zusammenhang des Netzwerkes sind, dass schon die Entfernung
+einer kleinen Anzahl dieser Knoten zu einer rapiden Fragmentierung
+f\"uhrt. Die Fragmentierung verl\"auft deutlich langsamer als in der
+Literatur f\"ur untersuchte ``skalenfreie'' Netzwerke angegeben
+(beispielsweise bei \cite{Albert2000}). Es scheint damit keine
+Hub-Struktur im Sinne der Literatur zu ``skalenfreien'' Netzwerken
+vorzuliegen. 
+
+Das Netzwerk scheint also selbst gegen\"uber einer sehr gro{\ss}
+angelegten Attacke recht robust zu sein. Die Möglichkeiten eines realistischen Angreifers dürften
 sich eher im Entfernen einzelner Knoten erschöpfen, so dass der zu
-erwartende Schaden gering ist. Trotzdem ist die Abhängigkeit des
-Netzwerks von wenigen Knoten bemerkenswert. Der rasche Verfall bei der
-Entfernung dieser Knoten illustriert die Wichtigkeit dieser zentralen
-Knoten, die als ``Hubs'' das Netzwerk zusammenhalten.
+erwartende Schaden gering ist. 
 
-Dieses Verhalten ist konsistent mit dem Verhalten, dass viele --
-insbesondere soziale -- Netzwerke aus der realen Welt zeigen, die als
-skalenfrei eingeordnet werden.
-
-Angemerkt werden muss, dass neben der Größe der Komponente auch
+Angemerkt werden muss aber , dass neben der Größe der Komponente auch
 eine Betrachtung der Entwicklung der Distanzen in der Komponente
 sinnvoll wäre. Dass die Größe der Komponente sich im Fall
-zufälliger Reihenfolge stabil verhält, muss nicht bedeuten, dass
+zufälliger Reihenfolge sehr stabil und im Fall der geordneten
+Reihenfolge recht stabil verhält, muss nicht bedeuten, dass
 sich die durchschnittlichen Distanzen nicht deutlich
 vergrößern. Vergrößern sich die Distanzen und verlängern sich
 damit die nötigen Signaturketten, so sinkt die Nützlichkeit des
 Netzwerkes (siehe Abschnitt \ref{sec:nutzlichkeit}). Für die
-Entfernung von Knoten anhand des Grades wird aufgrund der
-Ähnlichkeit zu skalenfreien Netzwerken erwartet, dass sich die
+Entfernung von Knoten anhand des Grades wird
+erwartet, dass sich die
 Distanzen schon durch die Entfernung weniger Knoten merklich
 erhöhen. Aufgrund des notwendigen Rechenaufwandes konnte dies im
-Rahmen dieser Arbeit aber nicht durchgeführt werden.
+Rahmen dieser Arbeit aber nicht \"uberpr\"uft werden.
 
 Der Grad eines Knotens ist nicht unbedingt das geeignetste Mass für
 die globale ``Wichtigkeit'' des Knotens. Durch eine Konzentration auf
@@ -503,7 +527,7 @@ lässt sich am Beispiel von Certificate Authorities im Web of Trust
 illustrieren: CA-Schlüssel haben zwar üblicherweise einen hohen
 ausgehenden Grad, haben also viele Schlüssel signiert und damit
 relativ kurze Wege zu vielen Schlüsseln. Allerdings haben sie
-gleichzeitig einen niedrigen eingehenden Grad, weil ein CA-Schlüssel
+\"ublicherweise gleichzeitig einen niedrigeren eingehenden Grad, weil ein CA-Schlüssel
 üblicherweise nicht mit einer Person direkt verbunden ist, und damit
 das übliche Verifizieren der Identität wenig Sinn macht. Damit tauchen
 CA-Schlüssel nur auf relativ wenigen kürzesten Pfaden auf, da sie
@@ -870,7 +894,7 @@ Algorithmus zurückgeht, ist nicht bekannt.
 
 Für die restlichen Methoden wurde der Graph auf einen ungerichteten
 Graphen reduziert. Dazu wurde jede einzelne gerichtete Kante in eine
-ungerichtete Kante umgewandelt. Aus dem gerichteten Graphen mit 44.6326
+ungerichtete Kante umgewandelt. Aus dem gerichteten Graphen mit 446.326
 Kanten ergab sich so ein ungerichteter Graph mit 295.425 Kanten.
 
 Für die COPRA-Berechnung wurden -- wie in \cite{Gregory2010}

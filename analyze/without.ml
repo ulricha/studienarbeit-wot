@@ -32,10 +32,6 @@ let calculate_multiple g =
 	  c := 0;
 	  List.rev results
       | l -> 
-	  incr c;
-	  flush stdout;
-	  let ids = List.take 5 l in
-	    remove_vertices g ids;
 	    let sccs = C.scc_list g in
 	    let sccs = list_list_sort_reverse sccs in
 	    let mscc_size = 
@@ -43,23 +39,35 @@ let calculate_multiple g =
 		List.length (List.hd sccs) 
 	      with _ -> 0 
 	    in
-	      Printf.printf "take 5 -> %d (%d -> %d)\n" !c (G.nb_vertex g) mscc_size;
+	      let avg_s = 
+		let sccs = List.tl sccs in
+		let sizes = List.map List.length sccs in
+		  (float_of_int (List.fold_left (+) 0 sizes ))  /. (float_of_int (List.length sizes))
+	      in
+	      Printf.printf "take 5 -> %d (%d -> %d, %f)\n" !c (G.nb_vertex g) mscc_size avg_s;
 	      let nr_sccs = List.length sccs in
 	      let i = !c * 5 in
-		f (List.drop 5 keys) ((i, mscc_size, nr_sccs) :: results)
+		incr c;
+		flush stdout;
+		let ids = List.take 5 l in
+		  remove_vertices g ids;
+		f (List.drop 5 keys) ((i, mscc_size, nr_sccs, avg_s) :: results)
   in
-  let fst (a,_,_) = a in
-  let second (_, b, _) = b in
-  let third (_, _, c) = c in
-(*  let results = f random [] in
+  let fst (a,_,_,_) = a in
+  let second (_, b, _, _) = b in
+  let third (_, _, c, _) = c in
+  let fourth (_, _, _, d) = d in
+    (*
+  let results = f random [] in
     write_int_values_to_file (List.enum (List.map fst results)) "random_i";
     write_int_values_to_file (List.enum (List.map second results)) "random_mscc";
-    write_int_values_to_file (List.enum (List.map third results))
-    "random_sccs"; *)
+    write_int_values_to_file (List.enum (List.map third results)) "random_sccs";
+    write_float_values_to_file (List.enum (List.map fourth results)) "random_avg_s"; *)
     let results = f by_outdeg [] in
       write_int_values_to_file (List.enum (List.map fst results)) "outdeg_i";
       write_int_values_to_file (List.enum (List.map second results)) "outdeg_mscc";
-      write_int_values_to_file (List.enum (List.map third results)) "outdeg_sccs"
+      write_int_values_to_file (List.enum (List.map third results)) "outdeg_sccs";
+      write_float_values_to_file (List.enum (List.map fourth results)) "outdeg_avg_s"
 
 let calculate_single g headline =
   let sccs = C.scc_list g in
