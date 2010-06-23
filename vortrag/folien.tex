@@ -83,11 +83,25 @@
 
 \begin{frame}
   \frametitle{\"Ubersicht \"uber die Arbeit}
-  \begin{itemize}
+  \begin{enumerate}
   \item Implementierung der Datenextraktion aus Schl\"usseldatenbank
   \item Analyse der Struktur des Graphen auf verschiedenen Ebenen
-  \item FIXME
-  \end{itemize}
+    \begin{itemize}
+    \item Struktur der starken Zusammenhangskomponenten
+    \item Gegenseitigkeit von Kanten
+    \item Clustering und Small-World
+    \item Gradverteilung
+    \item Community-Struktur
+    \end{itemize}
+  \item Sonstige Netzwerkeigenschaften
+    \begin{itemize}
+    \item Robustheit
+    \item N\"utzlichkeit
+    \end{itemize}
+  \item Schl\"usseleigenschaften
+    \item Zeitliche Entwicklung des Schl\"usselbestandes
+    \item Verwendung von Public-Key-Algorithmen und Hashalgorithmen
+  \end{enumerate}
 \end{frame}
 
 \begin{frame}
@@ -325,6 +339,9 @@ aussagekr\"aftig.
   \item Je aktiver die Teilnehmer, desto unsch\"arfer wird das Bild
     $\Rightarrow$ Communities verschmelzen
   \item Beispiel: Gr\"osste Community ist intern sehr dicht
+  \item Zugeh\"origkeit zu \emph{einer} Gruppe ist oft nicht
+    entscheidend
+  \item Beispiel: Debian
   \end{itemize}
 
   
@@ -340,7 +357,16 @@ aussagekr\"aftig.
 
 \begin{frame}
   \frametitle{Zusammenfassung}
-  
+  \begin{itemize}
+  \item Extraktionssoftware und Datensatz
+  \item Je n\"aher das Netzwerk betrachtet wird, desto kleiner scheint
+    der aktive Teil
+  \item charakteristische Merkmale eines sozialen Netzwerks
+  \item recht robust gegen\"uber Fehlern und gezielten Angriffen
+  \item Erreichbarkeit bei kleinen Pfadl\"angen ist f\"ur die meisten
+    Knoten gering
+  \item Community-Struktur
+  \end{itemize}
 \end{frame}
 % \begin{frame}
 %   Danke für eure Aufmerksamkeit.\\[1cm]
@@ -353,6 +379,19 @@ aussagekr\"aftig.
     {\Huge ?}
   \end{center}
   
+\end{frame}
+
+\begin{frame}
+\nocite{PhysRevE.68.036122}
+\nocite{Clauset2009}
+\nocite{Albert2000}
+\nocite{Fortunato2010}
+  \frametitle{Literatur}
+  
+  {\small
+  \bibliographystyle{plain}
+  \bibliography{diplarb}
+}
 \end{frame}
 
 \end{document}
