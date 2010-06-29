@@ -38,7 +38,7 @@ Dieser Abschnitt erläutert zunächst die Prinzipien symmetrischer
 und asymmetrischer Kryptographie, geht dann auf das Problem der
 Schlüsselverteilung bei asymmetrischer Verschlüsselung ein und
 führt zu dessen Lösung die Konzepte Public Key Infrastructure
-(PKI) und Web of Trust (WoT) ein. Die Darstellung beruht auf
+(PKI), X.509 und Web of Trust (WoT) ein. Die Darstellung beruht auf
 \cite{Menezes1996}.
 
 \subsection{Ziele von Kryptographie}
@@ -48,10 +48,9 @@ Wir betrachten den Fall einer Nachricht, die über einen Kanal
 transportiert wird. Im Kontext von Computernetzwerken, insbesondere
 des Internets, muss im Allgemeinen davon ausgegangen werden, dass
 unberechtigte Dritte in der Lage sind, Nachrichten auf einem Kanal
-abzuhören, zurückzuhalten und zu verändern. Menezes et
+abzuhören, zurückzuhalten und zu verändern. \pagebreak[1] Menezes et
 al. \cite{Menezes1996} definieren essentielle Ziele von
-Informationssicherheit, die in diesem Fall relevant sind:
-
+Informationssicherheit, die in diesem Fall relevant sind:\
 \begin{description}
 \item[Vertraulichkeit] Es soll sichergestellt werden, dass der Inhalt
   einer Nachricht nur berechtigten Kommunikationspartnern zugänglich
@@ -81,10 +80,10 @@ ausgetauscht werden. Die Verteilung oder Vereinbarung eines
 Schlüssels zwischen den Kommunikationspartnern ist aber dann
 schwierig, wenn ein direkter Austausch beispielsweise aufgrund von
 geographischer Entfernung nicht möglich ist und zwischen den
-Kommunikationspartnern noch kein sicherer Kanal\footnote{ein sicherer
+Kommunikationspartnern noch kein sicherer Kanal\footnote{Ein sicherer
   Kanal bezeichnet einen Kanal, auf dem die oben definierten
   Eigenschaften Vertraulichkeit, Authentizität und Integrität
-  gewährleistet sind} existiert. Dieses Problem wird als
+  gewährleistet sind.} existiert. Dieses Problem wird als
 \emph{Schlüsselverteilungsproblem} bezeichnet\cite{Menezes1996}.
 Außerdem stellt sich das Problem, dass für jede Menge von
 Kommunikationspartnern ein unterschiedlicher Schlüssel benötigt
@@ -100,7 +99,7 @@ Schlüssel, über den alle Kommunikationspartner
 verfügen. Stattdessen verfügt jeder Teilnehmer über ein
 \emph{Schlüsselpaar}, das aus einem \emph{privatem} und einem
 \emph{öffentlichen} Schlüssel besteht. Zwischen diesen beiden
-Schlüsseln muss zwar ein mathematischer Zusammenhang bestehen. Der
+Schlüsseln muss ein mathematischer Zusammenhang bestehen. Der
 private Schlüssel darf allerdings nicht mit akzeptablem Aufwand aus
 dem öffentlichen Schlüssel ableitbar sein. Das entscheidende
 Merkmal eines asymmetrischen Kryptographieschemas ist, dass der
@@ -114,7 +113,7 @@ gewährleisten. Vertraulichkeit wird erreicht, indem der Absender
 einer Nachricht diese mit dem öffentlichen Schlüssel des
 Empfängers verschlüsselt. Diese Nachricht kann dann nur mit dem
 entsprechenden privaten Schlüssel des Empfängers entschlüsselt
-werden. Um Authentizität, Integrität und Nicht-Abstreitbarkeit zu
+werden. Um Authentizität und Integrität zu
 gewährleisten, werden \emph{digitale Signaturen} verwendet, die von
 einem Geheimnis (dem privaten Schlüssel) und der zu signierenden
 Nachricht abhängen. Ein digitales Signaturschema besteht aus einer
@@ -151,8 +150,7 @@ Webseiten oder auf Keyservern (Abschnitt
 auf: Wie kann sichergestellt werden, dass ein öffentlicher
 Schlüssel authentisch ist, er also tatsächlich von dem
 vorgeblichen Besitzer stammt und dieser das Schlüsselmaterial
-kontrolliert? Die Lösung des Verteilungsproblems wird nur auf eine
-andere Ebene verschoben.
+kontrolliert? 
 
 Sei angenommen, dass Benutzer $B$ den öffentlichen Schlüssel von
 Benutzer $A$ über einen unsicheren Kanal bezieht und dass keine
@@ -223,8 +221,7 @@ Ein Beispiel für ein solches Modell ist eine
 Public-Key-Infrastruktur nach dem X.509-Standard. In einer solchen PKI
 sind Certificate Authorities hierarchisch in einem Baum
 angeordnet. Jede CA zertifiziert diejenigen CAs, die in diesem Baum
-unterhalb von ihr liegen und jede CA zertifiziert die ihr
-übergeordnete CA. Normale Benutzer stellen selbst keine Zertifikate
+unterhalb von ihr liegen. Normale Benutzer stellen selbst keine Zertifikate
 aus, ihre öffentlichen Schlüssel bilden in diesem Baum also die
 Blätter.
 
@@ -331,7 +328,7 @@ Für die Authentifizierung von öffentlichen Schlüsseln benutzt
 PGP eine dezentrale Alternative zu dem in Abschnitt
 \ref{ch:Grundlagen:sec:PublicKeyCrypto:subsec:KeyAuth:subsubsec:PKI}
 beschriebenen hierarchischen und zentralen
-Modell\cite{Ashley1999}. Die Fähigkeit, Zertifikate auszustellen,
+Modell \cite{Ashley1999}. Die Fähigkeit, Zertifikate auszustellen,
 ist dabei nicht auf Certificate Authorities beschränkt. Stattdessen
 ist jeder Benutzer in der Lage, Zertifikate für öffentliche
 Schlüssel auszustellen. Ein öffentlicher Schlüssel kann von
@@ -442,7 +439,7 @@ Das Vertrauensmodell ist der Algorithmus, mit dem PGP bzw. GnuPG
 entscheiden, ob ein Schlüssel anhand des Web of Trust als gültig
 betrachtet wird \cite{Ashley1999}. Gültig meint an dieser Stelle,
 dass die Zugehörigkeit des Schlüssels zu dem angeblichen Besitzer
-bestätigt wurde.
+bestätigt wurde.\pagebreak[3]
 
 PGP speichert Schlüssel in einem \emph{Schlüsselring}. Jedem
 Schlüssel in einem Schlüsselring wird ein \emph{Vertrauenswert}
@@ -668,6 +665,8 @@ möglichen Gewinn an Sicherheit und Bequemlichkeit abwägen.
 
 \subsection{Zustandekommen von Signaturen im Web of Trust}
 \label{sec:sozi-komp-des}
+Dieser Abschnitt beschreibt, wie Signaturen im Web of Trust
+\"ublicherweise zustande kommen.
 
 \subsubsection{Übliche Zertifizierungsprozeduren}
 \label{sec:ubliche-zert}
@@ -774,7 +773,7 @@ also problemlos in das dezentrale Web of Trust ein.
 Das in Abschnitt \ref{sec:ubliche-zert} beschriebene übliche Verfahren
 betrifft zunächst nur zwei Personen. Wenn mehrere Personen
 zusammenkommen, um ihre Schlüssel gegenseitig zu unterschreiben, wird
-von einer \emph{Keysigning-Party} gesprochen. Die Bandbreite dieser
+von einer \emph{Keysigning-Party} (KSP) gesprochen. Die Bandbreite dieser
 Veranstaltungen ist sehr groß. Sie reicht von informellen
 Zusammenkünften mehrerer Personen, die paarweise ihre Schlüssel
 unterschreiben, bis hin zu größeren, formalisierten Veranstaltungen im
@@ -797,7 +796,7 @@ erhebliche Mengen von Signaturen dem Web of Trust hinzugefügt.
 
 Insbesondere auf kleinen und spontanen Veranstaltungen ist es jedem
 Teilnehmer überlassen, mit welchen anderen Teilnehmern er Signaturen
-austauscht. üblich ist allerdings, dass (fast) alle Paare von
+austauscht. Üblich ist allerdings, dass (fast) alle Paare von
 Teilnehmern Signaturen austauschen. Ein hervorstechendes Merkmal
 vieler Keysigning-Parties ist also eine (fast) vollständige
 Vernetzung ihrer Teilnehmer.
@@ -811,11 +810,11 @@ PGP-Schlüssel unter anderem benutzt, um alle bereitgestellten
 Softwarepakete durch den zuständigen Entwickler signieren zu
 lassen. Auf diese Weise wird überprüft, dass ein hochgeladenes
 Paket tatsächlich von dem verantwortlichen Projektmitglied stammt
-und nicht verändert wurde. Dazu muss jeder etwa 1000
+und nicht verändert wurde. Dazu muss jeder der etwa 1000
 Debian-Entwickler über einen Schlüssel verfügen, der von
 mindestens einem anderen Debian-Entwickler verifiziert und
 unterschrieben wurde. Auf diese Weise bildet sich bereits innerhalb
-des Projekts ein Web of Trust, dass einen Teil des globalen Web of
+des Projekts ein Web of Trust, das einen Teil des globalen Web of
 Trust darstellt. PGP scheint eine wichtige Rolle in der Kultur des
 Projekts zu spielen. Darauf weist beispielsweise hin, dass auf Treffen
 von Projektmitgliedern oft Keysigning-Parties abgehalten werden, um
@@ -826,11 +825,14 @@ projektinternen Mailinglisten.
 \section{Graphentheorie und Netzwerkanalyse}
 \label{sec:graph-und-netzw}
 
+Dieser Abschnitt erkl\"art f\"ur die weitere Arbeit ben\"otigte
+Grundlagen aus Graphentheorie und Netzwerkanalyse.
+
 \subsection{Graphentheorie allgemein}
 \label{ch:Grundlagen:sec:Graphentheorie}
 
 Dieser Abschnitt führt einige grundlegende graphentheoretische
-Begriffe nach \cite{Brandes2004} ein.
+Begriffe ein. Er richtet sich nach den Beschreibungen in \cite{Brandes2004}.
   
 Ein \emph{Netzwerk} bezeichnet eine Ansammlung von Objekten, zwischen
 denen bilaterale Beziehungen bestehen. Das hier betrachtete Netzwerk
@@ -955,7 +957,8 @@ Als Verallgemeinerung der Nachbarschaft eines Knotens wird die
 definiert, d.h. die Menge der Knoten, zu denen die Distanz von $v$ aus
 höchstens $h$ beträgt.
 
-Der \emph{Clustering-Koeffizient} nach Watts und Strogatz ist ein Mass
+Der \emph{Clustering-Koeffizient} nach Watts und Strogatz ist ein
+Ma{\ss}
 dafür, wie \emph{transitiv} die Beziehungen in einem Netzwerk
 sind. Ein hoher Clustering-Koeffizient steht für eine hohe
 Wahrscheinlichkeit, dass zwei Nachbarn $v$ und $w$ eines Knotens $u$
@@ -974,7 +977,7 @@ $c_v$ eines Knotens wird dann als
   \label{eq:5}
   c(v) = \frac{\lambda(v)}{\tau(v)}
 \end{equation}
-definiert. $c(v)$ gibt also gewissermaßen an, wie viele der
+definiert. $c(v)$ gibt also an, wie viele der
 möglichen Dreiecke an $v$ auch tatsächlich Dreiecke sind. Der
 globale Clustering-Koeffizient von $G$ ist dann
 \begin{equation}
@@ -984,12 +987,7 @@ globale Clustering-Koeffizient von $G$ ist dann
 wobei $V' = \{v \in V : d(v) \ge 2\}$ gesetzt wird, um nicht
 definierte Werte für $\tau(v)$ zu vermeiden.
 
-Die \emph{Transitivity} nach Newman et al. drückt zwar den gleichen
-Sachverhalt aus wie der in dieser Arbeit verwendete
-Clustering-Koeffizient, ist aber nicht äquivalent zu diesem und
-sollte nicht verwechselt werden.
-
-Pastor-Satorras et al. definieren ein Mass für die Korrelation der
+Pastor-Satorras et al. definieren ein Ma{\ss} für die Korrelation der
 Knotengrade in einem Netzwerk \cite{PhysRevLett.87.258701}. Der Wert
 \begin{equation}
   \label{eq:9}
@@ -1000,7 +998,7 @@ an.  Dabei gibt die bedingte Wahrscheinlichkeit $P_c(k'|k)$ die
 Wahrscheinlichkeit an, dass eine Kante, die an einem Knoten mit Grad
 $k$ beginnt, an einem Knoten mit $k'$ endet.
 
-Ein verwandtes Mass wird von Newman eingeführt: Ein Netzwerk zeigt
+Ein verwandtes Ma{\ss} wird von Newman eingeführt: Ein Netzwerk zeigt
 \emph{assortative mixing}, wenn Knoten mit hohem Grad hauptsächlich
 mit solchen Knoten verbunden sind, die ebenfalls einen hohen Grad
 haben\cite{PhysRevLett.89.208701}. Diese Eigenschaft wird durch den
@@ -1016,11 +1014,11 @@ restlichen dies nicht tun.
 \subsection{Soziale Netzwerke}
 \label{sec:soziale-netzwerke}
 
-Ein \emph{soziales Netzwerk} ist nach Newman\cite{newman:167} eine
+Ein \emph{soziales Netzwerk} ist nach \cite{newman:167} eine
 Menge von Personen bzw. Gruppen von Personen, zwischen denen
 Beziehungen bzw. Kontakte bestehen. Die Art dieser Interaktionen ist
-dabei beliebig: Soziale Netzwerke, die in der Literatur analysiert
-wurden, beinhalten Freundschaftsnetzwerke von Schulkindern, Netzwerke
+dabei beliebig: Beispiele f\"ur soziale Netzwerke, die in der Literatur analysiert
+wurden, sind unter anderem Freundschaftsnetzwerke von Schulkindern, Netzwerke
 von sexuellen Kontakten und Netzwerke von Geschäftsbeziehungen
 (ebd.).
 
@@ -1066,7 +1064,11 @@ Interessengebiet verfügen (beispielsweise im Fall der
 \subsection{Small-World-Effekt}
 \label{sec:small-world-effekt}
 
-Milgram führte ein Experiment durch, bei dem Briefe von Person zu
+In sozialen Netzwerken tritt fast immer das Ph\"anomen auf, dass die
+die Distanzen zwischen den meisten Knotenpaaren in Relation zur
+Gr\"o{\ss}e des Netzwerks sehr gering sind \cite{newman:167}. Dieser Effekt wird als
+Small-World-Effekt bezeichnet. Der Begriff geht auf ein Experiment von 
+Milgram zur\"uck, bei dem Briefe von Person zu
 Person\footnote{Teilnehmer wurden aufgefordert, die Briefe an ihnen
   direkt bekannte Personen weiterzugeben, von denen sie annahmen, dass
   sie sich ``näher'' am Ziel befinden würden.} weitergegeben
@@ -1076,19 +1078,16 @@ zu transportieren\cite{Travers1969}. Diese Briefe erreichten ihr Ziel
 im Durchschnitt über nur sechs Zwischenstationen\footnote{71\% der
   Briefe erreichten ihr Ziel nicht.}. Mit diesem Experiment wurde
 gezeigt, dass Paare von Akteuren in einem sozialen Netzwerk nur durch
-wenige ``Zwischenschritte'' miteinander verbunden sind. Das Phänomen
-``kleiner'' durchschnittlicher Pfadlängen wird als
-\emph{Small-World-Effekt} bezeichnet. Die meisten Netzwerke aus der
-realen Welt -- insbesondere soziale Netzwerke -- scheinen diesen
-Effekt aufzuweisen\cite{newman:167}. Eine präzisere Formulierung
+wenige ``Zwischenschritte'' miteinander verbunden
+sind. Eine präzisere Formulierung
 ist, dass die durchschnittliche Distanz nur logarithmisch mit der
 Anzahl der Knoten wächst.
 
-Auch zufällige Graphen verfügen über eine geringe
-durchschnittliche Distanz. Strogatz und Watts bemerken, dass viele
+Auch zufällige Graphen nach dem $G_{n,p}$-Modell verfügen über eine geringe
+durchschnittliche Distanz \cite{Baumann2004}. Strogatz und Watts bemerken, dass viele
 reale Netzwerke zusätzlich über ausgeprägtes Clustering
 verfügen, also über einen hohen
-Clustering-Koeffizienten\cite{Watts1998}.
+Clustering-Koeffizienten \cite{Watts1998}.
 
 \subsection{Skalenfreie Netzwerke}
 \label{sec:skal-netzw}
@@ -1113,7 +1112,7 @@ folgt, wird als \emph{skalenfrei} bezeichnet. Dieser Begriff geht auf
 Barabasi und Albert zurück, die feststellten, dass eine Reihe von
 Netzwerken aus verschiedenen Bereichen -- etwa technologische, soziale
 oder biologische Netzwerke -- diese Eigenschaft
-aufweisen\cite{Barabasi1999}.
+aufweisen \cite{Barabasi1999}.
 
 Skalenfreien Netzwerken wird eine Reihe von allgemeinen Eigenschaften
 zugeschrieben. Die wichtigste Eigenschaft ist, dass skalenfreie
@@ -1123,7 +1122,7 @@ dafür, dass das Netzwerk bei der gezielten Entfernung dieser Hubs
 sehr schnell zusammenbricht. Auf der anderen Seite sollen sich
 skalenfreie Netzwerke sehr robust gegenüber der zufälligen
 Entfernung von Knoten zeigen, da die Chance, dabei einen Knoten mit
-niedrigem Grad zu treffen, hoch ist\cite{Albert2000}.
+niedrigem Grad zu treffen, hoch ist \cite{Albert2000}.
 
 \subsection{Communities}
 \label{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities}
@@ -1223,7 +1222,7 @@ grössere Graphen nicht geeignet.
 Eine solche hierarchische Zerlegung macht noch keine Aussage
 darüber, wie ``gut'' die Zerlegung auf einer bestimmten Ebene die
 tatsächliche Community-Struktur wiedergibt. Um diese Frage zu
-beantworten, wurde ebenfalls von Girvan und Newman als Mass für die
+beantworten, wurde ebenfalls von Girvan und Newman als Ma{\ss} für die
 Qualität einer Zerlegung die so genannte \emph{Modularity}
 definiert \cite{Newman2004}. Gegeben einen ungerichteten Graphen $G=(V,
 E)$ und eine Zerlegung dieses Graphen $\mathcal{C} = C_1, ..., C_n$
@@ -1284,7 +1283,7 @@ auf \emph{gierige} Art die Modularity optimiert.  Als
 Bewertungsfunktion dient dabei ebenfalls Modularity. Der Algorithmus
 funktioniert auf gewichteten Graphen. Dafür wird eine angepasste
 Definition der Modularity für gewichtete Graphen
-verwendet\cite{Newman2004a}.
+verwendet \cite{Newman2004a}.
 
 Der Algorithmus verläuft in Phasen, die in 2 Schritte aufgeteilt
 sind. Im Anfangszustand wird jedem Knoten eine eigene Community
@@ -1328,12 +1327,12 @@ sollten, ist die Chance, dass sich Labels über Community-Grenzen
 ausbreiten, sehr gering. \emph{Innerhalb} von dicht vernetzten Gruppen
 sollte sich jedoch ein ``Konsens'' über ein Label ergeben. Das
 Konvergenzkriterium besteht darin, dass jeder Knoten ein Label hat,
-dass von der Mehrheit seiner Nachbarn geteilt wird. Die
+das von der Mehrheit seiner Nachbarn geteilt wird. Die
 Zeitkomplexität des Algorithmus wird durch die Autoren als
 ``annähernd linear'' angegeben. Er ist also auch für große
 Graphen geeignet. Zu beachten ist, dass der Algorithmus durch die
 zufällige Reihenfolge, in der die Knoten durchlaufen werden, und die
-Auflösung von Pattsituationen \emph{nichtdeterministisch} ist.
+Auflösung von Pattsituationen \emph{nicht-deterministisch} ist.
 
 Der Algorithmus von Raghavan et al. liefert eine Zerlegung mit
 disjunkten Teilmengen von $V$. COPRA verallgemeinert diesen Ansatz zur
@@ -1350,7 +1349,7 @@ Iteration $t$ ist definiert als
   \label{eq:10}
   b_t(c, u) = \frac{1}{d(u)}\sum_{v \in N(u)}b_{t-1}(c, v)
 \end{equation}
-, also der Durchschnitt der Zugehörigkeitskoeffizienten aller
+also der Durchschnitt der Zugehörigkeitskoeffizienten aller
 Nachbarn für das Label $c$ in der vorherigen Iteration. Die Summe
 der Zugehörigkeitskoeffizienten für alle Label eines Knotens
 beträgt 1. Um zu vermeiden, dass sich alle Labels ausbreiten, werden
@@ -1369,7 +1368,7 @@ angegeben, ist also im wesentlichen linear.
 An dieser Stelle wird nur auf Arbeiten eingegangen, die sich mit der
 Netzwerkstruktur des Web of Trust bei PGP beschäftigen. Für einen
 Überblick über Arbeiten zur Struktur von anderen Netzwerken sei auf
-\cite{newman:167}und für Arbeiten zur Community-Struktur von anderen
+\cite{newman:167} und für Arbeiten zur Community-Struktur von anderen
 Netzwerken auf \cite{Fortunato2010} verwiesen.
 
 Capkun et al. \cite{Capkun2002} untersuchten strukturelle Aspekte der
@@ -1381,7 +1380,7 @@ Verteilung der aus- und eingehenden Grade mit einem Power-Law
 Zertifikatsbeziehungen entstehen, naturgemäß den Small-World-Effekt
 zeigen, da sich die Zertifikate anhand schon bestehender
 Vertrauensbeziehungen ergeben. Die Autoren geben außerdem noch ein
-Netzwerkmodell an, dass Graphen erzeugen soll, die in den
+Netzwerkmodell an, das Graphen erzeugen soll, die in den
 beschriebenen Charakteristiken dem PGP-Netzwerk ähneln.
 
 Arenas et al. \cite{Boguna2004} analysierten ein PGP-Netzwerk aus dem
@@ -1409,7 +1408,7 @@ auf Individuen reduziert wurde (siehe auch Abschnitt
 
 Neben diesen akademischen Arbeiten gibt es mehrere Ansätze aus der
 PGP-Community, die Netzwerkstruktur zu untersuchen. Das
-wotsap-Projekt\cite{Cederlof} stellt einen täglich aktualisierten
+wotsap-Projekt \cite{Cederlof} stellt einen täglich aktualisierten
 Datensatz bereit, der die Vernetzungsstruktur der größten starken
 Zusammenhangskomponente des Web of Trust darstellt. Diese Daten werden
 für eine Webapplikation benutzt, die kürzeste Pfade

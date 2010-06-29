@@ -5,7 +5,7 @@
 In Abschnitt \ref{sec:datensatz} wird zunächst der berechnete
 Datensatz allgemein charakterisiert. Abschnitt
 \ref{sec:result-allg-merkm-des} untersucht die Struktur des sich
-daraus ergebenden Graphen. Die zeitliche Entwicklung der Gr\"osse des
+daraus ergebenden Graphen. Die zeitliche Entwicklung der Gr\"o{\ss}e des
 Web of Trust und Statistiken \"uber die Verwendung von Algorithmen
 werden in den Abschnitten \ref{sec:result-key-properties} und
 \ref{sec:public-key-und} dargestellt. Abschnitt
@@ -65,7 +65,7 @@ die Schlüssel über einen Zeitraum von 20 Jahren angesammelt haben.
 \begin{figure}[t]
   \centering
   \includegraphics[scale=0.42]{images/component-size.pdf}
-  \caption{Größen verteilung der starken Zusammenhangskomponenten}
+  \caption{Größenverteilung der starken Zusammenhangskomponenten}
   \label{fig:component-size}
 \end{figure}
 
@@ -119,7 +119,7 @@ Teilnehmer anhand von Signaturketten verifiziert werden kann,
 beschränkt sich zunächst auf die eigene Komponente und ist damit
 sehr klein. Zwar gibt es auch -- wie oben gezeigt -- Vernetzung
 zwischen kleineren Komponenten und der größten Komponente. Es
-existieren ca. 18000 Knoten, die Knoten aus der größten Komponente
+existieren ca. 18.000 Knoten, die Knoten aus der größten Komponente
 direkt über eine einzige Kante erreichen können. Allerdings muss
 hier beachtet werden, dass das in PGP/GnuPG verwendete
 Verifizierungsmodell die Länge der verwendbaren Signaturketten
@@ -136,7 +136,9 @@ Länge erreichbaren Knoten beschränkt. Kann die größte
 Komponente nur indirekt über andere Knoten erreicht werden,
 reduziert sich diese Menge noch weiter. Gleiches gilt auch für die
 Erreichbarkeit der Menge von ca. 92.000 Knoten, zu denen eine Kante von
-Knoten der größten Komponente aus besteht. Beachtet werden muss
+Knoten der größten Komponente aus besteht. 
+
+Beachtet werden muss
 allerdings die Existenz von zentralen Certificate Authorities im
 eigentlich dezentralen Web of Trust. Mit den drei seit 1997 im Rahmen
 der ``Krypto-Kampagne'' der Zeitschrift c't (siehe Abschnitt
@@ -171,7 +173,7 @@ Knoten Pfade existieren. Da im vorherigen Abschnitt argumentiert
 wurde, dass die größte starke Zusammenhangskomponente die einzige
 ist, die in größerem Maßstab vernetzt ist und in der
 Signaturaktivitäten stattfinden, scheint eine Untersuchung der
-restlichen Komponenten nicht sinnvoll.
+restlichen Komponenten in diesem Rahmen nicht sinnvoll.
 
 Der induzierte Teilgraph der größten starken
 Zusammenhangskomponente besteht aus 44.952 Knoten und 442.960
@@ -204,7 +206,7 @@ Keysigning-Parties und privaten Treffen üblicherweise gegenseitig
 verläuft, dass also beide Signaturpartner den Schlüssel des
 jeweils anderen unterschreiben. Es ist eine Reihe von Gründen
 denkbar, die dazu führen, dass der Anteil einseitiger Signaturen so
-hoch ist: Eine Rolle könnten dabei Certificate Authorities
+hoch ist. Eine Rolle könnten dabei Certificate Authorities
 spielen. Diese signieren zwar eine Vielzahl von Schlüsseln,
 empfangen aber selbst weniger Signaturen\footnote{Beispielsweise
   verfügt ein CA-Schlüssel, der 1684 Schlüssel in der größten
@@ -236,18 +238,20 @@ Grad. Diese Korrelation folgt aus der hohen Anzahl gegenseitiger
 Kanten und der Natur des Signaturprozesses, bei dem Schlüssel
 üblicherweise gegenseitig signiert werden.
 
-\begin{figure}[th!]
-  \centering
-  \subfloat[]{\label{fig:indeg-dist} \includegraphics[scale=0.42]{images/indegree-dist.pdf}}
-  \subfloat[]{\label{fig:outdeg-dist} \includegraphics[scale=0.42]{images/outdegree-dist.pdf}}
-  \caption{Verteilung der eingehenden \subref{fig:indeg-dist} und
-    ausgehenden \subref{fig:outdeg-dist} Knotengrade in der grössten
-    starken Zusammenhangskomponente}
-  \label{fig:degree-dist}
-\end{figure}
 
 \subsubsection{Clustering und Small-World}
 \label{sec:clustering-und-small}
+
+\begin{figure}[th!]
+  \centering
+  \subfloat[]{\label{fig:inoutcorr} \includegraphics[scale=0.55]{images/inoutcorr.pdf}}
+  \subfloat[]{\label{fig:knn} \includegraphics[scale=0.55]{images/knn.pdf}}
+  \caption{Kumulative Verteilungsfunktion von $\frac{d^+(u)}{d^-(u)}$
+    für alle Knoten $u$ in der MSCC
+    \subref{fig:inoutcorr}. Verteilung von $k_{nn}$ über alle
+    ausgehenden Grade \subref{fig:knn}.}
+  \label{fig:degree-correlation}
+\end{figure}
 
 Für die Berechnung des Clustering-Koeffizienten wurde der eigentlich
 gerichtete Graph als ungerichteter Graph betrachtet, da es keine
@@ -258,8 +262,9 @@ das Ergebnis verfälscht wird, wenn gerichtete Kanten als
 ungerichtete Kanten betrachtet werden. Allerdings wurde bereits
 gezeigt, dass ein erheblicher Anteil der Kanten symmetrisch ist, also
 in beide Richtungen verläuft, und eine positive Korrelation zwischen
-dem ausgehendem und dem eingehenden Grad von Knoten besteht. Der
-Schaden sollte sich also in Grenzen halten.
+dem ausgehendem und dem eingehenden Grad von Knoten besteht. Die
+Verf\"alschung des Ergebnisses
+sollte sich also in Grenzen halten.
 
 Der durchschnittliche Clustering-Koeffizient für die grösste
 starke Zusammenhangskomponente beträgt $C = 0,460$. Das bedeutet,
@@ -268,7 +273,7 @@ Knoten wieder verbunden sind. Der Graph zeigt also ein erhebliches
 Mass an Clustering. Zum Vergleich beträgt der Clustering-Koeffizient
 für ein \emph{zufälliges} Netzwerk mit der gleichen Anzahl von
 Knoten und Kanten $C = 0,00025$ und für ein zufälliges Netzwerk,
-dass ausserdem über die gleiche Sequenz von Graden verfügt, $C =
+das ausserdem über die gleiche Sequenz von Graden verfügt, $C =
 0,013$. In der größten starken Zusammenhangskomponente findet sich
 also wesentlich mehr Clustering, als in einem zufällig entstandenen
 Netzwerk zu erwarten wäre.
@@ -283,7 +288,7 @@ nach außen. Intuitiv ist nahe liegend, dass in einer solchen Community
 die Wahrscheinlichkeit, dass zwei Nachbarn eines Knoten durch eine
 Kante verbunden sind, hoch ist. In Abschnitt
 \ref{sec:result-zusamm-und-comm} wird gezeigt, dass der vorliegende
-Graph in der Tat über eine markante Community-Struktur verfügt.
+Graph in der Tat über eine ausgepr\"agte Community-Struktur verfügt.
 
 Der Durchschnitt aller Distanzen in der größten starken
 Zusammenhangskomponente beträgt 12,14 (siehe auch Abbildung
@@ -299,7 +304,7 @@ auf und ist insbesondere typisch für soziale Netzwerke
 Interessant ist die geringe Distanz auch, weil die Teilnehmer des Web
 of Trust aus verschiedensten Ländern und damit aus verschiedensten
 geographischen Regionen stammen. Die übliche Prozedur für das
-Signieren von Schlüsseln setzt ein direktes, d.h. räumliches
+Signieren von Schlüsseln setzt ein direktes, d. h. räumliches
 Treffen der teilnehmenden Personen voraus. Eine Interpretation der
 geringen Distanz wäre, dass eine Anzahl von Teilnehmern geographisch
 so mobil ist, dass sich Signierungen an weit auseinander liegenden
@@ -314,10 +319,20 @@ dass sich die meisten Communities anhand von Top-Level-Domains einem
 Land oder Sprachraum zuordnen lassen. Interessant wäre an dieser
 Stelle eine Untersuchung, inwiefern sich die geographische Distanz der
 Länder auch in der Distanz im Netzwerk der entsprechenden
-Communities wieder spiegelt.
+Communities wiederspiegelt.
 
 \subsubsection{Verteilung der Grade, Skalenfreiheit}
 \label{sec:verteilung-der-grade}
+
+\begin{figure}[th!]
+  \centering
+  \subfloat[]{\label{fig:indeg-dist} \includegraphics[scale=0.42]{images/indegree-dist.pdf}}
+  \subfloat[]{\label{fig:outdeg-dist} \includegraphics[scale=0.42]{images/outdegree-dist.pdf}}
+  \caption{Verteilung der eingehenden \subref{fig:indeg-dist} und
+    ausgehenden \subref{fig:outdeg-dist} Knotengrade in der grö{\ss}ten
+    starken Zusammenhangskomponente.}
+  \label{fig:degree-dist}
+\end{figure}
 
 Der durchschnittliche ausgehende Grad (und damit auch der
 durchschnittliche eingehende Grad) beträgt 9,29. Allerdings zeigen
@@ -325,7 +340,7 @@ Abbildung \ref{fig:indeg-dist} und \ref{fig:outdeg-dist}, dass dieser
 Durchschnitt auf höchst ungleichmäßige Weise zustande kommt. Während
 eine Mehrheit der Knoten einen sehr kleinen ein- bzw. ausgehenden Grad
 hat, existiert eine signifikante Anzahl von Knoten, deren Grad
-deutlich über dem Durchschnitt liegt. Dieses Verhalten ist konsistent
+deutlich über dem Durchschnitt liegt. Dieses Verhalten scheint konsistent
 mit einer Power-Law-Verteilung der Grade und die in etwa geraden
 Linien im doppelt logarithmischen Plot der Verteilungen legen dies
 zusätzlich nahe. Allerdings wird in \cite{Clauset2009} argumentiert,
@@ -343,16 +358,6 @@ Anpassung mittels des Kolmogorov-Smirnov-Tests Werte, die mit $p =
 empfohlenen Schwellwert von $p=0,1$ liegen und damit ein Power-Law als
 plausible Hypothese für die Verteilung ausschließen.
 
-\begin{figure}[th!]
-  \centering
-  \subfloat[]{\label{fig:inoutcorr} \includegraphics[scale=0.55]{images/inoutcorr.pdf}}
-  \subfloat[]{\label{fig:knn} \includegraphics[scale=0.55]{images/knn.pdf}}
-  \caption{Kumulative Verteilungsfunktion von $\frac{d^+(u)}{d^-(u)}$
-    für alle Knoten $u$ in der MSCC
-    \subref{fig:inoutcorr}. Verteilung von $k_{nn}$ über alle
-    ausgehenden Grade \subref{fig:knn}.}
-  \label{fig:degree-correlation}
-\end{figure}
 
 Es handelt sich bei dem vorliegenden Netzwerk also nicht um ein
 skalenfreies Netzwerk im engeren Sinne. Es stellt sich allerdings die
@@ -398,13 +403,6 @@ ergibt sich ein Wert $r = 0,113$. Aus diesem positiven Wert folgt also
 ebenfalls, dass Knoten tendenziell mit Knoten verbunden sind, die
 einen ähnlichen Grad haben. Der $r$-Wert ähnelt den Werten, die
 für andere soziale Netzwerke berechnet wurden \cite{newman:167}.
-
-Zwar scheint die in \cite{Li2005} definierte $s$-Metrik ein besser
-geeignetes Mass für die Charakterisierung der Korrelation von Graden
-benachbarter Knoten zu sein als der Assortativity-Koeffizient
-$r$. Diese wurde hier aber nicht verwendet, da die Implementierung des
-Algorithmus für die Berechnung des Normalisierungswertes $s_{max}$ zu
-aufwändig war.
 
 \subsection{Robustheit}
 \label{sec:robustheit}
@@ -456,7 +454,7 @@ entfernt. Abbildung \ref{fig:without} zeigt die Entwicklung der Größe
 der größten Komponente, wenn mehr und mehr Knoten entfernt werden. Bei
 der Entfernung zufällig ausgewählter Knoten ist das Netzwerk
 ausgesprochen stabil. Die größte Komponente schrumpft fast im gleichen
-Masse, wie Knoten entfernt werden, woraus geschlossen werden kann,
+Ausma{\ss}, wie Knoten entfernt werden, woraus geschlossen werden kann,
 dass nur einzelne Knoten oder sehr kleine Gruppen abgetrennt werden. Dieses Ergebnis ist nicht
 überraschend. Da ein hoher Anteil der Knoten einen sehr niedrigen Grad
 hat, ist bei zufälliger Auswahl die Chance, einen solchen Knoten zu
@@ -519,7 +517,7 @@ Distanzen schon durch die Entfernung weniger Knoten merklich
 erhöhen. Aufgrund des notwendigen Rechenaufwandes konnte dies im
 Rahmen dieser Arbeit aber nicht \"uberpr\"uft werden.
 
-Der Grad eines Knotens ist nicht unbedingt das geeignetste Mass für
+Der Grad eines Knotens ist nicht unbedingt das geeignetste Ma{\ss} für
 die globale ``Wichtigkeit'' des Knotens. Durch eine Konzentration auf
 \emph{zentrale} Knoten, also etwa solche mit einer hohen Betweeness
 Centrality, lässt sich möglicherweise mehr Schaden anrichten. Dies
@@ -570,10 +568,10 @@ Schlüssels für die Verifizierung von anderen Schlüsseln dar. Da
 ein Schlüssel $A$ mit ausgehendem Grad 1 nur einen Schlüssel $B$
 signiert hat, gibt es auch nur genau einen Schlüssel, über den
 eine Signaturkette aufgebaut werden kann. Natürlich wird dadurch die
-Menge insgesamt erreichbarer Knoten stark eingeschränkt. Außerdem
+Menge der insgesamt erreichbaren Knoten stark eingeschränkt. Außerdem
 aber existiert damit keine Redundanz. Der Besitzer des Schlüssels
-$A$ muss dem Besitzer des Schlüssels $B$ vertrauen, wenn er irgend
-eine Signaturkette benutzen will. $B$ stellt einen \emph{Single point
+$A$ muss dem Besitzer des Schlüssels $B$ vertrauen, wenn er irgendeine 
+Signaturkette benutzen will. $B$ stellt einen \emph{Single point
   of failure} dar, da $A$ vom Netz getrennt wird, wenn $B$ etwa
 abläuft oder zurückgezogen wird. Äquivalent ist die
 Verifizierbarkeit eines Knotens $A$ stark eingeschränkt, wenn er
@@ -620,20 +618,20 @@ Wahrscheinlichkeit, dass weiter entfernten Personen aufgrund von
 persönlicher Bekanntschaft vertraut werden kann. Dass einer Person,
 deren Schlüssel selbst signiert wurde, vertraut wird, ist
 wahrscheinlicher als dass einer Person vertraut wird, deren
-Schlüssel nicht selbst signiert wurde. Je länger also
-eine Signaturkette, desto niedriger die Chance, dass sie tatsächlich
-benutzbar ist. 
+Schlüssel nicht selbst signiert wurde. Es scheint also plausibel, dass
+die Wahrscheinlichkeit f\"ur die Benutzbarkeit einer Signaturkette
+sinkt, je l\"anger diese wird. 
 
 \begin{figure}[th!]
   \centering
   \includegraphics[scale=0.6]{images/neighbourhood-cdf.pdf}
-  \caption{Kumulative Verteilungsfunktion der Nachbarschaftsgrössen
+  \caption{Kumulative Verteilungsfunktion der Nachbarschaftsgrö{\ss}en
     in der größten starken Zusammenhangskomponente}
   \label{fig:neighbourhood-cdf}
 \end{figure}
 
 Abbildung \ref{fig:neighbourhood-cdf} zeigt die kumulative
-Verteilungsfunktion der Größe dieser Nachbarschaften. Auffällig
+Verteilungsfunktion der Größe der Nachbarschaften. Auffällig
 ist hier zunächst das steile Wachstum der Kurve für die
 2-Nachbarschaft, woraus geschlossen werden kann, dass diese
 Nachbarschaft für fast alle Knoten sehr klein ist. In der Tat liegt
@@ -661,12 +659,573 @@ der größten Komponente entfernt. Diese CA-Schlüssel haben
 zusammen in dieser Komponente 4.256 Schlüssel signiert. Nach der
 Entfernung der CA-Schlüssel zerfiel die größte Komponente in eine
 Reihe von starken Zusammenhangskomponenten: Eine größte Komponente
-mit 42455 Schlüsseln und 1.058 sehr kleine Komponenten. Daraus ergibt
+mit 42.455 Schlüsseln und 1.058 sehr kleine Komponenten. Daraus ergibt
 sich, dass die CA-Schlüssel die größte Komponente zwar nicht
 fundamental zusammenhalten. Für immerhin 2.497 Schlüssel in der
 größten Zusammenhangskomponente ist aber das Vorhandensein und die
 Benutzung der CA-Schlüssel entscheidend, da sie andernfalls nicht
 erreichbar sind.
+
+\section{Communities}
+\label{sec:result-zusamm-und-comm}
+
+\subsection{Ergebnisse für den gerichteten Graphen}
+\label{sec:ergebnisse-fur-den}
+
+Die Zerlegung des gerichteten Graphen mit dem Algorithmus von Rosval
+et al. lieferte keine verwertbaren Ergebnisse. Zwar wurde eine
+Zerlegung in 2869 Partitionen berechnet. Allerdings gilt für die
+große Mehrzahl dieser Knotenmengen, dass der durch sie induzierte
+Teilgraph überhaupt keine Kanten hat. Nur für ca. 160 Partitionen
+hat der jeweils induzierte Teilgraph Kanten, in allen Fällen
+allerdings sehr wenige (zwischen 1 und 104 für eine Partition der
+Größe 682). Dass die Knoten einer Partition in allen Fällen so
+gut wie keine interne Vernetzung haben und damit der Definition von
+Communities absolut nicht entsprechen, ist ein klarer Hinweis, dass
+die berechnete Zerlegung die tatsächliche modulare Struktur des
+Graphen nicht sinnvoll wiedergibt. Dass der Graph in der Tat eine
+ausgeprägte modulare Struktur hat, zeigen die anhand des
+ungerichteten Graphen berechneten Zerlegungen, die auch unter
+inhaltlichen Gesichtspunkten Sinn ergeben.  Die berechnete Zerlegung mit etlichen
+großen Partitionen ohne interne Vernetzung ist in keinem Fall ein
+sinnvolles Ergebnis eines Community-Algorithmus und spricht daher
+für eine fehlerhafte Berechnung. Ob diese allerdings auf Fehler in
+der verwendeten Implementierung der Autoren
+\footnote{http://www.tp.umu.se/\~{}rosvall/code.html} oder auf Fehler im
+Algorithmus zurückgeht, ist nicht bekannt.
+
+\subsection{Ergebnisse für den ungerichteten Graphen}
+\label{sec:ergebnisse-fur-den-1}
+
+Für die restlichen Methoden wurde der Graph auf einen ungerichteten
+Graphen reduziert. Dazu wurde jede einzelne gerichtete Kante in eine
+ungerichtete Kante umgewandelt. Aus dem gerichteten Graphen mit 446.326
+Kanten ergab sich so ein ungerichteter Graph mit 295.425 Kanten.
+
+Für die COPRA-Berechnung wurden -- wie in \cite{Gregory2010}
+vorgeschlagen -- Berechnungen mit unterschiedlichen Werten $v$
+durchgeführt, um den ``besten'' Wert im Sinne der Modularity zu
+ermitteln. Dabei ergaben sich mit steigender maximaler Überlappung
+$v$ nur bis $v\le 3$ steigende Modularity-Werte, darüber hinaus
+fielen sie kontinuierlich ab. Deshalb wurde die Berechnung mit $v=3$
+verwendet. Die dort berechneten Modularity-Werte hatten eine geringe
+Standardabweichung von 0,003. Dieses Ergebnis kommt unerwartet. In
+\cite{Gregory2010} ergaben sich für ein PGP-Web-of-Trust-Netzwerk
+mit 10.680 Knoten bis zu $v=9$ ansteigende Modularity-Werte. Das
+(lokale) Maximum bei geringem $v$ für das hier verwendete Netzwerk
+könnte darauf hinweisen, dass seine Community-Struktur keine
+signifikante Überlappung aufweist. Ein weiterer Hinweis darauf ist,
+dass die Einführung der Überlappung mit $v=3$ gegenüber der
+nicht überlappenden Berechnung mit $v=1$ für die Modularity
+(Tabelle \ref{tab:mod-result}) keinen signifikanten Anstieg
+brachte. Auch die Zuordnung zu Gruppen bzw. Keysigning-Parties
+(Tabelle \ref{tab:assign}) und die Verteilung der Größe der
+Communities (Abbildungen \ref{fig:comsize-copra} und
+\ref{fig:comsize-copra1}) ähneln sich weitgehend. Alternativ
+könnte dieses Ergebnis allerdings auch in einem nicht-optimalen
+Verhalten des Algorithmus begründet liegen.
+
+\begin{figure}[th!]
+  \centering
+  \subfloat[]{\label{fig:comsize-copra1} \includegraphics[scale=0.45]{images/community-size-dist_copra1.pdf}}
+  \subfloat[]{\label{fig:comsize-copra} \includegraphics[scale=0.45]{images/community-size-dist_copra.pdf}} \\
+  \subfloat[]{\label{fig:comsize-bl2} \includegraphics[scale=0.45]{images/community-size-dist_bl2.pdf}} 
+  \subfloat[]{\label{fig:comsize-bl5} \includegraphics[scale=0.45]{images/community-size-dist_bl5.pdf}} 
+  \caption{Verteilung der Größe der Communities}
+  \label{fig:comsizedist}
+\end{figure}
+
+Wie in Abschnitt
+\ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities}
+beschrieben, verläuft der Algorithmus von Blondel et al. iterativ in
+Phasen, in denen jeweils zuerst Knoten einer benachbarten Community
+zugeordnet werden, wenn sich dadurch ein Modularity-Gewinn erzielen
+lässt, und dann die Knoten dieser so entstandenen Communities zu
+Knoten in einem neuen Netzwerk verschmolzen werden. Hier werden die
+Ergebnisse der Phasen $l=2$ und der letzten Phase $l=5$
+betrachtet. Für $l=5$ ergab sich die höchste
+Modularity. Allerdings sticht hier die sehr kleine Anzahl von
+Communities heraus, die wiederum vergleichsweise groß sein
+müssen. Gegenüber dem Ergebnis der Phase 2 ergibt sich eine
+relativ kleine Steigerung der Modularity, die mit einem erheblichen
+Verlust an \emph{Auflösung} erkauft wird\footnote{Die Zerlegungen
+  der Phasen 3 und 4 unterschieden sich nur geringfügig von der
+  Zerlegung der Phase 5}. Aus Abbildung \ref{fig:comsize-bl2} und
+\ref{fig:comsize-bl5} geht hervor, dass diese Reduktion der Anzahl im
+Wesentlichen auf das Reduzieren sehr kleiner Communities
+zurückgeht. Da der Algorithmus von Blondel et al. genauso wie
+Fastmod mittels einer (lokalen) Optimierung der Modularity arbeitet,
+könnte dieses Phänomen auf das in der Literatur beschriebene
+Auflösungslimit der Modularity-Funktion (bspw. \cite{Fortunato2007}
+\cite{Good2009}) zurückzuführen sein. Es scheint fraglich, ob die
+in Relation zur Größe des Graphen sehr geringe Zahl von 186
+Communities die Struktur des Graphen (in Bezug auf die inhaltliche
+Analyse) adäquat wiedergibt.
+
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[scale=0.7]{images/blondel-l5-com-c3a5eaab680984b123037897b0be74bf-edit.pdf}
+  \caption{Community mit modularen Untereinheiten (Größe 2.271,
+    Blondel ($l=5$), Force-directed Layout)}
+  \label{fig:large-modular}
+\end{figure}
+
+Abbildung \ref{fig:large-modular} illustriert dies anhand einer
+Community aus der Zerlegung des Algorithmus von Blondel et al. mit
+$l=5$. Diese enthält klar abgegrenzte Untereinheiten, die intuitiv
+wieder eigenständige Communities darstellen, sich aber nicht als
+solche im Ergebnis wiederfinden.
+
+Die Verteilungen der Community-Größen aus allen Berechnungen sind
+in einer Hinsicht konsistent: Neben einer großen Zahl von kleinen
+Communities gibt es eine signifikante Anzahl von größeren bis sehr
+großen Communities. Es scheint also keine charakteristische Größe
+der Communities zu geben.
+
+\begin{table}[t]
+  \centering
+  \footnotesize
+  \begin{tabular}{l|c|c|c}
+    Algorithmus & Modularity & Communities &
+    Enthaltene Knoten \\
+    \hline
+    BL ($l=2$)& 0,701 & 936 & 44.934 \\
+    BL ($l=5$)& 0,710 & 186 & 44.934 \\
+    \hline
+    COPRA ($v=1$) & (0,780) & 1.421 & 42.205 \\
+    COPRA ($v=3$) & (0,786) & 1.354 & --- \\
+
+  \end{tabular}
+  \caption{Modularity-Werte, Anzahl der Communities mit mehr als 3
+    Knoten sowie die Anzahl der insgesamt in diesen Communities enthaltenen
+    Knoten 
+    für die Algorithmen 
+    Blondel et al. (BL) in Phase 2 und 5 sowie COPRA mit $v=1$ und
+    $v=3$. Die
+    Modularity-Werte für COPRA können nicht mit denen für
+    Blondel verglichen werden, da ihnen eine andere
+    Modularity-Definition für überlappende Communities zugrunde
+    liegt.}
+  \label{tab:mod-result}
+\end{table}
+
+Aus Tabelle \ref{tab:mod-result} geht hervor, dass sich im Fall von
+Blondel et al. fast alle Knoten des Graphen in einer Community
+wiederfinden, die mindestens die Größe 4 hat. In Abschnitt
+\ref{sec:result-allg-merkm-des} wurde gezeigt, dass ein erheblicher
+Anteil der Knoten einen sehr geringen Grad von 1 oder 2 hat. Da solche
+Knoten mangels Kanten nicht selbst eine dichte Vernetzung herstellen
+können, müssen sie Mitglied in Communities sein, in denen Knoten
+mit höherem Grad sowohl die interne Vernetzung der Community als
+auch die Vernetzung der Community mit anderen erzeugen. COPRA scheint
+hingegen dazu tendieren, deutlich mehr Knoten in Communities sehr
+kleiner Größe mit 3 oder weniger unterzubringen. Dieses Verhalten
+könnte dazu führen, dass die Aussagekraft der Zerlegung in Bezug
+auf die realen Communities geschwächt wird, wenn viele Knoten auf
+diese Art abgespalten werden.
+
+Gegenüber der COPRA-Zerlegung mit $v=1$ zeigt die Zerlegung mit
+$v=3$ eine deutlich grössere Anzahl von Communities der Größe 3
+und 4. Abgesehen davon ähneln sich die Verteilungen der Größen aber
+weitgehend. Beide enthalten eine charakteristische sehr gro{\ss}e
+Community mit ca. 19.000 bzw. ca. 21.000 Mitgliedern. Demgegenüber
+bietet die Blondel-Zerlegung mit $l=2$ eine deutlich geringere Anzahl
+solcher sehr kleiner Communities, dafür aber eine höhere Zahl
+mittlerer (mehr als 100 Mitglieder) und insbesondere eine höhere
+Zahl sehr großer (zwischen 500 und 5000 Mitglieder) Communities.  Die
+beiden Algorithmen konvergieren nicht gegen ein gemeinsames Optimum,
+sondern liefern Ergebnisse, die sich qualitativ stark unterscheiden.
+
+Der insgesamt recht hohe Modularity-Wert weist darauf hin, dass der
+Graph in der Tat eine ausgeprägte modulare Struktur hat, wie dies
+von einem sozialen Netzwerk erwartet wird. Newman et al. geben an,
+dass ein Modularity-Wert $C \ge 0.3$ in der Praxis auf eine
+signifikante Community-Struktur schließen lässt \cite{Clauset2004}.
+
+\subsection{Struktur der Communities}
+\label{sec:strukt-der-comm}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=2]{images/metagraph-copra1-minsize5.pdf}
+  \caption{Struktur der Communities (COPRA ($v=1$) (rot: Größe
+    $<10$, grün: Größe $<100$, blau: Größe < 1000, gelb:
+    Größe > 1000).}
+  \label{fig:metagraph-com-copra}
+\end{figure}
+
+Die Abbildungen \ref{fig:metagraph-com-copra} und
+\ref{fig:metagraph-com-blondel2} zeigen die Struktur der Communities
+für die Zerlegungen COPRA ($v=1$) und Blondel ($l=2$). Auffällig
+ist hier insbesondere die teilweise sternförmige Struktur der
+COPRA-Zerlegung. Ein signifikanter Anteil der kleineren Communities
+ist rund um die zentrale Community der Größe ca. 19.000 angeordnet
+und im wesentlichen nur mit dieser vernetzt. Diese Struktur weist
+gewisse Ähnlichkeiten zur Struktur der starken
+Zusammenhangskomponenten auf (siehe Abschnitt
+\ref{sec:result-komponentenstruktur}). Diese sind ebenfalls
+sternförmig um eine zentrale Komponente angeordnet, die die Größe
+der anderen um mehrere Größenordnungen übertrifft. Allerdings
+sind im Fall der Community-Struktur noch eine Reihe mittelgroßer
+Communities vertreten, die dieses Muster etwas stören. Das
+sternförmige Muster der Zusammenhangskomponenten wiederholt sich
+also in etwa innerhalb der größten Zusammenhangskomponente auf
+einer anderen Ebene. Es könnte daher spekuliert werden, ob das
+Netzwerk eine \emph{Selbstähnlichkeit} aufweist, wie sie für eine
+Reihe von komplexen Netzwerken gezeigt wurde \cite{Song2005}. Dieser
+Frage wurde allerdings im Rahmen dieser Arbeit nicht weiter
+nachgegangen. Im Vergleich dazu zeigt sich in der Struktur der
+Blondel-Communities die etwas ausgewogenere Verteilung der Größen. Zwar
+sind auch hier viele kleine Communities sternförmig um die zentralen
+Communities angeordnet, diese verteilen sich hier aber auf mehrere solcher
+großen zentralen Communities.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=1.6]{images/metagraph-blondel2-minsize4.pdf}
+  \caption{Struktur der Communities (Blondel $l=5$) (Knotenfärbung
+    wie in Abb.\ref{fig:metagraph-com-copra})}
+  \label{fig:metagraph-com-blondel2}
+\end{figure}
+
+\subsection{Inhaltliche Analyse}
+\label{sec:inhaltliche-analyse}
+
+\begin{table}[t]
+  \centering
+  \footnotesize
+  \begin{tabular}{l|c|c|c|c|c}
+    Algorithmus & TLD-S & TLD-M & SLD-S & SLD-M & SIG \\
+    \hline
+    FM & 293 (53\%) & 247 (44\%) & 56 (10\%) & 154 (27\%) & 128
+    (23\%) \\
+    \hline
+    BL ($l=2$) & 499 (53\%) & 417 (45\%) & 41 (4\%) & 254 (27\%) & 115 (12\%) \\
+    BL ($l=5$) & 85 (47\%) & 85 (47\%) & 15 (8\%) & 38 (21\%) & 26 (14\%) \\
+    \hline
+    COPRA ($v=1$) & 824 (58\%) & 564 (40\%) & 178 (13\%) & 429 (30\%)
+    & 572 (40\%) \\
+    COPRA ($v=3$) & 792 (58\%) & 525 (38\%) & 187 (14\%) & 425 (31\%) & 555
+    (41\%)
+  \end{tabular}
+  \caption{Communities, in denen entweder 80\% (TLD-S) oder 40\%
+    (TLD-M) der UserIDs in der gleichen TLD bzw. in der gleichen SLD
+    (SLD-S/SLD-M) liegen oder in denen mindestens 80\% der Signaturen
+    innerhalb eines Monats entstanden sind (SIG).}
+  \label{tab:assign}
+\end{table}
+
+Aus Tabelle \ref{tab:assign} geht hervor, dass für alle Zerlegungen
+fast alle Communities einer Top-Level-Domain zuordenbar sind oder von
+einer TLD dominiert werden. Werden die generischen Top-Level-Domains
+(gTLD: com, org, net, info, ...) abgezogen, verbleiben im Fall von COPRA
+noch 519 (38\%) Communities, die einer TLD (und damit einer
+\emph{Country-Coded TLD (ccTLD)}) zugeordnet werden können und 315
+(23\%), die von einer ccTLD dominiert werden. Für die anderen
+Zerlegungen ergeben sich ähnliche Werte. Damit ist immerhin etwa die
+Hälfte der Communities einem Land zuordenbar. Für die von einer
+gTLD dominierten Communities ergeben Stichproben, dass sich die
+Teilnehmer der meisten dieser Communities anhand der Namen zumindest
+einem Sprachraum zuweisen lassen.
+
+Dieses Ergebnis ist naheliegend. Wie in Abschnitt
+\ref{sec:community-analyse} dargelegt, wird davon ausgegangen, dass
+ein wesentlicher Faktor, der das Zustandekommen von Signaturen
+beeinflusst, die sozialen Kontakte einer Person sind. Es ist weiterhin
+naheliegend, dass sich diese sozialen Kontakte unter anderem aufgrund
+von Sprachbarrieren und der räumlichen Nähe hauptsächlich im
+Rahmen eines Landes ergeben. Beispielsweise ist für eine aus
+Finnland stammende Person anzunehmen, dass die Mehrzahl ihrer Freunde,
+Bekannten, Geschäftspartner und sonstigen Kontakte wieder Finnen
+sind.
+
+Zwar könnte argumentiert werden, dass das Internet die geographische
+bzw. nationale Beschränkung sozialer Kontakte aufhebt. Allerdings
+spielt die geographische Nähe eine wichtige Rolle im
+Signaturprozess. Die verbreitete Prozedur für das Signieren eines
+Schlüssels setzt ein direktes persönliches Treffen der
+Signierenden voraus (siehe Abschnitt \ref{sec:sozi-komp-des}). Es ist
+anzunehmen, dass die überwiegende Mehrheit der PGP-Benutzer die
+meiste Zeit in einem Land und damit in einem geographisch
+eingegrenzten Bereich verbleibt. Damit kommen für diese Mehrheit
+überwiegend nur Bewohner des gleichen Landes als Signaturpartner in
+Frage. Als Mechanismen für die internationale Vernetzung kommen dann
+etwa internationale Konferenzen in Frage. Nur ein sehr kleiner Teil
+der PGP-Benutzer dürfte die notwendige internationale Mobilität
+aufweisen, so dass sich seine Signaturen nicht überwiegend einem
+geographischen Bereich bzw. einem Land zuweisen lassen.
+
+Interessanter für die Fragestellung ist aber die Erkennung von
+Keysigning-Parties und die Zuordnung zu Second-Level-Domains. Im
+Vergleich der Algorithmen (Tabelle \ref{tab:assign}) zeigt sich
+zunächst, dass die COPRA-Zerlegungen bessere Resultate liefern als
+die Blondel-Zerlegungen, da hier mehr Communities zugeordnet werden
+können. Zwar entfällt bei COPRA ein großer Anteil dieser
+Zuordnungen auf sehr kleine Communities der Größe 3 und 4. Die
+Aussagekraft solcher kleiner Zuordnungen ist selbstverständlich sehr
+begrenzt. Werden diese abgezogen, verbleibt aber immer noch eine
+grössere Zahl zuordnenbarer Communities von signifikanter Größe. 
+
+Aus den absoluten Zahlen in Tabelle \ref{tab:assign} und den
+Verteilungen der Größen in Abbildungen \ref{fig:sld-suredist},
+\ref{fig:sld-maybedist} und \ref{fig:time-corrdist} geht hervor, dass
+die \"uberlappende Zerlegung keine wesentlichen Vorteile bringt, da
+nicht eine deutlich gr\"ossere Anzahl von Communities inhaltlich
+zugeordnet werden kann. 
+
+Im Vergleich der Blondel-Zerlegungen zeigt sich, dass das
+Zusammenpacken von Communities von Phase $l=2$ zu Phase $l=5$ und der
+damit verbundene Auflösungsverlust es erheblich erschwert, die
+Communities inhaltlich zuzuordnen. Eine Zerlegung mit höherer
+Modularity entspricht also nicht im Allgemeinen einer Zerlegung, die
+die Struktur realer Communities besser wiedergibt. Die Zerlegungen des
+Algorithmus von Blondel et al. scheinen insgesamt vom
+Auflösungslimit der Modularity-Maximierung betroffen zu sein und
+bieten daher nicht die notwendige Auflösung, um die Communities
+besser inhaltlich analysieren zu können.
+
+Insgesamt ist eine tatsächliche Zuordnung anhand des
+80\%-Schwellwerts nur für sehr wenige Communities von geringer
+Größe möglich. Für den 40\%-Schwellwert und die zeitliche
+Korrelation ist die Anzahl zuordnenbarer Communities deutlich
+höher. Auch hier entfällt allerdings die Mehrzahl auf sehr kleine
+Communities.  Dass so gut wie keine Communities mit einer Größe
+über 100 zugeordnet werden können, spricht dafür, dass diese
+sich nicht anhand dieser einfachen Mechanismen bilden.
+
+Die sehr große Community aus der COPRA-Zerlegung könnte vermuten
+lassen, dass hier relativ willkürlich Knoten zusammengepackt
+wurden. Allerdings hat diese Community eine Reihe von Eigenschaften,
+die nahe legen, dass diese Gruppierung durchaus Sinn ergibt. Von 21.157
+Knoten verfügen 8.879 (42\%) über eine E-Mail-Adresse in der
+Top-Level-Domain \emph{.de}, während andere -- insbesondere
+nicht-deutschsprachige -- ccTLDs deutlich schwächer vertreten
+sind. Das zeigt einerseits einen überraschend hohen Anteil von
+deutschen oder deutschsprachigen Benutzern am Gesamtnetzwerk. Die 8.879
+Schlüssel sind natürlich nur eine Untergrenze, da auch in einer
+Vielzahl weiterer Communities deutsche Teilnehmer vorkommen. Ein Grund
+für diese hohe Anzahl deutscher Schlüssel könnte in der in
+Abschnitt \ref{sec:sozi-komp-des} erwähnten ``Krypto-Kampagne'' der
+Zeitschrift c't liegen, die das Bewusstsein für die Notwendigkeit
+der Authentifizierung von Schlüsseln im deutschsprachigen Raum
+deutlich gesteigert haben dürfte. Andererseits lässt dies den
+Schluss zu, dass die enthaltenen Knoten eben nicht willkürlich
+zusammengepackt wurden, sondern neben ihrer topographischen Nähe
+auch eine ``inhaltliche'' Gemeinsamkeit aufweisen. Darauf weist auch
+hin, dass in dieser Community eine relativ zu anderen SLDs sehr große
+Anzahl von Schlüsseln von Mitgliedern des Debian-Projekts enthalten
+ist. Diese Community enthält nicht nur knapp die Hälfte der
+Schlüssel, sondern mit ca. 260.000 Kanten den Großteil der
+überhaupt vorhandenen Kanten. Sie ist also anscheinend intern sehr
+dicht vernetzt. Es scheint daher fraglich, ob sich innerhalb dieser
+Community wieder eine ausgeprägte Community-Struktur finden lässt.
+
+\begin{table}
+  \centering
+  \begin{tabular}{c|c|c}
+    Größe & SLD & Anteil \\
+    \hline
+    436 & apache.org & 48\% \\
+    130 & nun.org & 82\% \\
+    97 & cert.org & 70\% \\
+    81 & redhat.org & 68\% \\
+    63 & purdue.edu & 65\% \\
+    59 & cisco.com & 79\% 
+  \end{tabular}
+  \caption{Die größten, von einer SLD dominierten Communities
+    (COPRA).}
+  \label{tab:ass-examples}
+\end{table}
+In Tabelle \ref{tab:ass-examples} sind die 6 größten Communities
+aus der COPRA-Zerlegung mit Zuordnung zu Second-Level-Domains
+aufgeführt. Diese stammen sämtlich aus einem technologischen oder
+akademischen Umfeld.
+
+\subsection{Kriterium für KSPs}
+\label{sec:kriterium-fur-ksps}
+
+\begin{figure}[th!]
+  \centering
+  \includegraphics[scale=1.5]{images/subgraph-label-time-fa62cc57cd35e9f90b85435efc407ad5.pdf}
+  \caption{Community mit zeitlicher Korrelation der Signaturen
+    (Blondel $l=5$),
+    100 Knoten, 72\% der Signaturen innerhalb eines Monats)}
+  \label{fig:time-corr-com-normal}
+\end{figure}
+
+\begin{figure}[th!]
+  \centering
+  \includegraphics[scale=1.3]{images/label-subgraph-41-star-c222345bc5eb1f9eff80d58a81861974.pdf}
+    \caption{Community mit zeitlicher Korrelation der Signaturen
+      (Blondel ($l=5$),
+      41 Knoten, 84 \% der Signaturen innerhalb eines Monats)}
+  \label{fig:time-corr-com-star}
+\end{figure}
+
+Es stellt sich die Frage, ob die zeitliche Korrelation der Signaturen
+in einer Community ein geeignetes Mittel ist, um Keysigning-Parties zu
+erkennen. Neben dem zeitlichen Zusammenhang der Signaturen ist ein
+weiteres Merkmal einer Keysigning-Party wie in
+Ab. \ref{sec:sozi-komp-des} beschrieben, dass jeder Teilnehmer mit
+(fast) jedem anderem Teilnehmer Signaturen austauscht, so dass sich
+eine fast vollständige Vermaschung -- fast eine Clique --
+ergibt. Eine stichprobenartige Untersuchung in den Communities zeigt,
+dass die meisten Communities mit zeitlicher Korrelation zumindest
+teilweise dieses Merkmal zeigen. Abbildung
+\ref{fig:time-corr-com-normal} zeigt ein Beispiel einer solchen
+Community. Etwa die Hälfte der Knoten ist in einer Fast-Clique
+enthalten, deren Knoten mit (fast) allen anderen vernetzt sind. Dieser
+innere Teil des Teilgraphen entspricht genau dem Bild, das als
+Resultat einer Keysigning-Party erwartet wird. Auch wenn dies auf die
+meisten der Communities mit zeitlicher Korrelation zutrifft, gibt es
+auch Gegenbeispiele. Abbildung \ref{fig:time-corr-com-star} zeigt eine
+Community, die zwar das Kriterium der zeitlichen Korrelation
+erfüllt, ansonsten aber nichts mit dem erwarteten Bild einer
+Keysigning-Party gemein hat. Allerdings erfüllt der Teilgraph
+trotzdem das Kriterium der Community, da die Knoten am Rand nur
+Signaturen zu dem zentralen Knoten haben und damit die interne
+Kantendichte deutlich höher ist als die externe. Um solche
+Extremfälle auszuschließen, ist als zusätzliches Kriterium für
+die Erkennung von Keysigning-Parties ein hoher durchschnittlicher Grad
+der Knoten denkbar.
+
+\begin{figure}[th!]
+  \centering
+  \subfloat[]{\label{fig:sld-sure-copra1} \includegraphics[scale=0.45]{images/sld-sure-ass_copra1.pdf}}
+  \subfloat[]{\label{fig:sld-sure-bl2} \includegraphics[scale=0.45]{images/sld-sure-ass_copra.pdf}}\\
+  \subfloat[]{\label{fig:sld-sure-bl5} \includegraphics[scale=0.45]{images/sld-sure-ass_bl2.pdf}} 
+  \subfloat[]{\label{fig:sld-sure-copra} \includegraphics[scale=0.45]{images/sld-sure-ass_bl5.pdf}}
+  \caption{Zuweisung von Domains zu SLDs abhängig von der
+    Community-Größe.}
+  \label{fig:sld-suredist}
+\end{figure}
+
+\begin{figure}[th!]
+  \centering
+  \subfloat[]{\label{fig:sld-maybe-copra1} \includegraphics[scale=0.45]{images/sld-maybe-ass_copra1.pdf}}
+  \subfloat[]{\label{fig:sld-maybe-bl2} \includegraphics[scale=0.45]{images/sld-maybe-ass_copra.pdf}}\\
+  \subfloat[]{\label{fig:sld-maybe-bl5} \includegraphics[scale=0.45]{images/sld-maybe-ass_bl2.pdf}} 
+  \subfloat[]{\label{fig:sld-maybe-copra} \includegraphics[scale=0.45]{images/sld-maybe-ass_bl5.pdf}}
+  \caption{Verteilung der Größe der von einer SLD dominierten
+    Communities.}
+  \label{fig:sld-maybedist}
+\end{figure}
+
+\begin{figure}[th!]
+  \centering
+  \subfloat[]{\label{fig:time-corr-copra1} \includegraphics[scale=0.45]{images/time-corr_copra1.pdf}}
+  \subfloat[]{\label{fig:time-corr-bl2} \includegraphics[scale=0.45]{images/time-corr_copra.pdf}}\\
+  \subfloat[]{\label{fig:time-corr-bl5} \includegraphics[scale=0.45]{images/time-corr_bl2.pdf}} 
+  \subfloat[]{\label{fig:time-corr-copra} \includegraphics[scale=0.45]{images/time-corr_bl5.pdf}}
+  \caption{Verteilung der Größe von Communities mit zeitlicher
+    Korrelation der Signaturen.}
+  \label{fig:time-corrdist}
+\end{figure}
+
+\subsection{Diskussion}
+\label{sec:gesamtb-comm}
+
+Diese Ergebnisse widerlegen nicht die Annahme, dass die Vernetzung im
+Web of Trust im wesentlichen von Keysigning-Parties und den sozialen
+Kontakten der Teilnehmer beeinflusst wird und damit unter anderem von
+Gruppenzugehörigkeit bestimmt wird. Allerdings muss festgehalten
+werden, dass die hier verwendeten Methoden nicht geeignet sind, um den
+Entstehungsmechanismus entlang dieser Annahme befriedigend zu
+erklären. 
+
+Ein Grund dafür ist sicherlich, dass die Struktur des Web of Trust nur
+zu einem bestimmten, festen Zeitpunkt betrachtet wurde. Um die
+Entstehungsdynamik zu verstehen, könnte alternativ die Entwicklung des
+Netzwerks tatsächlich über die Zeit nachvollzogen werden. Das
+Keyserver-Netzwerk speichert nicht nur den momentanen Zustand des
+Netzwerks, sondern implizit auch den Entstehungszeitpunkt jedes
+Schlüssels und jeder Signatur. Die im Rahmen dieser Arbeit entwickelte
+Software speichert diese Zeitstempel in einer Datenbank und macht so
+die gesamte Entwicklungsgeschichte des Web of Trust verfügbar (siehe
+Abschnitt \ref{sec:software}). Anhand dieser Daten könnte
+nachvollzogen werden, wie und in welcher Form die Communities
+tatsächlich entstehen und sich entwickeln.
+
+Dass nur sehr wenige grö{\ss}ere Communities mit zeitlicher Korrelation
+der Signaturen gefunden wurden, obwohl regelmäßig grö{\ss}ere
+Keysigning-Parties stattfinden (siehe Abschnitt
+\ref{sec:sozi-komp-des}) ist bei näherer Betrachtung durchaus
+plausibel. Dass eine Keysigning-Party sich in der Struktur markant
+abhebt, setzt voraus, dass ihre Teilnehmer außer der Teilnahme an
+dieser Party keine wesentliche Signaturaktivität starten. Würden
+sie weiterhin an Signaturaktitiväten teilnehmen, würde die
+Struktur der Keysigning-Party mit der Zeit durch Signaturen von und zu
+Nicht-Teilnehmern ``verwischt'' werden. Aufgefunden wurden also
+vermutlich nur die Keysigning-Parties mit einer Mehrheit von insgesamt
+eher inaktiven Teilnehmern. Gleiches kann für Teilnehmer angenommen
+werden, die sich anhand von Gruppenzugehörigkeit vernetzen. Auch
+hier würde die Struktur mit der Zeit ``unschärfer'' werden, wenn
+ihre Mitglieder weiterhin Signierungen vornehmen würden. Es kann
+also angenommen werden, dass die kleineren und insbesondere die klar
+zuordnenbaren Communities tendenziell Teilnehmer enthalten, die in
+Bezug auf die Teilnahme am Web of Trust eher inaktiv sind. Um diese
+Vermutung zu bestätigen oder zu widerlegen, könnte das
+Signaturverhalten der Teilnehmer über die Zeit mit ihrer
+Community-Mitgliedschaft verglichen und korreliert werden.
+
+Es scheint unrealistisch, dass die Mitgliedschaft in einer Gruppe --
+etwa einer Firma, akademischen Einrichtung oder einem
+Open-Source-Projekt -- die sozialen Kontakte einer Person
+vollständig charakterisiert. Daneben kann eine Person noch ein
+weites Netzwerk an Freunden oder Bekannten haben, die diese
+Mitgliedschaft nicht teilen. Trotzdem können sich zu ihnen
+Signaturen ergeben, die einen wesentlichen Teil der Signaturen dieser
+Person ausmachen können. Außerdem ist anzunehmen, dass eine
+Vielzahl solcher Gruppen nicht über eine gemeinsame Domain
+verfügen, und damit mit den hier vorliegenden Daten schlicht nicht
+sichtbar sind. Zwar wurde versucht, der anzunehmenden Komplexität
+der Gruppenzugehörigkeiten durch überlappende Communities zu
+begegnen. Allerdings konnte der verwendete Algorithmus keine
+signifikanten Überlappungseigenschaften liefern. Die Frage,
+inwiefern sich die einzelnen Communities sozialen Gruppen zuordnen
+lassen, konnte also nur unvollständig beantwortet werden.
+
+Es zeigt sich, dass dem Web of Trust kein einzelner, einfacher
+Entstehungsmechanismus der hier angenommenen Form zugrunde liegt. Es
+kann nur unzureichend beschrieben werden als eine Ansammlung von
+einzelnen, einfach entstandenen Bausteinen, als die hier Communities
+angenommen wurden. Implizit vorausgesetzt wird dabei auch, dass diese
+zum Beispiel im Fall einer Keysigning-Party nach ihrer Entstehung
+keine wesentliche weitere Vernetzungsaktitivät zeigen. Zwar trifft
+dies für einen Teil der Communities -- gerade die, die eine
+zeitliche Korrelation der Signaturen zeigen oder einer
+Second-Level-Domain zugeordnet werden können -- durchaus zu. Für
+einen erheblichen Anteil der Teilnehmer -- beispielsweise die
+Mitglieder der sehr großen Community aus der COPRA-Berechnung --
+scheint die Vernetzung jedoch so vielfältig zu sein, dass solche
+einfachen Mechanismen nicht mehr sichtbar sind und ``in der Masse
+verschwinden''. Bei der COPRA-Zerlegung ist es etwa naheliegend, dass
+die sehr große zentrale Community die Mehrzahl der aktiveren
+Teilnehmer enthält. Hier ergibt sich eine Ähnlichkeit zur Struktur
+der Zusammenhangskomponenten, bei denen die größte alle 
+einigermaßen aktiven Teilnehmer zu enthalten scheint (siehe Abschnitt
+\ref{sec:result-komponentenstruktur}).
+
+Diese Punkte können anhand des Beispiels von Debian illustriert
+werden: Das Debian-Projekt als tatsächliche Community, in der PGP
+und das Web of Trust eine besonders wichtige Rolle spielen (siehe
+Abschnitt \ref{sec:sozi-komp-des}) findet sich in den Zerlegungen
+nicht als eigene abgegrenzte Einheit wieder. Statt dessen finden sich
+sehr große Communities, in denen Debian-Entwickler einen signifikanten
+Anteil der Schlüssel stellen. Im Fall der COPRA-Zerlegung ist dies
+die bereits erwähnte Community mit ca. 21.000 Mitgliedern. Von
+diesen verfügen 1.247 über eine E-Mail-Adresse in der Domain
+debian.org und sind damit offensichtlich Mitglieder des
+Debian-Projekts. Daneben finden sich Mitglieder des Debian-Projekts in
+einer Vielzahl von kleineren Communities aller Größen. Die
+Mitgliedschaft im Debian-Projekt scheint hier also für die
+Vernetzung keine so wesentliche Rolle zu spielen, dass sie die
+Struktur dieser real existierenden Community im Web of Trust
+wieder spiegelt. Selbst wenn viele Debian-Entwickler mit vielen anderen
+Projektmitgliedern vernetzt sind, so verfügen sie offensichtlich
+über genügend andere Kontakte, so dass die sich aus den
+projektinternen Kontakten ergebende Struktur nicht mehr
+sichtbar ist.
 
 \section{Zeitliche Entwicklung des Schlüsselbestandes}
 \label{sec:result-key-properties}
@@ -677,7 +1236,7 @@ erreichbar sind.
   \subfloat[]{\label{fig:size-dev-mscc} \includegraphics[scale=0.3]{images/mscc-size-time.pdf}}
   \caption{Zeitliche Entwicklung der Größe des gesamten
     Schlüsselbestandes \subref{fig:size-dev-whole} und der
-      grössten starken Zusammenhangskomponente \subref{fig:size-dev-mscc}}
+      grö{\ss}ten starken Zusammenhangskomponente \subref{fig:size-dev-mscc}}
   \label{fig:size-dev}
 \end{figure}
 
@@ -689,7 +1248,7 @@ Schlüsselbestandes und in \ref{fig:size-dev-mscc} die Entwicklung der
 Größe der größten starken Zusammenhangskomponente dargestellt. Als
 Beginn wurde das Jahr 1991 gewählt, da in diesem Jahr die erste
 Version von PGP vorgestellt wurde (siehe Abschnitt
-\ref{ch:Grundlagen:sec:PGP}. Sowohl der gesamte Schlüsselbestand als
+\ref{ch:Grundlagen:sec:PGP}). Sowohl der gesamte Schlüsselbestand als
 auch die größte starke Zusammenhangskomponente zeigen nennenswertes
 Wachstum erst etwa ab dem Jahr 1997. Dieser Zeitpunkt korreliert unter
 anderem mit der Gründung des Unternehmens \emph{PGP Inc.}, der
@@ -762,12 +1321,12 @@ dürfte also etwas ``träger'' auf Veränderungen reagieren.
     \begin{tabular}[ht!]{l|c}
       Algorithmus & Anzahl \\
       \hline
-      Signaturen gesamt & 446325 \\
-      MD5 & 41700 \\
-      SHA1 & 398849 \\
+      Signaturen gesamt & 446.325 \\
+      MD5 & 41.700 \\
+      SHA1 & 398.849 \\
       RIPE-MD/160 & 122 \\
-      SHA256 & 5031 \\
-      SHA512 & 2472 \\
+      SHA256 & 5.031 \\
+      SHA512 & 2.472 \\
       SHA224 & 532
     \end{tabular}
   }\quad
@@ -776,14 +1335,14 @@ dürfte also etwas ``träger'' auf Veränderungen reagieren.
     \begin{tabular}{l|c}
       Algorithmus & Anzahl \\
       \hline
-      Schlüssel gesamt & 44952 \\
+      Schlüssel gesamt & 44.952 \\
       RSA-512 & 203 \\
       RSA-768 & 257 \\
-      RSA-1024 & 3903 \\
-      RSA-2048 & 2408 \\
+      RSA-1024 & 3.903 \\
+      RSA-2048 & 2.408 \\
       RSA-3072 & 96 \\
-      RSA-4096 & 1198 \\
-      DSA & 36555
+      RSA-4096 & 1.198 \\
+      DSA & 36.555
     \end{tabular}
   }\quad
   \subfloat[][]{
@@ -791,10 +1350,11 @@ dürfte also etwas ``träger'' auf Veränderungen reagieren.
     \begin{tabular}{l|c}
       Cert Level & Anzahl \\
       \hline
-      Generic & 299518 \\
+      Signaturen gesamt & 446.325 \\
+      Generic & 299.518 \\
       Persona & 904 \\
-      Casual & 28718 \\
-      Positive & 119575 
+      Casual & 28.718 \\
+      Positive & 119.575 
     \end{tabular}
   }
   \caption{Verwendung von Hashalgorithmen 
@@ -810,7 +1370,7 @@ Die einzelnen ``certification level'' (siehe Abschnitt
 \ref{sec:das-gnupg-vertrauensmodell}) werden durchaus verwendet
 (Tabelle \ref{tab:cert}). Zwar ist die Mehrheit der Signaturen mit
 dem Standardwert ``Generic'' versehen, der keine weitere Aussage
-macht. Allerdings verfügt über 25\% der Signaturen über den
+macht. Allerdings verfügen über 25\% der Signaturen über den
 höchsten Wert ``Positive''. Da die Level keine im Standard
 festgelegte klare Semantik haben, ist die Aussagekraft dieser Werte
 natürlich begrenzt. Sie können aber zumindest dahingehend
@@ -833,22 +1393,24 @@ Komponente ist nicht unwesentlich: Werden diese Signaturen entfernt,
 reduziert sich die Größe der Komponente auf 37.599 Schlüssel,
 d.h. es werden ca. 8.000 Schlüssel abgetrennt. 
 
-RSA-Schlüssel mit einer Länge von höchstens 768 bit und weniger
+RSA-Schlüssel mit einer Länge von höchstens 768 Bit und weniger
 müssen ebenfalls als praktikabel brechbar betrachtet werden. Dies
 wurde durch die Faktorisierung der Zahl RSA-768 demonstriert
 \cite{Kleinjung2010}. Kleinjung et al. schätzen den Zeitrahmen bis
-zur Faktorisierung einer 1024-bit-Zahl innerhalb eines
+zur Faktorisierung einer 1024-Bit-Zahl innerhalb eines
 \emph{akademischen Rahmens} auf 5 bis 10 Jahre. Die Menge der in der
-größten Komponente vorhandenen RSA-Schlüssel mit 512 bzw. 768 bit
+größten Komponente vorhandenen RSA-Schlüssel mit 512 bzw. 768 Bit
 ist mit insgesamt 450 Schlüsseln gering. Ihre Entfernung trennt nur
 etwa weitere 300 Knoten von der Komponente ab. Die Anzahl von
-RSA-Schlüsseln mit 1024 bit ist aber deutlich größer. Die
+RSA-Schlüsseln mit 1024 Bit ist aber deutlich größer. Die
 Entfernung aller ca. 4.500 RSA-Schlüssel, deren Länge höchstens
-1024 bit beträgt, reduziert die Größe der Komponente um insgesamt
-ca. 8.500 Knoten, trennt also weitere 4000 Knoten vom Netz ab. Es ist
+1024 Bit beträgt, reduziert die Größe der Komponente um insgesamt
+ca. 8.500 Knoten, trennt also weitere 4.000 Knoten vom Netz ab. Es ist
 anzunehmen, dass sich die durchschnittlichen Distanzen ebenfalls
-erhöhen. Da Standardisierungsorganisationen eine Abkehr von RSA-1024
-ab dem Jahr 2010 empfehlen \cite{NIST2007} und praktikable Angriffe
+erhöhen. Da die Standardisierungsorganisation \emph{National Institute
+ of Standards and Technology} 
+  eine Abkehr von RSA-1024
+ab dem Jahr 2010 empfiehlt \cite{NIST2007} und praktikable Angriffe
 wohl nur eine Frage weniger Jahre sind, ist damit wie durch die
 MD5-Signaturen eine erhebliche Beeinträchtigung der größten
 Komponente absehbar.
@@ -858,562 +1420,6 @@ Standardeinstellung in GnuPG der Anteil von RSA-Schlüsseln mit
 einer Länge von mindestens 2048 bit in nächster Zeit deutlich
 erhöht.
 
-\section{Communities}
-\label{sec:result-zusamm-und-comm}
-
-
-\subsection{Ergebnisse für den gerichteten Graphen}
-\label{sec:ergebnisse-fur-den}
-
-Die Zerlegung des gerichteten Graphen mit dem Algorithmus von Rosval
-et al. lieferte keine verwertbaren Ergebnisse. Zwar wurde eine
-Zerlegung in 2869 Partitionen berechnet. Allerdings gilt für die
-große Mehrzahl dieser Knotenmengen, dass der durch sie induzierte
-Teilgraph überhaupt keine Kanten hat. Nur für ca. 160 Partitionen
-hat der jeweils induzierte Teilgraph Kanten, in allen Fällen
-allerdings sehr wenige (zwischen 1 und 104 für eine Partition der
-Größe 682). Dass die Knoten einer Partition in allen Fällen so
-gut wie keine interne Vernetzung haben und damit der Definition von
-Communities absolut nicht entsprechen, ist ein klarer Hinweis, dass
-die berechnete Zerlegung die tatsächliche modulare Struktur des
-Graphen nicht sinnvoll wiedergibt. Dass der Graph in der Tat eine
-ausgeprägte modulare Struktur hat, zeigen die anhand des
-ungerichteten Graphen berechneten Zerlegungen, die auch unter
-inhaltlichen Gesichtspunkten Sinn ergeben. Diese Struktur kann sich
-auch nicht erst durch die Reduzierung des gerichteten auf einen
-ungerichteten Graphen ergeben. Die berechnete Zerlegung mit etlichen
-großen Partitionen ohne interne Vernetzung ist in keinem Fall ein
-sinnvolles Ergebnis eines Community-Algorithmus und spricht daher
-für eine fehlerhafte Berechnung. Ob diese allerdings auf Fehler in
-der verwendeten Implementierung der Autoren
-\footnote{http://www.tp.umu.se/~rosvall/code.html} oder auf Fehler im
-Algorithmus zurückgeht, ist nicht bekannt.
-
-\subsection{Ergebnisse für den ungerichteten Graphen}
-\label{sec:ergebnisse-fur-den-1}
-
-Für die restlichen Methoden wurde der Graph auf einen ungerichteten
-Graphen reduziert. Dazu wurde jede einzelne gerichtete Kante in eine
-ungerichtete Kante umgewandelt. Aus dem gerichteten Graphen mit 446.326
-Kanten ergab sich so ein ungerichteter Graph mit 295.425 Kanten.
-
-Für die COPRA-Berechnung wurden -- wie in \cite{Gregory2010}
-vorgeschlagen -- Berechnungen mit unterschiedlichen Werten $v$
-durchgeführt, um den ``besten'' Wert im Sinne der Modularity zu
-ermitteln. Dabei ergaben sich mit steigender maximaler Überlappung
-$v$ nur bis $v\le 3$ steigende Modularity-Werte, darüber hinaus
-fielen sie kontinuierlich ab. Deshalb wurde die Berechnung mit $v=3$
-verwendet. Die dort berechneten Modularity-Werte hatten eine geringe
-Standardabweichung von 0,003. Dieses Ergebnis kommt unerwartet. In
-\cite{Gregory2010} ergaben sich für ein PGP-Web-of-Trust-Netzwerk
-mit 10680 Knoten bis zu $v=9$ ansteigende Modularity-Werte. Das
-(lokale) Maximum bei geringem $v$ für das hier verwendete Netzwerk
-könnte darauf hinweisen, dass seine Community-Struktur keine
-signifikante Überlappung aufweist. Ein weiterer Hinweis darauf ist,
-dass die Einführung der Überlappung mit $v=3$ gegenüber der
-nicht überlappenden Berechnung mit $v=1$ für die Modularity
-(Tabelle \ref{tab:mod-result}) keinen signifikanten Anstieg
-brachte. Auch die Zuordnung zu Gruppen bzw. Keysigning-Parties
-(Tabelle \ref{tab:assign}) und die Verteilung der Größe der
-Communities (Abbildungen \ref{fig:comsize-copra} und
-\ref{fig:comsize-copra1}) ähneln sich weitgehend. Alternativ
-könnte dieses Ergebnis allerdings auch in einem nicht-optimalen
-Verhalten des Algorithmus begründet liegen.
-
-\begin{figure}[th!]
-  \centering
-  \subfloat[]{\label{fig:comsize-copra1} \includegraphics[scale=0.45]{images/community-size-dist_copra1.pdf}}
-  \subfloat[]{\label{fig:comsize-copra} \includegraphics[scale=0.45]{images/community-size-dist_copra.pdf}} \\
-  \subfloat[]{\label{fig:comsize-bl2} \includegraphics[scale=0.45]{images/community-size-dist_bl2.pdf}} 
-  \subfloat[]{\label{fig:comsize-bl5} \includegraphics[scale=0.45]{images/community-size-dist_bl5.pdf}} 
-  \caption{Verteilung der Größe der Communities}
-  \label{fig:comsizedist}
-\end{figure}
-
-Wie in Abschnitt
-\ref{ch:Grundlagen:sec:Netzwerkanalyse:subsec:Communities}
-beschrieben, verläuft der Algorithmus von Blondel et al. iterativ in
-Phasen, in denen jeweils zuerst Knoten einer benachbarten Community
-zugeordnet werden, wenn sich dadurch ein Modularity-Gewinn erzielen
-lässt, und dann die Knoten dieser so entstandenen Communities zu
-Knoten in einem neuen Netzwerk verschmolzen werden. Hier werden die
-Ergebnisse der Phasen $l=2$ und der letzten Phase $l=5$
-betrachtet. Für $l=5$ ergab sich die höchste
-Modularity. Allerdings sticht hier die sehr kleine Anzahl von
-Communities heraus, die wiederum vergleichsweise groß sein
-müssen. Gegenüber dem Ergebnis der Phase 2 ergibt sich eine
-relativ kleine Steigerung der Modularity, die mit einem erheblichen
-Verlust an \emph{Auflösung} erkauft wird\footnote{Die Zerlegungen
-  der Phasen 3 und 4 unterschieden sich nur geringfügig von der
-  Zerlegung der Phase 5}. Aus Abbildung \ref{fig:comsize-bl2} und
-\ref{fig:comsize-bl5} geht hervor, dass diese Reduktion der Anzahl im
-Wesentlichen auf das Reduzieren sehr kleiner Communities
-zurückgeht. Da der Algorithmus von Blondel et al. genauso wie
-Fastmod mittels einer (lokalen) Optimierung der Modularity arbeitet,
-könnte dieses Phänomen auf das in der Literatur beschriebene
-Auflösungslimit der Modularity-Funktion (bspw. \cite{Fortunato2007}
-\cite{Good2009}) zurückzuführen sein. Es scheint fraglich, ob die
-in Relation zur Größe des Graphen sehr geringe Zahl von 186
-Communities die Struktur des Graphen (in Bezug auf die inhaltliche
-Analyse) adäquat wiedergibt.
-
-\begin{figure}[ht!]
-  \centering
-  \includegraphics[scale=0.7]{images/blondel-l5-com-c3a5eaab680984b123037897b0be74bf-edit.pdf}
-  \caption{Community mit modularen Untereinheiten (Größe 2271,
-    Blondel ($l=5$), Force-directed Layout)}
-  \label{fig:large-modular}
-\end{figure}
-
-Abbildung \ref{fig:large-modular} illustriert dies anhand einer
-Community aus der Zerlegung des Algorithmus von Blondel et al. mit
-$l=5$. Diese enthält klar abgegrenzte Untereinheiten, die intuitiv
-wieder eigenständige Communities darstellen, sich aber nicht als
-solche im Ergebnis wiederfinden.
-
-Die Verteilungen der Community-Größen aus allen Berechnungen sind
-in einer Hinsicht konsistent: Neben einer großen Zahl von kleinen
-Communities gibt es eine signifikante Anzahl von größeren bis sehr
-großen Communities. Es scheint also keine charakteristische Größe
-der Communities zu geben.
-
-\begin{table}[t]
-  \centering
-  \footnotesize
-  \begin{tabular}{l|c|c|c}
-    Algorithmus & Modularity & Communities &
-    Enthaltene Knoten \\
-    \hline
-    BL ($l=2$)& 0,701 & 936 & 44934 \\
-    BL ($l=5$)& 0,710 & 186 & 44934 \\
-    \hline
-    COPRA ($v=1$) & (0,780) & 1421 & 42205 \\
-    COPRA ($v=3$) & (0,786) & 1354 & --- \\
-
-  \end{tabular}
-  \caption{Modularity-Werte, Anzahl der Communities mit mehr als 3
-    Knoten sowie die Anzahl der insgesamt in diesen Communities enthaltenen
-    Knoten 
-    für die Algorithmen 
-    Blondel et al. (BL) auf Level 2 und 5 sowie COPRA mit $v=1$ und
-    $v=3$. Die
-    Modularity-Werte für COPRA können nicht mit denen für
-    Blondel verglichen werden, da ihnen eine andere
-    Modularity-Definition für überlappende Communities zugrunde
-    liegt.}
-  \label{tab:mod-result}
-\end{table}
-
-Aus Tabelle \ref{tab:mod-result} geht hervor, dass sich im Fall von
-Blondel et al. fast alle Knoten des Graphen in einer Community
-wiederfinden, die mindestens die Größe 4 hat. In Abschnitt
-\ref{sec:result-allg-merkm-des} wurde gezeigt, dass ein erheblicher
-Anteil der Knoten einen sehr geringen Grad von 1 oder 2 hat. Da solche
-Knoten mangels Kanten nicht selbst eine dichte Vernetzung herstellen
-können, müssen sie Mitglied in Communities sein, in denen Knoten
-mit höherem Grad sowohl die interne Vernetzung der Community als
-auch die Vernetzung der Community mit anderen erzeugen. COPRA scheint
-hingegen dazu tendieren, deutlich mehr Knoten in Communities sehr
-kleiner Größe mit 3 oder weniger unterzubringen. Dieses Verhalten
-könnte dazu führen, dass die Aussagekraft der Zerlegung in Bezug
-auf die realen Communities geschwächt wird, wenn viele Knoten auf
-diese Art abgespalten werden.
-
-Gegenüber der COPRA-Zerlegung mit $v=1$ zeigt die Zerlegung mit
-$v=3$ eine deutlich grössere Anzahl von Communities der Größe 3
-und 4. Abgesehen davon ähneln sich die Verteilungen der Größen aber
-weitgehend. Beide enthalten eine charakteristische sehr Glosse
-Community mit ca. 19.000 bzw. ca. 21.000 Mitgliedern. Demgegenüber
-bietet die Blondel-Zerlegung mit $l=2$ eine deutlich geringere Anzahl
-solcher sehr kleiner Communities, dafür aber eine höhere Zahl
-mittlerer (mehr als 100 Mitglieder) und insbesondere eine höhere
-Zahl sehr großer (zwischen 500 und 5000 Mitglieder) Communities.  Die
-beiden Algorithmen konvergieren nicht gegen ein gemeinsames Optimum,
-sondern liefern Ergebnisse, die sich qualitativ stark unterscheiden.
-
-Der insgesamt recht hohe Modularity-Wert weist darauf hin, dass der
-Graph in der Tat eine ausgeprägte modulare Struktur hat, wie dies
-von einem sozialen Netzwerk erwartet wird. Newman et al. geben an,
-dass ein Modularity-Wert $C \ge 0.3$ in der Praxis auf eine
-signifikante Community-Struktur schließen lässt \cite{Clauset2004}.
-
-\subsection{Struktur der Communities}
-\label{sec:strukt-der-comm}
-
-Die Abbildungen \ref{fig:metagraph-com-copra} und
-\ref{fig:metagraph-com-blondel2} zeigen die Struktur der Communities
-für die Zerlegungen COPRA ($v=1$) und Blondel ($l=2$). Auffällig
-ist hier insbesondere die teilweise sternförmige Struktur der
-COPRA-Zerlegung. Ein signifikanter Anteil der kleineren Communities
-ist rund um die zentrale Community der Größe ca. 19000 angeordnet
-und im wesentlichen nur mit dieser vernetzt. Diese Struktur weist
-gewisse Ähnlichkeiten zur Struktur der starken
-Zusammenhangskomponenten auf (siehe Abschnitt
-\ref{sec:result-komponentenstruktur}). Diese sind ebenfalls
-sternförmig um eine zentrale Komponente angeordnet, die die Größe
-der anderen um mehrere Größenordnungen übertrifft. Allerdings
-sind im Fall der Community-Struktur noch eine Reihe mittelgroßer
-Communities vertreten, die dieses Muster etwas stören. Das
-sternförmige Muster der Zusammenhangskomponenten wiederholt sich
-also in etwa innerhalb der größten Zusammenhangskomponente auf
-einem anderen Level. Es könnte daher spekuliert werden, ob das
-Netzwerk eine \emph{Selbstähnlichkeit} aufweist, wie sie für eine
-Reihe von komplexen Netzwerken gezeigt wurde \cite{Song2005}. Dieser
-Frage wurde allerdings im Rahmen dieser Arbeit nicht weiter
-nachgegangen. Im Vergleich dazu zeigt sich in der Struktur der
-Blondel-Communities die etwas ausgewogenere Verteilung der Größen. Zwar
-sind auch hier viele kleine Communities sternförmig um die zentralen
-Communities angeordnet, verteilen sich hier aber auf mehrere solcher
-großen zentralen Communities.
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=2]{images/metagraph-copra1-minsize5.pdf}
-  \caption{Struktur der Communities (COPRA ($v=1$) (rot: Größe
-    $<10$, grün: Größe $<100$, blau: Größe < 1000, gelb:
-    Größe > 1000).}
-  \label{fig:metagraph-com-copra}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[scale=1.6]{images/metagraph-blondel2-minsize4.pdf}
-  \caption{Struktur der Communities (Blondel ($l=5$) (Knotenfärbung
-    wie in Abb.\ref{fig:metagraph-com-copra})}
-  \label{fig:metagraph-com-blondel2}
-\end{figure}
-
-\subsection{Inhaltliche Analyse}
-\label{sec:inhaltliche-analyse}
-
-\begin{table}[t]
-  \centering
-  \footnotesize
-  \begin{tabular}{l|c|c|c|c|c}
-    Algorithmus & TLD-S & TLD-M & SLD-S & SLD-M & SIG \\
-    \hline
-    FM & 293 (53\%) & 247 (44\%) & 56 (10\%) & 154 (27\%) & 128
-    (23\%) \\
-    \hline
-    BL ($l=2$) & 499 (53\%) & 417 (45\%) & 41 (4\%) & 254 (27\%) & 115 (12\%) \\
-    BL ($l=5$) & 85 (47\%) & 85 (47\%) & 15 (8\%) & 38 (21\%) & 26 (14\%) \\
-    \hline
-    COPRA ($v=1$) & 824 (58\%) & 564 (40\%) & 178 (13\%) & 429 (30\%)
-    & 572 (40\%) \\
-    COPRA ($v=3$) & 792 (58\%) & 525 (38\%) & 187 (14\%) & 425 (31\%) & 555
-    (41\%)
-  \end{tabular}
-  \caption{Communities, die entweder einer Domain zugewiesen werden
-    k\"onnen oder die aus einer Keysigning-Party stammen}
-  \label{tab:assign}
-\end{table}
-
-Aus Tabelle \ref{tab:assign} geht hervor, dass für alle Zerlegungen
-fast alle Communities einer Top-Level-Domain zuordnenbar sind oder von
-einer TLD dominiert werden. Werden die generischen Top-Level-Domains
-(gTLD: com, org, net, info, ...) abgezogen, verbleiben im Fall von COPRA
-noch 519 (38\%) Communities, die einer TLD (und damit einer
-\emph{Country-Coded TLD (ccTLD)}) zugeordnet werden können und 315
-(23\%), die von einer ccTLD dominiert werden. Für die anderen
-Zerlegungen ergeben sich ähnliche Werte. Damit ist immerhin etwa die
-Hälfte der Communities einem Land zuordnenbar. Für die von einer
-gTLD dominierten Communities ergeben Stichproben, dass sich die
-Teilnehmer der meisten dieser Communities anhand der Namen zumindest
-einem Sprachraum zuweisen lassen.
-
-Dieses Ergebnis ist naheliegend. Wie in Abschnitt
-\ref{sec:community-analyse} dargelegt, wird davon ausgegangen, dass
-ein wesentlicher Faktor, der das Zustandekommen von Signaturen
-beeinflusst, die sozialen Kontakte einer Person sind. Es ist weiterhin
-naheliegend, dass sich diese sozialen Kontakte unter anderem aufgrund
-von Sprachbarrieren und der räumlichen Nähe hauptsächlich im
-Rahmen eines Landes ergeben. Beispielsweise ist für eine aus
-Finnland stammende Person anzunehmen, dass die Mehrzahl ihrer Freunde,
-Bekannten, Geschäftspartner und sonstigen Kontakte wieder Finnen
-sind.
-
-Zwar könnte argumentiert werden, dass das Internet die geographische
-bzw. nationale Beschränkung sozialer Kontakte aufhebt. Allerdings
-spielt die geographische Nähe eine wichtige Rolle im
-Signaturprozess. Die verbreitete Prozedur für das Signieren eines
-Schlüssels setzt ein direktes persönliches Treffen der
-Signierenden voraus (siehe Abschnitt \ref{sec:sozi-komp-des}). Es ist
-anzunehmen, dass die überwiegende Mehrheit der PGP-Benutzer die
-meiste Zeit in einem Land und damit in einem geographisch
-eingegrenzten Bereich verbleibt. Damit kommen für diese Mehrheit
-überwiegend nur Bewohner des gleichen Landes als Signaturpartner in
-Frage. Als Mechanismen für die internationale Vernetzung kommen dann
-etwa internationale Konferenzen in Frage. Nur ein sehr kleiner Teil
-der PGP-Benutzer dürfte die notwendige internationale Mobilität
-aufweisen, so dass sich seine Signaturen nicht überwiegend einem
-geographischen Bereich bzw. einem Land zuweisen lassen.
-
-Interessanter für die Fragestellung ist aber die Erkennung von
-Keysigning-Parties und die Zuordnung zu Second-Level-Domains. Im
-Vergleich der Algorithmen (Tabelle \ref{tab:assign}) zeigt sich
-zunächst, dass die COPRA-Zerlegungen bessere Resultate liefern als
-die Blondel-Zerlegungen, da hier mehr Communities zugeordnet werden
-können. Zwar entfällt bei COPRA ein großer Anteil dieser
-Zuordnungen auf sehr kleine Communities der Größe 3 und 4. Die
-Aussagekraft solcher kleiner Zuordnungen ist selbstverständlich sehr
-begrenzt. Werden diese abgezogen, verbleibt aber immer noch eine
-grössere Zahl zuordnenbarer Communities nicht-trivialer Größe. 
-
-Aus den absoluten Zahlen in Tabelle \ref{tab:assign} und den
-Verteilungen der Größen in Abbildungen \ref{fig:sld-suredist},
-\ref{fig:sld-maybedist} und \ref{fig:time-corrdist} geht hervor, dass
-die Überlappung keine wesentlichen Vorteile bringt. 
-
-Im Vergleich der Blondel-Zerlegungen zeigt sich, dass das
-Zusammenpacken von Communities von Phase $l=2$ zu Phase $l=5$ und der
-damit verbundene Auflösungsverlust es erheblich erschwert, die
-Communities inhaltlich zuzuordnen. Eine Zerlegung mit höherer
-Modularity entspricht also nicht im Allgemeinen einer Zerlegung, die
-die Struktur realer Communities besser wiedergibt. Die Zerlegungen des
-Algorithmus von Blondel et al. scheinen insgesamt vom
-Auflösungslimit der Modularity-Maximierung betroffen zu sein und
-bieten daher nicht die notwendige Auflösung, um die Communities
-besser inhaltlich analysieren zu können.
-
-Insgesamt ist eine tatsächliche Zuordnung anhand des
-80\%-Schwellwerts nur für sehr wenige Communities von geringer
-Größe möglich. Für den 40\%-Schwellwert und die zeitliche
-Korrelation ist die Anzahl zuordnenbarer Communities deutlich
-höher. Auch hier entfällt allerdings die Mehrzahl auf sehr kleine
-Communities.  Dass so gut wie keine Communities mit einer Größe
-über 100 zugeordnet werden können, spricht dafür, dass diese
-sich nicht anhand dieser einfachen Mechanismen bilden.
-
-Die sehr große Community aus der COPRA-Zerlegung könnte vermuten
-lassen, dass hier relativ willkürlich Knoten zusammengepackt
-wurden. Allerdings hat diese Community eine Reihe von Eigenschaften,
-die nahe legen, dass diese Gruppierung durchaus Sinn ergibt. Von 21.157
-Knoten verfügen 8.879 (42\%) über eine E-Mail-Adresse in der
-Top-Level-Domain \emph{.de}, während andere -- insbesondere
-nicht-deutschsprachige -- ccTLDs deutlich schwächer vertreten
-sind. Das zeigt einerseits einen überraschend hohen Anteil von
-deutschen oder deutschsprachigen Benutzern am Gesamtnetzwerk. Die 8879
-Schlüssel sind natürlich nur eine Untergrenze, da auch in einer
-Vielzahl weiterer Communities deutsche Teilnehmer vorkommen. Ein Grund
-für diese hohe Anzahl deutscher Schlüssel könnte in der in
-Abschnitt \ref{sec:sozi-komp-des} erwähnten ``Krypto-Kampagne'' der
-Zeitschrift c't liegen, die das Bewusstsein für die Notwendigkeit
-der Authentifizierung von Schlüsseln im deutschsprachigen Raum
-deutlich gesteigert haben dürfte. Andererseits lässt dies den
-Schluss zu, dass die enthaltenen Knoten eben nicht willkürlich
-zusammengepackt wurden, sondern neben ihrer topographischen Nähe
-auch eine ``inhaltliche'' Gemeinsamkeit aufweisen. Darauf weist auch
-hin, dass in dieser Community eine relativ zu anderen SLDs sehr große
-Anzahl von Schlüsseln von Mitgliedern des Debian-Projekts enthalten
-ist. Diese Community enthält nicht nur knapp die Hälfte der
-Schlüssel, sondern mit ca. 260.000 Kanten den Großteil der
-überhaupt vorhandenen Kanten. Sie ist also anscheinend intern sehr
-dicht vernetzt. Es scheint daher fraglich, ob sich innerhalb dieser
-Community wieder eine ausgeprägte Community-Struktur finden lässt.
-
-\begin{table}
-  \centering
-  \begin{tabular}{c|c|c}
-    Größe & SLD & Anteil \\
-    \hline
-    436 & apache.org & 48\% \\
-    130 & nun.org & 82\% \\
-    97 & cert.org & 70\% \\
-    81 & redhat.org & 68\% \\
-    63 & purdue.edu & 65\% \\
-    59 & cisco.com & 79\% 
-  \end{tabular}
-  \caption{Die größten, von einer SLD dominierten Communities
-    (COPRA)}
-  \label{tab:ass-examples}
-\end{table}
-In Tabelle \ref{tab:ass-examples} sind die 6 größten Communities
-aus der COPRA-Zerlegung mit Zuordnung zu Second-Level-Domains
-aufgeführt. Diese stammen sämtlich aus einem technologischen oder
-akademischen Umfeld.
-
-\subsection{Kriterium für KSPs}
-\label{sec:kriterium-fur-ksps}
-
-\begin{figure}[th!]
-  \centering
-  \includegraphics[scale=1.5]{images/subgraph-label-time-fa62cc57cd35e9f90b85435efc407ad5.pdf}
-  \caption{Community mit zeitlicher Korrelation der Signaturen
-    (Blondel ($l=5$),
-    100 Knoten, 72\% der Signaturen innerhalb eines Monats)}
-  \label{fig:time-corr-com-normal}
-\end{figure}
-
-\begin{figure}[th!]
-  \centering
-  \includegraphics[scale=1.3]{images/label-subgraph-41-star-c222345bc5eb1f9eff80d58a81861974.pdf}
-    \caption{Community mit zeitlicher Korrelation der Signaturen
-      (Blondel ($l=5$),
-      41 Knoten, 84 \% der Signaturen innerhalb eines Monats)}
-  \label{fig:time-corr-com-star}
-\end{figure}
-
-Es stellt sich die Frage, ob die zeitliche Korrelation der Signaturen
-in einer Community ein geeignetes Mittel ist, um Keysigning-Parties zu
-erkennen. Neben dem zeitlichen Zusammenhang der Signaturen ist ein
-weiteres Merkmal einer Keysigning-Party wie in
-Ab. \ref{sec:sozi-komp-des} beschrieben, dass jeder Teilnehmer mit
-(fast) jedem anderem Teilnehmer Signaturen austauscht, so dass sich
-eine fast vollständige Vermaschung -- fast eine Clique --
-ergibt. Eine stichprobenartige Untersuchung in den Communities zeigt,
-dass die meisten Communities mit zeitlicher Korrelation zumindest
-teilweise dieses Merkmal zeigen. Abbildung
-\ref{fig:time-corr-com-normal} zeigt ein Beispiel einer solchen
-Community. Etwa die Hälfte der Knoten ist in einer Fast-Clique
-enthalten, deren Knoten mit (fast) allen anderen vernetzt sind. Dieser
-innere Teil des Teilgraphen entspricht genau dem Bild, das als
-Resultat einer Keysigning-Party erwartet wird. Auch wenn dies auf die
-meisten der Communities mit zeitlicher Korrelation zutrifft, gibt es
-auch Gegenbeispiele. Abbildung \ref{fig:time-corr-com-star} zeigt eine
-Community, die zwar das Kriterium der zeitlichen Korrelation
-erfüllt, ansonsten aber nichts mit dem erwarteten Bild einer
-Keysigning-Party gemein hat. Allerdings erfüllt der Teilgraph
-trotzdem das Kriterium der Community, da die Knoten am Rand nur
-Signaturen zu dem zentralen Knoten haben und damit die interne
-Kantendichte deutlich höher ist als die externe. Um solche
-Extremfälle auszuschließen, ist als zusätzliches Kriterium für
-die Erkennung von Keysigning-Parties ein hoher durchschnittlicher Grad
-der Knoten denkbar.
-
-\begin{figure}[th!]
-  \centering
-  \subfloat[]{\label{fig:sld-sure-copra1} \includegraphics[scale=0.45]{images/sld-sure-ass_copra1.pdf}}
-  \subfloat[]{\label{fig:sld-sure-bl2} \includegraphics[scale=0.45]{images/sld-sure-ass_copra.pdf}}\\
-  \subfloat[]{\label{fig:sld-sure-bl5} \includegraphics[scale=0.45]{images/sld-sure-ass_bl2.pdf}} 
-  \subfloat[]{\label{fig:sld-sure-copra} \includegraphics[scale=0.45]{images/sld-sure-ass_bl5.pdf}}
-  \caption{Zuweisung von Domains zu SLDs abhängig von der Community-Größe}
-  \label{fig:sld-suredist}
-\end{figure}
-
-\begin{figure}[th!]
-  \centering
-  \subfloat[]{\label{fig:sld-maybe-copra1} \includegraphics[scale=0.45]{images/sld-maybe-ass_copra1.pdf}}
-  \subfloat[]{\label{fig:sld-maybe-bl2} \includegraphics[scale=0.45]{images/sld-maybe-ass_copra.pdf}}\\
-  \subfloat[]{\label{fig:sld-maybe-bl5} \includegraphics[scale=0.45]{images/sld-maybe-ass_bl2.pdf}} 
-  \subfloat[]{\label{fig:sld-maybe-copra} \includegraphics[scale=0.45]{images/sld-maybe-ass_bl5.pdf}}
-  \caption{Verteilung der Größe der von einer SLD dominierten Communities}
-  \label{fig:sld-maybedist}
-\end{figure}
-
-\begin{figure}[th!]
-  \centering
-  \subfloat[]{\label{fig:time-corr-copra1} \includegraphics[scale=0.45]{images/time-corr_copra1.pdf}}
-  \subfloat[]{\label{fig:time-corr-bl2} \includegraphics[scale=0.45]{images/time-corr_copra.pdf}}\\
-  \subfloat[]{\label{fig:time-corr-bl5} \includegraphics[scale=0.45]{images/time-corr_bl2.pdf}} 
-  \subfloat[]{\label{fig:time-corr-copra} \includegraphics[scale=0.45]{images/time-corr_bl5.pdf}}
-  \caption{Verteilung der Größe von Communities mit zeitlicher
-    Korrelation der Signaturen}
-  \label{fig:time-corrdist}
-\end{figure}
-
-\subsection{Diskussion}
-\label{sec:gesamtb-comm}
-
-Diese Ergebnisse widerlegen nicht die Annahme, dass die Vernetzung im
-Web of Trust im wesentlichen von Keysigning-Parties und den sozialen
-Kontakten der Teilnehmer beeinflusst wird und damit unter anderem von
-Gruppenzugehörigkeit bestimmt wird. Allerdings muss festgehalten
-werden, dass die hier verwendeten Methoden nicht geeignet sind, um den
-Entstehungsmechanismus entlang dieser Annahme befriedigend zu
-erklären. 
-
-Ein Grund dafür ist sicherlich, dass die Struktur des Web of Trust nur
-zu einem bestimmten, festen Zeitpunkt betrachtet wurde. Um die
-Entstehungsdynamik zu verstehen, könnte alternativ die Entwicklung des
-Netzwerks tatsächlich über die Zeit nachvollzogen werden. Das
-Keyserver-Netzwerk speichert nicht nur den momentanen Zustand des
-Netzwerks, sondern implizit auch den Entstehungszeitpunkt jedes
-Schlüssels und jeder Signatur. Die im Rahmen dieser Arbeit entwickelte
-Software speichert diese Zeitstempel in einer Datenbank und macht so
-die gesamte Entwicklungsgeschichte des Web of Trust verfügbar (siehe
-Abschnitt \ref{sec:software}). Anhand dieser Daten könnte
-nachvollzogen werden, wie und in welcher Form die Communities
-tatsächlich entstehen und sich entwickeln.
-
-Dass nur sehr wenige grössere Communities mit zeitlicher Korrelation
-der Signaturen gefunden wurden, obwohl regelmäßig grössere
-Keysigning-Parties stattfinden (siehe Abschnitt
-\ref{sec:sozi-komp-des}) ist bei näherer Betrachtung durchaus
-plausibel. Dass eine Keysigning-Party sich in der Struktur markant
-abhebt, setzt voraus, dass ihre Teilnehmer außer der Teilnahme an
-dieser Party keine wesentliche Signaturaktivität starten. Würden
-sie weiterhin an Signaturaktitiväten teilnehmen, würde die
-Struktur der Keysigning-Party mit der Zeit durch Signaturen von und zu
-Nicht-Teilnehmern ``verwischt'' werden. Aufgefunden wurden also
-vermutlich nur die Keysigning-Parties mit einer Mehrheit von insgesamt
-eher inaktiven Teilnehmern. Gleiches kann für Teilnehmer angenommen
-werden, die sich anhand von Gruppenzugehörigkeit vernetzen. Auch
-hier würde die Struktur mit der Zeit ``unschärfer'' werden, wenn
-ihre Mitglieder weiterhin Signierungen vornehmen würden. Es kann
-also angenommen werden, dass die kleineren und insbesondere die klar
-zuordnenbaren Communities tendenziell Teilnehmer enthalten, die in
-Bezug auf die Teilnahme am Web of Trust eher inaktiv sind. Um diese
-Vermutung zu bestätigen oder zu widerlegen, könnte das
-Signaturverhalten der Teilnehmer über die Zeit mit ihrer
-Community-Mitgliedschaft verglichen und korreliert werden.
-
-Es scheint unrealistisch, dass die Mitgliedschaft in einer Gruppe --
-etwa einer Firma, akademischen Einrichtung oder einem
-Open-Source-Projekt -- die sozialen Kontakte einer Person
-vollständig charakterisiert. Daneben kann eine Person noch ein
-weites Netzwerk an Freunden oder Bekannten haben, die diese
-Mitgliedschaft nicht teilen. Trotzdem können sich zu ihnen
-Signaturen ergeben, die einen wesentlichen Teil der Signaturen dieser
-Person ausmachen können. Außerdem ist anzunehmen, dass eine
-Vielzahl solcher Gruppen nicht über eine gemeinsame Domain
-verfügen, und damit mit den hier vorliegenden Daten schlicht nicht
-sichtbar sind. Zwar wurde versucht, der anzunehmenden Komplexität
-der Gruppenzugehörigkeiten durch überlappende Communities zu
-begegnen. Allerdings konnte der verwendete Algorithmus keine
-signifikanten Überlappungseigenschaften liefern . Die Frage,
-inwiefern sich die einzelnen Communities sozialen Gruppen zuordnen
-lassen, konnte also nur unvollständig beantwortet werden.
-
-Es zeigt sich, dass dem Web of Trust kein einzelner, einfacher
-Entstehungsmechanismus der hier angenommenen Form zugrunde liegt. Es
-kann nur unzureichend beschrieben werden als eine Ansammlung von
-einzelnen, einfach entstandenen Bausteinen, als die hier Communities
-angenommen wurden. Implizit vorausgesetzt wird dabei auch, dass diese
-zum Beispiel im Fall einer Keysigning-Party nach ihrer Entstehung
-keine wesentliche weitere Vernetzungsaktitivät zeigen. Zwar trifft
-dies für einen Teil der Communities -- gerade die, die eine
-zeitliche Korrelation der Signaturen zeigen oder einer
-Second-Level-Domain zugeordnet werden können -- durchaus zu. Für
-einen erheblichen Anteil der Teilnehmer -- beispielsweise die
-Mitglieder der sehr großen Community aus der COPRA-Berechnung --
-scheint die Vernetzung jedoch so vielfältig zu sein, dass solche
-einfachen Mechanismen nicht mehr sichtbar sind und ``in der Masse
-verschwinden''. Bei der COPRA-Zerlegung ist es etwa naheliegend, dass
-die sehr große zentrale Community die Mehrzahl der aktiveren
-Teilnehmer enthält. Hier ergibt sich eine Ähnlichkeit zur Struktur
-der Zusammenhangskomponenten, bei denen die größte alle aktiven
-einigermaßen aktiven Teilnehmer zu enthalten scheint (siehe Abschnitt
-\ref{sec:result-komponentenstruktur}).
-
-Diese Punkte können anhand des Beispiels von Debian illustriert
-werden: Das Debian-Projekt als tatsächliche Community, in der PGP
-und das Web of Trust eine besonders wichtige Rolle spielen (siehe
-Abschnitt \ref{sec:sozi-komp-des}) findet sich in den Zerlegungen
-nicht als eigene abgegrenzte Einheit wieder. Statt dessen finden sich
-sehr große Communities, in denen Debian-Entwickler einen signifikanten
-Anteil der Schlüssel stellen. Im Fall der COPRA-Zerlegung ist dies
-die bereits erwähnte Community mit ca. 21.000 Mitgliedern. Von
-diesen verfügen 1.247 über eine E-Mail-Adresse in der Domain
-debian.org und sind damit offensichtlich Mitglieder des
-Debian-Projekts. Daneben finden sich Mitglieder des Debian-Projekts in
-einer Vielzahl von kleineren Communities aller Größen. Die
-Mitgliedschaft im Debian-Projekt scheint hier also für die
-Vernetzung keine so wesentliche Rolle zu spielen, dass sie die
-Struktur dieser real existierenden Community im Web of Trust
-wieder spiegelt. Selbst wenn viele Debian-Entwickler mit vielen anderen
-Projektmitgliedern vernetzt sind, so verfügen sie offensichtlich
-über genügend andere Kontakte, so dass diese Struktur nicht mehr
-auffindbar ist.
 
 %%% Local Variables: 
 %%% mode: latex

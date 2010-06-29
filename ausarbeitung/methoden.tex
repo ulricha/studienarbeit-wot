@@ -25,7 +25,7 @@ untersuchen. \emph{wotsap} berechnet allerdings nur die Struktur eben
 dieser Zusammenhangskomponente. Schlüssel, die nicht in dieser
 Komponente enthalten sind, werden nicht beachtet. \emph{wotsap}
 beginnt bei mehreren sehr gut vernetzten Schlüsseln, die sicher in der
-MSCC liegen. Von diesen ausgehend werden die Signaturen in der Art
+gr\"o{\ss}ten starken Zusammenhangskomponente (MSCC) liegen. Von diesen ausgehend werden die Signaturen in der Art
 einer Breitensuche (rückwärts) verfolgt. Aufgrund dieser Methode
 scheint es mit vertretbarem Aufwand nicht möglich, die Extraktion auf
 alle Schlüssel auszudehnen.
@@ -43,7 +43,7 @@ unbrauchbar. Das verwendete Dateiformat ist außerdem recht unflexibel
 und lässt eine Speicherung weiterer Daten nur mit größerem Aufwand
 zu.
 
-Die \emph{wotsap}-Daten beinhalten nur die zum jeweiligen Zeitpunkt
+Die \emph{wotsap}-Daten enthalten nur die zum jeweiligen Zeitpunkt
 gültigen Schlüssel und Signaturen. Dieser "`Schnappschuss"' reicht für
 die strukturelle Analyse des Graphen aus. Zeitliche Entwicklungen,
 beispielsweise die Größe des Datenbestandes, die Verwendung
@@ -62,21 +62,24 @@ fehlerhaft. Diese Fehler werden sowohl durch Fehler in der
 Implementierung als auch durch einen fehlerhaften Datenbestand auf dem
 verwendeten Keyserver verursacht: Die größte starke
 Zusammenhangskomponente die in dieser Arbeit berechnet wurde (MSCC-1),
-enthält mit dem Stand vom 02.12.2009 ca. 44900 Schlüssel, während der
-\emph{wotsap}-Datensatz (MSCC-2) vom gleichen Tag nur ca. 42130
+enthält mit dem Stand vom 02.12.2009 ca. 44.900 Schlüssel, während der
+\emph{wotsap}-Datensatz (MSCC-2) vom gleichen Tag nur ca. 42.130
 Schlüssel enthält. Die Differenz zwischen den Datensätzen ergibt
-einerseits, dass ca. 1000 Schlüssel in MSCC-1 fehlen, die in MSCC-2
+einerseits, dass ca. 1.000 Schlüssel in MSCC-1 fehlen, die in MSCC-2
 vorhanden sind. Eine stichprobenartige Analyse von 20 Schlüsseln
 zeigt, dass diese Schlüssel überwiegend durch Signaturketten an die
 MSCC angebunden sind, die aufgrund von widerrufenen Schlüsseln oder
 Schlüsselteilen unterbrochen sind. Dabei treten unter anderem
 Signaturen auf komplett widerrufenen Schlüsseln und Signaturen auf
 widerrufenen UserIDs auf. \emph{wotsap} benutzt GnuPG, um die
-OpenPGP-Pakete eines Schlüssels zu parsen. Der Code zum Parsen der
-GnuPG-Ausgabe ist fehlerhaft und führt dazu, dass \emph{wotsap}
-Widerrufssignaturen fälschlicherweise nicht beachtet.
+OpenPGP-Pakete eines Schlüssels zu parsen. Eine Analyse des
+Quelltextes von \emph{wotsap} ergab, dass der Code zum Parsen der
+GnuPG-Ausgabe fehlerhaft ist. Dies führt dazu, dass \emph{wotsap}
+Widerrufssignaturen fälschlicherweise nicht beachtet werden und
+dadurch Schl\"ussel in der MSCC auftauchen, zu denen kein Pfad
+\emph{mehr} besteht.
 
-Auf der anderen Seite sind ca. 3980 Schlüssel zwar in MSCC-1
+Auf der anderen Seite sind ca. 3.980 Schlüssel zwar in MSCC-1
 vorhanden, nicht aber in MSCC-2. Um den Grund dafür zu finden, wurde
 für 10 zufällig ausgewählte Schlüssel aus dieser Menge eine
 Signaturkette (d.h. ein Pfad) zu einem Schlüssel gesucht, der sowohl
@@ -87,7 +90,7 @@ sie gültig sind. Kann für beide Richtungen jeweils eine Kette
 erfolgreich verifiziert werden, so ist der betreffende Schlüssel per
 definitionem in der MSCC. Im vorliegenden Fall konnte das für alle
 Schlüssel der Stichprobe gezeigt werden. Der Fehler liegt also
-wiederum bei \emph{wotsap}, dass diese Schlüssel fälschlicherweise
+wiederum bei \emph{wotsap}, das diese Schlüssel fälschlicherweise
 ausschließt. Als Ursache dafür ergab sich in allen betrachteten
 Fällen der fehlerhafte Bestand des Keyservers
 \emph{wwwkeys.ch.pgp.net}, der von \emph{wotsap} verwendet wird. Die
@@ -102,7 +105,7 @@ wurde. Diese fehlenden Teile sind aber auf allen Keyservern des
 \emph{SKS}-Verbundes %FIXME
 vorhanden. Da die Ursache in allen untersuchten Fällen die gleiche
 war, kann angenommen werden, dass der Fehler systematisch ist und
-diesen Teil der Diskrepanz zwischen den Datensätzen vollständig
+diesen Teil der Diskrepanz zwischen den Datensätzen 
 erklärt. Als Ursache kommen eine mangelhafte Synchronisation
 zwischen \emph{wwwkeys.ch.pgp.net} und dem \emph{SKS}-Netzwerk sowie
 Fehler in der auf \emph{wwwkeys.ch.pgp.net} verwendeten
@@ -122,7 +125,7 @@ sind. Insbesondere Aussagen über die Verteilung von Knotengraden und
 ähnliche Aussagen anhand dieser Daten sind mit Vorsicht zu
 genießen. Eine Reihe von Arbeiten verwendet die \emph{wotsap}-Daten
 als Beispiel für ein empirisches soziales bzw. Small-World-Netzwerk
-\cite{Brondsema2006} \cite{Heikkila2009} \cite{Dell'Amico2007}. Sofern
+\cite{Brondsema2006, Heikkila2009, Dell'Amico2007}. Sofern
 die Ergebnisse dieser Arbeit auf experimentellen Resultaten aufbauen,
 die mit diesen Daten gewonnen wurden, sollten sie daher mit korrekten
 Daten überprüft werden. Der Keyserver \emph{wwwkeys.ch.pgp.net} sollte
@@ -148,7 +151,7 @@ dieser Arbeit.
 \subsubsection{Der SKS-Keyserver}
 \label{ch:Grundlagen:sec:Design:subsec:der-sks-keyserver}
 
-SKS (Synchronizing Key Server) löst die bis dahin verbreitetste
+SKS (Synchronizing Key Server) ist der Nachfolger der
 Keyserver-Software PKS (Public Key Server) ab und wird inzwischen auf
 so gut wie allen Keyservern benutzt. Mit \emph{pgp.mit.edu} wurde im
 Juli 2009 der letzte große Keyserver auf SKS umgestellt. PKS benutzt
@@ -171,7 +174,7 @@ OpenPGP-Standards.
 SKS ist in der Sprache Objective Caml (OCaml) implementiert und
 benutzt die Datenbank Berkeley DB als Datenablage. Ein
 Datenbankeintrag besteht dabei aus einem kompletten OpenPGP-Key,
-d.h. einer Reihe von OpenPGP-Paketen. SKS ist in zwei Prozesse
+d. h. einer Reihe von OpenPGP-Paketen. SKS ist in zwei Prozesse
 aufgeteilt: der \emph{db}-Prozess beantwortet Datenbank-Abfragen für
 die verschiedenen Abfragemöglichkeiten (Webinterface, HKP) während der
 \emph{recon}-Prozess für den Abgleich der Datenbank mit anderen
@@ -180,19 +183,13 @@ Keyservern zuständig ist.
 \subsubsection{Datenextraktion}
 \label{sec:datenextraktion}
 
-Die Extraktion der Daten ist recht zeitaufwendig. Auf der zur
-Verfügung stehenden Hardware (Pentium 4 2,4 GHz) werden ca. 4 Stunden
-benötigt. Durch die Aufteilung kann die Extraktion der Daten einmalig
-auf dem Keyserver vorgenommen werden, während die Daten anschließend
-auf beliebigen Rechnern zur Verfügung stehen.
-
 Der Extraktionsteil wurde direkt in die SKS-Software
 integriert. Dadurch ergeben sich mehrere Vorteile: 
 
 \begin{itemize}
 \item Das Interface von SKS für den Datenbankzugriff kann
   wiederverwendet werden
-\item SKS enthält einen rudimentären OpenPGP-Parser, d.h. eine Reihe
+\item SKS enthält einen rudimentären OpenPGP-Parser, d. h. eine Reihe
   von Funktionen, die die Byte-Struktur einzelner OpenPGP-Pakete sowie
   die Paket-Struktur des Schlüssels parsen und die darin enthaltenen
   Informationen in Datenstrukturen zugänglich machen. Durch die
@@ -240,7 +237,7 @@ enthaltenen Funktionen geparst. Der Extraktionsteil muss dann noch
   die darauf angebrachten Signaturen ohne Duplikate gespeichert. Hier
   wird ebenfalls nur die neueste Signatur verwendet. Handelt es sich
   bei der neuesten Signatur um eine Widerrufssignatur, wird das Datum
-  des Widerrufs gespeichert und zusätzlich die nächst ältere Signatur
+  des Widerrufs gespeichert und zusätzlich die nächstältere Signatur
   gesucht, auf die sich der Rückruf bezieht.
 \item den Schlüssel und jede Fremdsignatur auf die benötigten Daten
   reduzieren. Für den Schlüssel sind dies (falls vorhanden) Rückzugs-
@@ -292,7 +289,7 @@ zeitaufwendig. Für jeden Schlüssel müsste der Schlüssel in einen
 GnuPG-Schlüsselring eingefügt werden. Zusätzlich müssten noch alle
 Schlüssel, die den jeweiligen Schlüssel signiert haben, einzeln in der
 SKS-Datenbank gesucht und in den Schlüsselring eingefügt werden, um
-die Signaturen verifizieren zu können. Letztendlich kostet der Aufruf
+die Signaturen verifizieren zu können. Schlie{\ss}lich kostet der Aufruf
 von GnuPG selbst Zeit. Für die Anzahl der hier verarbeiteten Schlüssel
 (2,6 Millionen) scheint dieser Ansatz daher ungeeignet. Sicherlich
 sind Schlüssel mit defekten Signaturpaketen auf den Keyservern
@@ -303,11 +300,11 @@ erreichen. Eine große Zahl solcher Pakete scheint aber
 unwahrscheinlich, da zumindest unter Sicherheitsaspekten ein Angreifer
 damit keinen offensichtlichen Gewinn erreichen kann.
 
-Die so extrahierten Daten werden in einer SQL-Datenbank (PostgreSQL)
+Die extrahierten Daten werden in einer SQL-Datenbank (PostgreSQL)
 abgelegt. Auf diese Weise kann darauf verzichtet werden, eigene
 Selektionsmechanismen zu implementieren. Stattdessen kann die
 gewünschte Datenmenge einfach als SQL-Abfrage formuliert werden. Auf
-diese Weise ergibt sich eine deutlich flexiblere
+diese Weise ergibt sich eine flexible 
 Abfragemöglichkeit. Die Ablage in der Datenbank ist zwar etwas
 langsamer als die Daten im Speicher zu halten. Andererseits müssen die
 Daten aber nicht jedes mal komplett in den Speicher geladen und dort
@@ -345,7 +342,8 @@ ist, die Distanzmatrix
 zu berechnen, die die Distanz $d(u, v)$ in Zeile $u$ und Spalte $v$
 enthält \cite{Brinkmeier2004}. Aus dieser Matrix aller Distanzen im
 Graphen lassen sich alle oben angeführten Kennzahlen berechnen. $D$
-kann berechnet werden, indem das single-source-shortest-path-Problem
+kann berechnet werden, indem das
+\textit{single-source-shortest-path}-Problem
 (SSSP) für alle $n$ Knoten oder das all-pairs-shortest-path-Problem
 (APSP) gelöst werden. Für den vorliegenden Fall eines
 ungewichteten Graphen lässt sich SSSP in $\mathcal{O}(n)$ durch
@@ -492,8 +490,6 @@ eine Community als Produkt einer KSP betrachtet, wenn 80\% der
 Signaturen zwischen den Mitgliedern innerhalb eines Monats vorgenommen
 wurden.
 
-
-
 Die Zuordnung zu sozialen Gruppen wird dadurch erschwert, dass --
 abgesehen von den Schlüsseln und Signaturen selbst -- keine
 empirischen Daten über die Gruppenzugehörigkeit vorliegen. Die
@@ -528,17 +524,8 @@ sondern drücken nur ein intuitives Verständnis für die
 überwiegende Mehrzahl der Mitglieder einer Gruppe bzw. einen
 erheblichen Anteil der Mitglieder einer Gruppe aus.
 
-Während Modularity die Güte einer Zerlegung nur bezogen auf die
-Struktur des Graphen misst, drücken die Zuordnungszahlen die Güte
-einer Partitionierung in Bezug auf die oben formulierte Hypothese
-über die Entstehung des Netzwerks aus. Wenn diese Hypothese
-zutrifft, ist eine Zerlegung in Bezug darauf ``besser'', wenn eine
-grössere Anzahl von Communities einer sozialen Gruppe oder
-Keysigning-Party zugeordnet werden kann. Es kann nicht vorausgesetzt
-werden, dass eine Zerlegung mit hoher Modularity automatisch auch eine
-Zerlegung mit hohen Zuordnungszahlen ist, dass sich also die real
-existierenden Communities direkt in der Struktur des Graphen
-wiederfinden.
+Im Folgenden wird aufgef\"uhrt, welche Algorithmen zur Berechnung von
+Community-Zerlegungen verwendet wurden.
 
 \subsection{Communities im gerichteten Graphen}
 \label{sec:comm-gericht-graph}
@@ -547,12 +534,11 @@ nur in eine Richtung gilt. Die meisten verfügbaren Methoden zur
 Community-Erkennung setzen im Gegensatz dazu einen ungerichteten
 Graphen voraus. Methoden, die auf gerichteten Graphen arbeiten, sind
 erst in jüngster Zeit vorgestellt worden (beispielsweise
-\cite{Leicht2008} und \cite{Rosvall2008}). Hier wird der Algorithmus
+\cite{Leicht2008} und \cite{Rosvall2008}). In dieser Arbeit wird der Algorithmus
 ``infomap'' von Rosval et al. \cite{Rosvall2008} benutzt. 
 
 \subsection{Communities im ungerichteten Graphen}
 \label{sec:comm-unger-graph}
-
 
 Der bis jetzt am häufigsten verwendete Ansatz für die
 Community-Erkennung in gerichteten Netzwerken ist es, die Richtung der
@@ -560,7 +546,7 @@ Kanten zu ignorieren und den Graphen als ungerichteten Graphen zu
 behandeln. Auch die Arbeiten, die den Web of Trust-Graphen unter
 Community-Gesichtspunkten analysieren oder ihn als Benchmark für den
 Vergleich von Algorithmen verwenden, gehen so vor (siehe Abschnitt
-\ref{ch:Grundlagen:sec:RelatedWork}. Auch wenn dieses Vorgehen akzeptable Resultate
+\ref{ch:Grundlagen:sec:RelatedWork}). Auch wenn dieses Vorgehen akzeptable Resultate
 liefern kann, ist doch klar, dass durch das Ignorieren der Richtung
 ein Informationsverlust stattfindet, der die Ergebnisse negativ
 beeinflussen kann.
@@ -586,7 +572,7 @@ herauskristallisiert, auch wenn einige Algorithmen für eine Reihe
 von Benchmark-Graphen bessere Ergebnisse liefern als andere
 \cite{Lancichinetti2009}. Basierend auf diesem Vergleich wurde der
 Algorithmus von Blondel et al. (siehe Abschnitt
-\ref{sec:algor-von-blond} ausgewählt, der außerdem gut auf große
+\ref{sec:algor-von-blond}) ausgewählt, der außerdem gut auf große
 Graphen skaliert und für den eine Open-Source-Source-Implementierung
 verfügbar ist.  Zwar existieren Algorithmen, die für kleinere
 Graphen bessere Ergebnisse liefern als die hier verwendeten, aufgrund
@@ -610,7 +596,7 @@ existiert eine Klasse von Algorithmen, die ein Netzwerk in
 mehreren Communities sein kann. Um zu untersuchen, inwiefern dieser
 Überlappungseffekt die Zuordnung von Knoten zu sozialen Gruppen und
 KSPs beeinflusst, wurde zusätzlich noch eine überlappende Zerlegung
-mit dem Algorithmus COPRA (siehe Abschnitt \ref{sec:copra}
+mit dem Algorithmus COPRA (siehe Abschnitt \ref{sec:copra})
 berechnet. COPRA erwartet einen Parameter $v$, der angibt, zu wie
 vielen Communities ein Knoten gehören kann. Um hier das Optimum
 bezüglich der Modularity zu finden, wurden Zerlegungen mit Werten
