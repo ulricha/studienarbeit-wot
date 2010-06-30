@@ -1417,6 +1417,95 @@ Standardeinstellung in GnuPG der Anteil von RSA-Schlüsseln mit
 einer Länge von mindestens 2048 bit in nächster Zeit deutlich
 erhöht.
 
+%% ==============================
+\section{Verwandte Arbeiten}
+%% ==============================
+\label{ch:Grundlagen:sec:RelatedWork}
+
+An dieser Stelle wird nur auf Arbeiten eingegangen, die sich mit der
+Netzwerkstruktur des Web of Trust bei PGP beschäftigen. Für einen
+Überblick über Arbeiten zur Struktur von anderen Netzwerken sei auf
+\cite{newman:167} und für Arbeiten zur Community-Struktur von anderen
+Netzwerken auf \cite{Fortunato2010} verwiesen.
+
+Capkun et al. \cite{Capkun2002} untersuchten strukturelle Aspekte der
+größten starken Zusammenhangskomponente eines PGP-Netzwerkes aus dem
+Jahr 2001. Dieses Netzwerk zeigte eine geringe charakteristische
+Distanz und einen hohen Clustering-Koeffizienten. Außerdem stimmte die
+Verteilung der aus- und eingehenden Grade mit einem Power-Law
+überein. Die Autoren argumentieren, dass Netzwerke, die aus
+Zertifikatsbeziehungen entstehen, naturgemäß den Small-World-Effekt
+zeigen, da sich die Zertifikate anhand schon bestehender
+Vertrauensbeziehungen ergeben. Die Autoren geben außerdem noch ein
+Netzwerkmodell an, das Graphen erzeugen soll, die in den
+beschriebenen Charakteristiken dem PGP-Netzwerk ähneln.
+
+Arenas et al. \cite{Boguna2004} analysierten ein PGP-Netzwerk aus dem
+gleichen Jahr. Das Netzwerk wurde von vornherein in ein ungerichtetes
+Netzwerk umgewandelt, indem nicht gegenseitige Kanten entfernt
+wurden. Sie betrachteten die Gradverteilung, den
+Clustering-Koeffizienten und die Korrelation von Graden benachbarter
+Knoten. Dabei folgt die Verteilung der Knotengrade einem
+Power-Law. Der Clustering-Koeffizient des Netzwerkes beträgt $C=0.4$,
+ist also recht hoch. Die Grade benachbarter Knoten sind positiv
+korreliert. Außerdem benutzten die Autoren den Algorithmus von Girvan
+und Newman \cite{Newman2004}, um eine Community-Zerlegung des Netzwerks
+zu berechnen. Die Verteilung der Größe dieser Communities folgt wieder
+einem Power-Law.
+
+Warren et al. betrachteten das Netzwerk nicht zu einem festen
+Zeitpunkt sondern untersuchten die \emph{Dynamik} des
+Netzwerks \cite{Warren2007}. Sie berechneten verschiedene grundlegende
+Netzwerkeigenschaften (Größe des Netzwerkes, Distanzen,
+Gradverteilung etc.) und verfolgten deren Entwicklung \emph{über die
+  Zeit}. Ihre Ergebnisse können allerdings mit den in dieser Arbeit
+präsentierten nicht sinnvoll verglichen werden, da der Graph von Schlüsseln
+auf Individuen reduziert wurde (siehe auch Abschnitt
+\ref{sec:schl-und-invid}).
+
+Gemein ist diesen akademischen Arbeiten, dass sie auf deutlich
+\"alteren Datens\"atzen beruhen. Insbesondere bei \cite{Capkun2002}
+und \cite{Boguna2004} kamen Daten aus dem Jahr 2001 zum
+Einsatz. Seither hat sich die MSCC von ca. 12.000 auf ca. 45.000 Knoten
+vergr\"ossert. Bei einer Ver\"anderung diesen Ausma{\ss}es kann nicht
+von vornherein ausgeschlossen werden, dass sich grundlegende Merkmale
+des Netzwerks ver\"andert haben. Schon aus diesem Grund scheint es
+berechtigt, dass in dieser Arbeit Merkmale untersucht wurden, die auch
+schon in fr\"uhren Arbeiten betrachtet wurden. Au{\ss}erdem
+wurde diese Arbeit in Bezug auf die untersuchten Merkmale deutlich
+breiter angelegt.
+
+Neben diesen akademischen Arbeiten gibt es mehrere Ansätze aus der
+PGP-Community, die Netzwerkstruktur zu untersuchen. Das
+wotsap-Projekt \cite{Cederlof} stellt einen täglich aktualisierten
+Datensatz bereit, der die Vernetzungsstruktur der größten starken
+Zusammenhangskomponente des Web of Trust darstellt. Diese Daten werden
+für eine Webapplikation benutzt, die kürzeste Pfade
+zwischen Schlüsseln berechnet und visualisiert und so bei der
+Nutzung von Zertifikatspfaden behilflich sein soll. In Abschnitt
+\ref{ch:Grundlagen:sec:WarumEigene} wird der Wotsap-Datensatz näher
+betrachtet und begründet, warum er in dieser Arbeit nicht verwendet
+wurde. 
+
+Henk P. Penning berechnet anhand der Wotsap-Daten regelmäßig
+strukturelle Eigenschaften des Web of Trust bzw. von dessen größter
+starker Zusammenhangskomponente \cite{Penning}. Dies beinhaltet die
+Entwicklung der Größe dieser Komponente und der durchschnittlichen
+Distanzen über die Zeit, die Verteilung der Knotengrade und die
+Verteilung durchschnittlicher Distanzen pro Knoten. Außerdem wird die
+Robustheit des Netzwerkes bei der Entfernung von zufällig
+ausgewählten bzw. besonders gut vernetzten Knoten simuliert.
+
+In allen Arbeiten zeigen die betrachteten Netzwerke konsistente
+Eigenschaften, die auch mit den Ergebnissen dieser Arbeit
+\"ubereinstimmen. Dies sind im wesentlichen die charakteristischen
+Merkmale eines sozialen Netzwerks: Eine niedrige charakteristische
+Distanz, ein hohes Ausma{\ss} an Clustering und eine pr\"agnante
+Zusammenballung von Knoten in Communities. Ausserdem \"ahneln sich die
+Verteilungen der Knoten insofern, als sie einer Power-Law-Verteilung
+zumindest \emph{\"ahneln}. Diese grundlegenden Merkmale haben sich
+also trotz des deutlichen Wachstums der Knotenanzahl qualitativ nicht
+ver\"andert. 
 
 %%% Local Variables: 
 %%% mode: latex
