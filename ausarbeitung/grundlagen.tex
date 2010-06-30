@@ -48,9 +48,9 @@ Wir betrachten den Fall einer Nachricht, die über einen Kanal
 transportiert wird. Im Kontext von Computernetzwerken, insbesondere
 des Internets, muss im Allgemeinen davon ausgegangen werden, dass
 unberechtigte Dritte in der Lage sind, Nachrichten auf einem Kanal
-abzuhören, zurückzuhalten und zu verändern. \pagebreak[1] Menezes et
+abzuhören, zurückzuhalten und zu verändern. \pagebreak[2] Menezes et
 al. \cite{Menezes1996} definieren essentielle Ziele von
-Informationssicherheit, die in diesem Fall relevant sind:\
+Informationssicherheit, die in diesem Fall relevant sind:
 \begin{description}
 \item[Vertraulichkeit] Es soll sichergestellt werden, dass der Inhalt
   einer Nachricht nur berechtigten Kommunikationspartnern zugänglich
@@ -439,7 +439,7 @@ Das Vertrauensmodell ist der Algorithmus, mit dem PGP bzw. GnuPG
 entscheiden, ob ein Schlüssel anhand des Web of Trust als gültig
 betrachtet wird \cite{Ashley1999}. Gültig meint an dieser Stelle,
 dass die Zugehörigkeit des Schlüssels zu dem angeblichen Besitzer
-bestätigt wurde.\pagebreak[3]
+bestätigt wurde.\pagebreak[4]
 
 PGP speichert Schlüssel in einem \emph{Schlüsselring}. Jedem
 Schlüssel in einem Schlüsselring wird ein \emph{Vertrauenswert}
@@ -545,24 +545,28 @@ Schlüsseln nur insofern verwendet, als Signaturen vom Typ
 behandelt. Sie bieten aber die Möglichkeit, die Aussagekraft von
 Signaturen feiner zu untergliedern.
 
-\begin{figure}[t]
+\begin{figure}[ht!]
   \centering
   \includegraphics[scale=0.7]{images/trust-beispiel.pdf}
-  \caption{Beispiel für die Berechnung der Gültigkeit von Schlüsseln}
+  \caption{Beispiel für die Berechnung der Gültigkeit von Schlüsseln
+    (Raute: volles/ultimatives Vertrauen, Quadrat: geringes Vertrauen,
+    Kreis: kein Vertrauen, schwarz: voll g\"ultig, grau:
+    eingeschr\"ankt g\"ultig, wei{\ss}: ung\"ultig)}
   \label{fig:trust-beispiel}
 \end{figure}
 
 Abbildung \ref{fig:trust-beispiel} gibt ein Beispiel für die
 Berechnung der Gültigkeit von Schlüsseln unter Verwendung der
-Standard-Parameter $N=1$, $M=3$ und $L=5$. Die Schlüssel $B, H$ und
-$K$ wurden direkt von $A$, dem Besitzer des Schlüsselrings,
+Standard-Parameter $N=1$, $M=3$ und $L=5$. Die Schlüssel $B, H, K$ und
+$I$ wurden direkt von $A$, dem Besitzer des Schlüsselrings,
 unterschrieben und sind deshalb voll gültig. Da $L, M,$ und $N$ von
 $K$ unterschrieben wurden und dieser über volles Vertrauen verfügt,
-sind sie ebenfalls voll gültig. $O$ sowie $J$ sind voll gültig, da sie
-jeweils von drei Schlüsseln mit geringfügigem Vertrauen unterschrieben
-wurden. $I$ und $P$ wurden dagegen jeweils nur von zwei Schlüsseln mit
-geringfügigem Vertrauen unterschrieben und sind deshalb nicht voll, 
-sondern nur eingeschränkt gültig. $G$ wurde zwar von einem voll
+sind sie ebenfalls voll gültig. $O$ ist voll gültig, da er
+von drei Schlüsseln mit  geringf\"ugigem Vertrauen unterschrieben
+wurde. $J$ wurde dagegen nur von zwei Schlüsseln mit
+geringfügigem Vertrauen unterschrieben und ist deshalb nicht voll, 
+sondern nur eingeschränkt gültig. Der Signaturpfad zu $J$ \"uber $I$
+wird nicht betrachtet, da $I$ nicht vertraut wird. $G$ wurde zwar von einem voll
 gültigen Schlüssel mit vollem Vertrauen unterschrieben. Allerdings
 überschreitet die Signaturkette zu $A$ die maximale Länge von 5 und
 wird deshalb nicht benutzt.
@@ -779,9 +783,9 @@ Zusammenkünften mehrerer Personen, die paarweise ihre Schlüssel
 unterschreiben, bis hin zu größeren, formalisierten Veranstaltungen im
 Kontext von Konferenzen und Messen. Für grössere
 Veranstaltungen hat sich eine Reihe von "`Protokollen"' etabliert, um
-den Ablauf effizient zu organisieren\cite{Brennen2008}.
+den Ablauf effizient zu organisieren\cite{Brennen2008}.\pagebreak[4]
 
-Grössere Keysigning-Parties Open-Source-Umfeld fanden im Jahr 2009
+Grössere Keysigning-Parties im Open-Source-Umfeld fanden im Jahr 2009
 beispielsweise auf diesen Veranstaltungen statt:
 \begin{itemize}
 \item Debconf (Konferenz des Debian-Projekts) mit 113 Teilnehmern
