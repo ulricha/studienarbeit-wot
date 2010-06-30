@@ -18,8 +18,9 @@
 \NeedsTeXFormat{LaTeX2e}[1995/12/01] % Sorry, wir brauchen LaTeX2e!
 \ProvidesClass{wissdoc}[2007/01/18 Roland Bless - Wissenschaftliches Dokument]
 \LoadClass[a4paper,12pt,titlepage]{book} % diese Klasse basiert auf ``book''
-\RequirePackage{ngerman}[1998/07/08] % (V2.5e) Neue Rechtschreibung!
+%\RequirePackage{ngerman}[1998/07/08] % (V2.5e) Neue Rechtschreibung!
 %\RequirePackage{german}[1998/07/08] % alte Rechtschreibung (>=V2.5e von german.sty)
+\usepackage[ngerman]{babel}
 \usepackage[T1]{fontenc}      % T1-encoded fonts: auch Wörter mit Umlauten trennen
 \usepackage[utf8]{inputenc}   % Eingabe nach UTF-8
 \usepackage{ae}               % almost european, virtueller T1-Font

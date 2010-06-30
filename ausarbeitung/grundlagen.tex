@@ -24,7 +24,7 @@ führt dann die Methoden aus dem Bereich der Netzwerkanalyse ein, mit
 denen die Struktur des Web of Trust untersucht wird.
 
 Zu beachten ist, dass im Kapitel \ref{ch:Grundlagen} der Begriff
-``Schlüssel'' einen kryptographischen Schlüssel im Allgemeinen
+"`Schlüssel"' einen kryptographischen Schlüssel im Allgemeinen
 bezeichnet, während ab Kapitel \ref{ch:Methoden} damit
 ausschließlich der öffentliche Teil eines OpenPGP-Schlüsselpaares
 gemeint ist.
@@ -465,11 +465,11 @@ Algorithmus (siehe unten). Jeder Benutzer muss selbst entscheiden,
 anhand welcher Kriterien er welchen Personen wie stark vertraut. Diese
 Vertrauenswerte sind individuell. Jeder Benutzer verfügt über
 seine eigene, lokale Datenbank von Vertrauenswerten, die nicht mit
-anderen Benutzern geteilt werden\footnote{Die Rede von ``dem'' Web of
+anderen Benutzern geteilt werden\footnote{Die Rede von "`dem"' Web of
   Trust ist insofern missverständlich. Eigentlich verfügt jeder
   Teilnehmer über sein persönliches Web of Trust, dass sich aus
   seiner persönlichen Vertrauensdatenbank und dem Netzwerk von
-  Signaturen ergibt. Der Begriff ``Web of Trust'' wird im Rest dieser
+  Signaturen ergibt. Der Begriff "`Web of Trust"' wird im Rest dieser
   Arbeit aber nur im Sinne des Zertifikatsgraphen
   verwendet.}. Vertrauen ist also insbesondere nicht transitiv.
 
@@ -515,8 +515,8 @@ können, und damit die Anzahl verifizierbarer Schlüssel. Es muss also
 eine Abwägung zwischen dem Sicherheitsbedürfnis des Nutzers und der
 praktischen Benutzbarkeit getroffen werden.
 
-OpenPGP-Signaturpakete werden in Typen (auch ``certification
-level'') unterschieden, die angeben, wie gründlich der Ersteller der
+OpenPGP-Signaturpakete werden in Typen (auch "`certification
+level"') unterschieden, die angeben, wie gründlich der Ersteller der
 Signatur die Identität des Besitzers des signierten Schlüssels
 verifiziert hat. Diesen Typen wird durch den OpenPGP-Standard
 absichtlich keine klar definierte Semantik zugeschrieben, es werden
@@ -538,10 +538,10 @@ Typen sind
   verifiziert.
 \end{description}
 
-Mit den Standardeinstellungen werden Signaturen vom Typ ``Generic''
+Mit den Standardeinstellungen werden Signaturen vom Typ "`Generic"'
 erzeugt. Diese Typen werden bei der Berechnung der Gültigkeit von
 Schlüsseln nur insofern verwendet, als Signaturen vom Typ
-``Persona'' nicht beachtet werden. Die restlichen Typen werden gleich
+"`Persona"' nicht beachtet werden. Die restlichen Typen werden gleich
 behandelt. Sie bieten aber die Möglichkeit, die Aussagekraft von
 Signaturen feiner zu untergliedern.
 
@@ -682,7 +682,7 @@ Web of Trust nicht formal definiert ist. Weder der OpenPGP-RFC noch
 andere Standarddokumente machen dazu Vorschriften. Nur Certificate
 Authorities, die PGP verwenden, und einige wenige Privatpersonen
 dokumentieren ihre Verfahren zur Zertifizierung in Form von
-so genannten ``Keysigning-Policies''. Außerdem ist dem Autor dieser
+so genannten "`Keysigning-Policies"'. Außerdem ist dem Autor dieser
 Arbeit keine Studie über tatsächlich verwendete Mechanismen
 bekannt. Deshalb wird an dieser Stelle nur anekdotische Evidenz
 als Eindruck von üblichen Praktiken präsentiert.
@@ -736,7 +736,7 @@ von dem in Abschnitt \ref{sec:ubliche-zert} beschriebenen Vorgehen.
 
 \begin{itemize}
 \item Der Heise-Verlag betreibt seit 1997 eine Certificate Authority
-  im Rahmen der ``Krypto-Kampagne''. Diese hat sich zum Ziel gesetzt,
+  im Rahmen der "`Krypto-Kampagne"'. Diese hat sich zum Ziel gesetzt,
   die Verbreitung von PGP zu fördern. Durch eine kostenlose
   Certificate Authority soll das Web of Trust gestärkt werden.
 
@@ -778,7 +778,7 @@ Veranstaltungen ist sehr groß. Sie reicht von informellen
 Zusammenkünften mehrerer Personen, die paarweise ihre Schlüssel
 unterschreiben, bis hin zu größeren, formalisierten Veranstaltungen im
 Kontext von Konferenzen und Messen. Für grössere
-Veranstaltungen hat sich eine Reihe von ``Protokollen'' etabliert, um
+Veranstaltungen hat sich eine Reihe von "`Protokollen"' etabliert, um
 den Ablauf effizient zu organisieren\cite{Brennen2008}.
 
 Grössere Keysigning-Parties Open-Source-Umfeld fanden im Jahr 2009
@@ -1056,10 +1056,10 @@ aber auch der Kontext relevant, in dem die Keysigning-Party
 stattfindet. Bei einer Konferenz oder Messe kann es sich um ein
 Ereignis mit einer klar definierten Zielgruppe handeln, die wiederum
 einer Gruppe zuordenbar ist (z.B. im Fall der
-``Debconf''-Konferenzen). Ist dies nicht möglich, so handelt es sich
+"`Debconf"'-Konferenzen). Ist dies nicht möglich, so handelt es sich
 immerhin um eine Gruppe von Personen, die über ein gemeinsames
 Interessengebiet verfügen (beispielsweise im Fall der
-``LinuxTag''-Keysigning-Parties).
+"`LinuxTag"'-Keysigning-Parties).
 
 \subsection{Small-World-Effekt}
 \label{sec:small-world-effekt}
@@ -1071,14 +1071,14 @@ Small-World-Effekt bezeichnet. Der Begriff geht auf ein Experiment von
 Milgram zur\"uck, bei dem Briefe von Person zu
 Person\footnote{Teilnehmer wurden aufgefordert, die Briefe an ihnen
   direkt bekannte Personen weiterzugeben, von denen sie annahmen, dass
-  sie sich ``näher'' am Ziel befinden würden.} weitergegeben
+  sie sich "`näher"' am Ziel befinden würden.} weitergegeben
 wurden, um sie von zufällig ausgewählten Absendern zu ebenfalls
 zufällig ausgewählten, geographisch weit entfernten Empfängern
 zu transportieren\cite{Travers1969}. Diese Briefe erreichten ihr Ziel
 im Durchschnitt über nur sechs Zwischenstationen\footnote{71\% der
   Briefe erreichten ihr Ziel nicht.}. Mit diesem Experiment wurde
 gezeigt, dass Paare von Akteuren in einem sozialen Netzwerk nur durch
-wenige ``Zwischenschritte'' miteinander verbunden
+wenige "`Zwischenschritte"' miteinander verbunden
 sind. Eine präzisere Formulierung
 ist, dass die durchschnittliche Distanz nur logarithmisch mit der
 Anzahl der Knoten wächst.
@@ -1163,8 +1163,8 @@ In der Literatur scheint keine strenge Definition einer Community zu
 existieren, die allgemein akzeptiert ist. Stattdessen wird ein
 intuitives Verständnis verwendet, nach dem Communities \emph{dichte}
 Teilbereiche eines Graphen sind, also Gruppen von Knoten, die
-untereinander ``viele'' Kanten haben, während zu nicht in der Gruppe
-liegenden Knoten nur ``wenige'' Kanten bestehen. Oft wird werden
+untereinander "`viele"' Kanten haben, während zu nicht in der Gruppe
+liegenden Knoten nur "`wenige"' Kanten bestehen. Oft wird werden
 Communities auch algorithmisch definiert: Communities sind gerade das
 Ergebnis eines Algorithmus zur Community-Zerlegung.
 
@@ -1220,7 +1220,7 @@ grössere Graphen nicht geeignet.
 \label{sec:modularity}
 
 Eine solche hierarchische Zerlegung macht noch keine Aussage
-darüber, wie ``gut'' die Zerlegung auf einer bestimmten Ebene die
+darüber, wie "`gut"' die Zerlegung auf einer bestimmten Ebene die
 tatsächliche Community-Struktur wiedergibt. Um diese Frage zu
 beantworten, wurde ebenfalls von Girvan und Newman als Ma{\ss} für die
 Qualität einer Zerlegung die so genannte \emph{Modularity}
@@ -1325,11 +1325,11 @@ Graphen propagiert. Einige Labels verschwinden, während andere sich
 ausbreiten. Da zwischen Communities nur wenige Kanten bestehen
 sollten, ist die Chance, dass sich Labels über Community-Grenzen
 ausbreiten, sehr gering. \emph{Innerhalb} von dicht vernetzten Gruppen
-sollte sich jedoch ein ``Konsens'' über ein Label ergeben. Das
+sollte sich jedoch ein "`Konsens"' über ein Label ergeben. Das
 Konvergenzkriterium besteht darin, dass jeder Knoten ein Label hat,
 das von der Mehrheit seiner Nachbarn geteilt wird. Die
 Zeitkomplexität des Algorithmus wird durch die Autoren als
-``annähernd linear'' angegeben. Er ist also auch für große
+"`annähernd linear"' angegeben. Er ist also auch für große
 Graphen geeignet. Zu beachten ist, dass der Algorithmus durch die
 zufällige Reihenfolge, in der die Knoten durchlaufen werden, und die
 Auflösung von Pattsituationen \emph{nicht-deterministisch} ist.
