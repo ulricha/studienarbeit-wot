@@ -56,7 +56,7 @@ OCAMLPACKS[] =
 	pgocaml
 	pgocaml.syntax
 	threads
-	ocamlmpi
+	mpi
 
 if $(not $(OCAMLFIND_EXISTS))
    eprintln(This project requires ocamlfind, but is was not found.)
