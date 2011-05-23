@@ -53,8 +53,6 @@ OCAMLPACKS[] =
 	bin_prot
 	sexplib
 	sexplib.syntax
-	pgocaml
-	pgocaml.syntax
 	threads
 	mpi
 
@@ -101,7 +99,7 @@ OCAMLOPTFLAGS += -thread
 #
 
 AUXFILES[] =
-	db_interface
+	#db_interface
 	ekey
 	export_helpers
 	graph_misc
@@ -115,7 +113,7 @@ AUXFILES[] =
 	component_helpers
 	domain_time_statistics
 	network_statistics
-	simple_stats
+	#simple_stats
 	metagraph
 
 
@@ -147,25 +145,10 @@ OCamlProgram(without, without $(AUXFILES))
 OCamlProgram(correlate_deg, correlate_deg $(AUXFILES))
 
 EXE[] = 
-	dump_sql
-	db_scc_information
-	graph_snapshot
-	community_structure
-	component_structure
-	investigate_component
-	investigate_communities
 	basic_properties
 	betweeness_ser
 	clustering_coefficient_ser
-	export
-	mscc_size
-	simple_stats
-	time
-	count
 	basic_properties_mpi
-	without
-	correlate_weak_sigs
-	correlate_deg
 
 .DEFAULT: $(EXE)
 
