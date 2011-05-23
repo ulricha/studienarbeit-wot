@@ -1,7 +1,0 @@
-library(igraph)
-g <- read.graph("mscc.igraph", format="edgelist")
-g <- simplify(g)
-g <- as.undirected(g)
-c <- fastgreedy.community(g)
-fcs <- community.to.membership(g, c$merges, steps=which.max(c$modularity)-1)
-write(fcs$membership, "community_membership.txt", sep="\n")
