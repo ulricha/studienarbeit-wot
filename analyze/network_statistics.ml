@@ -42,12 +42,13 @@ module Make(G : Sig.G) = struct
 	  G.iter_succ push g u
       done
 
+  let sum l = List.fold_left (+) 0 l
+
   let single_vertex_distance_statistics g u =
-    let n = G.nb_vertex g in
     (* eccentricity = maximum distance d(u, v) encountered so far *)
     let ecc = ref 0 in
       (* summed up distance (for average) so far *)
-    let accum_dist = ref 0 in
+    let distances = ref [] in
       (* number of nodes in the 2-neighbourhood and 3-neighbourhood respectively *)
     let neigh_2 = ref 0 in
     let neigh_3 = ref 0 in
@@ -64,12 +65,12 @@ module Make(G : Sig.G) = struct
 	incr neigh_5;
       if d > !ecc then 
 	ecc := d;
-      accum_dist := !accum_dist + d
+      distances := d :: !distances
     in
       iter_component visit g u;
-      let avg_dist = (float_of_int !accum_dist) /. (float_of_int (n-1)) in
+      let avg_dist = (float_of_int (sum !distances)) /. (float_of_int (List.length !distances)) in
       let neighbourhoods = (!neigh_2, !neigh_3, !neigh_4, !neigh_5) in
-      (!ecc, !accum_dist, avg_dist, neighbourhoods)
+      (!ecc, !distances, avg_dist, neighbourhoods)
 
   let distance_statistics_vertex_subset g vlist bench =
     let compute_vertex l v =
@@ -110,16 +111,16 @@ module Make(G : Sig.G) = struct
 *)
 
   let distance_statistics g bench =
-    let compute_vertex v (dist_sum, ecc_map, dist_avg_map, neigh_map) =
-      let (ecc, dist_sum_v, dist_avg, neighbourhoods) =
+    let compute_vertex v (distances, ecc_map, dist_avg_map, neigh_map) =
+      let (ecc, distances_v, dist_avg, neighbourhoods) =
 	single_vertex_distance_statistics g v
       in
       let new_ecc_map = M.add v ecc ecc_map in
       let new_dist_avg_map = M.add v dist_avg dist_avg_map in
       let neigh_map = M.add v neighbourhoods neigh_map in
-	(dist_sum + dist_sum_v, new_ecc_map, new_dist_avg_map, neigh_map)
+	(distances_v @ distances, new_ecc_map, new_dist_avg_map, neigh_map)
     in
-    let init = (0, M.empty, M.empty, M.empty) in
+    let init = ([], M.empty, M.empty, M.empty) in
       G.fold_vertex compute_vertex g init
 
   let project_neigh5 m =
@@ -139,9 +140,9 @@ module Make(G : Sig.G) = struct
       M.map p m
 
   let analyze_and_print_results v_number graph_name results =
-    let (dist_sum, ecc_map, dist_avg_map, neigh_map) = results in
-    let nr_pairs = float_of_int ((v_number * (v_number-1)) / 2) in
-    let connected_avg_distance = (float_of_int dist_sum) /. nr_pairs in
+    let (distances, ecc_map, dist_avg_map, neigh_map) = results in
+    let nr_distances = float_of_int (List.length distances) in
+    let connected_avg_distance = (float_of_int (sum distances)) /. nr_distances in
     let (max_ecc, min_ecc) = enum_max_min (M.values ecc_map) in
     let median_ecc = median (Array.of_enum (M.values ecc_map)) in
     let ecc_dist = values_to_distribution (M.values ecc_map) in
@@ -199,12 +200,12 @@ module Make(G : Sig.G) = struct
     let n = G.nb_vertex graph in
       analyze_and_print_results n graph_name results
 
-  let add_result_to_maps (dist_sum, ecc_map, dist_avg_map, neigh_map) (v, result) =
-    let (ecc, dist_sum_v, avg_dist, neighbourhoods) = result in
+  let add_result_to_maps (all_distances, ecc_map, dist_avg_map, neigh_map) (v, result) =
+    let (ecc, distances_v, avg_dist, neighbourhoods) = result in
     let new_ecc_map = M.add v ecc ecc_map in
     let new_dist_avg_map = M.add v avg_dist dist_avg_map in
     let neigh_map = M.add v neighbourhoods neigh_map in
-      (dist_sum + dist_sum_v, new_ecc_map, new_dist_avg_map, neigh_map)
+      (distances_v @ all_distances, new_ecc_map, new_dist_avg_map, neigh_map)
 
   let combine_distance_results results alist =
     List.fold_left add_result_to_maps results alist
@@ -212,10 +213,10 @@ module Make(G : Sig.G) = struct
   module Distance_statistics_job = struct
     include G
       (* ecc, dist_sum_v, avg_dist, n2_size, n3_size *)
-    type worker_result = (G.V.t * (int * int * float * (int * int * int * int))) list
+    type worker_result = (G.V.t * (int * int list * float * (int * int * int * int))) list
     let worker_function = distance_statistics_vertex_subset
-    type combine_type = int * int M.t * float M.t * (int * int * int * int) M.t
-    let combine_start = (0, M.empty, M.empty, M.empty)
+    type combine_type = int list * int M.t * float M.t * (int * int * int * int) M.t
+    let combine_start = ([], M.empty, M.empty, M.empty)
     let combine_results = combine_distance_results
     let jobname = "distance_statistics"
   end
