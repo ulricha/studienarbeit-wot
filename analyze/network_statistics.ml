@@ -140,7 +140,7 @@ module Make(G : Sig.G) = struct
 
   let analyze_and_print_results v_number graph_name results =
     let (dist_sum, ecc_map, dist_avg_map, neigh_map) = results in
-    let nr_pairs = float_of_int ((v_number * (v_number-1)) in
+    let nr_pairs = float_of_int (v_number * (v_number-1)) in
     let connected_avg_distance = (float_of_int dist_sum) /. nr_pairs in
     let (max_ecc, min_ecc) = enum_max_min (M.values ecc_map) in
     let median_ecc = median (Array.of_enum (M.values ecc_map)) in
