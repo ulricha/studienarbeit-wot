@@ -139,6 +139,7 @@ OCamlProgram(simple_stats, simple_stats $(AUXFILES))
 OCamlProgram(time, time $(AUXFILES))
 OCamlProgram(count, count $(AUXFILES))
 OCamlProgram(basic_properties_mpi, basic_properties_mpi $(AUXFILES) mpi_framework)
+OCamlProgram(basic_properties_mpi_cas, basic_properties_mpi_cas $(AUXFILES) mpi_framework)
 OCamlProgram(basic_properties, basic_properties $(AUXFILES))
 OCamlProgram(correlate_weak_sigs, correlate_weak_sigs $(AUXFILES))
 OCamlProgram(without, without $(AUXFILES))
@@ -149,6 +150,7 @@ EXE[] =
 	betweeness_ser
 	clustering_coefficient_ser
 	basic_properties_mpi
+	basic_properties_mpi_cas
 
 .DEFAULT: $(EXE)
 
