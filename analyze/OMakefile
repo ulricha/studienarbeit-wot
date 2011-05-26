@@ -132,6 +132,7 @@ OCamlProgram(investigate_communities, investigate_communities $(AUXFILES))
 OCamlProgram(investigate_component, investigate_component $(AUXFILES))
 OCamlProgram(basic_properties, basic_properties $(AUXFILES))
 OCamlProgram(betweeness_ser, betweeness_ser $(AUXFILES))
+OCamlProgram(betweeness_mpi, betweeness_mpi $(AUXFILES) mpi_framework)
 OCamlProgram(clustering_coefficient_ser, clustering_coefficient_ser $(AUXFILES))
 OCamlProgram(export, export $(AUXFILES))
 OCamlProgram(mscc_size, mscc_size $(AUXFILES))
@@ -148,6 +149,7 @@ OCamlProgram(correlate_deg, correlate_deg $(AUXFILES))
 EXE[] = 
 	basic_properties
 	betweeness_ser
+	betweeness_mpi
 	clustering_coefficient_ser
 	basic_properties_mpi
 	basic_properties_mpi_cas
