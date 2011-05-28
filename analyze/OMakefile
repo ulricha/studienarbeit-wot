@@ -123,6 +123,7 @@ PROGRAM = dump_sql
 # OCAML_OTHER_LIBS +=
 # OCAML_LIB_FLAGS +=
 #
+
 OCamlProgram(dump_sql, dump_sql $(AUXFILES))
 OCamlProgram(db_scc_information, db_scc_information $(AUXFILES))
 OCamlProgram(graph_snapshot, graph_snapshot $(AUXFILES))
@@ -145,6 +146,8 @@ OCamlProgram(basic_properties, basic_properties $(AUXFILES))
 OCamlProgram(correlate_weak_sigs, correlate_weak_sigs $(AUXFILES))
 OCamlProgram(without, without $(AUXFILES))
 OCamlProgram(correlate_deg, correlate_deg $(AUXFILES))
+OCamlProgram(foo, foo $(AUXFILES))
+OCamlProgram(redundancy, redundancy $(AUXFILES) mpi_framework)
 
 EXE[] = 
 	basic_properties
@@ -153,6 +156,8 @@ EXE[] =
 	clustering_coefficient_ser
 	basic_properties_mpi
 	basic_properties_mpi_cas
+	foo
+	redundancy
 
 .DEFAULT: $(EXE)
 

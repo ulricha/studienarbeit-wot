@@ -17,6 +17,9 @@ module Make(G : Sig.I) = struct
       in
 	G.iter_edges add_edge original_graph;
 	g
+	  
+  let node_induced nodes g = graph_from_node_list nodes g
+
 
   let largest_component_as_graph scc_list original_graph =
     let compare_scc_length = 
